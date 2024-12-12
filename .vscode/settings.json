@@ -1,0 +1,7 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // auto order imports
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  }
+}
