@@ -30,8 +30,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    variables: Variable;
+    variablesHabilitaciones: VariablesHabilitacione;
+  };
+  globalsSelect: {
+    variables: VariablesSelect<false> | VariablesSelect<true>;
+    variablesHabilitaciones: VariablesHabilitacionesSelect<false> | VariablesHabilitacionesSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -257,6 +263,48 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variables".
+ */
+export interface Variable {
+  id: number;
+  variable1?: string | null;
+  variable2?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variablesHabilitaciones".
+ */
+export interface VariablesHabilitacione {
+  id: number;
+  precioPorM2?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variables_select".
+ */
+export interface VariablesSelect<T extends boolean = true> {
+  variable1?: T;
+  variable2?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variablesHabilitaciones_select".
+ */
+export interface VariablesHabilitacionesSelect<T extends boolean = true> {
+  precioPorM2?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

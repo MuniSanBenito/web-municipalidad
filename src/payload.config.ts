@@ -10,6 +10,8 @@ import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
 import { Prueba } from './collections/Test'
 import { Users } from './collections/Users'
+import { VariablesHabilitaciones } from './globals/Habilitaciones'
+import { Variables } from './globals/Variables'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -22,6 +24,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Prueba],
+  globals: [Variables, VariablesHabilitaciones],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
