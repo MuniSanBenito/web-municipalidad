@@ -8,6 +8,7 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
+import { Prueba } from './collections/Test'
 import { Users } from './collections/Users'
 
 const filename = fileURLToPath(import.meta.url)
@@ -20,7 +21,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Prueba],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
