@@ -3,5 +3,13 @@
   // auto order imports
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  }
+  },
+  // tailwind
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["(?:twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"],
+    ["clsx\\(([^]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+  ]
 }

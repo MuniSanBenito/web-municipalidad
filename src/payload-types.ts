@@ -28,7 +28,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: number;
+    defaultIDType: string;
   };
   globals: {
     variables: Variable;
@@ -70,8 +70,18 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
-  rol?: ('CLIENTE' | 'ADMIN' | 'SUPERADMIN') | null;
+  id: string;
+  rol?: ('USUARIO' | 'ADMIN' | 'CIUDADANO') | null;
+  activo?: boolean | null;
+  datos_ciudadano?: {
+    nombre?: string | null;
+    apellido?: string | null;
+    dni?: string | null;
+    domicilio?: string | null;
+    fecha_nacimiento?: string | null;
+    ciudad?: string | null;
+    telefono?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -88,7 +98,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: number;
+  id: string;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -107,7 +117,7 @@ export interface Media {
  * via the `definition` "prueba".
  */
 export interface Prueba {
-  id: number;
+  id: string;
   contenido: {
     root: {
       type: string;
@@ -132,24 +142,24 @@ export interface Prueba {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
+  id: string;
   document?:
     | ({
         relationTo: 'users';
-        value: number | User;
+        value: string | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: number | Media;
+        value: string | Media;
       } | null)
     | ({
         relationTo: 'prueba';
-        value: number | Prueba;
+        value: string | Prueba;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -159,10 +169,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number;
+  id: string;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   key?: string | null;
   value?:
@@ -182,7 +192,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number;
+  id: string;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -194,6 +204,18 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   rol?: T;
+  activo?: T;
+  datos_ciudadano?:
+    | T
+    | {
+        nombre?: T;
+        apellido?: T;
+        dni?: T;
+        domicilio?: T;
+        fecha_nacimiento?: T;
+        ciudad?: T;
+        telefono?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -269,7 +291,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "variables".
  */
 export interface Variable {
-  id: number;
+  id: string;
   variable1?: string | null;
   variable2?: number | null;
   updatedAt?: string | null;
@@ -280,7 +302,7 @@ export interface Variable {
  * via the `definition` "variablesHabilitaciones".
  */
 export interface VariablesHabilitacione {
-  id: number;
+  id: string;
   precioPorM2?: number | null;
   updatedAt?: string | null;
   createdAt?: string | null;
