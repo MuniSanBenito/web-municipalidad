@@ -104,6 +104,7 @@ export interface Noticia {
   titulo: string;
   slug: string;
   descripcion: string;
+  portada: string | Media;
   contenido: {
     root: {
       type: string;
@@ -119,7 +120,12 @@ export interface Noticia {
     };
     [k: string]: unknown;
   };
-  portada: string | Media;
+  youtube_videos?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -268,8 +274,14 @@ export interface NoticiasSelect<T extends boolean = true> {
   titulo?: T;
   slug?: T;
   descripcion?: T;
-  contenido?: T;
   portada?: T;
+  contenido?: T;
+  youtube_videos?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

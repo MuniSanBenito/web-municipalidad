@@ -31,21 +31,39 @@ export const Noticias: CollectionConfig = {
       required: true,
     },
     {
-      type: 'richText',
-      name: 'contenido',
-      required: true,
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [...rootFeatures, HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] })]
-        },
-      }),
-    },
-    {
       type: 'upload',
       relationTo: 'media',
       name: 'portada',
       label: 'Imagen de Portada',
       required: true,
+    },
+    {
+      type: 'richText',
+      name: 'contenido',
+      required: true,
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          const features = rootFeatures.filter((feature) => feature.key !== 'relationship')
+          return [...features, HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] })]
+        },
+      }),
+    },
+    {
+      type: 'array',
+      name: 'youtube_videos',
+      label: 'Videos de YouTube',
+      labels: {
+        singular: 'Video de YouTube',
+        plural: 'Videos de YouTube',
+      },
+      fields: [
+        {
+          type: 'text',
+          name: 'url',
+          label: 'URL del video',
+          required: true,
+        },
+      ],
     },
   ],
 }

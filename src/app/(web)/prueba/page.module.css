@@ -1,0 +1,7 @@
+.noticia h1 {
+  @apply font-extrabold;
+}
+
+.noticia p {
+  @apply text-primary;
+}
