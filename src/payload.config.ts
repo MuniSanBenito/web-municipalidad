@@ -7,6 +7,7 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
+import { Noticias } from './collections/Noticias'
 import { Prueba } from './collections/Test'
 import { Users } from './collections/Users'
 import { VariablesHabilitaciones } from './globals/Habilitaciones'
@@ -25,7 +26,7 @@ export default buildConfig({
       afterDashboard: ['/components/redirect-ciudadano#RedirectCiudadano'],
     },
   },
-  collections: [Users, Media, Prueba],
+  collections: [Users, Noticias, Media, Prueba],
   globals: [Variables, VariablesHabilitaciones],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

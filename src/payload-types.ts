@@ -12,6 +12,7 @@ export interface Config {
   };
   collections: {
     users: User;
+    noticias: Noticia;
     media: Media;
     prueba: Prueba;
     'payload-locked-documents': PayloadLockedDocument;
@@ -21,6 +22,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     prueba: PruebaSelect<false> | PruebaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -71,7 +73,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol?: ('USUARIO' | 'ADMIN' | 'CIUDADANO') | null;
+  rol: 'USUARIO' | 'ADMIN' | 'CIUDADANO';
   activo?: boolean | null;
   datos_ciudadano?: {
     nombre?: string | null;
@@ -92,6 +94,34 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "noticias".
+ */
+export interface Noticia {
+  id: string;
+  titulo: string;
+  slug: string;
+  descripcion: string;
+  contenido: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  portada: string | Media;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -147,6 +177,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'noticias';
+        value: string | Noticia;
       } | null)
     | ({
         relationTo: 'media';
@@ -225,6 +259,19 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "noticias_select".
+ */
+export interface NoticiasSelect<T extends boolean = true> {
+  titulo?: T;
+  slug?: T;
+  descripcion?: T;
+  contenido?: T;
+  portada?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
