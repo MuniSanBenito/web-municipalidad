@@ -1,0 +1,15 @@
+meta {
+  name: get noticias
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://api.sanbenito.gob.ar/api/web/noticias?page=6
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 6
+}

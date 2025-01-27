@@ -41,8 +41,15 @@ export default async function Page({ params: paramsPromise }: PageParams) {
       <article key={noticia.id} className={styles.noticia}>
         <h1>{noticia.titulo}</h1>
         <p>{noticia.descripcion}</p>
-        <img alt={(noticia.portada as Media).alt} src={(noticia.portada as Media).url!} />
-        <RichText data={noticia.contenido} />
+        <img
+          alt={(noticia.portada as Media).alt}
+          src={(noticia.portada as Media).url!}
+          className="h-52"
+        />
+        {noticia.is_old ? (
+          <section dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}></section>
+        ) : null}
+        {noticia?.contenido ? <RichText data={noticia.contenido!} /> : null}
         {noticia.youtube_videos?.map((video) => <YouTuveVideo key={video.id} url={video.url} />)}
       </article>
     </>

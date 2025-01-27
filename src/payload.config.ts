@@ -1,6 +1,7 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
@@ -12,6 +13,25 @@ import { Prueba } from './collections/Test'
 import { Users } from './collections/Users'
 import { VariablesHabilitaciones } from './globals/Habilitaciones'
 import { Variables } from './globals/Variables'
+
+const accountId = process.env.R2_ACCOUNT_ID
+const accessKeyId = process.env.R2_ACCESS_KEY_ID!
+const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY!
+const bucket = process.env.R2_BUCKET!
+const storagePlugin = s3Storage({
+  collections: {
+    [Media.slug]: true,
+  },
+  config: {
+    region: 'auto',
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  },
+  bucket,
+})
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -62,6 +82,7 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
+    storagePlugin,
     // storage-adapter-placeholder
   ],
   i18n: {

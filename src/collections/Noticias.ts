@@ -51,7 +51,6 @@ export const Noticias: CollectionConfig = {
     {
       type: 'richText',
       name: 'contenido',
-      required: true,
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           const features = rootFeatures.filter((feature) => feature.key !== 'relationship')
@@ -75,6 +74,25 @@ export const Noticias: CollectionConfig = {
           required: true,
         },
       ],
+    },
+    {
+      type: 'checkbox',
+      name: 'is_old',
+      label: 'Es noticia vieja',
+      defaultValue: false,
+      required: true,
+      admin: {
+        disabled: true,
+      },
+    },
+    {
+      type: 'text',
+      name: 'contenido_old',
+      label: 'Contenido viejo',
+      required: false,
+      admin: {
+        disabled: true,
+      },
     },
   ],
 }
