@@ -7,8 +7,19 @@ export const Noticias: CollectionConfig = {
     singular: 'Noticia',
     plural: 'Noticias',
   },
+  versions: {
+    drafts: {
+      autosave: {
+        interval: 500, // We set this interval for optimal live preview
+      },
+    },
+    maxPerDoc: 50,
+  },
   admin: {
     useAsTitle: 'titulo',
+    livePreview: {
+      url: ({ data }) => `${process.env.NEXT_PUBLIC_BASE_URL}/preview/noticias/${data.slug}`,
+    },
   },
   fields: [
     {

@@ -1,0 +1,9 @@
+@reference "../../../globals.css";
+
+.noticia h1 {
+  @apply font-extrabold text-white;
+}
+
+.noticia p {
+  @apply text-primary;
+}

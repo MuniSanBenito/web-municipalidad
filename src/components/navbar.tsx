@@ -1,8 +1,31 @@
 'use client'
-
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { twJoin } from 'tailwind-merge'
+
+const NAV_LINKS: { href: string; label: string }[] = [
+  {
+    href: '/',
+    label: 'Noticias',
+  },
+  {
+    href: '/nuestra-ciudad',
+    label: 'Nuestra Ciudad',
+  },
+  {
+    href: '/transparencia',
+    label: 'Transparencia',
+  },
+  {
+    href: '/hcd',
+    label: 'HCD',
+  },
+  {
+    href: '/tramites',
+    label: 'Tramites',
+  },
+]
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -18,9 +41,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? 'h-16 bg-primary shadow-md' : 'h-28 bg-primary'
-      }`}
+      className={twJoin(
+        'bg-primary sticky top-0 left-0 z-50 w-full transition-all duration-300',
+        isScrolled ? 'h-16 shadow-md' : 'h-28',
+      )}
     >
       <div className="container mx-auto flex h-full items-center justify-between px-6">
         <Link href="/">
@@ -29,37 +53,19 @@ export default function Navbar() {
             alt="San Benito Logo"
             width={isScrolled ? 90 : 180}
             height={isScrolled ? 30 : 80}
-            className="transition-transform duration-300 hover:scale-105 hover:opacity-80"
+            className="transition-all duration-300 hover:scale-105 hover:opacity-80"
             priority
           />
         </Link>
 
         <ul className="menu menu-horizontal px-1">
-          <li>
-            <Link href="/" className="hover:text-accent">
-              Noticias
-            </Link>
-          </li>
-          <li>
-            <Link href="/nuestra-ciudad" className="hover:text-accent">
-              Nuestra Ciudad
-            </Link>
-          </li>
-          <li>
-            <Link href="/transparencia" className="hover:text-accent">
-              Transparencia
-            </Link>
-          </li>
-          <li>
-            <Link href="/hcd" className="hover:text-accent">
-              HCD
-            </Link>
-          </li>
-          <li>
-            <Link href="/tramites" className="hover:text-accent">
-              Trámites y Servicios
-            </Link>
-          </li>
+          {NAV_LINKS.map((link) => (
+            <li key={link.href}>
+              <Link href={link.href} className="hover:text-black">
+                {link.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </nav>
