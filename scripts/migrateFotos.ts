@@ -12,7 +12,7 @@ async function seed() {
   // Get a local copy of Payload by passing your config
   const payload = await getPayload({ config })
 
-  const url = `${OLD_API_URL}/web/noticias?page=7`
+  const url = `${OLD_API_URL}/web/noticias?page=2`
 
   const r = await fetch(url)
   const { data } = await r.json()

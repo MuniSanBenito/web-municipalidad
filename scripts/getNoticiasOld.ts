@@ -72,7 +72,7 @@ async function seed() {
     },
   })
 
-  await payload.create({
+  /* await payload.create({
     collection: 'noticias',
     data: {
       titulo: noticia.title,
@@ -82,7 +82,7 @@ async function seed() {
       _status: 'published',
       portada: media.id,
     },
-  })
+  }) */
 
   //   console.log(editorJSON)
 }
