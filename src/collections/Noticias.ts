@@ -86,7 +86,7 @@ export const Noticias: CollectionConfig = {
       },
     },
     {
-      type: 'text',
+      type: 'textarea',
       name: 'contenido_old',
       label: 'Contenido viejo',
       required: false,

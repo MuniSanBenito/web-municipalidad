@@ -27,8 +27,6 @@ export default async function Page({ params: paramsPromise }: PageParams) {
     },
   })
 
-  console.log(noticias)
-
   if (!noticias || !noticias.length || !noticias[0]) {
     return notFound()
   }
