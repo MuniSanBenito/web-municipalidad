@@ -20,7 +20,6 @@ export default async function PageNoticia({ params }: Props) {
 
   if (!docs.length) return <div>No se encontro la noticia</div>
   const noticia = docs[0]
-  console.log(noticia)
 
   if (noticia.is_old) {
     return (
