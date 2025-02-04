@@ -1,0 +1,22 @@
+@reference "../../globals.css";
+
+.noticia {
+  color: white;
+  @apply font-bold;
+}
+
+.noticia h4 {
+  @apply text-primary;
+}
+
+.noticia img {
+  @apply aspect-square w-10;
+}
+
+/* .noticia h1 {
+  @apply font-extrabold;
+}
+
+.noticia p {
+  @apply text-primary;
+} */

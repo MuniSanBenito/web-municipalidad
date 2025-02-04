@@ -66,7 +66,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/">
               <Image
-                src="/images/Logo.png"
+                src="/images/logo.webp"
                 alt="San Benito Logo"
                 width={isScrolled ? 90 : 180}
                 height={isScrolled ? 30 : 80}
