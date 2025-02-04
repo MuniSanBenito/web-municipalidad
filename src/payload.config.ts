@@ -43,9 +43,37 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     components: {
+      graphics: {
+        Logo: '/brand/logo#Logo',
+        Icon: '/brand/icon#Icon',
+      },
+      logout: {
+        Button: '/components/logout-button#LogoutButton',
+      },
       afterDashboard: ['/components/redirect-ciudadano#RedirectCiudadano'],
     },
     theme: 'light',
+    avatar: 'default',
+    meta: {
+      titleSuffix: ' | San Benito',
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/webp',
+          url: '/public/images/icon.webp',
+        },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/webp',
+          url: '/public/images/icon.webp',
+        },
+        {
+          rel: 'mask-icon',
+          type: 'image/webp',
+          url: '/public/images/icon.webp',
+        },
+      ],
+    },
     livePreview: {
       breakpoints: [
         {

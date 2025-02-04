@@ -20,6 +20,9 @@ import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { LogoutButton as LogoutButton_5e1d745b0d87601ca959b57385835784 } from 'src/components/logout-button'
+import { Icon as Icon_ccb43bd27f984eeae6a29c32489bcd08 } from 'src/brand/icon'
+import { Logo as Logo_5bbef171e543d0a1534ac71b8434d707 } from 'src/brand/logo'
 import { RedirectCiudadano as RedirectCiudadano_07df5ce0fca2349703ee5124835756e5 } from 'src/components/redirect-ciudadano'
 
 export const importMap = {
@@ -45,5 +48,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#RelationshipFeatureClient": RelationshipFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/components/logout-button#LogoutButton": LogoutButton_5e1d745b0d87601ca959b57385835784,
+  "/brand/icon#Icon": Icon_ccb43bd27f984eeae6a29c32489bcd08,
+  "/brand/logo#Logo": Logo_5bbef171e543d0a1534ac71b8434d707,
   "/components/redirect-ciudadano#RedirectCiudadano": RedirectCiudadano_07df5ce0fca2349703ee5124835756e5
 }
