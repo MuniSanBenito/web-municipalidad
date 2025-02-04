@@ -10,7 +10,7 @@ export default function Layout({ children }: PropsWithChildren) {
       </head>
       <body className="p-0">
         <Navbar />
-        <main className="container mx-auto mt-4">{children}</main>
+        <main className="container mx-auto mt-28">{children}</main>
       </body>
     </html>
   )
