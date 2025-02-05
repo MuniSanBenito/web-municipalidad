@@ -56,6 +56,15 @@ export const Users: CollectionConfig = {
       },
     },
     {
+      type: 'upload',
+      relationTo: 'media',
+      name: 'avatar',
+      label: 'Avatar',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       type: 'group',
       name: 'datos_ciudadano',
       label: 'Datos del Ciudadano',
@@ -97,6 +106,13 @@ export const Users: CollectionConfig = {
           type: 'text',
           name: 'telefono',
           label: 'Teléfono',
+        },
+        {
+          type: 'join',
+          name: 'curriculums',
+          label: 'Curriculums',
+          collection: 'curriculums',
+          on: 'user',
         },
       ],
     },

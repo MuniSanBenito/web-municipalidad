@@ -14,17 +14,21 @@ export interface Config {
     users: User;
     noticias: Noticia;
     media: Media;
-    prueba: Prueba;
+    curriculums: Curriculum;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    users: {
+      'datos_ciudadano.curriculums': 'curriculums';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    prueba: PruebaSelect<false> | PruebaSelect<true>;
+    curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -75,6 +79,7 @@ export interface User {
   id: string;
   rol: 'USUARIO' | 'ADMIN' | 'CIUDADANO';
   activo?: boolean | null;
+  avatar?: (string | null) | Media;
   datos_ciudadano?: {
     nombre?: string | null;
     apellido?: string | null;
@@ -83,6 +88,10 @@ export interface User {
     fecha_nacimiento?: string | null;
     ciudad?: string | null;
     telefono?: string | null;
+    curriculums?: {
+      docs?: (string | Curriculum)[] | null;
+      hasNextPage?: boolean | null;
+    } | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -94,43 +103,6 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "noticias".
- */
-export interface Noticia {
-  id: string;
-  titulo: string;
-  slug: string;
-  descripcion: string;
-  portada: string | Media;
-  contenido?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  youtube_videos?:
-    | {
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  is_old: boolean;
-  contenido_old?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -211,11 +183,56 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "prueba".
+ * via the `definition` "curriculums".
  */
-export interface Prueba {
+export interface Curriculum {
   id: string;
-  contenido: {
+  user?: (string | null) | User;
+  estudios?:
+    | {
+        instutucion?: string | null;
+        fecha_inicio?: string | null;
+        fecha_finalizacion?: string | null;
+        nivel?: string | null;
+        descripcion?: string | null;
+        is_old?: boolean | null;
+        nivel_old?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  experiencias?:
+    | {
+        instutucion?: string | null;
+        fecha_inicio?: string | null;
+        fecha_finalizacion?: string | null;
+        puesto?: string | null;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  referencias?:
+    | {
+        nombre?: string | null;
+        telefono?: string | null;
+        email?: string | null;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "noticias".
+ */
+export interface Noticia {
+  id: string;
+  titulo: string;
+  slug: string;
+  descripcion: string;
+  portada: string | Media;
+  contenido?: {
     root: {
       type: string;
       children: {
@@ -229,10 +246,18 @@ export interface Prueba {
       version: number;
     };
     [k: string]: unknown;
-  };
-  contenidoHTML?: string | null;
+  } | null;
+  youtube_videos?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  is_old: boolean;
+  contenido_old?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -254,8 +279,8 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'prueba';
-        value: string | Prueba;
+        relationTo: 'curriculums';
+        value: string | Curriculum;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -306,6 +331,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   rol?: T;
   activo?: T;
+  avatar?: T;
   datos_ciudadano?:
     | T
     | {
@@ -316,6 +342,7 @@ export interface UsersSelect<T extends boolean = true> {
         fecha_nacimiento?: T;
         ciudad?: T;
         telefono?: T;
+        curriculums?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -443,11 +470,41 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "prueba_select".
+ * via the `definition` "curriculums_select".
  */
-export interface PruebaSelect<T extends boolean = true> {
-  contenido?: T;
-  contenidoHTML?: T;
+export interface CurriculumsSelect<T extends boolean = true> {
+  user?: T;
+  estudios?:
+    | T
+    | {
+        instutucion?: T;
+        fecha_inicio?: T;
+        fecha_finalizacion?: T;
+        nivel?: T;
+        descripcion?: T;
+        is_old?: T;
+        nivel_old?: T;
+        id?: T;
+      };
+  experiencias?:
+    | T
+    | {
+        instutucion?: T;
+        fecha_inicio?: T;
+        fecha_finalizacion?: T;
+        puesto?: T;
+        descripcion?: T;
+        id?: T;
+      };
+  referencias?:
+    | T
+    | {
+        nombre?: T;
+        telefono?: T;
+        email?: T;
+        descripcion?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

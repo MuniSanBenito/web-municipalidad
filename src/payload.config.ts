@@ -8,9 +8,9 @@ import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { Curriculums } from './collections/Curriculums'
 import { Media } from './collections/Media'
 import { Noticias } from './collections/Noticias'
-import { Prueba } from './collections/Test'
 import { Users } from './collections/Users'
 import { VariablesHabilitaciones } from './globals/Habilitaciones'
 import { Variables } from './globals/Variables'
@@ -113,7 +113,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Noticias, Media, Prueba],
+  collections: [Users, Noticias, Media, Curriculums],
   globals: [Variables, VariablesHabilitaciones],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
