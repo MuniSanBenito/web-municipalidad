@@ -20,6 +20,18 @@ export const Noticias: CollectionConfig = {
     livePreview: {
       url: ({ data }) => `${process.env.NEXT_PUBLIC_BASE_URL}/preview/noticias/${data.slug}`,
     },
+    preview: (data) => `${process.env.NEXT_PUBLIC_BASE_URL}/preview/noticias/${data.slug}`,
+    components: {
+      views: {
+        edit: {
+          livePreview: {
+            tab: {
+              label: 'Modo en vivo',
+            },
+          },
+        },
+      },
+    },
   },
   fields: [
     {
