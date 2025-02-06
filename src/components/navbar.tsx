@@ -27,7 +27,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
 ]
 
-export default function Navbar() {
+export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 

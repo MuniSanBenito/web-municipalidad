@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import Navbar from '../../components/navbar'
+import { Navbar } from '../../components/navbar'
 import './globals.css'
 
 export default function Layout({ children }: PropsWithChildren) {
@@ -10,7 +10,7 @@ export default function Layout({ children }: PropsWithChildren) {
       </head>
       <body className="p-0">
         <Navbar />
-        <main className="container mx-auto mt-28">{children}</main>
+        <main className="container mx-auto mt-35">{children}</main>
       </body>
     </html>
   )
