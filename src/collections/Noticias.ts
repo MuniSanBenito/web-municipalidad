@@ -43,7 +43,7 @@ export const Noticias: CollectionConfig = {
     },
     {
       type: 'upload',
-      relationTo: 'media',
+      relationTo: 'imagenes',
       name: 'portada',
       label: 'Imagen de Portada',
       required: true,
@@ -74,6 +74,13 @@ export const Noticias: CollectionConfig = {
           required: true,
         },
       ],
+    },
+    {
+      type: 'upload',
+      name: 'archivos',
+      label: 'Archivos adjuntos',
+      relationTo: 'archivos',
+      hasMany: true,
     },
     {
       type: 'checkbox',

@@ -1,6 +1,6 @@
 import { RefreshRouteOnSave } from '@/components/refresh-route-on-save'
 import { YouTuveVideo } from '@/components/youtube-video'
-import type { Media } from '@/payload-types'
+import type { Imagen } from '@/payload-types'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { notFound } from 'next/navigation'
@@ -33,6 +33,8 @@ export default async function Page({ params: paramsPromise }: PageParams) {
 
   const [noticia] = noticias
 
+  console.log(noticia)
+
   return (
     <>
       <RefreshRouteOnSave />
@@ -40,8 +42,8 @@ export default async function Page({ params: paramsPromise }: PageParams) {
         <h1>{noticia.titulo}</h1>
         <p>{noticia.descripcion}</p>
         <img
-          alt={(noticia.portada as Media).alt}
-          src={(noticia.portada as Media).url!}
+          alt={(noticia.portada as Imagen).alt}
+          src={(noticia.portada as Imagen).url!}
           className="h-52"
         />
         {noticia.is_old ? (

@@ -7,7 +7,7 @@ const TOKEN = 'yZ6UoJZ3Zz4CCWNqj0W4mUYwJXz6MCkVXPSqEmFrIKa9YsyFZehXvx5OiLZOqWZJ'
 
 const DEFAULT_AVATAR = 'users/avatar/default.png'
 
-const DEFAULT_AVATAR_ID = '67a35f72f5767f400c2ec263'
+const DEFAULT_AVATAR_ID = '67a51bd51c4e6c3757a9fba9'
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -16,8 +16,8 @@ async function seed() {
     // Get a local copy of Payload by passing your config
     const payload = await getPayload({ config })
 
-    let i = 6
-    for (i = 6; i > 0; i--) {
+    let i = 18
+    for (i = 18; i > 0; i--) {
       const url = `${OLD_API_URL}/plataforma/usuarios?page=${i}`
       console.log(url)
       const r = await fetch(url, {
@@ -34,7 +34,7 @@ async function seed() {
           continue
         }
 
-        let email = usuario.email
+        let email = usuario.email?.toLowerCase()
         if (!emailRegex.test(email)) {
           email = email + '.com'
         }
@@ -60,25 +60,27 @@ async function seed() {
 
           const mimetype = resImagen.headers.get('content-type') ?? 'image/*'
 
-          const media = await payload.create({
-            collection: 'media',
-            data: {
-              alt: email,
-            },
-            file: {
-              data: buffer,
-              size: buffer.length,
-              name: email,
-              mimetype,
-            },
-          })
-          avatarId = media.id
+          if (mimetype.startsWith('image/')) {
+            const media = await payload.create({
+              collection: 'avatares',
+              data: {
+                alt: email,
+              },
+              file: {
+                data: buffer,
+                size: buffer.length,
+                name: email,
+                mimetype,
+              },
+            })
+            avatarId = media.id
+          }
         }
 
         await payload.create({
           collection: 'users',
           data: {
-            email: email,
+            email,
             password: String(usuario.dni),
             activo: true,
             rol: 'CIUDADANO',

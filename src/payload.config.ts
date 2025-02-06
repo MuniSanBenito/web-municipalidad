@@ -8,12 +8,12 @@ import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { Archivos } from './collections/Archivos'
+import { Avatares } from './collections/Avatares'
 import { Curriculums } from './collections/Curriculums'
-import { Media } from './collections/Media'
+import { Imagenes } from './collections/Imagenes'
 import { Noticias } from './collections/Noticias'
 import { Users } from './collections/Users'
-import { VariablesHabilitaciones } from './globals/Habilitaciones'
-import { Variables } from './globals/Variables'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -21,7 +21,15 @@ const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY!
 const bucket = process.env.R2_BUCKET!
 const storagePlugin = s3Storage({
   collections: {
-    [Media.slug]: true,
+    [Imagenes.slug]: {
+      prefix: 'imagenes',
+    },
+    [Archivos.slug]: {
+      prefix: 'archivos',
+    },
+    [Avatares.slug]: {
+      prefix: 'avatares',
+    },
   },
   config: {
     region: 'auto',
@@ -113,8 +121,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Noticias, Media, Curriculums],
-  globals: [Variables, VariablesHabilitaciones],
+  collections: [Users, Noticias, Imagenes, Curriculums, Archivos, Avatares],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -61,7 +61,7 @@ async function seed() {
   console.log(resImagen, imagen)
 
   const media = await payload.create({
-    collection: 'media',
+    collection: 'imagenes',
     data: {
       alt: noticia.title,
       url: URL.createObjectURL(imagen),

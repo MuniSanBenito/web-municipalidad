@@ -57,7 +57,7 @@ export const Users: CollectionConfig = {
     },
     {
       type: 'upload',
-      relationTo: 'media',
+      relationTo: 'avatares',
       name: 'avatar',
       label: 'Avatar',
       admin: {

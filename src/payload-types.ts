@@ -13,8 +13,10 @@ export interface Config {
   collections: {
     users: User;
     noticias: Noticia;
-    media: Media;
+    imagenes: Imagen;
     curriculums: Curriculum;
+    archivos: Archivo;
+    avatares: Avatar;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -27,8 +29,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    imagenes: ImagenesSelect<false> | ImagenesSelect<true>;
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
+    archivos: ArchivosSelect<false> | ArchivosSelect<true>;
+    avatares: AvataresSelect<false> | AvataresSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -36,14 +40,8 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {
-    variables: Variable;
-    variablesHabilitaciones: VariablesHabilitacione;
-  };
-  globalsSelect: {
-    variables: VariablesSelect<false> | VariablesSelect<true>;
-    variablesHabilitaciones: VariablesHabilitacionesSelect<false> | VariablesHabilitacionesSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: null;
   user: User & {
     collection: 'users';
@@ -79,7 +77,7 @@ export interface User {
   id: string;
   rol: 'USUARIO' | 'ADMIN' | 'CIUDADANO';
   activo?: boolean | null;
-  avatar?: (string | null) | Media;
+  avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
     nombre?: string | null;
     apellido?: string | null;
@@ -106,11 +104,12 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "avatares".
  */
-export interface Media {
+export interface Avatar {
   id: string;
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -219,6 +218,12 @@ export interface Curriculum {
         id?: string | null;
       }[]
     | null;
+  categorias?:
+    | {
+        nombre?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -231,7 +236,7 @@ export interface Noticia {
   titulo: string;
   slug: string;
   descripcion: string;
-  portada: string | Media;
+  portada: string | Imagen;
   contenido?: {
     root: {
       type: string;
@@ -253,11 +258,109 @@ export interface Noticia {
         id?: string | null;
       }[]
     | null;
+  archivos?: (string | Archivo)[] | null;
   is_old: boolean;
   contenido_old?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imagenes".
+ */
+export interface Imagen {
+  id: string;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    xlarge?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos".
+ */
+export interface Archivo {
+  id: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -275,12 +378,20 @@ export interface PayloadLockedDocument {
         value: string | Noticia;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'imagenes';
+        value: string | Imagen;
       } | null)
     | ({
         relationTo: 'curriculums';
         value: string | Curriculum;
+      } | null)
+    | ({
+        relationTo: 'archivos';
+        value: string | Archivo;
+      } | null)
+    | ({
+        relationTo: 'avatares';
+        value: string | Avatar;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -370,6 +481,7 @@ export interface NoticiasSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  archivos?: T;
   is_old?: T;
   contenido_old?: T;
   updatedAt?: T;
@@ -378,10 +490,11 @@ export interface NoticiasSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "imagenes_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface ImagenesSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -505,8 +618,125 @@ export interface CurriculumsSelect<T extends boolean = true> {
         descripcion?: T;
         id?: T;
       };
+  categorias?:
+    | T
+    | {
+        nombre?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos_select".
+ */
+export interface ArchivosSelect<T extends boolean = true> {
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "avatares_select".
+ */
+export interface AvataresSelect<T extends boolean = true> {
+  alt?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        xlarge?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -539,48 +769,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variables".
- */
-export interface Variable {
-  id: string;
-  variable1?: string | null;
-  variable2?: number | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variablesHabilitaciones".
- */
-export interface VariablesHabilitacione {
-  id: string;
-  precioPorM2?: number | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variables_select".
- */
-export interface VariablesSelect<T extends boolean = true> {
-  variable1?: T;
-  variable2?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variablesHabilitaciones_select".
- */
-export interface VariablesHabilitacionesSelect<T extends boolean = true> {
-  precioPorM2?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

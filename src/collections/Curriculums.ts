@@ -6,6 +6,9 @@ export const Curriculums: CollectionConfig = {
     singular: 'Curriculum',
     plural: 'Curriculums',
   },
+  admin: {
+    useAsTitle: 'user',
+  },
   fields: [
     {
       type: 'relationship',
@@ -124,6 +127,18 @@ export const Curriculums: CollectionConfig = {
           type: 'textarea',
           name: 'descripcion',
           label: 'Descripción',
+        },
+      ],
+    },
+    {
+      type: 'array',
+      name: 'categorias',
+      label: 'Categorias',
+      fields: [
+        {
+          type: 'text',
+          name: 'nombre',
+          label: 'Nombre',
         },
       ],
     },

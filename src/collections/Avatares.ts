@@ -1,13 +1,19 @@
 import type { CollectionConfig } from 'payload'
 
-export const Media: CollectionConfig = {
-  slug: 'media',
+export const Avatares: CollectionConfig = {
+  slug: 'avatares',
   labels: {
-    singular: 'Media',
-    plural: 'Media',
+    singular: 'Avatar',
+    plural: 'Avatares',
+  },
+  typescript: {
+    interface: 'Avatar',
   },
   access: {
     read: () => true,
+  },
+  admin: {
+    group: 'Almacenamiento',
   },
   fields: [
     {
@@ -52,5 +58,6 @@ export const Media: CollectionConfig = {
         crop: 'center',
       },
     ],
+    mimeTypes: ['image/*'],
   },
 }

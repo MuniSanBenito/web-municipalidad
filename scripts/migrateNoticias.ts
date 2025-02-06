@@ -1,3 +1,4 @@
+import type { Archivo } from '@/payload-types'
 import config from '@payload-config'
 import { JSDOM } from 'jsdom'
 import { getPayload } from 'payload'
@@ -11,6 +12,9 @@ const SLUGS = [
   'presentacion-del-libro-los-furlanos',
 ]
 
+const NOTICIA_PREFIX = 'noticia_'
+const ADJUNTO_PREFIX = 'adjunto_'
+
 async function seed() {
   try {
     // Get a local copy of Payload by passing your config
@@ -23,7 +27,7 @@ async function seed() {
       const noticia = await r.json()
       if (!noticia) continue
 
-      const { content, ...restOfNoticia } = noticia
+      const { content, files, ...restOfNoticia } = noticia
       console.log(restOfNoticia)
       const resImagen = await fetch(noticia.imageUrl)
       const arrayBuffer = await resImagen.arrayBuffer()
@@ -32,14 +36,14 @@ async function seed() {
       const mimetype = resImagen.headers.get('content-type') ?? 'image/*'
 
       const media = await payload.create({
-        collection: 'media',
+        collection: 'imagenes',
         data: {
           alt: noticia.title,
         },
         file: {
           data: buffer,
           size: buffer.length,
-          name: noticia.slug,
+          name: NOTICIA_PREFIX + noticia.slug,
           mimetype,
         },
       })
@@ -59,14 +63,14 @@ async function seed() {
           const buffer = Buffer.from(new Uint8Array(arrayBuffer))
           // con la imagen obtenida, creamos el media y reemplazamos el src de la imagen del dom.window.document por la url del nuevo media
           const media = await payload.create({
-            collection: 'media',
+            collection: 'imagenes',
             data: {
               alt: noticia.title + '-' + index,
             },
             file: {
               data: buffer,
               size: buffer.length,
-              name: noticia.slug + '-' + index,
+              name: NOTICIA_PREFIX + noticia.slug + '-' + index,
               mimetype,
             },
           })
@@ -75,6 +79,32 @@ async function seed() {
         }
         index++
       }
+
+      console.log('adjuntos: ', files)
+
+      let uploadFiles: Archivo[] = []
+      if (files?.length) {
+        for (const file of files) {
+          const resFile = await fetch(file.url)
+          const arrayBuffer = await resFile.arrayBuffer()
+          const buffer = Buffer.from(new Uint8Array(arrayBuffer))
+
+          const mimetype = resFile.headers.get('content-type') ?? 'image/*'
+
+          const uploadFile = await payload.create({
+            collection: 'archivos',
+            data: {},
+            file: {
+              data: buffer,
+              size: buffer.length,
+              name: ADJUNTO_PREFIX + file.name,
+              mimetype,
+            },
+          })
+          uploadFiles.push(uploadFile)
+        }
+      }
+      console.log(uploadFiles)
 
       await payload.create({
         collection: 'noticias',
@@ -89,12 +119,13 @@ async function seed() {
           portada: media,
           createdAt: noticia.created_at,
           updatedAt: noticia.updated_at,
+          archivos: uploadFiles,
         },
       })
     }
 
     /* let i = 1
-    for (i = 1; i > 0 - 1; i--) {
+    for (i = 1; i > 0; i--) {
       const url = `${OLD_API_URL}/web/noticias?page=${i}`
       console.log(url)
       const r = await fetch(url)
@@ -110,15 +141,15 @@ async function seed() {
 
         const mimetype = resImagen.headers.get('content-type') ?? 'image/*'
 
-        const media = await payload.create({
-          collection: 'media',
+        const portada = await payload.create({
+          collection: 'imagenes',
           data: {
             alt: noticia.title,
           },
           file: {
             data: buffer,
             size: buffer.length,
-            name: noticia.slug,
+            name: NOTICIA_PREFIX + noticia.slug,
             mimetype,
           },
         })
@@ -138,14 +169,14 @@ async function seed() {
             const buffer = Buffer.from(new Uint8Array(arrayBuffer))
             // con la imagen obtenida, creamos el media y reemplazamos el src de la imagen del dom.window.document por la url del nuevo media
             const media = await payload.create({
-              collection: 'media',
+              collection: 'imagenes',
               data: {
                 alt: noticia.title + '-' + index,
               },
               file: {
                 data: buffer,
                 size: buffer.length,
-                name: noticia.slug + '-' + index,
+                name: NOTICIA_PREFIX + noticia.slug + '-' + index,
                 mimetype,
               },
             })
@@ -154,6 +185,35 @@ async function seed() {
           }
           index++
         }
+
+        const rNoticia = await fetch(`${OLD_API_URL}/web/noticias/${noticia.slug}`)
+        const { files } = await rNoticia.json()
+
+        console.log('adjuntos: ', files)
+
+        let uploadFiles: Archivo[] = []
+        if (files?.length) {
+          for (const file of files) {
+            const resFile = await fetch(file.url)
+            const arrayBuffer = await resFile.arrayBuffer()
+            const buffer = Buffer.from(new Uint8Array(arrayBuffer))
+
+            const mimetype = resFile.headers.get('content-type') ?? 'image/*'
+
+            const uploadFile = await payload.create({
+              collection: 'archivos',
+              data: {},
+              file: {
+                data: buffer,
+                size: buffer.length,
+                name: ADJUNTO_PREFIX + file.name,
+                mimetype,
+              },
+            })
+            uploadFiles.push(uploadFile)
+          }
+        }
+        console.log(uploadFiles)
 
         await payload.create({
           collection: 'noticias',
@@ -165,9 +225,10 @@ async function seed() {
             contenido_old: dom.window.document.body.innerHTML,
             // contenido: editorJSON,
             _status: 'published',
-            portada: media,
+            portada,
             createdAt: noticia.created_at,
             updatedAt: noticia.updated_at,
+            archivos: uploadFiles,
           },
         })
       }
