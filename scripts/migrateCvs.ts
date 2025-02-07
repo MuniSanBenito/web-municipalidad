@@ -83,7 +83,7 @@ async function seed() {
         }
 
         const estudios = curriculum?.estudios?.map((estudio: any) => ({
-          insitucion: estudio?.insitucion,
+          institucion: estudio?.institucion,
           fecha_inicio: estudio?.fecha_inicio,
           fecha_finalizacion: estudio?.fecha_finalizacion,
           is_old: true,
@@ -91,7 +91,7 @@ async function seed() {
           descripcion: estudio?.descripcion,
         }))
         const experiencias = curriculum?.experiencias?.map((experiencia: any) => ({
-          instutucion: experiencia?.instutucion,
+          institucion: experiencia?.institucion,
           fecha_inicio: experiencia?.fecha_inicio,
           fecha_finalizacion: experiencia?.fecha_finalizacion,
           descripcion: experiencia?.descripcion,

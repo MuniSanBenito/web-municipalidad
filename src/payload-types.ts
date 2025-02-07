@@ -186,13 +186,14 @@ export interface Avatar {
  */
 export interface Curriculum {
   id: string;
-  user?: (string | null) | User;
+  titulo?: string | null;
+  user: string | User;
   estudios?:
     | {
-        instutucion?: string | null;
+        institucion?: string | null;
         fecha_inicio?: string | null;
         fecha_finalizacion?: string | null;
-        nivel?: string | null;
+        nivel?: ('PRIMARIO' | 'SECUNDARIO' | 'TERCIARIO' | 'GRADO' | 'POSTGRADO' | 'CURSO/TALLER') | null;
         descripcion?: string | null;
         is_old?: boolean | null;
         nivel_old?: string | null;
@@ -201,7 +202,7 @@ export interface Curriculum {
     | null;
   experiencias?:
     | {
-        instutucion?: string | null;
+        institucion?: string | null;
         fecha_inicio?: string | null;
         fecha_finalizacion?: string | null;
         puesto?: string | null;
@@ -586,11 +587,12 @@ export interface ImagenesSelect<T extends boolean = true> {
  * via the `definition` "curriculums_select".
  */
 export interface CurriculumsSelect<T extends boolean = true> {
+  titulo?: T;
   user?: T;
   estudios?:
     | T
     | {
-        instutucion?: T;
+        institucion?: T;
         fecha_inicio?: T;
         fecha_finalizacion?: T;
         nivel?: T;
@@ -602,7 +604,7 @@ export interface CurriculumsSelect<T extends boolean = true> {
   experiencias?:
     | T
     | {
-        instutucion?: T;
+        institucion?: T;
         fecha_inicio?: T;
         fecha_finalizacion?: T;
         puesto?: T;

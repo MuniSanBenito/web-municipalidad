@@ -1,4 +1,18 @@
-import type { CollectionConfig } from 'payload'
+import type { Curriculum } from '@/payload-types'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+
+const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
+  let { user } = data
+  if (typeof user === 'string') {
+    user = await req.payload.findByID({
+      collection: 'users',
+      id: user,
+    })
+  }
+  const titulo = `${user?.datos_ciudadano?.nombre} ${user?.datos_ciudadano?.apellido}`
+
+  return { ...data, titulo }
+}
 
 export const Curriculums: CollectionConfig = {
   slug: 'curriculums',
@@ -7,15 +21,28 @@ export const Curriculums: CollectionConfig = {
     plural: 'Curriculums',
   },
   admin: {
-    useAsTitle: 'user',
+    useAsTitle: 'titulo',
+  },
+  hooks: {
+    beforeChange: [beforeChange],
   },
   fields: [
+    {
+      type: 'text',
+      name: 'titulo',
+      label: 'Titulo',
+      admin: {
+        readOnly: true,
+        hidden: true,
+      },
+    },
     {
       type: 'relationship',
       name: 'user',
       label: 'Usuario',
       relationTo: 'users',
       unique: true,
+      required: true,
       filterOptions: {
         rol: {
           equals: 'CIUDADANO',
@@ -29,7 +56,7 @@ export const Curriculums: CollectionConfig = {
       fields: [
         {
           type: 'text',
-          name: 'instutucion',
+          name: 'institucion',
           label: 'Institución',
         },
         {
@@ -43,9 +70,10 @@ export const Curriculums: CollectionConfig = {
           label: 'Fecha Finalización',
         },
         {
-          type: 'text',
+          type: 'select',
           name: 'nivel',
           label: 'Nivel',
+          options: ['PRIMARIO', 'SECUNDARIO', 'TERCIARIO', 'GRADO', 'POSTGRADO', 'CURSO/TALLER'],
         },
         {
           type: 'textarea',
@@ -78,7 +106,7 @@ export const Curriculums: CollectionConfig = {
       fields: [
         {
           type: 'text',
-          name: 'instutucion',
+          name: 'institucion',
           label: 'Institución',
         },
         {

@@ -1,5 +1,5 @@
 // cvs que no se migraron porque los usuarios tenian permisos de admin y no solo ciudadanos
-const cvs = [
+const cvsSinUser = [
   {
     id: 'e9bbb72d-6d48-449c-af15-136cd967008f',
     user_id: 95,
@@ -599,5 +599,214 @@ const cvs = [
     experiencias: [],
     categorias: [],
     referencias: [],
+  },
+]
+
+const cvsExistentesEnDb = [
+  {
+    id: '67a610ec8210b289c9ad0005',
+    user: {
+      id: '67a51d716b38b040e533542b',
+      createdAt: '2023-08-08T11:29:01.000Z',
+      updatedAt: '2023-08-08T11:29:01.000Z',
+      rol: 'CIUDADANO',
+      activo: true,
+      avatar: {
+        id: '67a51bd51c4e6c3757a9fba9',
+        alt: 'Avatar por defecto',
+        prefix: 'avatares',
+        filename: 'avatar.webp',
+        mimeType: 'image/webp',
+        filesize: 5922,
+        width: 512,
+        height: 512,
+        focalX: 50,
+        focalY: 50,
+        sizes: {
+          thumbnail: {
+            width: 300,
+            height: 300,
+            mimeType: 'image/webp',
+            filesize: 3720,
+            filename: 'avatar-300x300.webp',
+            url: '/api/avatares/file/avatar-300x300.webp',
+          },
+          square: {
+            width: 500,
+            height: 500,
+            mimeType: 'image/webp',
+            filesize: 7132,
+            filename: 'avatar-500x500.webp',
+            url: '/api/avatares/file/avatar-500x500.webp',
+          },
+          small: {
+            width: null,
+            height: null,
+            mimeType: null,
+            filesize: null,
+            filename: null,
+            url: null,
+          },
+          medium: {
+            width: null,
+            height: null,
+            mimeType: null,
+            filesize: null,
+            filename: null,
+            url: null,
+          },
+          large: {
+            width: null,
+            height: null,
+            mimeType: null,
+            filesize: null,
+            filename: null,
+            url: null,
+          },
+          xlarge: {
+            width: null,
+            height: null,
+            mimeType: null,
+            filesize: null,
+            filename: null,
+            url: null,
+          },
+          og: {
+            width: null,
+            height: null,
+            mimeType: null,
+            filesize: null,
+            filename: null,
+            url: null,
+          },
+        },
+        createdAt: '2025-02-06T20:30:13.388Z',
+        updatedAt: '2025-02-06T20:30:13.388Z',
+        url: '/api/avatares/file/avatar.webp',
+        thumbnailURL: '/api/avatares/file/avatar-300x300.webp',
+      },
+      datos_ciudadano: {
+        nombre: 'Maria Florencia',
+        apellido: 'Vergara',
+        dni: '32831568',
+        domicilio: 'rivadavia 789',
+        fecha_nacimiento: '1987-02-17T03:00:00.000Z',
+        ciudad: 'San Benito',
+        telefono: '155177243',
+        curriculums: {
+          docs: ['67a610ec8210b289c9ad0005'],
+          hasNextPage: false,
+        },
+      },
+      email: 'florenciavergara87@gmail.com',
+      loginAttempts: 0,
+    },
+    estudios: [
+      {
+        institucion: 'Universidad Nacional del Litoral',
+        fecha_inicio: '2005-03-03T00:00:00.000Z',
+        fecha_finalizacion: '2012-11-13T00:00:00.000Z',
+        descripcion:
+          'Licenciada en Nutrición recibida en la Facultad de Bioquímica y Ciencias Biológicas de la provincia de Santa fe.',
+        is_old: true,
+        nivel_old: 'Universitario',
+        id: '67a610ec7d59b414017d7821',
+      },
+    ],
+    experiencias: [
+      {
+        institucion: 'Hospital Materno Infantil  San Roque, Paraná Entre Ríos',
+        fecha_inicio: '2011-03-03T00:00:00.000Z',
+        fecha_finalizacion: '2011-11-28T00:00:00.000Z',
+        puesto: 'Practicante',
+        descripcion:
+          'Atenciones de pacientes en consultorio. Elaboración y supervisión de menus según patología de los pacientes internados',
+        id: '67a610ec7d59b414017d7822',
+      },
+      {
+        institucion: 'Centro de Salud Estanislao Zeballos, Paraná, Entre Ríos',
+        fecha_inicio: '2014-03-11T00:00:00.000Z',
+        fecha_finalizacion: '2016-11-30T00:00:00.000Z',
+        puesto:
+          'Adscripta en el Ministerio de Salud y Tutora de practicantes de la Licenciatura en Nutrición de la UNL',
+        descripcion:
+          'Atención personalizada de pacientes, realización de planes alimentarios y talleres de educación alimentaria',
+        id: '67a610ec7d59b414017d7823',
+      },
+      {
+        institucion: 'Centro de Salud Santa Lucia, Paraná Entre Ríos',
+        fecha_inicio: '2011-03-03T00:00:00.000Z',
+        fecha_finalizacion: '2011-11-28T00:00:00.000Z',
+        puesto: 'Practicante',
+        descripcion:
+          'Atenciones de pacientes en consultorio. Realización de talleres de educación alimentaria teórico/practico.',
+        id: '67a610ec7d59b414017d7824',
+      },
+      {
+        institucion:
+          'Laboratorio de Producción de medicamentos oncológicos, Eriochem S.A, Colonia Avellaneda, Entre Ríos',
+        fecha_inicio: '2011-03-03T00:00:00.000Z',
+        fecha_finalizacion: '2014-08-04T00:00:00.000Z',
+        puesto: 'Analista de Control de Calidad en el área Microbiológica',
+        descripcion:
+          'Control de calidad microbiológica de las muestras extraídas del proceso de producción de los medicamentos',
+        id: '67a610ec7d59b414017d7825',
+      },
+      {
+        institucion: 'Centro de Salud Arturo Illia, Paraná Entre Ríos',
+        fecha_inicio: '2009-03-09T00:00:00.000Z',
+        fecha_finalizacion: '2010-11-15T00:00:00.000Z',
+        puesto: 'Practicante',
+        descripcion:
+          'Atenciones de pacientes en consultorio. Realización de talleres de educación alimentaria teórico/practico.',
+        id: '67a610ec7d59b414017d7826',
+      },
+      {
+        institucion: 'Universidad de Concepción del Uruguay, Santa Fe',
+        fecha_inicio: '2014-03-11T00:00:00.000Z',
+        fecha_finalizacion: '2016-11-30T00:00:00.000Z',
+        puesto: 'Integrante del Tribunal Evaluador de Tesis de la Licenciatura en Nutrición',
+        descripcion: 'Corrección y seguimiento de trabajos finales de la Licenciatura en Nutrición',
+        id: '67a610ec7d59b414017d7827',
+      },
+      {
+        institucion: 'Centro de Salud Puerto Viejo, Paraná, Entre Ríos',
+        fecha_inicio: '2014-08-19T00:00:00.000Z',
+        fecha_finalizacion: '2016-11-30T00:00:00.000Z',
+        puesto: 'Adscripta en el Ministerio de Salud',
+        descripcion:
+          'Atención personalizada de pacientes, realización de planes alimentarios y talleres de educación alimentaria',
+        id: '67a610ec7d59b414017d7828',
+      },
+      {
+        institucion: 'Consultorio Nutricional Privado en Paraná y San Benito',
+        fecha_inicio: '2014-03-11T00:00:00.000Z',
+        fecha_finalizacion: '2022-05-11T00:00:00.000Z',
+        puesto: 'Particular',
+        descripcion:
+          'Atención personalizada de pacientes y realización de planes alimentarios en función de sus necesidades actuales',
+        id: '67a610ec7d59b414017d7829',
+      },
+      {
+        institucion: 'Centro de Salud  San Benito, Paraná Entre Ríos',
+        fecha_inicio: '2011-08-08T00:00:00.000Z',
+        fecha_finalizacion: '2011-12-20T00:00:00.000Z',
+        puesto: 'Practicante',
+        descripcion: 'Atenciones de pacientes en consultorio.',
+        id: '67a610ec7d59b414017d782a',
+      },
+    ],
+    referencias: [
+      {
+        nombre: 'Milton Schonfeld',
+        telefono: '3434696512',
+        email: 'milton.m.schonfeld@gmail.com',
+        descripcion: 'Sector de Atención al Vecino',
+        id: '67a610ec7d59b414017d782b',
+      },
+    ],
+    categorias: [],
+    createdAt: '2025-02-07T13:55:56.443Z',
+    updatedAt: '2025-02-07T13:55:56.443Z',
   },
 ]
