@@ -1,17 +1,13 @@
-'use client'
+import { LineasColectivos } from '@/components/lineas-colectivos'
+import type { Metadata } from 'next'
 
-import Head from 'next/head'
-import { useState } from 'react'
-import { MapaColectivos } from '../../../components/mapaColectivos'
+export const metadata: Metadata = {
+  title: 'San Benito - Historia',
+}
 
 export default function PageNuestraCiudad() {
-  const [lineaSeleccionada, setLineaSeleccionada] = useState<'4' | '20' | '22' | 'AM'>('4')
-
   return (
     <>
-      <Head>
-        <title>San Benito - Historia</title>
-      </Head>
       <main className="container mx-auto p-6">
         <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
           <div className="hero-content">
@@ -114,27 +110,7 @@ export default function PageNuestraCiudad() {
               <span className="font-semibold">4, 20, 22 y AM</span>, facilitando el acceso a
               distintos puntos de la región.
             </p>
-            <div className="mt-4">
-              <label className="block text-lg font-semibold">
-                Selecciona una línea de colectivo:
-              </label>
-              <select
-                value={lineaSeleccionada}
-                onChange={(e) => setLineaSeleccionada(e.target.value as '4' | '20' | '22' | 'AM')}
-                className="rounded-md border p-2"
-              >
-                {['4', '20', '22', 'AM'].map((linea) => (
-                  <option key={linea} value={linea}>
-                    Línea {linea}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Mapa con la línea seleccionada */}
-            <div className="mt-6">
-              <MapaColectivos lineaSeleccionada={lineaSeleccionada} />
-            </div>
+            <LineasColectivos />
           </div>
         </section>
       </main>
