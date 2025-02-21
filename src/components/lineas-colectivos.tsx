@@ -1,9 +1,9 @@
 'use client'
-import { MapaColectivos } from '@/components/mapaColectivos'
+import { MapaColectivos } from '@/components/mapa-colectivos'
 import { useState } from 'react'
 
 const LINEAS_COLECTIVOS = ['4', '20', '22', 'AM'] as const
-type LineasColectivos = (typeof LINEAS_COLECTIVOS)[number]
+export type LineasColectivos = (typeof LINEAS_COLECTIVOS)[number]
 
 export function LineasColectivos() {
   const [lineaSeleccionada, setLineaSeleccionada] = useState<LineasColectivos>('4')
