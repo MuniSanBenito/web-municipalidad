@@ -16,7 +16,7 @@ const sections = [
     icon: IconBuildings,
     link: 'transparencia/estructura-municipal',
   },
-  { title: 'Mi Ciudad', icon: IconMapPin, link: 'transparencia/mi-ciudad' },
+  { title: 'Memorias del intendente', icon: IconMapPin, link: 'transparencia/memorias' },
   { title: 'Infraestructura de Datos Espaciales', icon: IconDatabase, link: 'transparencia/ide' },
   { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' },
   {
