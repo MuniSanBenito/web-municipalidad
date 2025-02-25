@@ -3,9 +3,13 @@ import { IconCalendar, IconChevronRight } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default async function PageNoticias() {
+type SearchParams = { [key: string]: string | string[] | undefined }
+
+export default async function PageNoticias({ searchParams }: { searchParams: SearchParams }) {
+  const paginaActual = searchParams?.page ? parseInt(searchParams.page as string) : 1
   const noticias = await basePayload.find({
     collection: 'noticias',
+    page: paginaActual,
   })
 
   return (
@@ -27,8 +31,16 @@ export default async function PageNoticias() {
               {/* Imagen de la noticia */}
               <figure className="relative h-48 w-full overflow-hidden">
                 <Image
-                  src={noticia.portada?.thumbnailURL || '/images/placeholder.jpg'}
-                  alt={noticia.portada?.alt || 'Imagen de la noticia'}
+                  src={
+                    typeof noticia.portada === 'string'
+                      ? noticia.portada
+                      : noticia.portada?.thumbnailURL || '/images/placeholder.jpg'
+                  }
+                  alt={
+                    typeof noticia.portada === 'string'
+                      ? noticia.portada
+                      : noticia.portada?.alt || 'Imagen de la noticia'
+                  }
                   width={400}
                   height={250}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
