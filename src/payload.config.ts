@@ -9,9 +9,13 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './collections/Archivos'
+import { Autoridades } from './collections/Autoridades'
 import { Avatares } from './collections/Avatares'
+import { Contabilidad } from './collections/Contabilidad'
 import { Curriculums } from './collections/Curriculums'
 import { Imagenes } from './collections/Imagenes'
+import { Intimaciones } from './collections/Intimaciones'
+import { Memorias } from './collections/Memorias'
 import { Noticias } from './collections/Noticias'
 import { Users } from './collections/Users'
 
@@ -121,7 +125,18 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Noticias, Imagenes, Curriculums, Archivos, Avatares],
+  collections: [
+    Users,
+    Noticias,
+    Imagenes,
+    Curriculums,
+    Archivos,
+    Avatares,
+    Memorias,
+    Contabilidad,
+    Intimaciones,
+  ],
+  globals: [Autoridades],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

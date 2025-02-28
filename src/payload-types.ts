@@ -6,10 +6,65 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
     noticias: Noticia;
@@ -17,6 +72,9 @@ export interface Config {
     curriculums: Curriculum;
     archivos: Archivo;
     avatares: Avatar;
+    memorias: Memoria;
+    contabilidad: Contabilidad;
+    intimaciones: Intimacione;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -33,6 +91,9 @@ export interface Config {
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     archivos: ArchivosSelect<false> | ArchivosSelect<true>;
     avatares: AvataresSelect<false> | AvataresSelect<true>;
+    memorias: MemoriasSelect<false> | MemoriasSelect<true>;
+    contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
+    intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -40,8 +101,12 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    autoridades: Autoridade;
+  };
+  globalsSelect: {
+    autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -365,6 +430,44 @@ export interface Archivo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memorias".
+ */
+export interface Memoria {
+  id: string;
+  archivo: string | Archivo;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contabilidad".
+ */
+export interface Contabilidad {
+  id: string;
+  archivo: string | Archivo;
+  nombre: string;
+  fecha: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "intimaciones".
+ */
+export interface Intimacione {
+  id: string;
+  archivo: string | Archivo;
+  /**
+   * Indicar nombres y apellidos completos del intimado
+   */
+  nombre: string;
+  fecha: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -393,6 +496,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'avatares';
         value: string | Avatar;
+      } | null)
+    | ({
+        relationTo: 'memorias';
+        value: string | Memoria;
+      } | null)
+    | ({
+        relationTo: 'contabilidad';
+        value: string | Contabilidad;
+      } | null)
+    | ({
+        relationTo: 'intimaciones';
+        value: string | Intimacione;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -742,6 +857,38 @@ export interface AvataresSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memorias_select".
+ */
+export interface MemoriasSelect<T extends boolean = true> {
+  archivo?: T;
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contabilidad_select".
+ */
+export interface ContabilidadSelect<T extends boolean = true> {
+  archivo?: T;
+  nombre?: T;
+  fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "intimaciones_select".
+ */
+export interface IntimacionesSelect<T extends boolean = true> {
+  archivo?: T;
+  nombre?: T;
+  fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -771,6 +918,52 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autoridades".
+ */
+export interface Autoridade {
+  id: string;
+  presidente: string;
+  secretario: string;
+  bloques?:
+    | {
+        nombre: string;
+        concejales?:
+          | {
+              concejal?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autoridades_select".
+ */
+export interface AutoridadesSelect<T extends boolean = true> {
+  presidente?: T;
+  secretario?: T;
+  bloques?:
+    | T
+    | {
+        nombre?: T;
+        concejales?:
+          | T
+          | {
+              concejal?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
