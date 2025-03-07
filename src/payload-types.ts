@@ -107,9 +107,11 @@ export interface Config {
   };
   globals: {
     autoridades: Autoridade;
+    permisos: Permiso;
   };
   globalsSelect: {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
+    permisos: PermisosSelect<false> | PermisosSelect<true>;
   };
   locale: null;
   user: User & {
@@ -144,7 +146,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: 'USUARIO' | 'ADMIN' | 'CIUDADANO';
+  rol: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
@@ -1010,6 +1012,87 @@ export interface Autoridade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "permisos".
+ */
+export interface Permiso {
+  id: string;
+  users?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  noticias?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  imagenes?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  curriculums?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  archivos?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  avatares?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  memorias?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  contabilidad?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  intimaciones?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  ubicaciones?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  eventos?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  autoridades?: {
+    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
@@ -1026,6 +1109,111 @@ export interface AutoridadesSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "permisos_select".
+ */
+export interface PermisosSelect<T extends boolean = true> {
+  users?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  noticias?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  imagenes?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  curriculums?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  archivos?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  avatares?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  memorias?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  contabilidad?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  intimaciones?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  ubicaciones?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  eventos?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
+      };
+  autoridades?:
+    | T
+    | {
+        crear?: T;
+        leer?: T;
+        actualizar?: T;
+        borrar?: T;
       };
   updatedAt?: T;
   createdAt?: T;
