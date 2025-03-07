@@ -1,4 +1,23 @@
-import type { CollectionConfig } from 'payload'
+import { isAdminCollectionAccess } from '@/access/collection'
+import { ROL_ADMIN_VALUE, ROL_CIUDADANO_VALUE, ROL_DEFAULT_VALUE, ROLES } from '@/constants/roles'
+import type { User } from '@/payload-types'
+import type { Access, CollectionConfig, Condition, FieldAccess } from 'payload'
+
+const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) => {
+  if (req?.user?.id === id) {
+    return true
+  }
+  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+    return true
+  }
+  return false
+}
+
+const isAdminFieldAccess: FieldAccess<User> = ({ req }) =>
+  req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
+
+const datosCiudadanoCondition: Condition<User, User> = (_, siblingData) =>
+  siblingData?.rol?.includes(ROL_CIUDADANO_VALUE) ?? false
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -10,6 +29,12 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: true,
+  access: {
+    create: isAdminCollectionAccess,
+    read: isAdminOrMeCollectionAccess,
+    update: isAdminOrMeCollectionAccess,
+    delete: isAdminCollectionAccess,
+  },
   fields: [
     // Email added by default
     // Add more fields as needed
@@ -17,9 +42,15 @@ export const Users: CollectionConfig = {
       type: 'select',
       name: 'rol',
       label: 'Rol',
-      defaultValue: 'CIUDADANO',
-      options: ['USUARIO', 'ADMIN', 'CIUDADANO'],
+      options: [...ROLES],
+      defaultValue: ROL_DEFAULT_VALUE,
       required: true,
+      hasMany: true,
+      access: {
+        create: isAdminFieldAccess,
+        read: () => true,
+        update: isAdminFieldAccess,
+      },
     },
     {
       type: 'checkbox',
@@ -28,6 +59,11 @@ export const Users: CollectionConfig = {
       defaultValue: true,
       admin: {
         position: 'sidebar',
+      },
+      access: {
+        create: isAdminFieldAccess,
+        read: () => true,
+        update: isAdminFieldAccess,
       },
     },
     {
@@ -44,7 +80,7 @@ export const Users: CollectionConfig = {
       name: 'datos_ciudadano',
       label: 'Datos del Ciudadano',
       admin: {
-        condition: (_, siblingData) => siblingData.rol === 'CIUDADANO',
+        condition: datosCiudadanoCondition,
       },
       fields: [
         {
