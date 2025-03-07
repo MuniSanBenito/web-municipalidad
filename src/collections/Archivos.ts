@@ -6,9 +6,6 @@ export const Archivos: CollectionConfig = {
     singular: 'Archivo',
     plural: 'Archivos',
   },
-  access: {
-    read: () => true,
-  },
   admin: {
     group: 'Almacenamiento',
   },

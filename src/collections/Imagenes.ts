@@ -9,9 +9,6 @@ export const Imagenes: CollectionConfig = {
   typescript: {
     interface: 'Imagen',
   },
-  access: {
-    read: () => true,
-  },
   admin: {
     group: 'Almacenamiento',
   },

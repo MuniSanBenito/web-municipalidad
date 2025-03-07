@@ -1,11 +1,4 @@
-import { isAdminFieldAccess } from '@/access/fields'
-import type { User } from '@/payload-types'
-import type { Access, CollectionConfig } from 'payload'
-
-// COLLECTION ACCESS
-const isAdminCollectionAccess: Access<User> = ({ req }) => req.user?.rol === 'ADMIN'
-const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) =>
-  req.user?.rol === 'ADMIN' || req.user?.id === id
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -17,13 +10,6 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: true,
-  access: {
-    // Solo los ADMIN puede crear y borrar. se puede editar asi mismo o siendo admin
-    create: isAdminCollectionAccess,
-    read: () => true,
-    update: isAdminOrMeCollectionAccess,
-    delete: isAdminCollectionAccess,
-  },
   fields: [
     // Email added by default
     // Add more fields as needed
@@ -34,12 +20,6 @@ export const Users: CollectionConfig = {
       defaultValue: 'CIUDADANO',
       options: ['USUARIO', 'ADMIN', 'CIUDADANO'],
       required: true,
-      access: {
-        // el rol solo lo pueden modificar los ADMIN
-        create: isAdminFieldAccess,
-        read: () => true,
-        update: isAdminFieldAccess,
-      },
     },
     {
       type: 'checkbox',
@@ -48,11 +28,6 @@ export const Users: CollectionConfig = {
       defaultValue: true,
       admin: {
         position: 'sidebar',
-      },
-      access: {
-        create: isAdminFieldAccess,
-        read: () => true,
-        update: isAdminFieldAccess,
       },
     },
     {

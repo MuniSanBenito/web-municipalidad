@@ -9,9 +9,6 @@ export const Avatares: CollectionConfig = {
   typescript: {
     interface: 'Avatar',
   },
-  access: {
-    read: () => true,
-  },
   admin: {
     group: 'Almacenamiento',
   },
