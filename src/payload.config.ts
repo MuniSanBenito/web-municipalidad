@@ -9,15 +9,17 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './collections/Archivos'
-import { Autoridades } from './collections/Autoridades'
 import { Avatares } from './collections/Avatares'
 import { Contabilidad } from './collections/Contabilidad'
 import { Curriculums } from './collections/Curriculums'
+import { Eventos } from './collections/Eventos'
 import { Imagenes } from './collections/Imagenes'
 import { Intimaciones } from './collections/Intimaciones'
 import { Memorias } from './collections/Memorias'
 import { Noticias } from './collections/Noticias'
+import { Ubicaciones } from './collections/Ubicaciones'
 import { Users } from './collections/Users'
+import { Autoridades } from './globals/Autoridades'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -135,6 +137,8 @@ export default buildConfig({
     Memorias,
     Contabilidad,
     Intimaciones,
+    Ubicaciones,
+    Eventos,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),

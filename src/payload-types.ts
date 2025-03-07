@@ -75,6 +75,8 @@ export interface Config {
     memorias: Memoria;
     contabilidad: Contabilidad;
     intimaciones: Intimacione;
+    ubicaciones: Ubicacione;
+    eventos: Evento;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -94,6 +96,8 @@ export interface Config {
     memorias: MemoriasSelect<false> | MemoriasSelect<true>;
     contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
     intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
+    ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
+    eventos: EventosSelect<false> | EventosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -468,6 +472,36 @@ export interface Intimacione {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ubicaciones".
+ */
+export interface Ubicacione {
+  id: string;
+  nombre: string;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  geolocalizacion?: [number, number] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos".
+ */
+export interface Evento {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  fecha: string;
+  ubicacion: string | Ubicacione;
+  imagen?: (string | null) | Imagen;
+  archivos?: (string | Archivo)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -508,6 +542,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'intimaciones';
         value: string | Intimacione;
+      } | null)
+    | ({
+        relationTo: 'ubicaciones';
+        value: string | Ubicacione;
+      } | null)
+    | ({
+        relationTo: 'eventos';
+        value: string | Evento;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -884,6 +926,30 @@ export interface IntimacionesSelect<T extends boolean = true> {
   archivo?: T;
   nombre?: T;
   fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ubicaciones_select".
+ */
+export interface UbicacionesSelect<T extends boolean = true> {
+  nombre?: T;
+  geolocalizacion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos_select".
+ */
+export interface EventosSelect<T extends boolean = true> {
+  nombre?: T;
+  descripcion?: T;
+  fecha?: T;
+  ubicacion?: T;
+  imagen?: T;
+  archivos?: T;
   updatedAt?: T;
   createdAt?: T;
 }
