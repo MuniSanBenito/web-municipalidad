@@ -7,6 +7,11 @@
  */
 
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoRoles".
+ */
+export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1016,80 +1021,30 @@ export interface Autoridade {
  */
 export interface Permiso {
   id: string;
-  users?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  noticias?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  imagenes?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  curriculums?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  archivos?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  avatares?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  memorias?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  contabilidad?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  intimaciones?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  ubicaciones?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  eventos?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
-  autoridades?: {
-    crear?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    leer?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    actualizar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-    borrar?: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
-  };
+  users?: PermisoActions;
+  noticias?: PermisoActions;
+  imagenes?: PermisoActions;
+  curriculums?: PermisoActions;
+  archivos?: PermisoActions;
+  avatares?: PermisoActions;
+  memorias?: PermisoActions;
+  contabilidad?: PermisoActions;
+  intimaciones?: PermisoActions;
+  ubicaciones?: PermisoActions;
+  eventos?: PermisoActions;
+  autoridades?: PermisoActions;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoActions".
+ */
+export interface PermisoActions {
+  crear?: PermisoRoles;
+  leer?: PermisoRoles;
+  actualizar?: PermisoRoles;
+  borrar?: PermisoRoles;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1119,105 +1074,31 @@ export interface AutoridadesSelect<T extends boolean = true> {
  * via the `definition` "permisos_select".
  */
 export interface PermisosSelect<T extends boolean = true> {
-  users?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  noticias?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  imagenes?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  curriculums?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  archivos?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  avatares?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  memorias?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  contabilidad?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  intimaciones?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  ubicaciones?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  eventos?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
-  autoridades?:
-    | T
-    | {
-        crear?: T;
-        leer?: T;
-        actualizar?: T;
-        borrar?: T;
-      };
+  users?: T | PermisoActionsSelect<T>;
+  noticias?: T | PermisoActionsSelect<T>;
+  imagenes?: T | PermisoActionsSelect<T>;
+  curriculums?: T | PermisoActionsSelect<T>;
+  archivos?: T | PermisoActionsSelect<T>;
+  avatares?: T | PermisoActionsSelect<T>;
+  memorias?: T | PermisoActionsSelect<T>;
+  contabilidad?: T | PermisoActionsSelect<T>;
+  intimaciones?: T | PermisoActionsSelect<T>;
+  ubicaciones?: T | PermisoActionsSelect<T>;
+  eventos?: T | PermisoActionsSelect<T>;
+  autoridades?: T | PermisoActionsSelect<T>;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoActions_select".
+ */
+export interface PermisoActionsSelect<T extends boolean = true> {
+  crear?: T;
+  leer?: T;
+  actualizar?: T;
+  borrar?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
