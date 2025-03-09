@@ -1,8 +1,11 @@
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/globals/Permisos'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
+const SLUG = 'noticias'
+
 export const Noticias: CollectionConfig = {
-  slug: 'noticias',
+  slug: SLUG,
   labels: {
     singular: 'Noticia',
     plural: 'Noticias',
@@ -32,6 +35,12 @@ export const Noticias: CollectionConfig = {
         },
       },
     },
+  },
+  access: {
+    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
+    read: async (args) => await accessRead({ ...args, collection: SLUG }),
+    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
   fields: [
     {
