@@ -1,12 +1,5 @@
 import { isAdminCollectionAccess } from '@/access/collection'
-import {
-  ROL_ADMIN_VALUE,
-  ROL_CIUDADANO_VALUE,
-  ROL_DEFAULT_VALUE,
-  ROL_OWN_VALUE,
-  ROL_PUBLICO_VALUE,
-  ROLES,
-} from '@/constants/roles'
+import { ROL_ADMIN_VALUE, ROL_CIUDADANO_VALUE, ROL_DEFAULT_VALUE, ROLES } from '@/constants/roles'
 import type { User } from '@/payload-types'
 import type { Access, CollectionConfig, Condition, FieldAccess } from 'payload'
 
@@ -49,7 +42,7 @@ export const Users: CollectionConfig = {
       type: 'select',
       name: 'rol',
       label: 'Rol',
-      options: ROLES.filter((rol) => rol !== ROL_OWN_VALUE && rol !== ROL_PUBLICO_VALUE),
+      options: [...ROLES],
       defaultValue: ROL_DEFAULT_VALUE,
       required: true,
       hasMany: true,
