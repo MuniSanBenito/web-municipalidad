@@ -1,7 +1,12 @@
+import { getAccess } from '@/globals/Permisos'
 import type { CollectionConfig } from 'payload'
 
+const SLUG = 'contabilidad'
+
+const access = getAccess({ collection: SLUG })
+
 export const Contabilidad: CollectionConfig = {
-  slug: 'contabilidad',
+  slug: SLUG,
   labels: {
     singular: 'Contabilidad',
     plural: 'Contabilidad',
@@ -9,6 +14,7 @@ export const Contabilidad: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
   },
+  access,
   fields: [
     {
       type: 'upload',

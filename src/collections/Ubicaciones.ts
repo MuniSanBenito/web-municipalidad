@@ -1,4 +1,9 @@
+import { getAccess } from '@/globals/Permisos'
 import type { CollectionConfig } from 'payload'
+
+const SLUG = 'ubicaciones'
+
+const access = getAccess({ collection: SLUG })
 
 export const Ubicaciones: CollectionConfig = {
   slug: 'ubicaciones',
@@ -6,6 +11,7 @@ export const Ubicaciones: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
   },
+  access,
   fields: [
     {
       type: 'text',

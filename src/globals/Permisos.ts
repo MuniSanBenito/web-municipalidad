@@ -12,7 +12,7 @@ import { Ubicaciones } from '@/collections/Ubicaciones'
 import { Users } from '@/collections/Users'
 import { ROL_ADMIN_VALUE, ROL_PUBLICO_VALUE, ROLES } from '@/constants/roles'
 import type { Permiso, PermisoActions } from '@/payload-types'
-import type { AccessArgs, AccessResult, GlobalConfig } from 'payload'
+import type { Access, AccessArgs, AccessResult, GlobalConfig } from 'payload'
 import { Autoridades } from './Autoridades'
 
 export const COLLECTIONS = [
@@ -31,10 +31,10 @@ export const COLLECTIONS = [
 
 export const GLOBALS = [Autoridades]
 
-export const PERMISO_ACCION_CREAR = 'crear'
-export const PERMISO_ACCION_LEER = 'leer'
-export const PERMISO_ACCION_ACTUALIZAR = 'actualizar'
-export const PERMISO_ACCION_BORRAR = 'borrar'
+const PERMISO_ACCION_CREAR = 'crear'
+const PERMISO_ACCION_LEER = 'leer'
+const PERMISO_ACCION_ACTUALIZAR = 'actualizar'
+const PERMISO_ACCION_BORRAR = 'borrar'
 
 type PermisoCollection = keyof Permiso
 type PermisoAction = keyof PermisoActions
@@ -69,41 +69,24 @@ const permisosAccess = async (
   return tienePermiso
 }
 
-export const accessCreate = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_CREAR,
-  })
+type CustomAccess = {
+  create: Access
+  read: Access
+  update: Access
+  delete: Access
 }
-export const accessRead = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_LEER,
-  })
-}
-export const accessUpdate = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_ACTUALIZAR,
-  })
-}
-export const accessDelete = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_BORRAR,
-  })
+
+export function getAccess({ collection }: { collection: keyof Permiso }): CustomAccess {
+  return {
+    create: async (args) =>
+      await permisosAccess({ ...args, collection, accion: PERMISO_ACCION_CREAR }),
+    read: async (args) =>
+      await permisosAccess({ ...args, collection, accion: PERMISO_ACCION_LEER }),
+    update: async (args) =>
+      await permisosAccess({ ...args, collection, accion: PERMISO_ACCION_ACTUALIZAR }),
+    delete: async (args) =>
+      await permisosAccess({ ...args, collection, accion: PERMISO_ACCION_BORRAR }),
+  }
 }
 
 export const Permisos: GlobalConfig = {

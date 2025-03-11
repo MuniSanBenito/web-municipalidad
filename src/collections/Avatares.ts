@@ -1,7 +1,12 @@
+import { getAccess } from '@/globals/Permisos'
 import type { CollectionConfig } from 'payload'
 
+const SLUG = 'avatares'
+
+const access = getAccess({ collection: SLUG })
+
 export const Avatares: CollectionConfig = {
-  slug: 'avatares',
+  slug: SLUG,
   labels: {
     singular: 'Avatar',
     plural: 'Avatares',
@@ -19,6 +24,7 @@ export const Avatares: CollectionConfig = {
       required: true,
     },
   ],
+  access,
   upload: {
     adminThumbnail: 'thumbnail',
     focalPoint: true,

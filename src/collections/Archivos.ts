@@ -1,7 +1,12 @@
+import { getAccess } from '@/globals/Permisos'
 import type { CollectionConfig } from 'payload'
 
+const SLUG = 'archivos'
+
+const access = getAccess({ collection: SLUG })
+
 export const Archivos: CollectionConfig = {
-  slug: 'archivos',
+  slug: SLUG,
   labels: {
     singular: 'Archivo',
     plural: 'Archivos',
@@ -9,6 +14,7 @@ export const Archivos: CollectionConfig = {
   admin: {
     group: 'Almacenamiento',
   },
+  access,
   fields: [],
   upload: {
     crop: false,
