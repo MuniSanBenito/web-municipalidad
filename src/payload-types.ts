@@ -10,7 +10,7 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PermisoRoles".
  */
-export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[] | null;
+export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'PUBLICO' | 'A SI MISMO' | 'COMUNICACION')[] | null;
 /**
  * Supported timezones in IANA format.
  *
@@ -151,7 +151,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'CIUDADANO' | 'PUBLICO')[];
+  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
