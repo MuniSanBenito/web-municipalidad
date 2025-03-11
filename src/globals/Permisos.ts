@@ -10,9 +10,14 @@ import { Memorias } from '@/collections/Memorias'
 import { Noticias } from '@/collections/Noticias'
 import { Ubicaciones } from '@/collections/Ubicaciones'
 import { Users } from '@/collections/Users'
-import { ROL_ADMIN_VALUE, ROL_PUBLICO_VALUE, ROLES } from '@/constants/roles'
-import type { Permiso, PermisoActions } from '@/payload-types'
-import type { AccessArgs, AccessResult, GlobalConfig } from 'payload'
+import {
+  PERMISO_ACCION_ACTUALIZAR,
+  PERMISO_ACCION_BORRAR,
+  PERMISO_ACCION_CREAR,
+  PERMISO_ACCION_LEER,
+} from '@/constants/acciones_permisos'
+import { ROL_ADMIN_VALUE, ROLES } from '@/constants/roles'
+import type { GlobalConfig } from 'payload'
 import { Autoridades } from './Autoridades'
 
 export const COLLECTIONS = [
@@ -30,80 +35,6 @@ export const COLLECTIONS = [
 ]
 
 export const GLOBALS = [Autoridades]
-
-const PERMISO_ACCION_CREAR = 'crear'
-const PERMISO_ACCION_LEER = 'leer'
-const PERMISO_ACCION_ACTUALIZAR = 'actualizar'
-const PERMISO_ACCION_BORRAR = 'borrar'
-
-type PermisoCollection = keyof Permiso
-type PermisoAction = keyof PermisoActions
-
-const permisosAccess = async (
-  args: AccessArgs & { collection: PermisoCollection; accion: PermisoAction },
-): Promise<AccessResult> => {
-  const { req, collection, accion } = args
-
-  const permisosGlobales = await req.payload.findGlobal({
-    slug: 'permisos',
-  })
-  const permisoCollection = permisosGlobales[collection] // {crear: [...], leer: [...], ...}
-  if (!permisoCollection || typeof permisoCollection !== 'object') return false
-
-  const permisoAccionRoles = permisoCollection[accion] // ['ADMIN', 'PUBLICO', ...]
-  if (!permisoAccionRoles) return false
-
-  const isPublic = permisoAccionRoles?.includes(ROL_PUBLICO_VALUE)
-  if (isPublic) return true
-
-  if (!req?.user?.rol || !req?.user?.rol.length) return false
-
-  let tienePermiso = false
-  for (const userRol of req.user.rol) {
-    if (permisoAccionRoles.includes(userRol)) {
-      tienePermiso = true
-      break
-    }
-  }
-
-  return tienePermiso
-}
-export const accessCreate = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_CREAR,
-  })
-}
-export const accessRead = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_LEER,
-  })
-}
-export const accessUpdate = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_ACTUALIZAR,
-  })
-}
-export const accessDelete = async (
-  args: AccessArgs & { collection: PermisoCollection },
-): Promise<AccessResult> => {
-  return await permisosAccess({
-    ...args,
-    collection: args.collection,
-    accion: PERMISO_ACCION_BORRAR,
-  })
-}
 
 export const Permisos: GlobalConfig = {
   slug: 'permisos',
