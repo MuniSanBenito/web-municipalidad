@@ -16,8 +16,8 @@ import {
   PERMISO_ACCION_CREAR,
   PERMISO_ACCION_LEER,
 } from '@/constants/acciones_permisos'
-import { ROL_ADMIN_VALUE, ROLES } from '@/constants/roles'
-import type { GlobalConfig } from 'payload'
+import { ROL_ADMIN_VALUE, ROL_OWN_VALUE, ROL_PUBLICO_VALUE, ROLES } from '@/constants/roles'
+import type { Field, GlobalConfig } from 'payload'
 import { Autoridades } from './Autoridades'
 
 export const COLLECTIONS = [
@@ -36,6 +36,19 @@ export const COLLECTIONS = [
 
 export const GLOBALS = [Autoridades]
 
+function fieldAccion(args: { name: string; label: string }): Field {
+  const { name, label } = args
+  return {
+    type: 'select',
+    name,
+    label,
+    options: [...ROLES, ROL_OWN_VALUE, ROL_PUBLICO_VALUE],
+    hasMany: true,
+    defaultValue: ROL_ADMIN_VALUE,
+    interfaceName: 'PermisoRoles',
+  }
+}
+
 export const Permisos: GlobalConfig = {
   slug: 'permisos',
   label: 'Permisos',
@@ -47,48 +60,15 @@ export const Permisos: GlobalConfig = {
     type: 'group',
     name: collection.slug,
     label: collection.slug.toUpperCase(),
-    admin: {},
     interfaceName: 'PermisoActions',
     fields: [
       {
         type: 'row',
         fields: [
-          {
-            name: PERMISO_ACCION_CREAR,
-            type: 'select',
-            options: [...ROLES],
-            hasMany: true,
-            defaultValue: ROL_ADMIN_VALUE,
-            label: 'Crear',
-            interfaceName: 'PermisoRoles',
-          },
-          {
-            name: PERMISO_ACCION_LEER,
-            type: 'select',
-            options: [...ROLES],
-            hasMany: true,
-            defaultValue: ROL_ADMIN_VALUE,
-            label: 'Leer',
-            interfaceName: 'PermisoRoles',
-          },
-          {
-            name: PERMISO_ACCION_ACTUALIZAR,
-            type: 'select',
-            options: [...ROLES],
-            hasMany: true,
-            defaultValue: ROL_ADMIN_VALUE,
-            label: 'Actualizar',
-            interfaceName: 'PermisoRoles',
-          },
-          {
-            name: PERMISO_ACCION_BORRAR,
-            type: 'select',
-            options: [...ROLES],
-            hasMany: true,
-            defaultValue: ROL_ADMIN_VALUE,
-            label: 'Borrar',
-            interfaceName: 'PermisoRoles',
-          },
+          fieldAccion({ name: PERMISO_ACCION_CREAR, label: 'Crear' }),
+          fieldAccion({ name: PERMISO_ACCION_LEER, label: 'Leer' }),
+          fieldAccion({ name: PERMISO_ACCION_ACTUALIZAR, label: 'Actualizar' }),
+          fieldAccion({ name: PERMISO_ACCION_BORRAR, label: 'Borrar' }),
         ],
       },
     ],
