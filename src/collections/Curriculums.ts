@@ -1,5 +1,5 @@
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
 import { CreatedBy } from '@/fields/created_by'
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/globals/Permisos'
 import type { Curriculum } from '@/payload-types'
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 

@@ -1,9 +1,16 @@
+import { accessRead, accessUpdate } from '@/access/collection'
 import { CreatedBy } from '@/fields/created_by'
 import type { GlobalConfig } from 'payload'
+
+const SLUG = 'autoridades'
 
 export const Autoridades: GlobalConfig = {
   slug: 'autoridades',
   label: 'Autoridades',
+  access: {
+    read: async (args) => await accessRead({ ...args, collection: SLUG }),
+    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+  },
   fields: [
     CreatedBy,
     {

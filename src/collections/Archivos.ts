@@ -1,5 +1,6 @@
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
 import { CreatedBy } from '@/fields/created_by'
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/globals/Permisos'
+
 import type { CollectionConfig } from 'payload'
 
 const SLUG = 'archivos'

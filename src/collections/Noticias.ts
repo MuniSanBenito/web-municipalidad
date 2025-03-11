@@ -1,5 +1,5 @@
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
 import { CreatedBy } from '@/fields/created_by'
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/globals/Permisos'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
