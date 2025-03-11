@@ -1,9 +1,11 @@
+import { CreatedBy } from '@/fields/created_by'
 import type { GlobalConfig } from 'payload'
 
 export const Autoridades: GlobalConfig = {
   slug: 'autoridades',
   label: 'Autoridades',
   fields: [
+    CreatedBy,
     {
       type: 'text',
       name: 'presidente',

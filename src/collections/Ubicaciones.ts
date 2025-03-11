@@ -1,9 +1,8 @@
-import { getAccess } from '@/globals/Permisos'
+import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/globals/Permisos'
 import type { CollectionConfig } from 'payload'
 
 const SLUG = 'ubicaciones'
-
-const access = getAccess({ collection: SLUG })
 
 export const Ubicaciones: CollectionConfig = {
   slug: 'ubicaciones',
@@ -11,8 +10,14 @@ export const Ubicaciones: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
   },
-  access,
+  access: {
+    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
+    read: async (args) => await accessRead({ ...args, collection: SLUG }),
+    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+  },
   fields: [
+    CreatedBy,
     {
       type: 'text',
       name: 'nombre',
