@@ -22,20 +22,28 @@ const permisosAccess = async (
   const permisosGlobales = await req.payload.findGlobal({
     slug: 'permisos',
   })
-  const permisoCollection = permisosGlobales[collection] // {crear: [...], leer: [...], ...}
-  if (!permisoCollection || typeof permisoCollection !== 'object') return false
+  const permisosCollection = permisosGlobales[collection] as PermisoActions // {crear: [...], leer: [...], ...}
+  if (!permisosCollection || Object.keys(permisosCollection).length === 0) {
+    return false
+  }
 
-  const permisoAccionRoles = permisoCollection[accion] // ['ADMIN', 'PUBLICO', ...]
-  if (!permisoAccionRoles) return false
+  const rolesPermitidosPorAccion = permisosCollection[accion] // ['ADMIN', 'PUBLICO', ...]
+  if (!rolesPermitidosPorAccion || rolesPermitidosPorAccion.length === 0) {
+    return false
+  }
 
-  const isPublic = permisoAccionRoles?.includes(ROL_PUBLICO_VALUE)
-  if (isPublic) return true
+  const isPublic = rolesPermitidosPorAccion?.includes(ROL_PUBLICO_VALUE)
+  if (isPublic) {
+    return true
+  }
 
-  if (!req?.user?.rol || !req?.user?.rol.length) return false
+  if (!req?.user?.rol || !req?.user?.rol.length) {
+    return false
+  }
 
   let tienePermiso = false
   for (const userRol of req.user.rol) {
-    if (permisoAccionRoles.includes(userRol)) {
+    if (rolesPermitidosPorAccion.includes(userRol)) {
       tienePermiso = true
       break
     }
@@ -43,6 +51,7 @@ const permisosAccess = async (
 
   return tienePermiso
 }
+
 export const accessCreate = async (
   args: AccessArgs & { collection: PermisoCollection },
 ): Promise<AccessResult> => {
