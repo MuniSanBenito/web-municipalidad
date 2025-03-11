@@ -10,7 +10,7 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PermisoRoles".
  */
-export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'PUBLICO' | 'A SI MISMO' | 'COMUNICACION')[] | null;
+export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'A SI MISMO' | 'PUBLICO')[] | null;
 /**
  * Supported timezones in IANA format.
  *
@@ -184,6 +184,7 @@ export interface User {
  */
 export interface Avatar {
   id: string;
+  created_by: string | User;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -262,6 +263,7 @@ export interface Avatar {
  */
 export interface Curriculum {
   id: string;
+  created_by: string | User;
   titulo?: string | null;
   user: string | User;
   estudios?:
@@ -310,6 +312,7 @@ export interface Curriculum {
  */
 export interface Noticia {
   id: string;
+  created_by: string | User;
   titulo: string;
   slug: string;
   descripcion: string;
@@ -348,6 +351,7 @@ export interface Noticia {
  */
 export interface Imagen {
   id: string;
+  created_by: string | User;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -426,6 +430,7 @@ export interface Imagen {
  */
 export interface Archivo {
   id: string;
+  created_by: string | User;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -445,6 +450,7 @@ export interface Archivo {
  */
 export interface Memoria {
   id: string;
+  created_by: string | User;
   archivo: string | Archivo;
   nombre: string;
   updatedAt: string;
@@ -456,6 +462,7 @@ export interface Memoria {
  */
 export interface Contabilidad {
   id: string;
+  created_by: string | User;
   archivo: string | Archivo;
   nombre: string;
   fecha: string;
@@ -468,6 +475,7 @@ export interface Contabilidad {
  */
 export interface Intimacione {
   id: string;
+  created_by: string | User;
   archivo: string | Archivo;
   /**
    * Indicar nombres y apellidos completos del intimado
@@ -483,6 +491,7 @@ export interface Intimacione {
  */
 export interface Ubicacione {
   id: string;
+  created_by: string | User;
   nombre: string;
   /**
    * @minItems 2
@@ -498,6 +507,7 @@ export interface Ubicacione {
  */
 export interface Evento {
   id: string;
+  created_by: string | User;
   nombre: string;
   descripcion: string;
   fecha: string;
@@ -635,6 +645,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "noticias_select".
  */
 export interface NoticiasSelect<T extends boolean = true> {
+  created_by?: T;
   titulo?: T;
   slug?: T;
   descripcion?: T;
@@ -658,6 +669,7 @@ export interface NoticiasSelect<T extends boolean = true> {
  * via the `definition` "imagenes_select".
  */
 export interface ImagenesSelect<T extends boolean = true> {
+  created_by?: T;
   alt?: T;
   prefix?: T;
   updatedAt?: T;
@@ -751,6 +763,7 @@ export interface ImagenesSelect<T extends boolean = true> {
  * via the `definition` "curriculums_select".
  */
 export interface CurriculumsSelect<T extends boolean = true> {
+  created_by?: T;
   titulo?: T;
   user?: T;
   estudios?:
@@ -798,6 +811,7 @@ export interface CurriculumsSelect<T extends boolean = true> {
  * via the `definition` "archivos_select".
  */
 export interface ArchivosSelect<T extends boolean = true> {
+  created_by?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -816,6 +830,7 @@ export interface ArchivosSelect<T extends boolean = true> {
  * via the `definition` "avatares_select".
  */
 export interface AvataresSelect<T extends boolean = true> {
+  created_by?: T;
   alt?: T;
   prefix?: T;
   updatedAt?: T;
@@ -909,6 +924,7 @@ export interface AvataresSelect<T extends boolean = true> {
  * via the `definition` "memorias_select".
  */
 export interface MemoriasSelect<T extends boolean = true> {
+  created_by?: T;
   archivo?: T;
   nombre?: T;
   updatedAt?: T;
@@ -919,6 +935,7 @@ export interface MemoriasSelect<T extends boolean = true> {
  * via the `definition` "contabilidad_select".
  */
 export interface ContabilidadSelect<T extends boolean = true> {
+  created_by?: T;
   archivo?: T;
   nombre?: T;
   fecha?: T;
@@ -930,6 +947,7 @@ export interface ContabilidadSelect<T extends boolean = true> {
  * via the `definition` "intimaciones_select".
  */
 export interface IntimacionesSelect<T extends boolean = true> {
+  created_by?: T;
   archivo?: T;
   nombre?: T;
   fecha?: T;
@@ -941,6 +959,7 @@ export interface IntimacionesSelect<T extends boolean = true> {
  * via the `definition` "ubicaciones_select".
  */
 export interface UbicacionesSelect<T extends boolean = true> {
+  created_by?: T;
   nombre?: T;
   geolocalizacion?: T;
   updatedAt?: T;
@@ -951,6 +970,7 @@ export interface UbicacionesSelect<T extends boolean = true> {
  * via the `definition` "eventos_select".
  */
 export interface EventosSelect<T extends boolean = true> {
+  created_by?: T;
   nombre?: T;
   descripcion?: T;
   fecha?: T;
@@ -998,6 +1018,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Autoridade {
   id: string;
+  created_by: string | User;
   presidente: string;
   secretario: string;
   bloques?:
@@ -1051,6 +1072,7 @@ export interface PermisoActions {
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
+  created_by?: T;
   presidente?: T;
   secretario?: T;
   bloques?:
