@@ -11,5 +11,6 @@
   "tailwindCSS.experimental.classRegex": [
     ["(?:twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"],
     ["clsx\\(([^]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
-  ]
+  ],
+  "npm.packageManager": "bun"
 }
