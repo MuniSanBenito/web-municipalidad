@@ -1,22 +1,29 @@
 @reference "../../globals.css";
 
-.noticia {
-  color: white;
-  @apply font-bold;
+.noticia h2 {
+  @apply text-primary mt-8 mb-4 text-2xl font-bold;
 }
 
-.noticia h4 {
-  @apply text-primary;
-}
-
-.noticia img {
-  @apply aspect-square w-10;
-}
-
-/* .noticia h1 {
-  @apply font-extrabold;
+.noticia h3 {
+  @apply mt-6 mb-3 text-xl font-semibold;
 }
 
 .noticia p {
-  @apply text-primary;
-} */
+  @apply mb-4 leading-relaxed;
+}
+
+.noticia img {
+  @apply my-6 h-auto w-full rounded-lg shadow-lg;
+}
+
+.noticia ul {
+  @apply mb-4 list-disc pl-6;
+}
+
+.noticia a {
+  @apply text-secondary hover:text-secondary-focus underline;
+}
+
+.prose-lg img {
+  @apply h-auto max-w-full;
+}
