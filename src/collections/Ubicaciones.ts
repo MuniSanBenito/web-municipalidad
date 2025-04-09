@@ -1,18 +1,14 @@
 import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
 import { CreatedBy } from '@/fields/created_by'
-
 import type { CollectionConfig } from 'payload'
 
-const SLUG = 'archivos'
+const SLUG = 'ubicaciones'
 
-export const Archivos: CollectionConfig = {
-  slug: SLUG,
-  labels: {
-    singular: 'Archivo',
-    plural: 'Archivos',
-  },
+export const Ubicaciones: CollectionConfig = {
+  slug: 'ubicaciones',
+  labels: { plural: 'Ubicaciones', singular: 'Ubicación' },
   admin: {
-    group: 'Almacenamiento',
+    useAsTitle: 'nombre',
   },
   access: {
     create: async (args) => await accessCreate({ ...args, collection: SLUG }),
@@ -20,8 +16,19 @@ export const Archivos: CollectionConfig = {
     update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
     delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
-  fields: [CreatedBy],
-  upload: {
-    crop: false,
-  },
+  fields: [
+    CreatedBy,
+    {
+      type: 'text',
+      name: 'nombre',
+      label: 'Nombre',
+      required: true,
+    },
+    {
+      type: 'point',
+      name: 'geolocalizacion',
+      required: false,
+      label: 'Geolocalización',
+    },
+  ],
 }

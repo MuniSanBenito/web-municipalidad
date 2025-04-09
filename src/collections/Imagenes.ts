@@ -1,7 +1,11 @@
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
+import { CreatedBy } from '@/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
+const SLUG = 'imagenes'
+
 export const Imagenes: CollectionConfig = {
-  slug: 'imagenes',
+  slug: SLUG,
   labels: {
     singular: 'Imagen',
     plural: 'Imagenes',
@@ -9,13 +13,17 @@ export const Imagenes: CollectionConfig = {
   typescript: {
     interface: 'Imagen',
   },
-  access: {
-    read: () => true,
-  },
   admin: {
     group: 'Almacenamiento',
   },
+  access: {
+    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
+    read: async (args) => await accessRead({ ...args, collection: SLUG }),
+    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+  },
   fields: [
+    CreatedBy,
     {
       name: 'alt',
       type: 'text',

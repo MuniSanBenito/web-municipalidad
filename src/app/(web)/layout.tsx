@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
     <html lang="es" data-theme="sanbenito">
       <body className="p-0">
         <Navbar />
-        <main className="container mx-auto mt-35">{children}</main>
+        <div className="container mx-auto mt-35">{children}</div>
       </body>
     </html>
   )

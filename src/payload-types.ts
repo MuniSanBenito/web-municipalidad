@@ -6,10 +6,70 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoRoles".
+ */
+export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'A SI MISMO' | 'PUBLICO')[] | null;
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
     noticias: Noticia;
@@ -17,6 +77,11 @@ export interface Config {
     curriculums: Curriculum;
     archivos: Archivo;
     avatares: Avatar;
+    memorias: Memoria;
+    contabilidad: Contabilidad;
+    intimaciones: Intimacione;
+    ubicaciones: Ubicacione;
+    eventos: Evento;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -33,6 +98,11 @@ export interface Config {
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     archivos: ArchivosSelect<false> | ArchivosSelect<true>;
     avatares: AvataresSelect<false> | AvataresSelect<true>;
+    memorias: MemoriasSelect<false> | MemoriasSelect<true>;
+    contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
+    intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
+    ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
+    eventos: EventosSelect<false> | EventosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -40,8 +110,14 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    autoridades: Autoridade;
+    permisos: Permiso;
+  };
+  globalsSelect: {
+    autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
+    permisos: PermisosSelect<false> | PermisosSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -75,7 +151,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: 'USUARIO' | 'ADMIN' | 'CIUDADANO';
+  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
@@ -108,6 +184,7 @@ export interface User {
  */
 export interface Avatar {
   id: string;
+  created_by: string | User;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -186,6 +263,7 @@ export interface Avatar {
  */
 export interface Curriculum {
   id: string;
+  created_by: string | User;
   titulo?: string | null;
   user: string | User;
   estudios?:
@@ -234,6 +312,7 @@ export interface Curriculum {
  */
 export interface Noticia {
   id: string;
+  created_by: string | User;
   titulo: string;
   slug: string;
   descripcion: string;
@@ -272,6 +351,7 @@ export interface Noticia {
  */
 export interface Imagen {
   id: string;
+  created_by: string | User;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -350,6 +430,7 @@ export interface Imagen {
  */
 export interface Archivo {
   id: string;
+  created_by: string | User;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -362,6 +443,79 @@ export interface Archivo {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memorias".
+ */
+export interface Memoria {
+  id: string;
+  created_by: string | User;
+  archivo: string | Archivo;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contabilidad".
+ */
+export interface Contabilidad {
+  id: string;
+  created_by: string | User;
+  archivo: string | Archivo;
+  nombre: string;
+  fecha: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "intimaciones".
+ */
+export interface Intimacione {
+  id: string;
+  created_by: string | User;
+  archivo: string | Archivo;
+  /**
+   * Indicar nombres y apellidos completos del intimado
+   */
+  nombre: string;
+  fecha: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ubicaciones".
+ */
+export interface Ubicacione {
+  id: string;
+  created_by: string | User;
+  nombre: string;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  geolocalizacion?: [number, number] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos".
+ */
+export interface Evento {
+  id: string;
+  created_by: string | User;
+  nombre: string;
+  descripcion: string;
+  fecha: string;
+  ubicacion: string | Ubicacione;
+  imagen?: (string | null) | Imagen;
+  archivos?: (string | Archivo)[] | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -393,6 +547,26 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'avatares';
         value: string | Avatar;
+      } | null)
+    | ({
+        relationTo: 'memorias';
+        value: string | Memoria;
+      } | null)
+    | ({
+        relationTo: 'contabilidad';
+        value: string | Contabilidad;
+      } | null)
+    | ({
+        relationTo: 'intimaciones';
+        value: string | Intimacione;
+      } | null)
+    | ({
+        relationTo: 'ubicaciones';
+        value: string | Ubicacione;
+      } | null)
+    | ({
+        relationTo: 'eventos';
+        value: string | Evento;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -471,6 +645,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "noticias_select".
  */
 export interface NoticiasSelect<T extends boolean = true> {
+  created_by?: T;
   titulo?: T;
   slug?: T;
   descripcion?: T;
@@ -494,6 +669,7 @@ export interface NoticiasSelect<T extends boolean = true> {
  * via the `definition` "imagenes_select".
  */
 export interface ImagenesSelect<T extends boolean = true> {
+  created_by?: T;
   alt?: T;
   prefix?: T;
   updatedAt?: T;
@@ -587,6 +763,7 @@ export interface ImagenesSelect<T extends boolean = true> {
  * via the `definition` "curriculums_select".
  */
 export interface CurriculumsSelect<T extends boolean = true> {
+  created_by?: T;
   titulo?: T;
   user?: T;
   estudios?:
@@ -634,6 +811,7 @@ export interface CurriculumsSelect<T extends boolean = true> {
  * via the `definition` "archivos_select".
  */
 export interface ArchivosSelect<T extends boolean = true> {
+  created_by?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -652,6 +830,7 @@ export interface ArchivosSelect<T extends boolean = true> {
  * via the `definition` "avatares_select".
  */
 export interface AvataresSelect<T extends boolean = true> {
+  created_by?: T;
   alt?: T;
   prefix?: T;
   updatedAt?: T;
@@ -742,6 +921,67 @@ export interface AvataresSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memorias_select".
+ */
+export interface MemoriasSelect<T extends boolean = true> {
+  created_by?: T;
+  archivo?: T;
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contabilidad_select".
+ */
+export interface ContabilidadSelect<T extends boolean = true> {
+  created_by?: T;
+  archivo?: T;
+  nombre?: T;
+  fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "intimaciones_select".
+ */
+export interface IntimacionesSelect<T extends boolean = true> {
+  created_by?: T;
+  archivo?: T;
+  nombre?: T;
+  fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ubicaciones_select".
+ */
+export interface UbicacionesSelect<T extends boolean = true> {
+  created_by?: T;
+  nombre?: T;
+  geolocalizacion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos_select".
+ */
+export interface EventosSelect<T extends boolean = true> {
+  created_by?: T;
+  nombre?: T;
+  descripcion?: T;
+  fecha?: T;
+  ubicacion?: T;
+  imagen?: T;
+  archivos?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -771,6 +1011,116 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autoridades".
+ */
+export interface Autoridade {
+  id: string;
+  created_by: string | User;
+  presidente: string;
+  secretario: string;
+  bloques?:
+    | {
+        nombre: string;
+        concejales?:
+          | {
+              concejal?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "permisos".
+ */
+export interface Permiso {
+  id: string;
+  users?: PermisoActions;
+  noticias?: PermisoActions;
+  imagenes?: PermisoActions;
+  curriculums?: PermisoActions;
+  archivos?: PermisoActions;
+  avatares?: PermisoActions;
+  memorias?: PermisoActions;
+  contabilidad?: PermisoActions;
+  intimaciones?: PermisoActions;
+  ubicaciones?: PermisoActions;
+  eventos?: PermisoActions;
+  autoridades?: PermisoActions;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoActions".
+ */
+export interface PermisoActions {
+  crear?: PermisoRoles;
+  leer?: PermisoRoles;
+  actualizar?: PermisoRoles;
+  borrar?: PermisoRoles;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autoridades_select".
+ */
+export interface AutoridadesSelect<T extends boolean = true> {
+  created_by?: T;
+  presidente?: T;
+  secretario?: T;
+  bloques?:
+    | T
+    | {
+        nombre?: T;
+        concejales?:
+          | T
+          | {
+              concejal?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "permisos_select".
+ */
+export interface PermisosSelect<T extends boolean = true> {
+  users?: T | PermisoActionsSelect<T>;
+  noticias?: T | PermisoActionsSelect<T>;
+  imagenes?: T | PermisoActionsSelect<T>;
+  curriculums?: T | PermisoActionsSelect<T>;
+  archivos?: T | PermisoActionsSelect<T>;
+  avatares?: T | PermisoActionsSelect<T>;
+  memorias?: T | PermisoActionsSelect<T>;
+  contabilidad?: T | PermisoActionsSelect<T>;
+  intimaciones?: T | PermisoActionsSelect<T>;
+  ubicaciones?: T | PermisoActionsSelect<T>;
+  eventos?: T | PermisoActionsSelect<T>;
+  autoridades?: T | PermisoActionsSelect<T>;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PermisoActions_select".
+ */
+export interface PermisoActionsSelect<T extends boolean = true> {
+  crear?: T;
+  leer?: T;
+  actualizar?: T;
+  borrar?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

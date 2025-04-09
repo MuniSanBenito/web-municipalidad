@@ -56,7 +56,7 @@ export function Navbar() {
 
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <div
+        <header
           className={twJoin(
             'navbar bg-primary fixed top-0 left-0 z-50 w-full shadow-md transition-all duration-300',
             isScrolled ? 'h-16' : 'h-28',
@@ -128,7 +128,7 @@ export function Navbar() {
               </label>
             </div>
           </div>
-        </div>
+        </header>
       </div>
 
       {/* Drawer lateral */}

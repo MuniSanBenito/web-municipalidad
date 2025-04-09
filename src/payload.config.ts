@@ -10,10 +10,9 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './collections/Archivos'
 import { Avatares } from './collections/Avatares'
-import { Curriculums } from './collections/Curriculums'
 import { Imagenes } from './collections/Imagenes'
-import { Noticias } from './collections/Noticias'
 import { Users } from './collections/Users'
+import { COLLECTIONS, GLOBALS, Permisos } from './globals/Permisos'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -121,7 +120,8 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Noticias, Imagenes, Curriculums, Archivos, Avatares],
+  collections: COLLECTIONS,
+  globals: [...GLOBALS, Permisos],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
