@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
+import { ThemeToggle } from './theme-toggle'
 
 const NAV_LINKS: { href: string; label: string }[] = [
   {
@@ -127,6 +128,10 @@ export function Navbar() {
                 </svg>
               </label>
             </div>
+
+            <label className="swap swap-rotate h-6 w-6 justify-self-end">
+              <ThemeToggle />
+            </label>
           </div>
         </header>
       </div>

@@ -1,6 +1,6 @@
 import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
+import { contenido } from '@/fields/contenido'
 import { CreatedBy } from '@/fields/created_by'
-import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 
 const SLUG = 'noticias'
@@ -71,16 +71,7 @@ export const Noticias: CollectionConfig = {
       label: 'Imagen de Portada',
       required: true,
     },
-    {
-      type: 'richText',
-      name: 'contenido',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          const features = rootFeatures.filter((feature) => feature.key !== 'relationship')
-          return [...features, HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] })]
-        },
-      }),
-    },
+    contenido({}),
     {
       type: 'array',
       name: 'youtube_videos',

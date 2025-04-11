@@ -1,11 +1,14 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-  themes: sanbenito --default;
+  themes:
+    sanbenito --default,
+    sanbenito-dark;
 }
 
 @plugin 'daisyui/theme' {
-  name: 'sanbenito';
+  name: 'light';
   default: true;
+  color-scheme: light;
 
   --color-primary: #b6c544;
   --color-primary-content: #160016;
@@ -27,4 +30,31 @@
   --color-warning-content: #001600;
   --color-error: #ff0000;
   --color-error-content: #160000;
+}
+
+@plugin "daisyui/theme" {
+  name: 'dark';
+  default: false;
+  color-scheme: dark;
+
+  --color-primary: #8a9632;
+  --color-primary-content: #f0f0f0;
+  --color-secondary: #4a8a9e;
+  --color-secondary-content: #f0f0f0;
+  --color-accent: #c9a800;
+  --color-accent-content: #f0f0f0;
+  --color-neutral: #8a9632;
+  --color-neutral-content: #f0f0f0;
+  --color-base-100: #1a1a1a;
+  --color-base-200: #2a2a2a;
+  --color-base-300: #3a3a3a;
+  --color-base-content: #e0e0e0;
+  --color-info: #0a8c46;
+  --color-info-content: #f0f0f0;
+  --color-success: #00b300;
+  --color-success-content: #f0f0f0;
+  --color-warning: #d18609;
+  --color-warning-content: #f0f0f0;
+  --color-error: #cc0000;
+  --color-error-content: #f0f0f0;
 }
