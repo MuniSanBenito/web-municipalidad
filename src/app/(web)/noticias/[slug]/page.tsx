@@ -1,11 +1,11 @@
 import { basePayload } from '@/libs/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import styles from './page.module.css'
 
 type Props = {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ [key: string]: string }>
 }
+
 export default async function PageNoticia({ params }: Props) {
   const { slug } = await params
 
@@ -18,35 +18,84 @@ export default async function PageNoticia({ params }: Props) {
     },
   })
 
-  if (!docs.length) return <div>No se encontro la noticia</div>
-  const noticia = docs[0]
+  if (!docs.length) return <div className="text-error py-20 text-center">Noticia no encontrada</div>
 
+  const noticia = docs[0]
+  const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
+  console.log(noticia)
   if (noticia.is_old) {
     return (
-      <div>
-        Noticia antigua
-        <section
-          dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
-          className={styles.noticia}
-        ></section>
-      </div>
+      <main className="bg-base-100 min-h-screen">
+        {/* Portada */}
+        {noticia.portada && (
+          <div className="relative h-96 w-full">
+            <img
+              src={
+                typeof noticia.portada === 'string'
+                  ? noticia.portada
+                  : noticia.portada?.url || '/images/placeholder.jpg'
+              }
+              alt={
+                typeof noticia.portada === 'string'
+                  ? 'Portada de la noticia'
+                  : noticia.portada?.alt || 'Portada de la noticia'
+              }
+              className="h-full w-full object-cover"
+            />
+            <div className="from-base-100 via-base-100/80 absolute right-0 bottom-0 left-0 bg-gradient-to-t to-transparent p-6">
+              <div className="container mx-auto max-w-4xl">
+                <h1 className="mb-2 text-4xl font-bold text-black">{noticia.titulo}</h1>
+                <div className="text-sm text-black/80">Publicado el: {fechaPublicacion}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Contenido */}
+        <section className="container mx-auto max-w-4xl py-8">
+          <div
+            dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
+            className="prose lg:prose-lg text-base-content" // Clases modificadas aquí
+          />
+        </section>
+      </main>
     )
   }
 
+  // Versión para noticias nuevas (no old)
   return (
-    <div>
-      Noticia
-      <RichText data={noticia.contenido!} className={styles.noticia} />
-    </div>
+    <main className="bg-base-100 min-h-screen">
+      {/* Portada */}
+      {noticia.portada && (
+        <div className="relative h-96 w-full">
+          <img
+            src={
+              typeof noticia.portada === 'string'
+                ? noticia.portada
+                : noticia.portada?.url || '/images/placeholder.jpg'
+            }
+            alt={
+              typeof noticia.portada === 'string'
+                ? 'Portada de la noticia'
+                : noticia.portada?.alt || 'Portada de la noticia'
+            }
+            className="h-full w-full object-cover"
+          />
+          <div className="from-base-100 via-base-100/80 absolute right-0 bottom-0 left-0 bg-gradient-to-t to-transparent p-6">
+            <div className="container mx-auto max-w-4xl">
+              <h1 className="mb-2 text-4xl font-bold text-black">{noticia.titulo}</h1>
+              <div className="text-sm text-black/80">Publicado el: {fechaPublicacion}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contenido */}
+      <section className="container mx-auto max-w-4xl py-8">
+        <div className="prose-lg">
+          <RichText data={noticia.contenido!} className="space-y-6" />
+        </div>
+      </section>
+    </main>
   )
 }
-
-/* "
-<p>Durante la mañana de este jueves, concretamos el primer encuentro en la Escuela Secundaria Evita 77, con estudiantes de 5 y 6 año.</p>
-<p>El objetivo del programa provincial se enmarca en la necesidad de reflexionar acerca de dos aspectos fundamentales de la salud de los jóvenes
-, como son la salud mental y la salud sexual y reproductiva, con el fin de promover su desarrollo integral.</p><p>Agradecemos al Gobierno 
-Provincial este tipo de propuestas que nos acerca a los jóvenes. Nos acompañaron el Director de Juventud y Niñez de la Provincia, Facundo Suárez
-, y en representación del Área Juventud Municipal, Milagros Cavallo.</p>
-<img src="/api/media/file/acompanamos-acciones-para-promover-la-salud-joven-integral-0.jpg">
-" 
-*/
