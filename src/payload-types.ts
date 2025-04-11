@@ -10,7 +10,9 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PermisoRoles".
  */
-export type PermisoRoles = ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'A SI MISMO' | 'PUBLICO')[] | null;
+export type PermisoRoles =
+  | ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'A SI MISMO' | 'PUBLICO')[]
+  | null;
 /**
  * Supported timezones in IANA format.
  *
@@ -59,6 +61,7 @@ export type SupportedTimezones =
   | 'Asia/Singapore'
   | 'Asia/Tokyo'
   | 'Asia/Seoul'
+  | 'Australia/Brisbane'
   | 'Australia/Sydney'
   | 'Pacific/Guam'
   | 'Pacific/Noumea'
@@ -82,6 +85,7 @@ export interface Config {
     intimaciones: Intimacione;
     ubicaciones: Ubicacione;
     eventos: Evento;
+    habilitaciones: Habilitacione;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -103,6 +107,7 @@ export interface Config {
     intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
     ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
     eventos: EventosSelect<false> | EventosSelect<true>;
+    habilitaciones: HabilitacionesSelect<false> | HabilitacionesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -151,7 +156,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION')[];
+  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
@@ -163,9 +168,10 @@ export interface User {
     ciudad?: string | null;
     telefono?: string | null;
     curriculums?: {
-      docs?: (string | Curriculum)[] | null;
-      hasNextPage?: boolean | null;
-    } | null;
+      docs?: (string | Curriculum)[];
+      hasNextPage?: boolean;
+      totalDocs?: number;
+    };
   };
   updatedAt: string;
   createdAt: string;
@@ -519,6 +525,33 @@ export interface Evento {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "habilitaciones".
+ */
+export interface Habilitacione {
+  id: string;
+  nombre: string;
+  contenido?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  adjuntos?: (string | Archivo)[] | null;
+  created_by: string | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -567,6 +600,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'eventos';
         value: string | Evento;
+      } | null)
+    | ({
+        relationTo: 'habilitaciones';
+        value: string | Habilitacione;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -982,6 +1019,18 @@ export interface EventosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "habilitaciones_select".
+ */
+export interface HabilitacionesSelect<T extends boolean = true> {
+  nombre?: T;
+  contenido?: T;
+  adjuntos?: T;
+  created_by?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -1053,6 +1102,7 @@ export interface Permiso {
   intimaciones?: PermisoActions;
   ubicaciones?: PermisoActions;
   eventos?: PermisoActions;
+  habilitaciones?: PermisoActions;
   autoridades?: PermisoActions;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1107,6 +1157,7 @@ export interface PermisosSelect<T extends boolean = true> {
   intimaciones?: T | PermisoActionsSelect<T>;
   ubicaciones?: T | PermisoActionsSelect<T>;
   eventos?: T | PermisoActionsSelect<T>;
+  habilitaciones?: T | PermisoActionsSelect<T>;
   autoridades?: T | PermisoActionsSelect<T>;
   updatedAt?: T;
   createdAt?: T;

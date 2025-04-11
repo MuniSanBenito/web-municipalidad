@@ -4,6 +4,7 @@ import { Avatares } from '@/collections/Avatares'
 import { Contabilidad } from '@/collections/Contabilidad'
 import { Curriculums } from '@/collections/Curriculums'
 import { Eventos } from '@/collections/Eventos'
+import { Habilitaciones } from '@/collections/Habilitaciones'
 import { Imagenes } from '@/collections/Imagenes'
 import { Intimaciones } from '@/collections/Intimaciones'
 import { Memorias } from '@/collections/Memorias'
@@ -32,6 +33,7 @@ export const COLLECTIONS = [
   Intimaciones,
   Ubicaciones,
   Eventos,
+  Habilitaciones,
 ]
 
 export const GLOBALS = [Autoridades]
