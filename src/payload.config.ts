@@ -67,13 +67,13 @@ export default buildConfig({
     },
     components: {
       graphics: {
-        Logo: '/brand/logo#Logo',
-        Icon: '/brand/icon#Icon',
+        Logo: '/payload/brand/logo#Logo',
+        Icon: '/payload/brand/icon#Icon',
       },
       logout: {
-        Button: '/components/logout-button#LogoutButton',
+        Button: '/payload/components/logout-button#LogoutButton',
       },
-      afterDashboard: ['/components/redirect-ciudadano#RedirectCiudadano'],
+      afterDashboard: ['/payload/components/redirect-ciudadano#RedirectCiudadano'],
     },
     theme: 'light',
     avatar: 'default',

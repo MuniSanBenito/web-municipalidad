@@ -20,10 +20,10 @@ import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b99
 import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { LogoutButton as LogoutButton_5e1d745b0d87601ca959b57385835784 } from '../../../components/logout-button'
-import { Icon as Icon_ccb43bd27f984eeae6a29c32489bcd08 } from '../../../brand/icon'
-import { Logo as Logo_5bbef171e543d0a1534ac71b8434d707 } from '../../../brand/logo'
-import { RedirectCiudadano as RedirectCiudadano_07df5ce0fca2349703ee5124835756e5 } from '../../../components/redirect-ciudadano'
+import { LogoutButton as LogoutButton_b69d8efee05336a20193a089da8ce5b3 } from '../../../payload/components/logout-button'
+import { Icon as Icon_91c64a225659a7617d2277cca23737c9 } from '../../../payload/brand/icon'
+import { Logo as Logo_ddf2d2f79243e59a3e81e749911eee83 } from '../../../payload/brand/logo'
+import { RedirectCiudadano as RedirectCiudadano_aeb96030f6c7d6f0aafb5fc5cb68e8fc } from '../../../payload/components/redirect-ciudadano'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
@@ -49,9 +49,9 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UploadFeatureClient": UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  "/components/logout-button#LogoutButton": LogoutButton_5e1d745b0d87601ca959b57385835784,
-  "/brand/icon#Icon": Icon_ccb43bd27f984eeae6a29c32489bcd08,
-  "/brand/logo#Logo": Logo_5bbef171e543d0a1534ac71b8434d707,
-  "/components/redirect-ciudadano#RedirectCiudadano": RedirectCiudadano_07df5ce0fca2349703ee5124835756e5,
+  "/payload/components/logout-button#LogoutButton": LogoutButton_b69d8efee05336a20193a089da8ce5b3,
+  "/payload/brand/icon#Icon": Icon_91c64a225659a7617d2277cca23737c9,
+  "/payload/brand/logo#Logo": Logo_ddf2d2f79243e59a3e81e749911eee83,
+  "/payload/components/redirect-ciudadano#RedirectCiudadano": RedirectCiudadano_aeb96030f6c7d6f0aafb5fc5cb68e8fc,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }
