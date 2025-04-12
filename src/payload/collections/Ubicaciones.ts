@@ -1,15 +1,12 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
-import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
+import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
-const SLUG = 'contabilidad'
+const SLUG = 'ubicaciones'
 
-export const Contabilidad: CollectionConfig = {
-  slug: SLUG,
-  labels: {
-    singular: 'Contabilidad',
-    plural: 'Contabilidad',
-  },
+export const Ubicaciones: CollectionConfig = {
+  slug: 'ubicaciones',
+  labels: { plural: 'Ubicaciones', singular: 'Ubicación' },
   admin: {
     useAsTitle: 'nombre',
   },
@@ -22,24 +19,16 @@ export const Contabilidad: CollectionConfig = {
   fields: [
     CreatedBy,
     {
-      type: 'upload',
-      name: 'archivo',
-      label: 'Archivo',
-      relationTo: 'archivos',
-      required: true,
-    },
-    {
       type: 'text',
       name: 'nombre',
       label: 'Nombre',
       required: true,
-      unique: true,
     },
     {
-      type: 'date',
-      name: 'fecha',
-      label: 'Fecha',
-      required: true,
+      type: 'point',
+      name: 'geolocalizacion',
+      required: false,
+      label: 'Geolocalización',
     },
   ],
 }

@@ -1,26 +1,20 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
-import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
+import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
-const SLUG = 'imagenes'
+const SLUG = 'avatares'
 
-export const Imagenes: CollectionConfig = {
+export const Avatares: CollectionConfig = {
   slug: SLUG,
   labels: {
-    singular: 'Imagen',
-    plural: 'Imagenes',
+    singular: 'Avatar',
+    plural: 'Avatares',
   },
   typescript: {
-    interface: 'Imagen',
+    interface: 'Avatar',
   },
   admin: {
     group: 'Almacenamiento',
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
   fields: [
     CreatedBy,
@@ -30,6 +24,12 @@ export const Imagenes: CollectionConfig = {
       required: true,
     },
   ],
+  access: {
+    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
+    read: async (args) => await accessRead({ ...args, collection: SLUG }),
+    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+  },
   upload: {
     adminThumbnail: 'thumbnail',
     focalPoint: true,

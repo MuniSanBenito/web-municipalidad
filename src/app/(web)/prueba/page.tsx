@@ -1,6 +1,6 @@
 import { YouTuveVideo } from '@/components/youtube-video'
-import { basePayload } from '@/libs/payload'
 import type { Imagen } from '@/payload-types'
+import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import styles from './page.module.css'
 

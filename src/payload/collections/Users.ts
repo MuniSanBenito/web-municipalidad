@@ -1,6 +1,11 @@
-import { isAdminCollectionAccess } from '@/access/collection'
-import { ROL_ADMIN_VALUE, ROL_CIUDADANO_VALUE, ROL_DEFAULT_VALUE, ROLES } from '@/constants/roles'
 import type { User } from '@/payload-types'
+import { isAdminCollectionAccess } from '@/payload/access/collection'
+import {
+  ROL_ADMIN_VALUE,
+  ROL_CIUDADANO_VALUE,
+  ROL_DEFAULT_VALUE,
+  ROLES,
+} from '@/payload/constants/roles'
 import type { Access, CollectionConfig, Condition, FieldAccess } from 'payload'
 
 const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) => {

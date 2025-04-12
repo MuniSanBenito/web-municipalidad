@@ -1,5 +1,5 @@
-import { accessRead, accessUpdate } from '@/access/collection'
-import { CreatedBy } from '@/fields/created_by'
+import { accessRead, accessUpdate } from '@/payload/access/collection'
+import { CreatedBy } from '@/payload/fields/created_by'
 import type { GlobalConfig } from 'payload'
 
 const SLUG = 'autoridades'

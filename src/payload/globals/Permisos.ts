@@ -1,24 +1,24 @@
-import { isAdminCollectionAccess } from '@/access/collection'
-import { Archivos } from '@/collections/Archivos'
-import { Avatares } from '@/collections/Avatares'
-import { Contabilidad } from '@/collections/Contabilidad'
-import { Curriculums } from '@/collections/Curriculums'
-import { Eventos } from '@/collections/Eventos'
-import { Habilitaciones } from '@/collections/Habilitaciones'
-import { Imagenes } from '@/collections/Imagenes'
-import { Intimaciones } from '@/collections/Intimaciones'
-import { Memorias } from '@/collections/Memorias'
-import { Noticias } from '@/collections/Noticias'
-import { Ubicaciones } from '@/collections/Ubicaciones'
-import { Users } from '@/collections/Users'
+import { isAdminCollectionAccess } from '@/payload/access/collection'
+import type { Field, GlobalConfig } from 'payload'
+import { Archivos } from '../collections/Archivos'
+import { Avatares } from '../collections/Avatares'
+import { Contabilidad } from '../collections/Contabilidad'
+import { Curriculums } from '../collections/Curriculums'
+import { Eventos } from '../collections/Eventos'
+import { Habilitaciones } from '../collections/Habilitaciones'
+import { Imagenes } from '../collections/Imagenes'
+import { Intimaciones } from '../collections/Intimaciones'
+import { Memorias } from '../collections/Memorias'
+import { Noticias } from '../collections/Noticias'
+import { Ubicaciones } from '../collections/Ubicaciones'
+import { Users } from '../collections/Users'
 import {
   PERMISO_ACCION_ACTUALIZAR,
   PERMISO_ACCION_BORRAR,
   PERMISO_ACCION_CREAR,
   PERMISO_ACCION_LEER,
-} from '@/constants/acciones_permisos'
-import { ROL_ADMIN_VALUE, ROL_OWN_VALUE, ROL_PUBLICO_VALUE, ROLES } from '@/constants/roles'
-import type { Field, GlobalConfig } from 'payload'
+} from '../constants/acciones_permisos'
+import { ROLES, ROL_ADMIN_VALUE, ROL_OWN_VALUE, ROL_PUBLICO_VALUE } from '../constants/roles'
 import { Autoridades } from './Autoridades'
 
 export const COLLECTIONS = [

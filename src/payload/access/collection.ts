@@ -1,11 +1,11 @@
+import type { Permiso, PermisoActions } from '@/payload-types'
 import {
   PERMISO_ACCION_ACTUALIZAR,
   PERMISO_ACCION_BORRAR,
   PERMISO_ACCION_CREAR,
   PERMISO_ACCION_LEER,
-} from '@/constants/acciones_permisos'
-import { ROL_ADMIN_VALUE, ROL_PUBLICO_VALUE } from '@/constants/roles'
-import type { Permiso, PermisoActions } from '@/payload-types'
+} from '@/payload/constants/acciones_permisos'
+import { ROL_ADMIN_VALUE, ROL_PUBLICO_VALUE } from '@/payload/constants/roles'
 import type { Access, AccessArgs, AccessResult } from 'payload'
 
 export const isAdminCollectionAccess: Access = ({ req }) =>

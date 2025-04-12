@@ -1,4 +1,4 @@
-import { basePayload } from '@/libs/payload'
+import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 
 type Props = {

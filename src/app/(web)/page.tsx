@@ -1,4 +1,4 @@
-import { basePayload } from '@/libs/payload'
+import { basePayload } from '@/web/lib/payload'
 import { headers as nextHeaders } from 'next/headers'
 
 export default async function Page() {

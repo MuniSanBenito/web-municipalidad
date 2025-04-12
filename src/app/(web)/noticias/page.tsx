@@ -1,4 +1,4 @@
-import { basePayload } from '@/libs/payload'
+import { basePayload } from '@/web/lib/payload'
 import { IconCalendar, IconChevronRight } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,5 +1,5 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
-import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
+import { CreatedBy } from '@/payload/fields/created_by'
 
 import type { CollectionConfig } from 'payload'
 

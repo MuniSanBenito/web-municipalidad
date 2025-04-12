@@ -1,6 +1,6 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
-import { contenido } from '@/fields/contenido'
-import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
+import { contenido } from '@/payload/fields/contenido'
+import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
 const SLUG = 'noticias'

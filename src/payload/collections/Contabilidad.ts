@@ -1,14 +1,14 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/access/collection'
-import { CreatedBy } from '@/fields/created_by'
+import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
+import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
-const SLUG = 'intimaciones'
+const SLUG = 'contabilidad'
 
-export const Intimaciones: CollectionConfig = {
+export const Contabilidad: CollectionConfig = {
   slug: SLUG,
   labels: {
-    singular: 'Intimación',
-    plural: 'Intimaciones',
+    singular: 'Contabilidad',
+    plural: 'Contabilidad',
   },
   admin: {
     useAsTitle: 'nombre',
@@ -34,9 +34,6 @@ export const Intimaciones: CollectionConfig = {
       label: 'Nombre',
       required: true,
       unique: true,
-      admin: {
-        description: 'Indicar nombres y apellidos completos del intimado',
-      },
     },
     {
       type: 'date',

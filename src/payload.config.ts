@@ -8,11 +8,11 @@ import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
-import { Archivos } from './collections/Archivos'
-import { Avatares } from './collections/Avatares'
-import { Imagenes } from './collections/Imagenes'
-import { Users } from './collections/Users'
-import { COLLECTIONS, GLOBALS, Permisos } from './globals/Permisos'
+import { Archivos } from './payload/collections/Archivos'
+import { Avatares } from './payload/collections/Avatares'
+import { Imagenes } from './payload/collections/Imagenes'
+import { Users } from './payload/collections/Users'
+import { COLLECTIONS, GLOBALS, Permisos } from './payload/globals/Permisos'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
