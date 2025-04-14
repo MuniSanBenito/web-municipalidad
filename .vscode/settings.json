@@ -4,13 +4,21 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
-  // tailwind
+  "npm.packageManager": "bun",
+  /* "tailwindCSS.experimental.classRegex": [
+    ["(?:twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"],
+    ["clsx\\(([^]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+  ], */
+  "tailwindCSS.experimental.configFile": "./src/app/(web)/globals.css",
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.experimental.classRegex": [
-    ["(?:twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"],
-    ["clsx\\(([^]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
-  ],
-  "npm.packageManager": "bun"
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    "twMerge",
+    "twJoin"
+  ]
 }
