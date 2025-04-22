@@ -1,6 +1,13 @@
+import { basePayload } from '@/web/lib/payload'
 import Link from 'next/link'
 
-export default function MemoriasPage() {
+export default async function MemoriasPage() {
+  const { docs: memorias } = await basePayload.find({
+    collection: 'memorias',
+  })
+
+  console.log(memorias)
+
   return (
     <main className="container mx-auto p-6">
       <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
@@ -22,24 +29,35 @@ export default function MemoriasPage() {
           <p className="mb-6 text-lg">
             Selecciona el año que deseas consultar para acceder al documento completo:
           </p>
-          
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { year: '2024', url: '/memorias/memoria_2024.pdf' },
-              { year: '2023', url: '/memorias/memoria_2023.pdf' },
-            ].map((memoria, index) => (
-              <Link
-                key={index}
-                href={memoria.url}
-                target="_blank"
-                className="bg-base-200 rounded-lg p-6 text-center shadow-md transition-all hover:bg-primary hover:text-primary-content hover:shadow-lg"
-              >
-                <div className="flex flex-col items-center justify-center space-y-2">
-                  <span className="text-3xl font-bold">{memoria.year}</span>
-                  <span className="text-sm">Memoria Anual</span>
-                </div>
-              </Link>
-            ))}
+            {memorias && memorias.length > 0 ? (
+              memorias.map((memoria, index) => {
+                const archivoUrl =
+                  typeof memoria.archivo === 'string'
+                    ? memoria.archivo
+                    : memoria.archivo?.url || '#'
+                const year = memoria.nombre || new Date(memoria.createdAt).getFullYear().toString()
+
+                return (
+                  <Link
+                    key={index}
+                    href={archivoUrl}
+                    target="_blank"
+                    className="bg-base-200 hover:bg-primary hover:text-primary-content rounded-lg p-6 text-center shadow-md transition-all hover:shadow-lg"
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <span className="text-3xl font-bold">{year}</span>
+                      <span className="text-sm">Memoria Anual</span>
+                    </div>
+                  </Link>
+                )
+              })
+            ) : (
+              <p className="col-span-3 text-center text-lg">
+                No hay memorias disponibles actualmente.
+              </p>
+            )}
           </div>
         </div>
 
@@ -47,7 +65,7 @@ export default function MemoriasPage() {
           <h2 className="mb-4 text-3xl font-semibold">Importancia de las Memorias</h2>
           <p className="text-lg leading-relaxed">
             Las memorias anuales del Intendente son documentos oficiales que presentan un balance
-            detallado de la gestión municipal. Incluyen información sobre obras realizadas, 
+            detallado de la gestión municipal. Incluyen información sobre obras realizadas,
             proyectos en curso, estado financiero del municipio y planes futuros para el desarrollo
             de San Benito.
           </p>
