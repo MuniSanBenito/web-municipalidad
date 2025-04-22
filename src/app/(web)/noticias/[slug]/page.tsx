@@ -40,22 +40,22 @@ export default async function PageNoticia({ params }: Props) {
                   ? 'Portada de la noticia'
                   : noticia.portada?.alt || 'Portada de la noticia'
               }
-              className="h-full w-full object-cover"
+              className="h-96 w-full object-cover"
             />
-            <div className="from-base-100 via-base-100/80 absolute right-0 bottom-0 left-0 bg-gradient-to-t to-transparent p-6">
-              <div className="container mx-auto max-w-4xl">
-                <h1 className="mb-2 text-4xl font-bold text-black">{noticia.titulo}</h1>
-                <div className="text-sm text-black/80">Publicado el: {fechaPublicacion}</div>
-              </div>
-            </div>
           </div>
         )}
 
+        {/* Título y fecha */}
+        <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
+          <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
+          <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
+        </div>
+
         {/* Contenido */}
-        <section className="container mx-auto max-w-4xl py-8">
+        <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
           <div
             dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
-            className="prose lg:prose-lg text-base-content" // Clases modificadas aquí
+            className="prose lg:prose-lg text-base-content"
           />
         </section>
       </main>
@@ -67,7 +67,7 @@ export default async function PageNoticia({ params }: Props) {
     <main className="bg-base-100 min-h-screen">
       {/* Portada */}
       {noticia.portada && (
-        <div className="relative h-96 w-full">
+        <div className="w-full">
           <img
             src={
               typeof noticia.portada === 'string'
@@ -79,19 +79,19 @@ export default async function PageNoticia({ params }: Props) {
                 ? 'Portada de la noticia'
                 : noticia.portada?.alt || 'Portada de la noticia'
             }
-            className="h-full w-full object-cover"
+            className="h-96 w-full object-cover"
           />
-          <div className="from-base-100 via-base-100/80 absolute right-0 bottom-0 left-0 bg-gradient-to-t to-transparent p-6">
-            <div className="container mx-auto max-w-4xl">
-              <h1 className="mb-2 text-4xl font-bold text-black">{noticia.titulo}</h1>
-              <div className="text-sm text-black/80">Publicado el: {fechaPublicacion}</div>
-            </div>
-          </div>
         </div>
       )}
 
+      {/* Título y fecha */}
+      <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
+        <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
+        <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
+      </div>
+
       {/* Contenido */}
-      <section className="container mx-auto max-w-4xl py-8">
+      <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <div className="prose-lg">
           <RichText data={noticia.contenido!} className="space-y-6" />
         </div>

@@ -18,10 +18,10 @@ const NAV_LINKS: { href: string; label: string }[] = [
     href: '/transparencia',
     label: 'Transparencia',
   },
-  {
-    href: '/hcd',
-    label: 'HCD',
-  },
+  // {
+  //   href: '/hcd',
+  //   label: 'HCD',
+  // },
   {
     href: '/tramites',
     label: 'Tramites',
