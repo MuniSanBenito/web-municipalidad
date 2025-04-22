@@ -37,7 +37,7 @@ Sección Descripción Inicio Página principal con información destacada Nuestr
 
 - Node.js 18.x o superior
 - MongoDB 5.x o superior
-- NPM o Yarn
+- BUN
 
 ## 🚀 Instalación y configuración
 
@@ -55,17 +55,19 @@ Sección Descripción Inicio Página principal con información destacada Nuestr
 2. Instalar dependencias :
 
    ```bash
-   npm install
+   bun install
    ```
 
 3. Configurar variables de entorno :
 
    - Crear un archivo .env en la raíz del proyecto
    - Configurar la conexión a MongoDB y otras variables necesarias:
+
      ```plaintext
      MONGODB_URI=mongodb://localhost:27017/san-benito
      PAYLOAD_SECRET=tu_secret_aqui
      ```
+
      ```
 
      ```
@@ -73,7 +75,7 @@ Sección Descripción Inicio Página principal con información destacada Nuestr
 4. Iniciar el servidor de desarrollo :
 
    ```bash
-   npm run dev
+   bun dev
    ```
 
 5. Acceder a la aplicación en http://localhost:3000
@@ -83,8 +85,8 @@ Sección Descripción Inicio Página principal con información destacada Nuestr
 Para desplegar en producción:
 
 ```bash
-npm run build
-npm start
+bun run build
+bun start
 ```
 
 ## 🔧 Mantenimiento
