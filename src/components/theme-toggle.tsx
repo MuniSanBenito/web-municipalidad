@@ -14,7 +14,7 @@ export function ThemeToggle() {
   if (!defaultTheme) return null
 
   return (
-    <>
+    <label className="swap swap-rotate btn btn-ghost btn-circle btn-sm">
       <input
         type="checkbox"
         className="theme-controller"
@@ -23,6 +23,6 @@ export function ThemeToggle() {
       />
       <IconMoon className={twJoin(defaultTheme === 'light' ? 'swap-on' : 'swap-off')} />
       <IconSun className={twJoin(defaultTheme === 'light' ? 'swap-off' : 'swap-on')} />
-    </>
+    </label>
   )
 }
