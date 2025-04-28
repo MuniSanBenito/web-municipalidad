@@ -64,7 +64,6 @@ export function Navbar() {
           )}
         >
           <div className="container mx-auto flex h-full items-center justify-between px-6">
-            {/* Logo */}
             <Link href="/">
               <Image
                 src="/images/logo.webp"
