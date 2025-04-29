@@ -2,10 +2,11 @@
 import { ThemeToggle } from '@/components/theme-toggle'
 import { IconMenu2 } from '@tabler/icons-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
 
 const NAV_LINKS: { href: string; label: string }[] = [
@@ -22,17 +23,17 @@ const NAV_LINKS: { href: string; label: string }[] = [
     label: 'Transparencia',
   },
   {
-    href: '/hcd',
-    label: 'HCD',
-  },
-  {
     href: '/tramites',
     label: 'Tramites',
   },
 ] as const
 
 export function RootLayout({ children }: PropsWithChildren) {
+  const pathname = usePathname()
+  console.log('pathname', pathname)
   const [isScrolled, setIsScrolled] = useState(false)
+
+  const isHome = useMemo(() => pathname === '/', [pathname])
 
   useEffect(() => {
     const scrollListener = () => {
@@ -89,7 +90,9 @@ export function RootLayout({ children }: PropsWithChildren) {
             </label>
           </div>
         </header>
-        <main className="min-h-svh">{children}</main>
+        <main className={twJoin('min-h-svh', isHome ? null : isScrolled ? 'pt-24' : 'pt-32')}>
+          {children}
+        </main>
       </div>
       <aside className="drawer-side z-50">
         <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
