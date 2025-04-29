@@ -16,7 +16,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
           id="foto-texto"
           className="flex h-72 items-center justify-between overflow-hidden sm:h-80 lg:mx-5 lg:my-5 lg:h-96 2xl:justify-center"
         >
-          <div id="foto" className="relative h-full w-full 2xl:w-[45%]">
+          <div id="foto" className="relative h-full w-full 2xl:w-[40%]">
             <Image
               alt={portada.alt}
               src={portada.url!}
