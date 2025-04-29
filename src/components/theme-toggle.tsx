@@ -4,7 +4,10 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
 
-export function ThemeToggle() {
+type Props = {
+  className?: string
+}
+export function ThemeToggle({ className }: Props) {
   const [defaultTheme, setDefaultTheme] = useState<string>()
   const { resolvedTheme, setTheme } = useTheme()
 
@@ -14,7 +17,7 @@ export function ThemeToggle() {
   if (!defaultTheme) return null
 
   return (
-    <label className="swap swap-rotate btn btn-ghost btn-circle btn-sm">
+    <label className={twJoin('swap swap-rotate btn btn-ghost btn-circle btn-sm', className)}>
       <input
         type="checkbox"
         className="theme-controller"
