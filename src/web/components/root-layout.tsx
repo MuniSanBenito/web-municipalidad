@@ -30,10 +30,9 @@ const NAV_LINKS: { href: string; label: string }[] = [
 
 export function RootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  console.log('pathname', pathname)
-  const [isScrolled, setIsScrolled] = useState(false)
-
   const isHome = useMemo(() => pathname === '/', [pathname])
+
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const scrollListener = () => {
