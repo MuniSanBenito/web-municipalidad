@@ -1,9 +1,5 @@
-import { 
-  IconLicense, 
-  IconBuildingStore, 
-  IconCash, 
-  IconGenderFemale 
-} from '@tabler/icons-react'
+import PageTitle from '@/components/ui/PageTitle'
+import { IconBuildingStore, IconCash, IconGenderFemale, IconLicense } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -16,33 +12,33 @@ const tramites = [
     title: 'Licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
-    description: 'Información sobre trámites de licencias de conducir'
+    description: 'Información sobre trámites de licencias de conducir',
   },
   {
     title: 'Habilitaciones Comerciales',
     icon: IconBuildingStore,
     link: '/tramites/habilitaciones',
-    description: 'Requisitos y procedimientos para habilitaciones comerciales'
+    description: 'Requisitos y procedimientos para habilitaciones comerciales',
   },
   {
     title: 'Rentas',
     icon: IconCash,
     link: '/tramites/rentas',
-    description: 'Información sobre impuestos y tasas municipales'
+    description: 'Información sobre impuestos y tasas municipales',
   },
   {
     title: 'Área Mujer y Género',
     icon: IconGenderFemale,
     link: '/tramites/area-mujer',
-    description: 'Servicios y asistencia del área de mujer y género'
-  }
+    description: 'Servicios y asistencia del área de mujer y género',
+  },
 ]
 
 export default function PageTramites() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-primary mb-12 text-center text-5xl font-bold">Trámites Municipales</h1>
-      
+      <PageTitle title="Trámites y Servicios" />
+
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
         {tramites.map((tramite, index) => (
           <a

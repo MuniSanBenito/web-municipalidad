@@ -1,4 +1,5 @@
 'use client'
+import PageTitle from '@/components/ui/PageTitle'
 import {
   IconAlertCircle,
   IconBuildings,
@@ -30,7 +31,7 @@ const sections = [
 export default function PageTransparencia() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-primary mb-12 text-center text-5xl font-bold">Transparencia</h1>
+      <PageTitle title="Transparencia" />
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {sections.map((section, index) => (
           <a
