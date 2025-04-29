@@ -10,7 +10,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
       key={noticia.id}
       className="carousel-item card flex w-full flex-col shadow-xl transition-all duration-300"
     >
-      <div id={`noticia${index + 1}`} className="h-32 w-full"></div>
+      <div id={`noticia${index + 1}`} className="-z-50 h-32 w-full"></div>
       <div className="relative w-full">
         <div className="relative h-72 overflow-hidden sm:h-80 lg:h-96">
           <Image
@@ -54,7 +54,6 @@ export default async function Page() {
     collection: 'noticias',
     limit: 4,
   })
-  console.log(noticias.docs)
 
   return (
     <>
@@ -72,105 +71,4 @@ export default async function Page() {
       </section>
     </>
   )
-
-  /* return (
-    <div className="bg-base-200 rounded-lg p-6 shadow-lg">
-      <h1 className="text-primary mb-4 text-3xl font-bold">
-        Bienvenido a la Municipalidad de San Benito
-      </h1>
-      <p className="text-base-content text-lg">
-        Aquí puedes encontrar información sobre nuestros servicios, horarios, y cómo contactarnos.
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam eveniet facilis, quasi illo
-        vel possimus numquam adipisci! In possimus aliquid, recusandae eligendi omnis ipsum eum
-        doloribus voluptatem doloremque ducimus sunt?
-      </p>
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure nemo voluptatibus hic
-        eligendi est inventore accusamus sunt quis omnis possimus numquam maxime quas cupiditate
-        porro repellendus, harum impedit explicabo culpa?
-      </p>
-    </div>
-  ) */
 }
