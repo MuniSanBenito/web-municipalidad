@@ -7,10 +7,12 @@ import {
 } from '@tabler/icons-react'
 import Link from 'next/link'
 
-export default async function TramitesLicenciaPage() {
-  const { docs: licencia } = await basePayload.find({
-    collection: 'licencia',
+export default async function TramitesHabilitacionesPage() {
+  const { docs: habilitaciones } = await basePayload.find({
+    collection: 'habilitaciones',
   })
+
+  console.log(habilitaciones)
 
   return (
     <main className="container mx-auto px-4 py-6">
@@ -35,8 +37,8 @@ export default async function TramitesLicenciaPage() {
             {habilitaciones.length > 0 ? (
               habilitaciones.map((opcion) => {
                 // Usar el nombre directamente como slug, codificándolo para la URL
-                const slugUrl = encodeURIComponent(opcion.nombre)
-
+                const slugUrl = encodeURIComponent(opcion.nombre);
+                
                 return (
                   <Link
                     key={opcion.id}
@@ -53,7 +55,7 @@ export default async function TramitesLicenciaPage() {
                       </div>
                     </div>
                   </Link>
-                )
+                );
               })
             ) : (
               // Si no hay habilitaciones en la base de datos, mostrar opciones predeterminadas
