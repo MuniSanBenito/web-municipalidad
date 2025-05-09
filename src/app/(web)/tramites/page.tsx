@@ -1,5 +1,17 @@
 import PageTitle from '@/components/ui/PageTitle'
-import { IconBuildingStore, IconCash, IconGenderFemale, IconLicense } from '@tabler/icons-react'
+import {
+  IconBallFootball,
+  IconBook,
+  IconBuilding,
+  IconBuildingCommunity,
+  IconBuildingStore,
+  IconCash,
+  IconClipboardList,
+  IconGenderFemale,
+  IconLicense,
+  IconMusic,
+  IconUserCircle,
+} from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -31,6 +43,48 @@ const tramites = [
     icon: IconGenderFemale,
     link: '/tramites/area-mujer',
     description: 'Servicios y asistencia del área de mujer y género',
+  },
+  {
+    title: 'Obras Privadas',
+    icon: IconBuilding,
+    link: '/tramites/obras-privadas',
+    description: 'Trámites relacionados con construcciones y proyectos',
+  },
+  {
+    title: 'Mesa de Entrada',
+    icon: IconClipboardList,
+    link: '/tramites/mesa-de-entrada',
+    description: 'Información sobre presentación de trámites generales',
+  },
+  {
+    title: 'Punto Digital - Biblioteca',
+    icon: IconBook,
+    link: '/tramites/punto-digital-biblioteca',
+    description: 'Talleres y actividades en la Biblioteca Municipal',
+  },
+  {
+    title: 'Talleres Culturales',
+    icon: IconMusic,
+    link: '/tramites/talleres-culturales',
+    description: 'Información sobre talleres artísticos municipales',
+  },
+  {
+    title: 'Actividades Deportivas',
+    icon: IconBallFootball,
+    link: '/tramites/actividades-deportivas',
+    description: 'Talleres deportivos y recreativos municipales',
+  },
+  {
+    title: 'CIC Barrio San Pedro',
+    icon: IconBuildingCommunity,
+    link: '/tramites/cic-barrio-san-pedro',
+    description: 'Actividades y talleres en el Centro Integrador Comunitario',
+  },
+  {
+    title: 'Recursos Humanos',
+    icon: IconUserCircle,
+    link: 'http://181.228.27.231/personal/personal.aspx',
+    description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
   },
 ]
 

@@ -1,4 +1,4 @@
-import { IconBrandWhatsapp, IconCopy } from '@tabler/icons-react'
+import { IconArrowsUp, IconBrandWhatsapp, IconIdBadge2, IconRefresh } from '@tabler/icons-react'
 import Link from 'next/link'
 
 export default function PageLicencia() {
@@ -9,9 +9,10 @@ export default function PageLicencia() {
           <div className="mx-auto max-w-3xl">
             <h1 className="text-3xl font-bold md:text-5xl">Licencia Nacional de Conducir</h1>
             <p className="mt-4 text-base leading-relaxed md:text-lg">
-              La Licencia Nacional de Conducir es un documento único que la autoridad competente de cada jurisdicción otorga a un ciudadano con el 
-              objeto de habilitarlo legalmente a conducir un vehículo, sea con carácter particular o profesional, previo cumplimiento de los requisitos 
-              establecidos por la Ley Nacional de Tránsito 24.449.
+              La Licencia Nacional de Conducir es un documento único que la autoridad competente de
+              cada jurisdicción otorga a un ciudadano con el objeto de habilitarlo legalmente a
+              conducir un vehículo, sea con carácter particular o profesional, previo cumplimiento
+              de los requisitos establecidos por la Ley Nacional de Tránsito 24.449.
             </p>
           </div>
         </div>
@@ -20,30 +21,30 @@ export default function PageLicencia() {
       <section className="mt-8 space-y-6">
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
           <h2 className="mb-6 text-2xl font-semibold md:text-3xl">Trámites</h2>
-          
+
           <div className="flex flex-col gap-4 md:flex-row md:justify-center">
             <Link
-              href="/tramites/licencias/original"
-              className="btn btn-success gap-2"
+              href="/tramites/licencia/original"
+              className="btn btn-primary hover:btn-primary-focus gap-2 shadow-md transition-all duration-300"
             >
-              <IconCopy size={20} />
-              <span>Licencia Original</span>
+              <IconIdBadge2 size={20} stroke={2} />
+              <span className="font-medium">Licencia Original</span>
             </Link>
 
             <Link
-              href="/tramites/licencias/renovaciones"
-              className="btn btn-primary gap-2"
+              href="/tramites/licencia/renovaciones"
+              className="btn btn-accent hover:btn-accent-focus gap-2 shadow-md transition-all duration-300"
             >
-              <IconCopy size={20} />
-              <span>Renovaciones</span>
+              <IconRefresh size={20} stroke={2} />
+              <span className="font-medium">Renovaciones</span>
             </Link>
 
             <Link
-              href="/tramites/licencias/ampliacion"
-              className="btn btn-error gap-2"
+              href="/tramites/licencia/ampliacion"
+              className="btn btn-secondary hover:btn-secondary-focus gap-2 shadow-md transition-all duration-300"
             >
-              <IconCopy size={20} />
-              <span>Ampliación</span>
+              <IconArrowsUp size={20} stroke={2} />
+              <span className="font-medium">Ampliación</span>
             </Link>
           </div>
 
@@ -51,13 +52,17 @@ export default function PageLicencia() {
             <h3 className="text-xl font-semibold">IMPORTANTE</h3>
             <ul className="space-y-4">
               <li>
-                El titular de una licencia de conductor debe denunciar a la brevedad todo cambio de los datos consignados en ella. Si lo ha sido de 
-                jurisdicción, debe solicitar otra licencia ante la nueva autoridad jurisdiccional, la cual debe otorgársela previo informe del Registro 
-                Nacional de Antecedentes del Tránsito contra entrega de la anterior y por el período que le resta de vigencia. La licencia caduca a los 
-                90 días de producido el cambio no denunciado. (Articulo Nº18 de la Ley Nacional de Transito).
+                El titular de una licencia de conductor debe denunciar a la brevedad todo cambio de
+                los datos consignados en ella. Si lo ha sido de jurisdicción, debe solicitar otra
+                licencia ante la nueva autoridad jurisdiccional, la cual debe otorgársela previo
+                informe del Registro Nacional de Antecedentes del Tránsito contra entrega de la
+                anterior y por el período que le resta de vigencia. La licencia caduca a los 90 días
+                de producido el cambio no denunciado. (Articulo Nº18 de la Ley Nacional de
+                Transito).
               </li>
               <li>
-                Para solicitar categorías A y B debés saber leer; y para categorías C, D y E debés saber leer y escribir.
+                Para solicitar categorías A y B debés saber leer; y para categorías C, D y E debés
+                saber leer y escribir.
               </li>
             </ul>
 
@@ -65,7 +70,7 @@ export default function PageLicencia() {
               <h3 className="text-xl font-semibold">Whatsapp Licencia</h3>
               <p className="mt-2 flex items-center gap-2">
                 <IconBrandWhatsapp size={24} />
-                <a 
+                <a
                   href="https://wa.me/+543436127014"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -81,7 +86,9 @@ export default function PageLicencia() {
 
       <section className="mt-8">
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <h4 className="mb-4 text-center text-xl font-semibold">Ubicación de las Pruebas Prácticas</h4>
+          <h4 className="mb-4 text-center text-xl font-semibold">
+            Ubicación de las Pruebas Prácticas
+          </h4>
           <p className="mb-4 text-center">Parque Lineal San Benito (Calle Brasil)</p>
           <div className="flex justify-center">
             <iframe
