@@ -1,29 +1,17 @@
-import { basePayload } from '@/web/lib/payload'
-import {
-  IconBuildingStore,
-  IconCash,
-  IconClipboardList,
-  IconFileDescription,
-} from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconCopy } from '@tabler/icons-react'
 import Link from 'next/link'
 
-export default async function TramitesHabilitacionesPage() {
-  const { docs: habilitaciones } = await basePayload.find({
-    collection: 'habilitaciones',
-  })
-
-  console.log(habilitaciones)
-
+export default function PageLicencia() {
   return (
     <main className="container mx-auto px-4 py-6">
       <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-3xl font-bold md:text-5xl">Habilitaciones Comerciales</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">Licencia Nacional de Conducir</h1>
             <p className="mt-4 text-base leading-relaxed md:text-lg">
-              Aquí encontrarás toda la información necesaria para realizar trámites de
-              habilitaciones comerciales en la Municipalidad de San Benito. Selecciona el tipo de
-              habilitación que necesitas para conocer los requisitos, costos y procedimientos.
+              La Licencia Nacional de Conducir es un documento único que la autoridad competente de cada jurisdicción otorga a un ciudadano con el 
+              objeto de habilitarlo legalmente a conducir un vehículo, sea con carácter particular o profesional, previo cumplimiento de los requisitos 
+              establecidos por la Ley Nacional de Tránsito 24.449.
             </p>
           </div>
         </div>
@@ -31,130 +19,80 @@ export default async function TramitesHabilitacionesPage() {
 
       <section className="mt-8 space-y-6">
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <h2 className="mb-6 text-2xl font-semibold md:text-3xl">Tipos de Habilitaciones</h2>
+          <h2 className="mb-6 text-2xl font-semibold md:text-3xl">Trámites</h2>
+          
+          <div className="flex flex-col gap-4 md:flex-row md:justify-center">
+            <Link
+              href="/tramites/licencias/original"
+              className="btn btn-success gap-2"
+            >
+              <IconCopy size={20} />
+              <span>Licencia Original</span>
+            </Link>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {habilitaciones.length > 0 ? (
-              habilitaciones.map((opcion) => {
-                // Usar el nombre directamente como slug, codificándolo para la URL
-                const slugUrl = encodeURIComponent(opcion.nombre);
-                
-                return (
-                  <Link
-                    key={opcion.id}
-                    href={`/tramites/habilitaciones/${slugUrl}`}
-                    className="card bg-base-200 hover:bg-primary hover:text-primary-content shadow-md transition-all duration-300 hover:shadow-lg"
-                  >
-                    <div className="card-body">
-                      <div className="mb-4 flex justify-center">
-                        <IconBuildingStore size={48} stroke={1.5} />
-                      </div>
-                      <h3 className="card-title justify-center text-xl">{opcion.nombre}</h3>
-                      <div className="card-actions mt-4 justify-center">
-                        <button className="btn btn-outline">Ver detalles</button>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })
-            ) : (
-              // Si no hay habilitaciones en la base de datos, mostrar opciones predeterminadas
-              <>
-                <Link
-                  href="/tramites/habilitaciones/comercios"
-                  className="card bg-base-200 hover:bg-primary hover:text-primary-content shadow-md transition-all duration-300 hover:shadow-lg"
-                >
-                  <div className="card-body">
-                    <div className="mb-4 flex justify-center">
-                      <IconBuildingStore size={48} stroke={1.5} />
-                    </div>
-                    <h3 className="card-title justify-center text-xl">Comercios Minoristas</h3>
-                    <p className="text-center">
-                      Requisitos y procedimientos para habilitar comercios minoristas en San Benito
-                    </p>
-                    <div className="card-actions mt-4 justify-center">
-                      <button className="btn btn-outline">Ver detalles</button>
-                    </div>
-                  </div>
-                </Link>
+            <Link
+              href="/tramites/licencias/renovaciones"
+              className="btn btn-primary gap-2"
+            >
+              <IconCopy size={20} />
+              <span>Renovaciones</span>
+            </Link>
 
-                <Link
-                  href="/tramites/habilitaciones/servicios"
-                  className="card bg-base-200 hover:bg-primary hover:text-primary-content shadow-md transition-all duration-300 hover:shadow-lg"
-                >
-                  <div className="card-body">
-                    <div className="mb-4 flex justify-center">
-                      <IconFileDescription size={48} stroke={1.5} />
-                    </div>
-                    <h3 className="card-title justify-center text-xl">Servicios Profesionales</h3>
-                    <p className="text-center">
-                      Información para habilitar oficinas y servicios profesionales
-                    </p>
-                    <div className="card-actions mt-4 justify-center">
-                      <button className="btn btn-outline">Ver detalles</button>
-                    </div>
-                  </div>
-                </Link>
+            <Link
+              href="/tramites/licencias/ampliacion"
+              className="btn btn-error gap-2"
+            >
+              <IconCopy size={20} />
+              <span>Ampliación</span>
+            </Link>
+          </div>
 
-                <Link
-                  href="/tramites/habilitaciones/gastronomia"
-                  className="card bg-base-200 hover:bg-primary hover:text-primary-content shadow-md transition-all duration-300 hover:shadow-lg"
-                >
-                  <div className="card-body">
-                    <div className="mb-4 flex justify-center">
-                      <IconClipboardList size={48} stroke={1.5} />
-                    </div>
-                    <h3 className="card-title justify-center text-xl">Gastronomía</h3>
-                    <p className="text-center">
-                      Requisitos para habilitar restaurantes, bares y locales gastronómicos
-                    </p>
-                    <div className="card-actions mt-4 justify-center">
-                      <button className="btn btn-outline">Ver detalles</button>
-                    </div>
-                  </div>
-                </Link>
+          <div className="mt-8 space-y-6">
+            <h3 className="text-xl font-semibold">IMPORTANTE</h3>
+            <ul className="space-y-4">
+              <li>
+                El titular de una licencia de conductor debe denunciar a la brevedad todo cambio de los datos consignados en ella. Si lo ha sido de 
+                jurisdicción, debe solicitar otra licencia ante la nueva autoridad jurisdiccional, la cual debe otorgársela previo informe del Registro 
+                Nacional de Antecedentes del Tránsito contra entrega de la anterior y por el período que le resta de vigencia. La licencia caduca a los 
+                90 días de producido el cambio no denunciado. (Articulo Nº18 de la Ley Nacional de Transito).
+              </li>
+              <li>
+                Para solicitar categorías A y B debés saber leer; y para categorías C, D y E debés saber leer y escribir.
+              </li>
+            </ul>
 
-                <Link
-                  href="/tramites/habilitaciones/industrias"
-                  className="card bg-base-200 hover:bg-primary hover:text-primary-content shadow-md transition-all duration-300 hover:shadow-lg"
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold">Whatsapp Licencia</h3>
+              <p className="mt-2 flex items-center gap-2">
+                <IconBrandWhatsapp size={24} />
+                <a 
+                  href="https://wa.me/+543436127014"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
                 >
-                  <div className="card-body">
-                    <div className="mb-4 flex justify-center">
-                      <IconCash size={48} stroke={1.5} />
-                    </div>
-                    <h3 className="card-title justify-center text-xl">Industrias</h3>
-                    <p className="text-center">
-                      Información para habilitación de industrias y establecimientos productivos
-                    </p>
-                    <div className="card-actions mt-4 justify-center">
-                      <button className="btn btn-outline">Ver detalles</button>
-                    </div>
-                  </div>
-                </Link>
-              </>
-            )}
+                  3436127014
+                </a>
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
+      <section className="mt-8">
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <h2 className="mb-4 text-2xl font-semibold">Información General</h2>
-          <div className="space-y-4">
-            <p>
-              Para realizar cualquier trámite de habilitación comercial, es necesario presentar la
-              documentación en la Dirección de Habilitaciones Comerciales de la Municipalidad de San
-              Benito.
-            </p>
-            <p>
-              <strong>Horario de atención:</strong> Lunes a Viernes de 7:00 a 13:00 hs.
-            </p>
-            <p>
-              <strong>Ubicación:</strong> Edificio Municipal - Av. San Martín 1098, San Benito,
-              Entre Ríos.
-            </p>
-            <p>
-              <strong>Consultas:</strong> Para más información, puede comunicarse al teléfono (0343)
-              4910135 o enviar un correo electrónico a habilitaciones@sanbenito.gob.ar
-            </p>
+          <h4 className="mb-4 text-center text-xl font-semibold">Ubicación de las Pruebas Prácticas</h4>
+          <p className="mb-4 text-center">Parque Lineal San Benito (Calle Brasil)</p>
+          <div className="flex justify-center">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2024.6251669570108!2d-60.4505009349845!3d-31.78950882571287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1ses-419!2sar!4v1729506848119!5m2!1ses-419!2sar"
+              width="600"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>
