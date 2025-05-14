@@ -86,6 +86,9 @@ export interface Config {
     ubicaciones: Ubicacione;
     eventos: Evento;
     habilitaciones: Habilitacione;
+    licitaciones: Licitacione;
+    concursos: Concurso;
+    'balances-mensuales': BalancesMensuale;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -108,6 +111,9 @@ export interface Config {
     ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
     eventos: EventosSelect<false> | EventosSelect<true>;
     habilitaciones: HabilitacionesSelect<false> | HabilitacionesSelect<true>;
+    licitaciones: LicitacionesSelect<false> | LicitacionesSelect<true>;
+    concursos: ConcursosSelect<false> | ConcursosSelect<true>;
+    'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -552,6 +558,114 @@ export interface Habilitacione {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licitaciones".
+ */
+export interface Licitacione {
+  id: string;
+  created_by: string | User;
+  titulo: string;
+  descripcion: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  fecha: string;
+  estado: 'en_proceso' | 'adjudicada' | 'cancelada';
+  documento: string | Archivo;
+  archivos_adicionales?:
+    | {
+        archivo: string | Archivo;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concursos".
+ */
+export interface Concurso {
+  id: string;
+  created_by: string | User;
+  titulo: string;
+  descripcion: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  fecha: string;
+  estado: 'abierto' | 'en_evaluacion' | 'finalizado' | 'cancelado';
+  documento: string | Archivo;
+  archivos_adicionales?:
+    | {
+        archivo: string | Archivo;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "balances-mensuales".
+ */
+export interface BalancesMensuale {
+  id: string;
+  created_by: string | User;
+  titulo: string;
+  descripcion: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  fecha: string;
+  tipo: 'balance_general' | 'estado_resultados' | 'flujo_efectivo' | 'otro';
+  documento: string | Archivo;
+  archivos_adicionales?:
+    | {
+        archivo: string | Archivo;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -604,6 +718,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'habilitaciones';
         value: string | Habilitacione;
+      } | null)
+    | ({
+        relationTo: 'licitaciones';
+        value: string | Licitacione;
+      } | null)
+    | ({
+        relationTo: 'concursos';
+        value: string | Concurso;
+      } | null)
+    | ({
+        relationTo: 'balances-mensuales';
+        value: string | BalancesMensuale;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1031,6 +1157,69 @@ export interface HabilitacionesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "licitaciones_select".
+ */
+export interface LicitacionesSelect<T extends boolean = true> {
+  created_by?: T;
+  titulo?: T;
+  descripcion?: T;
+  fecha?: T;
+  estado?: T;
+  documento?: T;
+  archivos_adicionales?:
+    | T
+    | {
+        archivo?: T;
+        descripcion?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "concursos_select".
+ */
+export interface ConcursosSelect<T extends boolean = true> {
+  created_by?: T;
+  titulo?: T;
+  descripcion?: T;
+  fecha?: T;
+  estado?: T;
+  documento?: T;
+  archivos_adicionales?:
+    | T
+    | {
+        archivo?: T;
+        descripcion?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "balances-mensuales_select".
+ */
+export interface BalancesMensualesSelect<T extends boolean = true> {
+  created_by?: T;
+  titulo?: T;
+  descripcion?: T;
+  fecha?: T;
+  tipo?: T;
+  documento?: T;
+  archivos_adicionales?:
+    | T
+    | {
+        archivo?: T;
+        descripcion?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -1103,6 +1292,9 @@ export interface Permiso {
   ubicaciones?: PermisoActions;
   eventos?: PermisoActions;
   habilitaciones?: PermisoActions;
+  licitaciones?: PermisoActions;
+  concursos?: PermisoActions;
+  'balances-mensuales'?: PermisoActions;
   autoridades?: PermisoActions;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1158,6 +1350,9 @@ export interface PermisosSelect<T extends boolean = true> {
   ubicaciones?: T | PermisoActionsSelect<T>;
   eventos?: T | PermisoActionsSelect<T>;
   habilitaciones?: T | PermisoActionsSelect<T>;
+  licitaciones?: T | PermisoActionsSelect<T>;
+  concursos?: T | PermisoActionsSelect<T>;
+  'balances-mensuales'?: T | PermisoActionsSelect<T>;
   autoridades?: T | PermisoActionsSelect<T>;
   updatedAt?: T;
   createdAt?: T;
