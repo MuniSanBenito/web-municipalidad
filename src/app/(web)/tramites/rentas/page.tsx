@@ -175,7 +175,7 @@ export default function PageRentas() {
                 <div className="mt-2 space-y-3">
                   <p className="flex items-center gap-2">
                     <IconMapPin className="text-primary" size={20} />
-                    <span>Edificio Municipal - Bvad, Basavilbaso 1094, San Benito</span>
+                    <span>Edificio Municipal - Blvd. Basavilbaso 1094, San Benito</span>
                   </p>
                   <p className="flex items-center gap-2">
                     <IconPhone className="text-primary" size={20} />

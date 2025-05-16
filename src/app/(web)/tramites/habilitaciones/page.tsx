@@ -8,8 +8,8 @@ import {
 import Link from 'next/link'
 
 export default async function TramitesLicenciaPage() {
-  const { docs: licencia } = await basePayload.find({
-    collection: 'licencia',
+  const { docs: habilitaciones } = await basePayload.find({
+    collection: 'habilitaciones',
   })
 
   return (
