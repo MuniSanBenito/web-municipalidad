@@ -33,7 +33,7 @@ export default async function PageGobierno() {
               '2007-2011: Ángel Vazquez (FPV)',
               '2011-2015: Ángel Vazquez (hijo) (FPV)',
               '2015-2019: Exequiel Donda (UNA)',
-              '2019-2023: Exequiel Donda (UNA)',
+              '2019-2023: Exequiel Donda (Cambiemos)',
               '2023-2027: Ariel Voeffray (JPC)',
             ].map((intendente, index, array) => (
               <div
