@@ -139,20 +139,40 @@ export default async function TramitesLicenciaPage() {
           <div className="space-y-4">
             <p>
               Para realizar cualquier trámite de habilitación comercial, es necesario presentar la
-              documentación en la Dirección de Habilitaciones Comerciales de la Municipalidad de San
+              documentación en el Area de Habilitaciones Comerciales de la Municipalidad de San
               Benito.
             </p>
             <p>
               <strong>Horario de atención:</strong> Lunes a Viernes de 7:00 a 13:00 hs.
             </p>
             <p>
-              <strong>Ubicación:</strong> Edificio Municipal - Av. San Martín 1098, San Benito,
-              Entre Ríos.
+              <strong>Ubicación:</strong> Edificio Municipal - Basavilbaso 1094, San Benito, Entre
+              Ríos.
             </p>
-            <p>
-              <strong>Consultas:</strong> Para más información, puede comunicarse al teléfono (0343)
-              4910135 o enviar un correo electrónico a habilitaciones@sanbenito.gob.ar
+            <p className="font-medium">
+              <strong className="text-primary">Consultas:</strong> Para más información:
             </p>
+            <ul className="mt-2 list-disc space-y-2 pl-8">
+              <li>
+                <strong>WhatsApp:</strong>{' '}
+                <a
+                  href="https://wa.me/3434537319"
+                  target="_blank"
+                  className="text-primary hover:underline"
+                >
+                  3434537319
+                </a>
+              </li>
+              <li>
+                <strong>Correo electrónico:</strong>{' '}
+                <a
+                  href="mailto:habilitaciones@munisanbenito.gov.ar"
+                  className="text-primary hover:underline"
+                >
+                  habilitaciones@munisanbenito.gov.ar
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </section>

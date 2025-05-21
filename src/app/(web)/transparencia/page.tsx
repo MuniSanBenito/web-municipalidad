@@ -7,7 +7,6 @@ import {
   IconDashboard,
   IconDatabase,
   IconMapPin,
-  IconRoad,
 } from '@tabler/icons-react'
 
 const sections = [
@@ -19,7 +18,7 @@ const sections = [
   },
   { title: 'Memorias del intendente', icon: IconMapPin, link: 'transparencia/memorias' },
   { title: 'Infraestructura de Datos Espaciales', icon: IconDatabase, link: 'transparencia/ide' },
-  { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' },
+  // { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' }, esto es para implementar mas adelante un modulo para ir cargando las obras en ejecucion y las finalizadas
   {
     title: 'Intimaciones Públicas',
     icon: IconAlertCircle,

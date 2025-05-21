@@ -54,7 +54,7 @@ export default function PageNuestraCiudad() {
               'San Pedro',
               'La Loma',
               'San Miguel',
-              'Loteo Dobanton/Mizawak/Martinez',
+              'Loteo Dobanton Mizawak Martinez',
               'San Sebastián',
               'La Virgencita II',
               'Loteo Bizai',
