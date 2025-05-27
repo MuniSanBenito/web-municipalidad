@@ -15,34 +15,33 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
-    "@payloadcms/db-mongodb": "3.37.0",
-    "@payloadcms/db-postgres": "3.37.0",
-    "@payloadcms/live-preview-react": "3.37.0",
-    "@payloadcms/next": "3.37.0",
-    "@payloadcms/payload-cloud": "3.37.0",
-    "@payloadcms/richtext-lexical": "3.37.0",
-    "@payloadcms/storage-s3": "3.37.0",
-    "@tabler/icons-react": "3.31.0",
-    "@tailwindcss/postcss": "4.1.5",
+    "@payloadcms/db-mongodb": "3.39.1",
+    "@payloadcms/live-preview-react": "3.39.1",
+    "@payloadcms/next": "3.39.1",
+    "@payloadcms/payload-cloud": "3.39.1",
+    "@payloadcms/richtext-lexical": "3.39.1",
+    "@payloadcms/storage-s3": "3.39.1",
+    "@tabler/icons-react": "3.33.0",
+    "@tailwindcss/postcss": "4.1.7",
     "cross-env": "7.0.3",
     "graphql": "16.11.0",
     "next": "15.3.2",
     "next-themes": "0.4.6",
-    "payload": "3.37.0",
+    "payload": "3.39.1",
     "postcss": "8.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sharp": "0.34.1",
-    "tailwind-merge": "3.2.0",
-    "tailwindcss": "4.1.5"
+    "sharp": "0.34.2",
+    "tailwind-merge": "3.3.0",
+    "tailwindcss": "4.1.7"
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
-    "@types/node": "22.15.14",
-    "@types/react": "19.1.3",
-    "@types/react-dom": "19.1.3",
-    "daisyui": "5.0.35",
-    "eslint": "9.26.0",
+    "@types/node": "22.15.21",
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.5",
+    "daisyui": "5.0.38",
+    "eslint": "9.27.0",
     "eslint-config-next": "15.3.2",
     "jsdom": "26.1.0",
     "prettier": "3.5.3",
@@ -52,7 +51,7 @@
   "engines": {
     "bun": "1.2.12"
   },
-  "packageManager": "bun@1.2.12",
+  "packageManager": "bun@1.2.14",
   "trustedDependencies": [
     "sharp"
   ]
