@@ -21,7 +21,6 @@ export default function PageNuestraCiudad() {
           </div>
         </div>
       </section>
-
       <section className="mt-10 space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="bg-base-100 rounded-lg p-6 shadow-md transition-shadow hover:shadow-lg">
