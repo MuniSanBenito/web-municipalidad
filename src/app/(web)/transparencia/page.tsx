@@ -1,4 +1,5 @@
 'use client'
+import PageTitle from '@/components/ui/PageTitle'
 import {
   IconAlertCircle,
   IconBuildings,
@@ -6,7 +7,6 @@ import {
   IconDashboard,
   IconDatabase,
   IconMapPin,
-  IconRoad,
 } from '@tabler/icons-react'
 
 const sections = [
@@ -18,7 +18,7 @@ const sections = [
   },
   { title: 'Memorias del intendente', icon: IconMapPin, link: 'transparencia/memorias' },
   { title: 'Infraestructura de Datos Espaciales', icon: IconDatabase, link: 'transparencia/ide' },
-  { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' },
+  // { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' }, esto es para implementar mas adelante un modulo para ir cargando las obras en ejecucion y las finalizadas
   {
     title: 'Intimaciones Públicas',
     icon: IconAlertCircle,
@@ -30,7 +30,7 @@ const sections = [
 export default function PageTransparencia() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-primary mb-12 text-center text-5xl font-bold">Transparencia</h1>
+      <PageTitle title="Transparencia" />
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {sections.map((section, index) => (
           <a

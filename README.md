@@ -1,9 +1,3 @@
-## Trae
-
-Used 1 context
-
-README.md 1-1
-
 # Sitio Web de la Municipalidad de San Benito
 
 Portal oficial de la ciudad de San Benito, Entre Ríos

@@ -28,8 +28,15 @@ export default function IntimacionesPublicas() {
         const response = await fetch('/api/intimaciones')
         const data = await response.json()
 
+        // Verificamos la estructura de la respuesta y aseguramos que sea un array
+        const intimacionesData = Array.isArray(data.docs) 
+          ? data.docs 
+          : Array.isArray(data) 
+            ? data 
+            : [];
+
         // Ordenamos por fecha de creación (más reciente primero)
-        const sortedIntimaciones = data.docs.sort(
+        const sortedIntimaciones = intimacionesData.sort(
           (a: Intimacion, b: Intimacion) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         )

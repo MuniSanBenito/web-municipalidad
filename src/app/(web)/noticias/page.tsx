@@ -1,3 +1,4 @@
+import PageTitle from '@/components/ui/PageTitle'
 import { basePayload } from '@/web/lib/payload'
 import { IconCalendar, IconChevronRight } from '@tabler/icons-react'
 import Image from 'next/image'
@@ -17,10 +18,7 @@ export default async function PageNoticias({ searchParams }: Props) {
   return (
     <main className="container mx-auto min-h-screen px-4 py-12">
       {/* Título principal */}
-      <header className="mb-12 text-center">
-        <h1 className="text-base-content text-5xl font-bold">Últimas Noticias</h1>
-        <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full"></div>
-      </header>
+      <PageTitle title="Últimas Noticias" />
 
       {/* Lista de noticias */}
       <section className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
