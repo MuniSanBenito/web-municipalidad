@@ -52,7 +52,7 @@ async function seed() {
           continue
         }
 
-        let avatarId = DEFAULT_AVATAR_ID
+        /* let avatarId = DEFAULT_AVATAR_ID
         if (usuario.image !== DEFAULT_AVATAR) {
           const resImagen = await fetch(usuario.imageUrl)
           const arrayBuffer = await resImagen.arrayBuffer()
@@ -97,7 +97,7 @@ async function seed() {
             createdAt: usuario.created_at,
             updatedAt: usuario.updated_at,
           },
-        })
+        }) */
       }
     }
 

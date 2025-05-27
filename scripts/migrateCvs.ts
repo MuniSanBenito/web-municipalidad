@@ -106,7 +106,7 @@ async function seed() {
         const categorias = curriculum?.categorias?.map((categoria: any) => ({
           nombre: categoria?.nombre,
         }))
-        await payload.create({
+        /* await payload.create({
           collection: 'curriculums',
           data: {
             user,
@@ -115,7 +115,7 @@ async function seed() {
             referencias,
             categorias,
           },
-        })
+        }) */
       }
     }
 

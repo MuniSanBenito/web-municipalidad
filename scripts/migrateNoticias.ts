@@ -1,6 +1,4 @@
-import type { Archivo } from '@/payload-types'
 import config from '@payload-config'
-import { JSDOM } from 'jsdom'
 import { getPayload } from 'payload'
 
 const OLD_API_URL = 'https://api.sanbenito.gob.ar/api'
@@ -35,7 +33,7 @@ async function seed() {
 
       const mimetype = resImagen.headers.get('content-type') ?? 'image/*'
 
-      const media = await payload.create({
+      /* const media = await payload.create({
         collection: 'imagenes',
         data: {
           alt: noticia.title,
@@ -121,7 +119,7 @@ async function seed() {
           updatedAt: noticia.updated_at,
           archivos: uploadFiles,
         },
-      })
+      }) */
     }
 
     /* let i = 1

@@ -60,7 +60,7 @@ async function seed() {
 
   console.log(resImagen, imagen)
 
-  const media = await payload.create({
+  /* const media = await payload.create({
     collection: 'imagenes',
     data: {
       alt: noticia.title,
@@ -70,7 +70,7 @@ async function seed() {
       mimeType: imagen.type,
       filesize: imagen.size,
     },
-  })
+  }) */
 
   /* await payload.create({
     collection: 'noticias',
