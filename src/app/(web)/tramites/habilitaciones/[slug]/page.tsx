@@ -2,12 +2,12 @@ import { basePayload } from '@/web/lib/payload'
 import { notFound } from 'next/navigation'
 
 type Props = {
-  params: { slug: string }
-  searchParams: { [key: string]: string }
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string }>
 }
 
 export default async function PageHabilitaciones({ params }: Props) {
-  const { slug } = params
+  const { slug } = await params
 
   // Decodificar el slug de la URL (para manejar espacios y caracteres especiales)
   const decodedSlug = decodeURIComponent(slug)
