@@ -1,6 +1,84 @@
 import type { Imagen, Noticia } from '@/payload-types'
 import { basePayload } from '@/web/lib/payload'
+import {
+  IconBallFootball,
+  IconBuilding,
+  IconBuildingStore,
+  IconCash,
+  IconClipboardList,
+  IconLicense,
+} from '@tabler/icons-react'
 import Image from 'next/image'
+import Link from 'next/link'
+
+const TRAMITES = [
+  {
+    title: 'Licencia de Conducir',
+    icon: IconLicense,
+    link: '/tramites/licencia',
+    description: 'Información sobre trámites de licencias de conducir',
+  },
+  {
+    title: 'Habilitaciones Comerciales',
+    icon: IconBuildingStore,
+    link: '/tramites/habilitaciones',
+    description: 'Requisitos y procedimientos para habilitaciones comerciales',
+  },
+  {
+    title: 'Obras Privadas',
+    icon: IconBuilding,
+    link: '/tramites/obras-privadas',
+    description: 'Trámites relacionados con construcciones y proyectos',
+  },
+  {
+    title: 'Rentas',
+    icon: IconCash,
+    link: '/tramites/rentas',
+    description: 'Información sobre impuestos y tasas municipales',
+  },
+  {
+    title: 'Actividades Deportivas',
+    icon: IconBallFootball,
+    link: '/tramites/actividades-deportivas',
+    description: 'Talleres deportivos y recreativos municipales',
+  },
+  {
+    title: 'Mesa de Entrada',
+    icon: IconClipboardList,
+    link: '/tramites/mesa-de-entrada',
+    description: 'Información sobre presentación de trámites generales',
+  },
+  /* {
+    title: 'Área Mujer y Género',
+    icon: IconGenderFemale,
+    link: '/tramites/area-mujer',
+    description: 'Servicios y asistencia del área de mujer y género',
+  },
+  {
+    title: 'Punto Digital - Biblioteca',
+    icon: IconBook,
+    link: '/tramites/punto-digital-biblioteca',
+    description: 'Talleres y actividades en la Biblioteca Municipal',
+  },
+  {
+    title: 'Talleres Culturales',
+    icon: IconMusic,
+    link: '/tramites/talleres-culturales',
+    description: 'Información sobre talleres artísticos municipales',
+  },
+  {
+    title: 'CIC Barrio San Pedro',
+    icon: IconBuildingCommunity,
+    link: '/tramites/cic-barrio-san-pedro',
+    description: 'Actividades y talleres en el Centro Integrador Comunitario',
+  },
+  {
+    title: 'Recursos Humanos',
+    icon: IconUserCircle,
+    link: 'http://181.228.27.231/personal/personal.aspx',
+    description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
+  }, */
+]
 
 function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
   const portada = noticia.portada as Imagen
@@ -72,7 +150,7 @@ export default async function Page() {
 
   return (
     <>
-      <section className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
         <div className="hidden w-full justify-center gap-2 py-2 md:flex">
           {noticias.docs.map((noticia, i) => (
@@ -81,7 +159,28 @@ export default async function Page() {
             </a>
           ))}
         </div>
-      </section>
+        <section
+          id="tramites"
+          className="mt-10 grid grid-cols-1 gap-10 px-15 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {TRAMITES.map((tramite) => (
+            <Link
+              key={tramite.link}
+              href={tramite.link}
+              className="card bg-base-100 hover:bg-base-200 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
+              aria-label={`Ir a ${tramite.title}`}
+            >
+              <article className="card-body items-center text-center">
+                <span className="text-primary text-6xl">
+                  <tramite.icon stroke={1.2} size={80} />
+                </span>
+                <h2 className="card-title text-2xl font-bold">{tramite.title}</h2>
+                <p className="text-base">{tramite.description}</p>
+              </article>
+            </Link>
+          ))}
+        </section>
+      </div>
     </>
   )
 }
