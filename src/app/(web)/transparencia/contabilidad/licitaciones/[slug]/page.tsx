@@ -1,4 +1,5 @@
 import PageTitle from '@/components/ui/PageTitle'
+import type { Archivo } from '@/payload-types'
 import { basePayload } from '@/web/lib/payload'
 import { IconArrowLeft, IconCalendar, IconDownload, IconFile } from '@tabler/icons-react'
 import Link from 'next/link'
@@ -30,12 +31,17 @@ interface Licitacion {
   created_by?: any
 }
 
-export default async function LicitacionDetalle({ params }: { params: { slug: string } }) {
+type Props = {
+  params: Promise<{ slug: string }>
+}
+
+export default async function LicitacionDetalle({ params }: Props) {
+  const { slug } = await params
   // Obtener la licitación específica usando el slug (id)
   const licitacion = await basePayload
     .findByID({
       collection: 'licitaciones',
-      id: params.slug,
+      id: slug,
     })
     .catch(() => null)
 
@@ -65,6 +71,8 @@ export default async function LicitacionDetalle({ params }: { params: { slug: st
   const descripcionHTML = richTextToHTML(licitacion.descripcion)
   // Eliminamos la referencia a resultados ya que no existe en el objeto
   // const resultadosHTML = licitacion.resultados ? richTextToHTML(licitacion.resultados) : '';
+
+  console.log(licitacion?.archivos_adicionales)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -111,30 +119,27 @@ export default async function LicitacionDetalle({ params }: { params: { slug: st
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {licitacion.documento && (
               <a
-                href={licitacion?.documento?.url}
+                href={(licitacion?.documento as Archivo)?.url!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary gap-2"
               >
                 <IconFile size={20} />
-                <span>Pliego de licitación: {licitacion.documento.filename}</span>
+                <span>Pliego de licitación: {(licitacion.documento as Archivo).filename}</span>
               </a>
             )}
-
-            {licitacion.archivos_adicionales &&
-              licitacion.archivos_adicionales.length > 0 &&
-              licitacion.archivos_adicionales.map((archivo, index) => (
-                <a
-                  key={index}
-                  href={archivo.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-outline gap-2"
-                >
-                  <IconDownload size={20} />
-                  <span>{archivo.filename}</span>
-                </a>
-              ))}
+            {licitacion.archivos_adicionales?.map(({ archivo }, index) => (
+              <a
+                key={index}
+                href={(archivo as Archivo).url ?? ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline gap-2"
+              >
+                <IconDownload size={20} />
+                <span>{(archivo as Archivo).filename}</span>
+              </a>
+            ))}
           </div>
         </div>
 
