@@ -29,8 +29,6 @@ export default async function PageHabilitaciones({ params }: Props) {
 
   const habilitacion = docs[0]
 
-  console.log(habilitacion) // Esto imprimirá el objeto de la habilitación en la consol
-
   return (
     <main className="container mx-auto px-4 py-6">
       <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
