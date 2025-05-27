@@ -28,9 +28,9 @@ export default function PageNuestraCiudad() {
             <h2 className="mb-4 text-3xl font-semibold">Historia</h2>
             <p className="text-lg leading-relaxed">
               San Benito nació con la llegada de inmigrantes italianos, eslovenos y austríacos en
-              1879. La colonia "3 de Febrero" fue el primer asentamiento, evolucionando con la
-              construcción de la capilla en la Concesión N° 11, marcando el inicio de una próspera
-              comunidad que hoy continúa creciendo y desarrollándose.
+              1879. La colonia &quot;3 de Febrero&quot; fue el primer asentamiento, evolucionando
+              con la construcción de la capilla en la Concesión N° 11, marcando el inicio de una
+              próspera comunidad que hoy continúa creciendo y desarrollándose.
             </p>
           </div>
 

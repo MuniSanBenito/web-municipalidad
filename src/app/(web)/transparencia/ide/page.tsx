@@ -364,13 +364,12 @@ export default function PageIde() {
               municipio de San Benito.
             </p>
             <p className="mt-2">
-              La IDE San Benito se enmarca dentro de la
+              La IDE San Benito se enmarca dentro de la{' '}
               <strong>
-                {' '}
-                ordenanza Nº 663/2, expediente Nº 106/21 "Plan de Modernización Municipal"{' '}
-              </strong>
+                ordenanza Nº 663/2, expediente Nº 106/21 &quot;Plan de Modernización Municipal&quot;
+              </strong>{' '}
               , y a nivel nacional dentro de la Ley N° 27.275 sancionada el 14 de septiembre de 2016
-              "DERECHO DE ACCESO A LA INFORMACIÓN PÚBLICA".
+              &quot;DERECHO DE ACCESO A LA INFORMACIÓN PÚBLICA&quot;.
             </p>
           </div>
         </div>
