@@ -49,7 +49,7 @@ export function RootLayout({ children }: PropsWithChildren) {
         {/* Page content here */}
         <header
           className={twJoin(
-            'bg-primary dark:bg-neutral fixed top-0 left-0 z-50 mb-2 flex w-screen items-center justify-between px-4 shadow-sm transition-all duration-100',
+            'bg-primary dark:bg-neutral fixed top-0 left-0 z-50 mb-2 flex w-screen items-center justify-between px-8 shadow-sm transition-all duration-100',
             isScrolled ? 'h-24' : 'h-32',
           )}
         >
