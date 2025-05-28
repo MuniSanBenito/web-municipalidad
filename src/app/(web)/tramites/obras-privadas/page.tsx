@@ -44,7 +44,8 @@ export default function PageObrasPrivadas() {
 
             <Link
               href="/tramites/obras-privadas/presentacion-de-proyecto"
-              className="btn btn-primary gap-2 shadow-md transition-transform hover:scale-105"
+              className="btn gap-2 shadow-md transition-transform hover:scale-105"
+              style={{ backgroundColor: '#cbc846' }}
             >
               <IconFileDescription size={20} />
               <span>Presentación de Proyecto</span>
@@ -52,7 +53,8 @@ export default function PageObrasPrivadas() {
 
             <Link
               href="/tramites/obras-privadas/presentacion-de-relevamiento"
-              className="btn btn-secondary gap-2 shadow-md transition-transform hover:scale-105"
+              className="btn gap-2 shadow-md transition-transform hover:scale-105"
+              style={{ backgroundColor: '#dfce45' }}
             >
               <IconCopy size={20} />
               <span>Presentación de Relevamiento</span>
