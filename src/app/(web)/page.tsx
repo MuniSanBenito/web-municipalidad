@@ -7,46 +7,47 @@ import {
   IconCash,
   IconClipboardList,
   IconLicense,
+  type Icon,
+  type IconProps,
 } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 
-const TRAMITES = [
+const TRAMITES: {
+  title: string
+  icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>
+  link: string
+}[] = [
   {
     title: 'Licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
-    description: 'Información sobre trámites de licencias de conducir',
   },
   {
     title: 'Habilitaciones Comerciales',
     icon: IconBuildingStore,
     link: '/tramites/habilitaciones',
-    description: 'Requisitos y procedimientos para habilitaciones comerciales',
   },
   {
     title: 'Obras Privadas',
     icon: IconBuilding,
     link: '/tramites/obras-privadas',
-    description: 'Trámites relacionados con construcciones y proyectos',
   },
   {
     title: 'Rentas',
     icon: IconCash,
     link: '/tramites/rentas',
-    description: 'Información sobre impuestos y tasas municipales',
   },
   {
     title: 'Actividades Deportivas',
     icon: IconBallFootball,
     link: '/tramites/actividades-deportivas',
-    description: 'Talleres deportivos y recreativos municipales',
   },
   {
     title: 'Mesa de Entrada',
     icon: IconClipboardList,
     link: '/tramites/mesa-de-entrada',
-    description: 'Información sobre presentación de trámites generales',
   },
   /* {
     title: 'Área Mujer y Género',
@@ -167,15 +168,12 @@ export default async function Page() {
             <Link
               key={tramite.link}
               href={tramite.link}
-              className="card bg-base-100 hover:bg-base-200 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
+              className="card bg-base-100 hover:bg-base-200 card-sm shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
               aria-label={`Ir a ${tramite.title}`}
             >
               <article className="card-body items-center text-center">
-                <span className="text-primary text-6xl">
-                  <tramite.icon stroke={1.2} size={80} />
-                </span>
-                <h2 className="card-title text-2xl font-bold">{tramite.title}</h2>
-                <p className="text-base">{tramite.description}</p>
+                <tramite.icon className="text-primary" stroke={1.1} size={80} />
+                <h3 className="card-title">{tramite.title}</h3>
               </article>
             </Link>
           ))}
