@@ -144,10 +144,18 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
 }
 
 export default async function Page() {
-  const noticias = await basePayload.find({
-    collection: 'noticias',
-    limit: 4,
-  })
+  const [noticias, eventos] = await Promise.all([
+    basePayload.find({
+      collection: 'noticias',
+      limit: 4,
+    }),
+    basePayload.find({
+      collection: 'eventos',
+      depth: 3,
+    }),
+  ])
+
+  console.log('eventos', eventos)
 
   return (
     <>
@@ -162,7 +170,7 @@ export default async function Page() {
         </div>
         <section
           id="tramites"
-          className="mt-10 grid grid-cols-1 gap-10 px-15 sm:grid-cols-2 lg:grid-cols-4"
+          className="my-10 grid grid-cols-1 gap-10 px-15 sm:grid-cols-2 lg:grid-cols-4"
         >
           {TRAMITES.map((tramite) => (
             <Link
@@ -177,6 +185,13 @@ export default async function Page() {
               </article>
             </Link>
           ))}
+        </section>
+        <section id="agenda" className="text-center">
+          <h3 className="text-2xl font-bold">AGENDA</h3>
+          <p>Enterate de lo que sucede en tu ciudad</p>
+          <Link href="/agenda" className="btn btn-sm">
+            VER MÁS
+          </Link>
         </section>
       </div>
     </>

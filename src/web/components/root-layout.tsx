@@ -45,7 +45,7 @@ export function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <>
-      <div className="drawer-content">
+      <div className="drawer-content pb-10">
         {/* Page content here */}
         <header
           className={twJoin(
