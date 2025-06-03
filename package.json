@@ -30,6 +30,7 @@
     "payload": "3.39.1",
     "postcss": "8.5.3",
     "react": "19.1.0",
+    "react-chatbot-kit": "^2.2.2",
     "react-dom": "19.1.0",
     "sharp": "0.34.2",
     "tailwind-merge": "3.3.0",
