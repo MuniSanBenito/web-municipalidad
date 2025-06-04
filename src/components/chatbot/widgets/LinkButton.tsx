@@ -12,18 +12,15 @@ const LinkButton: React.FC<LinkButtonProps> = ({ payload }) => {
   return (
     <a
       href={payload.url}
-      target="_blank"
+      target="_blank" // Open in new tab for external/page links
       rel="noopener noreferrer"
-      className="react-chatbot-kit-chat-btn-send" // Basic styling, can be customized
+      // Using DaisyUI/Tailwind classes. Assumes Tailwind is processed for these class names.
+      className="btn btn-sm btn-info text-white my-1 mx-0.5 normal-case"
+      // Fallback inline styles if classes don't apply perfectly or for minor tweaks
       style={{
-        padding: '8px 12px',
-        borderRadius: '5px',
-        fontSize: '0.9rem',
-        margin: '5px',
-        backgroundColor: '#5ccc9d', // Match chat button color
-        color: 'white',
         textDecoration: 'none',
         display: 'inline-block',
+        // Ensure high contrast for accessibility if default btn-info doesn't provide it
       }}
     >
       {payload.label}

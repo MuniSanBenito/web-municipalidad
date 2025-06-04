@@ -1,5 +1,5 @@
 {
-  "npm.packageManager": "pnpm",
+  "npm.packageManager": "bun",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -49,5 +49,12 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.classFunctions": ["twMerge", "twJoin"]
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    "twMerge",
+    "twJoin"
+  ]
 }

@@ -16,22 +16,25 @@ const GeneralOptions: React.FC<GeneralOptionsProps> = (props) => {
     <button
       key={option.id}
       onClick={option.handler}
-      className="react-chatbot-kit-chat-btn-send" // Basic styling
+      // Using DaisyUI/Tailwind classes
+      className="btn btn-sm btn-outline btn-primary my-1 mx-0.5 normal-case"
+      // Fallback inline styles for minor tweaks
       style={{
-        padding: '8px 12px',
-        borderRadius: '5px',
-        fontSize: '0.9rem',
-        margin: '5px',
-        backgroundColor: '#f0f0f0',
-        border: '1px solid #ccc',
-        cursor: 'pointer',
+        // Example: Adjust padding if btn-sm is too small/large
+        // padding: '0.4rem 0.8rem',
       }}
     >
       {option.text}
     </button>
   ));
 
-  return <div className="options-container" style={{ display: 'flex', flexWrap: 'wrap' }}>{buttons}</div>;
+  return (
+    <div
+      className="options-container flex flex-wrap justify-start items-center py-2"
+    >
+      {buttons}
+    </div>
+  );
 };
 
 export default GeneralOptions;
