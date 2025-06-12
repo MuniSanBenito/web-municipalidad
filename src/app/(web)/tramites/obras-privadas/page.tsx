@@ -44,7 +44,8 @@ export default function PageObrasPrivadas() {
 
             <Link
               href="/tramites/obras-privadas/presentacion-de-proyecto"
-              className="btn btn-primary gap-2 shadow-md transition-transform hover:scale-105"
+              className="btn gap-2 shadow-md transition-transform hover:scale-105"
+              style={{ backgroundColor: '#cbc846' }}
             >
               <IconFileDescription size={20} />
               <span>Presentación de Proyecto</span>
@@ -52,7 +53,8 @@ export default function PageObrasPrivadas() {
 
             <Link
               href="/tramites/obras-privadas/presentacion-de-relevamiento"
-              className="btn btn-secondary gap-2 shadow-md transition-transform hover:scale-105"
+              className="btn gap-2 shadow-md transition-transform hover:scale-105"
+              style={{ backgroundColor: '#dfce45' }}
             >
               <IconCopy size={20} />
               <span>Presentación de Relevamiento</span>
@@ -94,7 +96,7 @@ export default function PageObrasPrivadas() {
                 <h3 className="font-bold">Horarios de Atención</h3>
                 <p className="text-sm">
                   Lunes a Viernes de 7:00 a 13:00 hs en el Edificio Municipal. Para consultas, puede
-                  comunicarse al teléfono (0343) 4970556 o por correo a
+                  comunicarse al teléfono (0343) 4973454 o por correo a
                   <a
                     href="mailto:obrasprivadas@munisanbenito.gov.ar"
                     className="ml-1 font-bold hover:underline"

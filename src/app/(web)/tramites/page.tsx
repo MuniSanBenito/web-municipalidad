@@ -9,8 +9,9 @@ import {
   IconClipboardList,
   IconGenderFemale,
   IconLicense,
-  IconMusic,
+  IconMasksTheater,
   IconUserCircle,
+  IconHeadset,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -50,6 +51,12 @@ const tramites = [
     link: '/tramites/obras-privadas',
     description: 'Trámites relacionados con construcciones y proyectos',
   },
+  // {
+  //   title: 'Catastro Municipal',
+  //   icon: IconHomeEdit,
+  //   link: '/tramites/catastro',
+  //   description: 'Información sobre presentación de trámites generales',
+  // },
   {
     title: 'Mesa de Entrada',
     icon: IconClipboardList,
@@ -64,7 +71,7 @@ const tramites = [
   },
   {
     title: 'Talleres Culturales',
-    icon: IconMusic,
+    icon: IconMasksTheater,
     link: '/tramites/talleres-culturales',
     description: 'Información sobre talleres artísticos municipales',
   },
@@ -85,6 +92,12 @@ const tramites = [
     icon: IconUserCircle,
     link: 'http://181.228.27.231/personal/personal.aspx',
     description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
+  },
+  {
+    title: 'Centro de Atención Al Vecino',
+    icon: IconHeadset,
+    link: '/tramites/cav',
+    description: 'Gestión de reclamos y atención ciudadana',
   },
 ]
 
