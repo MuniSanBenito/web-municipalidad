@@ -49,5 +49,8 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.classFunctions": ["twMerge", "twJoin"]
+  "tailwindCSS.classFunctions": ["twMerge", "twJoin"],
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  }
 }
