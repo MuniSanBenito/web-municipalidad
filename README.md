@@ -147,4 +147,3 @@ Para más información, contactar a la Asesoría de Modernización de la Municip
 📧 Email: Modernizacion@sanbenito.gob.ar 🌐 Web: www.sanbenito.gob.ar
 
 Desarrollado con ❤️ para los ciudadanos de San Benito
-
