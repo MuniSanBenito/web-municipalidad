@@ -10,6 +10,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './payload/collections/Archivos'
 import { Avatares } from './payload/collections/Avatares'
+import { EventosTags } from './payload/collections/EventosTags'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Users } from './payload/collections/Users'
 import { COLLECTIONS, GLOBALS, Permisos } from './payload/globals/Permisos'
@@ -120,7 +121,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: COLLECTIONS,
+  collections: [...COLLECTIONS, EventosTags],
   globals: [...GLOBALS, Permisos],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

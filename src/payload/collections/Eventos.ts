@@ -29,10 +29,11 @@ export const Eventos: CollectionConfig = {
       unique: true,
     },
     {
-      type: 'textarea',
+      type: 'text',
       name: 'descripcion',
-      label: 'Descripción',
+      label: 'Descripción Corta',
       required: true,
+      maxLength: 256,
     },
     {
       type: 'date',
@@ -51,6 +52,34 @@ export const Eventos: CollectionConfig = {
       relationTo: 'ubicaciones',
       required: true,
       label: 'Ubicación',
+    },
+    {
+      type: 'text',
+      name: 'entradas',
+      label: 'Entradas',
+      required: true,
+      admin: {
+        description: 'Enlace a la página de entradas o información adicional',
+        placeholder: 'Entrada libre y gratuita',
+      },
+    },
+    {
+      type: 'text',
+      name: 'organiza',
+      label: 'Organiza',
+      required: true,
+      admin: {
+        description: 'Nombre de la organización o persona que organiza el evento',
+        placeholder: 'Municipalidad de San Benito',
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'tags',
+      label: 'Etiquetas',
+      required: false,
+      hasMany: true,
+      relationTo: 'eventos-tags',
     },
     {
       name: 'imagen',

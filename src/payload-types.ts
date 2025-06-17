@@ -89,6 +89,7 @@ export interface Config {
     licitaciones: Licitacione;
     concursos: Concurso;
     'balances-mensuales': BalancesMensuale;
+    'eventos-tags': EventosTag;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -114,6 +115,7 @@ export interface Config {
     licitaciones: LicitacionesSelect<false> | LicitacionesSelect<true>;
     concursos: ConcursosSelect<false> | ConcursosSelect<true>;
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
+    'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -524,8 +526,28 @@ export interface Evento {
   descripcion: string;
   fecha: string;
   ubicacion: string | Ubicacione;
+  /**
+   * Enlace a la página de entradas o información adicional
+   */
+  entradas: string;
+  /**
+   * Nombre de la organización o persona que organiza el evento
+   */
+  organiza: string;
+  tags?: (string | EventosTag)[] | null;
   imagen?: (string | null) | Imagen;
   archivos?: (string | Archivo)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos-tags".
+ */
+export interface EventosTag {
+  id: string;
+  nombre: string;
+  descripcion: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -730,6 +752,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'balances-mensuales';
         value: string | BalancesMensuale;
+      } | null)
+    | ({
+        relationTo: 'eventos-tags';
+        value: string | EventosTag;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1138,6 +1164,9 @@ export interface EventosSelect<T extends boolean = true> {
   descripcion?: T;
   fecha?: T;
   ubicacion?: T;
+  entradas?: T;
+  organiza?: T;
+  tags?: T;
   imagen?: T;
   archivos?: T;
   updatedAt?: T;
@@ -1215,6 +1244,16 @@ export interface BalancesMensualesSelect<T extends boolean = true> {
         descripcion?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos-tags_select".
+ */
+export interface EventosTagsSelect<T extends boolean = true> {
+  nombre?: T;
+  descripcion?: T;
   updatedAt?: T;
   createdAt?: T;
 }
