@@ -6,12 +6,11 @@ NODE_ENV = 'production'
 [phases.setup]
 nixPkgs = ['bun']
 nixLibs = ['gcc-unwrapped']
-nixpkgsArchive = 'nixpkgs/41da1e3ea8e23e094e5e3eeb1e6b830468a7399e'
 
 
 [phases.install]
 dependsOn = ['setup']
-cmds = ['bun install --frozen-lockfile']
+cmds = ['bun install']
 cacheDirectories = ['/root/.bun', 'node_modules']
 paths = ['/app/node_modules/.bin']
 
