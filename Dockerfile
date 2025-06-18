@@ -11,9 +11,7 @@ WORKDIR /app
 # Install dependencies
 COPY bun.lock ./
 COPY package.json ./
-# Usar cache mount para bun install
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --production=false
+RUN bun install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -41,9 +39,7 @@ COPY public ./public
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Optimización 7: Usar cache mount para next build
-RUN --mount=type=cache,target=/app/.next/cache \
-    bun run build
+RUN bun run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
