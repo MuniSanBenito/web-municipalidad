@@ -1,5 +1,6 @@
 [phases.setup]
-nixPkgs = ["bun", "git"]  # Incluye Bun desde nixpkgs
+nixPkgs = ["nodejs_22", "bun"]
+nixLibs = ["gcc-unwrapped"]
 
 [phases.install]
 cmds = ["bun install --frozen-lockfile"]
@@ -10,12 +11,12 @@ cacheDirectories = [
 ]
 
 [phases.build]
-cacheDirectories = [
-  ".next/cache"
-]
 cmds = [
   "echo '🏗 Starting build phase...'",
   "bun run build"
+]
+cacheDirectories = [
+  ".next/cache"
 ]
 
 [phases.start]
