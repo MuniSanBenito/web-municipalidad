@@ -3,7 +3,7 @@
 FROM oven/bun:alpine AS base
 
 # Instalar dependencias del sistema de una sola vez
-# RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat
 
 # Habilitar corepack globalmente
 # RUN corepack enable
