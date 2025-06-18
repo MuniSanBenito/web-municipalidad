@@ -4,8 +4,10 @@ NIXPACKS_METADATA = 'node'
 NODE_ENV = 'production'
 
 [phases.setup]
-nixPkgs = ['bun_1_2_13']
+nixPkgs = ['bun']
 nixLibs = ['gcc-unwrapped']
+nixpkgsArchive = 'nixpkgs/41da1e3ea8e23e094e5e3eeb1e6b830468a7399e'
+
 
 [phases.install]
 dependsOn = ['setup']
