@@ -7,7 +7,6 @@ NODE_ENV = 'production'
 nixPkgs = ['bun']
 nixLibs = ['gcc-unwrapped']
 
-
 [phases.install]
 dependsOn = ['setup']
 cmds = ['bun install']

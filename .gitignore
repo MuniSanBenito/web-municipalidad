@@ -43,6 +43,6 @@ next-env.d.ts
 /media
 
 package-lock.json
-bun.lockb
-bun.lock
+# bun.lockb
+# bun.lock
 pnpm-lock.yaml
