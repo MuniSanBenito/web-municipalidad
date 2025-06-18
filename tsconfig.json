@@ -25,6 +25,13 @@
     "target": "ES2022",
     "verbatimModuleSyntax": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/(payload)/api/graphql-playground/route.ts.bak",
+    "src/app/(payload)/api/graphql/route.ts.bak"
+  ],
   "exclude": ["node_modules"]
 }
