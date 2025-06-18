@@ -12,6 +12,7 @@ RUN bun install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+COPY package.json bun.lock* ./
 COPY next.config.mjs ./
 COPY tsconfig.json ./
 # COPY payload.config.ts ./
