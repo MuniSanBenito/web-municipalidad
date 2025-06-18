@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["bun", "git"]  # Incluye Bun desde nixpkgs
+cmds = ["bun install"]
+
+[phases.build]
+cmds = ["bun run build"]
+
+[phases.start]
+cmd = "bun run start"
+
+[cache]
+paths = ["node_modules", ".next/cache"]

@@ -50,13 +50,10 @@
     "typescript": "5.8.3"
   },
   "engines": {
-    "node": "22",
-    "pnpm": "10.12.1"
+    "bun": "1.2.16"
   },
-  "packageManager": "pnpm@10.12.1",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp"
-    ]
-  }
+  "packageManager": "bun@1.2.16",
+  "trustedDependencies": [
+    "sharp"
+  ]
 }
