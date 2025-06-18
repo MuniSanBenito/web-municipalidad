@@ -1,7 +1,34 @@
+# Archivos propios del desarrollo
 Dockerfile
 .dockerignore
-node_modules
-npm-debug.log
 README.md
-.next
 .git
+.gitignore
+
+# Dependencias locales (se reinstalan en la imagen)
+node_modules
+bun.lockb.backup
+*.log
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+
+# Archivos de compilación y cache
+.next
+dist
+build
+.cache
+*.tsbuildinfo
+
+# Configuración del editor y sistema
+*.swp
+*.swo
+.vscode
+.idea
+*.DS_Store
+.env
+.env.*
+ 
+# Archivos de prueba y cobertura
+coverage
+.nyc_output
