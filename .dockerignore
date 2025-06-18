@@ -11,7 +11,6 @@ bun.lockb.backup
 *.log
 npm-debug.log
 yarn.lock
-pnpm-lock.yaml
 
 # Archivos de compilación y cache
 .next
