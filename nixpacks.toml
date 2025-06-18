@@ -1,26 +1,35 @@
+providers = [] 
+
+[variables]
+CI = 'true'
+NIXPACKS_METADATA = 'node'
+NODE_ENV = 'production'
+
 [phases.setup]
-nixPkgs = ["nodejs_22", "bun"]
-nixLibs = ["gcc-unwrapped"]
+nixPkgs = ['bun']
+nixLibs = ['gcc-unwrapped'] 
 
 [phases.install]
-cmds = ["bun install --frozen-lockfile"]
+dependsOn = ['setup']
+cmds = [
+  'bun install --frozen-lockfile'
+]
 cacheDirectories = [
-  "/root/.bun",
-  "node_modules",
-  ".next/cache"
+  '/root/.bun',
+  'node_modules'
+]
+paths = [
+  '/app/node_modules/.bin'
 ]
 
 [phases.build]
+dependsOn = ['install']
 cmds = [
-  "echo '🏗 Starting build phase...'",
-  "bun run build"
+  'bun run build'
 ]
 cacheDirectories = [
-  ".next/cache"
+  '.next/cache'
 ]
 
-[phases.start]
-cmd = "bun run start"
-
-[cache]
-paths = ["node_modules", ".next/cache"]
+[start]
+cmd = 'bun run start'
