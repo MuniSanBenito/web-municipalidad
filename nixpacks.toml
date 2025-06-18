@@ -4,7 +4,7 @@ NIXPACKS_METADATA = 'node'
 NODE_ENV = 'production'
 
 [phases.setup]
-nixPkgs = ['bun_1_2_16']
+nixPkgs = ['bun_1_2_13']
 nixLibs = ['gcc-unwrapped']
 
 [phases.install]
