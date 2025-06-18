@@ -1,4 +1,4 @@
-providers = [] 
+providers = ["bun"] 
 
 [variables]
 CI = 'true'
