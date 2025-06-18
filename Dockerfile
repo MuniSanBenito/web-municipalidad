@@ -3,6 +3,7 @@ FROM oven/bun:1 AS base
 
 # Dependencies layer
 FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY bun.lock* ./
 COPY package.json ./
