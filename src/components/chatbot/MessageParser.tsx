@@ -1,17 +1,42 @@
 // src/components/chatbot/MessageParser.tsx
-import { IMessageParser } from 'react-chatbot-kit';
+import { createChatBotMessage } from 'react-chatbot-kit';
+import { detectIntent } from './aiService';
+
+// Definir la interfaz IMessageParser ya que no se exporta directamente de react-chatbot-kit
+interface IMessageParser {
+  parse(message: string): void;
+}
 
 interface TramiteMatcher {
   keywords: string[];
   handler: () => void;
 }
 
+interface PhoneNumberMatcher {
+  keywords: string[];
+  phoneNumber: string;
+  description: string;
+}
+
 class MessageParser implements IMessageParser {
   actionProvider: any;
   private tramiteMatchers: TramiteMatcher[];
+  private phoneNumberMatchers: PhoneNumberMatcher[];
 
   constructor(actionProvider: any) {
     this.actionProvider = actionProvider;
+
+    // Inicializar los matchers de números de teléfono
+    this.phoneNumberMatchers = [
+      { keywords: ['teléfono principal', 'telefono principal', 'número principal', 'numero principal'], phoneNumber: '(0343) 497-2222', description: 'Teléfono principal de la Municipalidad' },
+      { keywords: ['mesa de entrada', 'mesa entrada'], phoneNumber: '(0343) 497-2345', description: 'Mesa de Entrada' },
+      { keywords: ['rentas', 'impuestos', 'tasas'], phoneNumber: '(0343) 497-2678', description: 'Área de Rentas' },
+      { keywords: ['obras privadas', 'obras', 'construcción', 'construccion'], phoneNumber: '(0343) 497-2890', description: 'Área de Obras Privadas' },
+      { keywords: ['punto digital', 'biblioteca'], phoneNumber: '(0343) 497-3010', description: 'Punto Digital y Biblioteca' },
+      { keywords: ['deportes', 'actividades deportivas'], phoneNumber: '(0343) 497-2456', description: 'Área de Deportes' },
+      { keywords: ['cultura', 'talleres culturales'], phoneNumber: '(0343) 497-2789', description: 'Área de Cultura' },
+      { keywords: ['área mujer', 'area mujer', 'mujer'], phoneNumber: '(0343) 497-2567', description: 'Área de la Mujer' },
+    ];
 
     // Initialize tramiteMatchers here to correctly bind actionProvider methods
     this.tramiteMatchers = [
@@ -42,17 +67,42 @@ class MessageParser implements IMessageParser {
   parse(message: string): void {
     const lowerCaseMessage = message.toLowerCase();
 
+    // Verificar si es una consulta de horarios
+    if (lowerCaseMessage.includes('horario') || lowerCaseMessage.includes('hora de atención') || lowerCaseMessage.includes('cuando atienden')) {
+      this.actionProvider.handleHorarios();
+      return;
+    }
+
+    // Verificar si es una consulta de teléfono específico
+    const phoneMatch = this.findPhoneNumberMatch(lowerCaseMessage);
+    if (phoneMatch) {
+      const phoneMessage = this.createPhoneNumberMessage(phoneMatch);
+      this.actionProvider.handleUnknown(phoneMessage);
+      return;
+    }
+
+    // Verificar saludos
     if (lowerCaseMessage.includes('hola') || lowerCaseMessage.includes('buenos') || lowerCaseMessage.includes('buenas')) {
       this.actionProvider.greet();
-    } else if (lowerCaseMessage.includes('qué es esto') || lowerCaseMessage.includes('que es este sitio') || lowerCaseMessage.includes('info sitio')) {
+    } 
+    // Verificar información del sitio
+    else if (lowerCaseMessage.includes('qué es esto') || lowerCaseMessage.includes('que es este sitio') || lowerCaseMessage.includes('info sitio')) {
       this.actionProvider.handleWebsiteInfo();
-    } else if (lowerCaseMessage.includes('noticia') || lowerCaseMessage.includes('novedades')) {
+    } 
+    // Verificar noticias
+    else if (lowerCaseMessage.includes('noticia') || lowerCaseMessage.includes('novedades')) {
       this.actionProvider.handleNoticiasInfo();
-    } else if (lowerCaseMessage.includes('transparencia') || lowerCaseMessage.includes('documentos publicos') || lowerCaseMessage.includes('licitaciones')) {
+    } 
+    // Verificar transparencia
+    else if (lowerCaseMessage.includes('transparencia') || lowerCaseMessage.includes('documentos publicos') || lowerCaseMessage.includes('licitaciones')) {
       this.actionProvider.handleTransparenciaInfo();
-    } else if (lowerCaseMessage.includes('contacto') || lowerCaseMessage.includes('teléfono') || lowerCaseMessage.includes('email')) {
+    } 
+    // Verificar contacto
+    else if (lowerCaseMessage.includes('contacto') || lowerCaseMessage.includes('teléfono') || lowerCaseMessage.includes('telefono') || lowerCaseMessage.includes('email')) {
       this.actionProvider.handleContactoInfo();
-    } else if (lowerCaseMessage.includes('trámite') || lowerCaseMessage.includes('tramite') || lowerCaseMessage.includes('procedimiento') || lowerCaseMessage.includes('servicio')) {
+    } 
+    // Verificar trámites
+    else if (lowerCaseMessage.includes('trámite') || lowerCaseMessage.includes('tramite') || lowerCaseMessage.includes('procedimiento') || lowerCaseMessage.includes('servicio')) {
       let matchedSpecificTramite = false;
       // Iterate in order: more specific matches should ideally be earlier in the array or have more unique keywords.
       // The current keyword list has some overlaps (e.g. 'licencia' and 'licencia original').
@@ -76,8 +126,32 @@ class MessageParser implements IMessageParser {
         this.actionProvider.handleTramiteIntro(); // Fallback for general "trámite" query
       }
     } else {
-      this.actionProvider.handleUnknown();
+      // Si no coincide con ninguna de las opciones anteriores, enviamos al servicio de IA
+      this.actionProvider.handleUnknown(message);
     }
+  }
+
+  /**
+   * Busca coincidencias de números de teléfono en el mensaje
+   * @param message Mensaje del usuario en minúsculas
+   * @returns Matcher de teléfono encontrado o null
+   */
+  private findPhoneNumberMatch(message: string): PhoneNumberMatcher | null {
+    for (const matcher of this.phoneNumberMatchers) {
+      if (matcher.keywords.some(keyword => message.includes(keyword))) {
+        return matcher;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Crea un mensaje con la información del número de teléfono
+   * @param matcher Matcher de teléfono encontrado
+   * @returns Mensaje formateado
+   */
+  private createPhoneNumberMessage(matcher: PhoneNumberMatcher): string {
+    return `El número de teléfono para ${matcher.description} es ${matcher.phoneNumber}.`;
   }
 }
 export default MessageParser;

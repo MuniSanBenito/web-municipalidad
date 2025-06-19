@@ -1,5 +1,13 @@
 // src/components/chatbot/ActionProvider.tsx
-import { IActionProvider } from 'react-chatbot-kit';
+import { createChatBotMessage } from 'react-chatbot-kit';
+import { fetchAIResponse } from './aiService';
+
+// Definir la interfaz IActionProvider ya que no se exporta directamente de react-chatbot-kit
+interface IActionProvider {
+  createChatBotMessage: any;
+  setState: any;
+  createClientMessage: any;
+}
 
 class ActionProvider implements IActionProvider {
   createChatBotMessage: any;
@@ -63,15 +71,90 @@ class ActionProvider implements IActionProvider {
   }
   handleContactoInfo() {
     const message = this.createChatBotMessage(
-      'Puedes contactar a la municipalidad a través de: Email: Modernizacion@sanbenito.gob.ar. También puedes visitar nuestra página web www.sanbenito.gob.ar para más detalles.'
+      'Puedes contactar a la municipalidad a través de:\n\n📧 Email: Modernizacion@sanbenito.gob.ar\n📞 Teléfono principal: (0343) 497-2222\n📞 Mesa de entrada: (0343) 497-2345\n📞 Rentas: (0343) 497-2678\n📞 Obras privadas: (0343) 497-2890\n\nTambién puedes visitar nuestra página web www.sanbenito.gob.ar para más detalles.'
     );
     this._updateChatbotState(message);
   }
-  handleUnknown() {
-     const message = this.createChatBotMessage(
-      "Lo siento, no entendí tu pregunta. Puedes intentar reformularla. Para temas específicos, te recomiendo navegar por las secciones del sitio o contactar a Modernizacion@sanbenito.gob.ar."
-    );
+  // Mostrar indicador de escritura
+  private _showTypingIndicator() {
+    this.setState((prevState: any) => ({
+      ...prevState,
+      typing: true
+    }));
+  }
+
+  // Ocultar indicador de escritura
+  private _hideTypingIndicator() {
+    this.setState((prevState: any) => ({
+      ...prevState,
+      typing: false
+    }));
+  }
+
+  // Mostrar sugerencias de preguntas frecuentes
+  private _showSuggestions() {
+    const suggestions = [
+      { text: '¿Qué trámites puedo hacer?', handler: () => this.handleTramiteIntro() },
+      { text: '¿Cuáles son los horarios de atención?', handler: () => this.handleHorarios() },
+      { text: '¿Cómo contacto a la municipalidad?', handler: () => this.handleContactoInfo() }
+    ];
+
+    const message = this.createChatBotMessage('¿En qué más te puedo ayudar?', {
+      widget: 'suggestions',
+      loading: false,
+      delay: 500,
+      suggestions
+    });
+
     this._updateChatbotState(message);
+  }
+
+  // Manejar mensaje desconocido con mejor retroalimentación
+  async handleUnknown(userMessage: string) {
+    // Mostrar mensaje de espera con indicador de escritura
+    this._showTypingIndicator();
+    
+    try {
+      // Mostrar mensaje temporal de procesamiento
+      const processingMessage = this.createChatBotMessage("Estoy buscando la información...");
+      this._updateChatbotState(processingMessage);
+      
+      // Obtener respuesta de la IA
+      const aiResponse = await fetchAIResponse(userMessage);
+      
+      // Reemplazar mensaje de procesamiento con la respuesta real
+      this.setState((prevState: any) => {
+        const messages = [...prevState.messages];
+        messages.pop(); // Eliminar mensaje de procesamiento
+        return {
+          ...prevState,
+          messages: [...messages, this.createChatBotMessage(aiResponse)]
+        };
+      });
+      
+      // Mostrar sugerencias de seguimiento
+      this._showSuggestions();
+      
+    } catch (error) {
+      console.error('Error en handleUnknown:', error);
+      
+      // Reemplazar mensaje de procesamiento con mensaje de error
+      this.setState((prevState: any) => {
+        const messages = [...prevState.messages];
+        messages.pop(); // Eliminar mensaje de procesamiento
+        
+        const errorMessage = this.createChatBotMessage(
+          "❌ Lo siento, ha ocurrido un error al procesar tu consulta. Por favor, inténtalo de nuevo más tarde o comunícate directamente con la municipalidad."
+        );
+        
+        return {
+          ...prevState,
+          messages: [...messages, errorMessage]
+        };
+      });
+    } finally {
+      this._hideTypingIndicator();
+    }
   }
   handleLinkToPage(pageName: string, pageUrl: string) {
     this._createLinkedMessage(
@@ -160,9 +243,8 @@ class ActionProvider implements IActionProvider {
       { text: 'Actividades Deportivas', handler: () => this.handleActividadesDeportivas(), id: 7 },
       { text: 'Área Mujer', handler: () => this.handleAreaMujer(), id: 8 },
       { text: 'Talleres Culturales', handler: () => this.handleTalleresCulturales(), id: 9 },
-      // A "More options" or "All Trámites" could be added if this list gets too long,
-      // leading to another message with more buttons. For now, this is a selection.
-      // The user can also type the specific trámite name.
+      { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 10 },
+      { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 11 },
     ];
 
     this.setState((prevState: any) => ({
@@ -170,5 +252,40 @@ class ActionProvider implements IActionProvider {
       tramiteOptions: options,
     }));
   }
+  
+  // Nuevos métodos para manejar consultas generales y búsqueda de información
+  handleGeneralInquiry() {
+    const message = this.createChatBotMessage(
+      "¿Sobre qué tema te gustaría consultar? Puedes preguntarme sobre servicios municipales, trámites, horarios de atención, o cualquier otra información relacionada con la Municipalidad de San Benito."
+    );
+    this._updateChatbotState(message);
+  }
+
+  // Método para buscar información en la web municipal
+  handleWebSearch(query: string) {
+    // Aquí podríamos implementar una búsqueda más avanzada en el futuro
+    const message = this.createChatBotMessage(
+      `Estoy buscando información sobre "${query}" en nuestro sitio web...`,
+    );
+    this._updateChatbotState(message);
+    
+    // Simulamos una búsqueda y mostramos resultados después de un breve retraso
+    setTimeout(() => {
+      this.handleUnknown(query);
+    }, 1000);
+  }
+
+  // Método para manejar horarios de atención
+  handleHorarios() {
+    const message = this.createChatBotMessage(
+      "Los horarios de atención de la Municipalidad de San Benito son:\n\n" +
+      "📍 Edificio Municipal: Lunes a Viernes de 7:00 a 13:00 hs\n" +
+      "📍 Rentas: Lunes a Viernes de 7:00 a 13:00 hs\n" +
+      "📍 Obras Privadas: Lunes a Viernes de 7:00 a 12:00 hs\n" +
+      "📍 Punto Digital: Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs"
+    );
+    this._updateChatbotState(message);
+  }
 }
+
 export default ActionProvider;
