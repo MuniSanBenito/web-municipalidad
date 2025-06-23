@@ -35,7 +35,7 @@ export function AccessibilityControls() {
       {/* Botón de toggle para móviles */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-primary-content fixed top-1/2 right-0 z-50 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg shadow-lg md:hidden"
+        className="bg-primary text-primary-content fixed top-1/2 right-0 z-50 flex h-12 w-6 -translate-y-1/2 items-center justify-center rounded-l-lg shadow-[0_0_15px_rgba(0,0,0,0.2)] ring-1 ring-base-300/20 md:hidden"
         aria-label="Mostrar opciones de accesibilidad"
         aria-expanded={isOpen}
       >
@@ -43,7 +43,7 @@ export function AccessibilityControls() {
       </button>
 
       <aside
-        className={`bg-base-100 fixed top-1/2 right-0 z-50 -translate-y-1/2 rounded-l-lg shadow-lg transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}
+        className={`bg-base-100/95 backdrop-blur-sm fixed top-1/2 right-0 z-50 -translate-y-1/2 rounded-l-lg shadow-[0_0_20px_rgba(0,0,0,0.15)] ring-1 ring-base-300/20 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}
       >
         <ul className="m-0 flex list-none flex-col items-center gap-4 p-4">
           {/* Fecha */}

@@ -1,4 +1,4 @@
-import { AccessibilityControls } from '@/components/ui/AccessibilityControls'
+
 import { EventCalendar } from '@/components/ui/EventCalendar'
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
 import type { Alerta } from '@/types/alerta'
@@ -196,7 +196,6 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen">
-      <AccessibilityControls />
 
       {/* Alertas Importantes */}
       {alertas.length > 0 && (
