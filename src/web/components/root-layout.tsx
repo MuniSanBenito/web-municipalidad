@@ -1,4 +1,5 @@
 'use client'
+import { Footer } from '@/components/ui/Footer'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { IconMenu2 } from '@tabler/icons-react'
 import Link from 'next/link'
@@ -92,6 +93,7 @@ export function RootLayout({ children }: PropsWithChildren) {
         <main className={twJoin('min-h-svh', isHome ? null : isScrolled ? 'pt-24' : 'pt-32')}>
           {children}
         </main>
+        <Footer />
       </div>
       <aside className="drawer-side z-50">
         <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
