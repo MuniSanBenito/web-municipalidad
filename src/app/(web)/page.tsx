@@ -1,4 +1,3 @@
-
 import { EventCalendar } from '@/components/ui/EventCalendar'
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
 import type { Alerta } from '@/types/alerta'
@@ -25,7 +24,7 @@ const TRAMITES: {
   link: string
 }[] = [
   {
-    title: 'licencia de Conducir',
+    title: 'Licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
   },
@@ -196,7 +195,6 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen">
-
       {/* Alertas Importantes */}
       {alertas.length > 0 && (
         <div className="bg-warning/20 px-4 py-3">
