@@ -1,5 +1,7 @@
 # Base image
 FROM node:lts-alpine AS base
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
 # Declarar los argumentos de build
 ARG DATABASE_URI
 ARG PAYLOAD_SECRET
@@ -35,12 +37,11 @@ ENV EMAIL_AUTH_PASS=${EMAIL_AUTH_PASS}
 
 # Dependencies layer
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json ./
 # COPY bun.lock ./
-RUN npm install
+RUN npm install --only=production --package-lock-only
+RUN npm ci --only=production
 
 # Build layer
 FROM base AS builder
