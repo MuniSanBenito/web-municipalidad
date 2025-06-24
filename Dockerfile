@@ -40,7 +40,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json ./
 # COPY bun.lock ./
-RUN npm ci
+RUN npm install
 
 # Build layer
 FROM base AS builder
