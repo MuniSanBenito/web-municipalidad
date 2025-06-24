@@ -1,5 +1,5 @@
 # Base image
-FROM bun:1-alpine AS base
+FROM oven/bun:1-alpine AS base
 # Declarar los argumentos de build
 ARG DATABASE_URI
 ARG PAYLOAD_SECRET
