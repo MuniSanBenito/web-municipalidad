@@ -1,5 +1,5 @@
 # Base image
-FROM oven/bun:alpine AS base
+FROM node:lts-alpine AS base
 # Declarar los argumentos de build
 ARG DATABASE_URI
 ARG PAYLOAD_SECRET
@@ -36,11 +36,11 @@ ENV EMAIL_AUTH_PASS=${EMAIL_AUTH_PASS}
 # Dependencies layer
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-# RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json ./
-COPY bun.lock ./
-RUN bun i
+# COPY bun.lock ./
+RUN npm ci
 
 # Build layer
 FROM base AS builder
@@ -53,7 +53,7 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN bun run build
+RUN npm run build
 
 # Runner layer
 FROM base AS runner
@@ -76,4 +76,4 @@ COPY --from=builder /app/public ./public
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
-CMD HOSTNAME="0.0.0.0" bun server.js
+CMD HOSTNAME="0.0.0.0" node server.js
