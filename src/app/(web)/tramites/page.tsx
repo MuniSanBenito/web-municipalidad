@@ -5,6 +5,7 @@ import {
   IconBuilding,
   IconBuildingCommunity,
   IconBuildingStore,
+  IconCalendarEvent,
   IconCash,
   IconClipboardList,
   IconGenderFemale,
@@ -98,6 +99,12 @@ const tramites = [
     icon: IconHeadset,
     link: '/tramites/cav',
     description: 'Gestión de reclamos y atención ciudadana',
+  },
+  {
+    title: 'Agenda Cultural',
+    icon: IconCalendarEvent,
+    link: '/agenda',
+    description: 'Eventos culturales, artísticos y recreativos de la ciudad'
   },
 ]
 

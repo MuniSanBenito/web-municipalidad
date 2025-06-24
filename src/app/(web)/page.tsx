@@ -1,6 +1,11 @@
-import type { Imagen, Noticia } from '@/payload-types'
+
+import { EventCalendar } from '@/components/ui/EventCalendar'
+import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
+import type { Alerta } from '@/types/alerta'
+import type { Evento } from '@/types/evento'
 import { basePayload } from '@/web/lib/payload'
 import {
+  IconAlertCircle,
   IconBallFootball,
   IconBuilding,
   IconBuildingStore,
@@ -144,7 +149,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
 }
 
 export default async function Page() {
-  const [noticias, eventos] = await Promise.all([
+  const [noticias, eventosData] = await Promise.all([
     basePayload.find({
       collection: 'noticias',
       limit: 4,
@@ -155,11 +160,54 @@ export default async function Page() {
     }),
   ])
 
-  console.log('eventos', eventos)
+  // Mapear los datos a los tipos correctos
+  const eventos: Evento[] = eventosData.docs.map((evento) => {
+    const ubicacion = evento.ubicacion as Ubicacione
+    return {
+      id: evento.id,
+      nombre: evento.nombre || '',
+      fecha: evento.fecha || new Date().toISOString(),
+      ubicacion: {
+        id: ubicacion?.id || '',
+        nombre: ubicacion?.nombre || 'San Benito',
+        geolocalizacion: ubicacion?.geolocalizacion,
+      },
+      descripcion: evento.descripcion || '',
+      entradas: evento.entradas,
+      organiza: evento.organiza,
+      createdAt: evento.createdAt,
+      updatedAt: evento.updatedAt,
+      slug: evento.nombre?.toLowerCase().replace(/ /g, '-') || '',
+    }
+  })
+
+  // Alerta estática para demostración
+  const alertas: Alerta[] = [
+    {
+      id: '1',
+      mensaje:
+        'Recordá mantener actualizada tu información de contacto para recibir notificaciones importantes.',
+      activa: true,
+      tipo: 'info',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ]
 
   return (
-    <>
-      <div className="flex flex-col items-center justify-center">
+    <main className="min-h-screen">
+
+      {/* Alertas Importantes */}
+      {alertas.length > 0 && (
+        <div className="bg-warning/20 px-4 py-3">
+          <div className="container mx-auto flex items-center gap-2">
+            <IconAlertCircle className="text-warning" />
+            <p className="font-medium">{alertas[0].mensaje}</p>
+          </div>
+        </div>
+      )}
+
+      <div className="container mx-auto flex flex-col items-center justify-center">
         <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
         <div className="hidden w-full justify-center gap-2 py-2 md:flex">
           {noticias.docs.map((noticia, i) => (
@@ -168,32 +216,70 @@ export default async function Page() {
             </a>
           ))}
         </div>
-        <section
-          id="tramites"
-          className="my-10 grid grid-cols-1 gap-10 px-15 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {TRAMITES.map((tramite) => (
-            <Link
-              key={tramite.link}
-              href={tramite.link}
-              className="card bg-base-100 hover:bg-base-200 card-sm shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
-              aria-label={`Ir a ${tramite.title}`}
-            >
-              <article className="card-body items-center text-center">
-                <tramite.icon className="text-primary" stroke={1.1} size={80} />
-                <h3 className="card-title">{tramite.title}</h3>
-              </article>
-            </Link>
-          ))}
+        <section id="tramites" className="my-12 w-full text-center">
+          <h2 className="mb-4 text-4xl font-bold">Trámites y Servicios</h2>
+          <p className="text-base-content/80 mx-auto mb-10 max-w-2xl text-lg">
+            Accedé a los principales servicios municipales de forma online.
+          </p>
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+            {TRAMITES.map((tramite) => (
+              <Link
+                key={tramite.link}
+                href={tramite.link}
+                className="card bg-base-100 hover:bg-base-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                aria-label={`Ir a ${tramite.title}`}
+              >
+                <article className="card-body items-center p-6 text-center">
+                  <tramite.icon className="text-primary" stroke={1.2} size={56} />
+                  <h3 className="card-title mt-4 text-sm font-semibold">{tramite.title}</h3>
+                </article>
+              </Link>
+            ))}
+          </div>
         </section>
-        <section id="agenda" className="text-center">
-          <h3 className="text-2xl font-bold">AGENDA</h3>
-          <p>Enterate de lo que sucede en tu ciudad</p>
-          <Link href="/agenda" className="btn btn-sm">
-            VER MÁS
-          </Link>
+        {/* Quick Access Section */}
+        {/* <QuickAccess /> */}
+
+        {/* Event Calendar */}
+        <EventCalendar events={eventos} />
+
+        {/* Portal Tributario */}
+        <section className="from-primary to-primary-focus text-primary-content my-8 w-full bg-gradient-to-r">
+          <div className="container mx-auto grid grid-cols-1 gap-8 px-6 py-12 md:grid-cols-2 lg:px-8">
+            <div className="flex flex-col items-start justify-center text-left">
+              <h3 className="mb-4 text-4xl font-bold">Portal Tributario</h3>
+              <p className="mb-6 text-lg">
+                Consultá, imprimí y pagá tus tasas municipales de forma rápida y segura.
+              </p>
+              <Link
+                href="http://181.228.27.231/ingresospublicos/ingresospublicos.aspx"
+                className="btn btn-accent btn-lg gap-2"
+              >
+                Ir al Portal
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="stats bg-base-100/10 shadow">
+                  <div className="stat">
+                    <div className="stat-title text-base-100">Descuento</div>
+                    <div className="stat-value text-base-100">20%</div>
+                    <div className="stat-desc text-base-100">Pago en término</div>
+                  </div>
+                </div>
+                <div className="stats bg-base-100/10 shadow">
+                  <div className="stat">
+                    <div className="stat-title text-base-100">Medios de Pago</div>
+                    <div className="stat-value text-base-100">+5</div>
+                    <div className="stat-desc text-base-100">Opciones disponibles</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
-    </>
+    </main>
   )
 }
