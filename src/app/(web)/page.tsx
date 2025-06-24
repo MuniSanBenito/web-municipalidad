@@ -1,17 +1,16 @@
-
 import { EventCalendar } from '@/components/ui/EventCalendar'
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
-import type { Alerta } from '@/types/alerta'
 import type { Evento } from '@/types/evento'
 import { basePayload } from '@/web/lib/payload'
 import {
-  IconAlertCircle,
   IconBallFootball,
   IconBuilding,
   IconBuildingStore,
   IconCash,
   IconClipboardList,
+  IconHeadset,
   IconLicense,
+  IconUserCircle,
   type Icon,
   type IconProps,
 } from '@tabler/icons-react'
@@ -28,6 +27,11 @@ const TRAMITES: {
     title: 'Licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
+  },
+  {
+    title: 'Centro de Atención Al Vecino',
+    icon: IconHeadset,
+    link: '/tramites/cav',
   },
   {
     title: 'Habilitaciones Comerciales',
@@ -77,13 +81,12 @@ const TRAMITES: {
     icon: IconBuildingCommunity,
     link: '/tramites/cic-barrio-san-pedro',
     description: 'Actividades y talleres en el Centro Integrador Comunitario',
-  },
+  },*/
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
     link: 'http://181.228.27.231/personal/personal.aspx',
-    description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
-  }, */
+  },
 ]
 
 function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
@@ -181,31 +184,15 @@ export default async function Page() {
     }
   })
 
-  // Alerta estática para demostración
-  const alertas: Alerta[] = [
-    {
-      id: '1',
-      mensaje:
-        'Recordá mantener actualizada tu información de contacto para recibir notificaciones importantes.',
-      activa: true,
-      tipo: 'info',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ]
-
   return (
     <main className="min-h-screen">
-
       {/* Alertas Importantes */}
-      {alertas.length > 0 && (
-        <div className="bg-warning/20 px-4 py-3">
-          <div className="container mx-auto flex items-center gap-2">
-            <IconAlertCircle className="text-warning" />
-            <p className="font-medium">{alertas[0].mensaje}</p>
-          </div>
+
+      <div className="bg-yellow-100 px-4 py-3">
+        <div className="container mx-auto flex items-center gap-2">
+          <p className="font-medium text-yellow-700"></p>
         </div>
-      )}
+      </div>
 
       <div className="container mx-auto flex flex-col items-center justify-center">
         <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
