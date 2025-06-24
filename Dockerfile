@@ -40,8 +40,7 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json ./
 # COPY bun.lock ./
-RUN npm install --only=production --package-lock-only
-RUN npm ci --only=production
+RUN npm install
 
 # Build layer
 FROM base AS builder
