@@ -20,7 +20,7 @@ const TRAMITES: {
   link: string
 }[] = [
   {
-    title: 'Licencia de Conducir',
+    title: 'licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
   },
