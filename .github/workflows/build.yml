@@ -61,3 +61,12 @@ jobs:
             EMAIL_SMTP_PORT=${{ secrets.EMAIL_SMTP_PORT }}
             EMAIL_AUTH_USER=${{ secrets.EMAIL_AUTH_USER }}
             EMAIL_AUTH_PASS=${{ secrets.EMAIL_AUTH_PASS }}
+
+      - name: Trigger Coolify deployment
+        run: |
+          curl -X POST "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "image": "ghcr.io/${{ github.repository_owner }}/web-municipalidad:latest",
+            "tag": "${{ github.sha }}"
+          }'
