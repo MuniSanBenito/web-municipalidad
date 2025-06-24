@@ -73,7 +73,7 @@ export function Footer() {
               </a>
             </li>
             <li>
-              Av. San Martín 1789
+              Bvad, Basavilbaso 1094
               <br />
               San Benito, Entre Ríos
             </li>
@@ -85,7 +85,7 @@ export function Footer() {
           <h3 className="mb-4 text-lg font-bold">Seguinos</h3>
           <div className="flex gap-2">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/MunicipalidadDeSanBenito"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-circle btn-outline btn-sm"
@@ -94,7 +94,7 @@ export function Footer() {
               <IconBrandFacebook size={18} />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/municipio_sanbenito"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-circle btn-outline btn-sm"
@@ -103,7 +103,7 @@ export function Footer() {
               <IconBrandInstagram size={18} />
             </a>
             <a
-              href="https://youtube.com"
+              href="https://www.youtube.com/@MunicipalidadSanBenito"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-circle btn-outline btn-sm"
