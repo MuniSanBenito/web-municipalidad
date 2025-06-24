@@ -1,5 +1,5 @@
 # Base image
-FROM oven/bun:1-alpine AS base
+FROM oven/bun:alpine AS base
 # Declarar los argumentos de build
 ARG DATABASE_URI
 ARG PAYLOAD_SECRET
@@ -40,19 +40,13 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json ./
 COPY bun.lock ./
-RUN bun i --frozen-lockfile
+RUN bun i
 
 # Build layer
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json ./
-COPY bun.lock ./
-COPY next.config.mjs ./
-COPY tsconfig.json ./
-COPY postcss.config.js ./
-COPY public ./public
-COPY src ./src
+COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
