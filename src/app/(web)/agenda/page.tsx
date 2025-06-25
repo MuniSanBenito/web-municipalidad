@@ -50,7 +50,11 @@ export default async function AgendaPage({ searchParams }: Props) {
     depth: 3,
   })
 
-  console.log('Eventos encontrados:', JSON.stringify(eventos, null, 2))
+  // Filtrar y ordenar eventos futuros
+  const now = new Date();
+  const eventosFuturos = eventos.docs
+    .filter(ev => new Date(ev.fecha) >= new Date(now.toDateString()))
+    .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
   return (
     <main className="min-h-screen py-8">
@@ -91,7 +95,7 @@ export default async function AgendaPage({ searchParams }: Props) {
 
         {/* Lista de Eventos */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {eventos.docs.map((evento) => (
+          {eventosFuturos.map((evento) => (
             <article
               key={evento.id}
               className="card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-xl"
