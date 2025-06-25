@@ -7,13 +7,6 @@
  */
 
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoRoles".
- */
-export type PermisoRoles =
-  | ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'A SI MISMO' | 'PUBLICO')[]
-  | null;
-/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -125,11 +118,9 @@ export interface Config {
   };
   globals: {
     autoridades: Autoridade;
-    permisos: Permiso;
   };
   globalsSelect: {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
-    permisos: PermisosSelect<false> | PermisosSelect<true>;
   };
   locale: null;
   user: User & {
@@ -1315,41 +1306,6 @@ export interface Autoridade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "permisos".
- */
-export interface Permiso {
-  id: string;
-  users?: PermisoActions;
-  noticias?: PermisoActions;
-  imagenes?: PermisoActions;
-  curriculums?: PermisoActions;
-  archivos?: PermisoActions;
-  avatares?: PermisoActions;
-  memorias?: PermisoActions;
-  contabilidad?: PermisoActions;
-  intimaciones?: PermisoActions;
-  ubicaciones?: PermisoActions;
-  eventos?: PermisoActions;
-  habilitaciones?: PermisoActions;
-  licitaciones?: PermisoActions;
-  concursos?: PermisoActions;
-  'balances-mensuales'?: PermisoActions;
-  autoridades?: PermisoActions;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoActions".
- */
-export interface PermisoActions {
-  crear?: PermisoRoles;
-  leer?: PermisoRoles;
-  actualizar?: PermisoRoles;
-  borrar?: PermisoRoles;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
@@ -1371,41 +1327,6 @@ export interface AutoridadesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "permisos_select".
- */
-export interface PermisosSelect<T extends boolean = true> {
-  users?: T | PermisoActionsSelect<T>;
-  noticias?: T | PermisoActionsSelect<T>;
-  imagenes?: T | PermisoActionsSelect<T>;
-  curriculums?: T | PermisoActionsSelect<T>;
-  archivos?: T | PermisoActionsSelect<T>;
-  avatares?: T | PermisoActionsSelect<T>;
-  memorias?: T | PermisoActionsSelect<T>;
-  contabilidad?: T | PermisoActionsSelect<T>;
-  intimaciones?: T | PermisoActionsSelect<T>;
-  ubicaciones?: T | PermisoActionsSelect<T>;
-  eventos?: T | PermisoActionsSelect<T>;
-  habilitaciones?: T | PermisoActionsSelect<T>;
-  licitaciones?: T | PermisoActionsSelect<T>;
-  concursos?: T | PermisoActionsSelect<T>;
-  'balances-mensuales'?: T | PermisoActionsSelect<T>;
-  autoridades?: T | PermisoActionsSelect<T>;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoActions_select".
- */
-export interface PermisoActionsSelect<T extends boolean = true> {
-  crear?: T;
-  leer?: T;
-  actualizar?: T;
-  borrar?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,4 +1,3 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
@@ -12,12 +11,6 @@ export const Intimaciones: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'nombre',
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
   fields: [
     CreatedBy,

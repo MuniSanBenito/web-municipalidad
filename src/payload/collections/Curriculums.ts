@@ -1,5 +1,4 @@
 import type { Curriculum } from '@/payload-types'
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
@@ -29,12 +28,6 @@ export const Curriculums: CollectionConfig = {
   },
   hooks: {
     beforeChange: [beforeChange],
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
   fields: [
     CreatedBy,

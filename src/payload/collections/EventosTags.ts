@@ -9,12 +9,6 @@ export const EventosTags: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
   },
-  access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true,
-  },
   fields: [
     {
       name: 'nombre',
