@@ -1,7 +1,7 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByAccess,
+  isAdminOrCreatedByWithDataAccess,
   isCiudadanoOrMoreCollectionAccess,
   isPublicAccess,
 } from '../access/collection'
@@ -16,8 +16,8 @@ export const Archivos: CollectionConfig = {
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
     read: isPublicAccess,
-    update: isAdminOrCreatedByAccess,
-    delete: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByWithDataAccess,
+    delete: isAdminOrCreatedByWithDataAccess,
   },
   admin: {
     group: 'Almacenamiento',

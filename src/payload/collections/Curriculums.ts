@@ -1,7 +1,11 @@
 import type { Curriculum } from '@/payload-types'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
-import { isAdminOrCreatedByAccess } from '../access/collection'
+import {
+  isAdminOrCreatedByAccess,
+  isAdminOrCreatedByWithDataAccess,
+  isCiudadanoOrMoreCollectionAccess,
+} from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
@@ -24,10 +28,10 @@ export const Curriculums: CollectionConfig = {
     plural: 'Curriculums',
   },
   access: {
-    create: isAdminOrCreatedByAccess,
+    create: isCiudadanoOrMoreCollectionAccess,
     read: isAdminOrCreatedByAccess,
-    update: isAdminOrCreatedByAccess,
-    delete: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByWithDataAccess,
+    delete: isAdminOrCreatedByWithDataAccess,
   },
   admin: {
     useAsTitle: 'titulo',

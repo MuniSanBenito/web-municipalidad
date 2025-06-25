@@ -54,6 +54,18 @@ export const isAdminOrCreatedByAccess: Access = async ({ req, data }) => {
   return false
 }
 
+export const isAdminOrCreatedByWithDataAccess: Access = async ({ req, data }) => {
+  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+    return true
+  }
+
+  if (data?.created_by === req?.user?.id) {
+    return true
+  }
+
+  return false
+}
+
 export const isComunicacionOrAdminCollectionAccess: Access = ({ req }) => {
   return (
     (req?.user?.rol?.includes('COMUNICACION') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
@@ -83,11 +95,11 @@ COLLECTIONS
 Archivos
 - C: ciudadano o mas
 - R: publico
-- U: admin
-- D: admin
+- U: admin o a si mismo (createdBy)
+- D: admin o a si mismo (createdBy)
 
 Avatares
-- C: admin o a si mismo (createdBy)
+- C: ciudadano o mas
 - R: admin o a si mismo (createdBy)
 - U: admin o a si mismo (createdBy)
 - D: admin o a si mismo (createdBy)
@@ -111,7 +123,7 @@ Contabilidad
 - D: admin y hacienda
 
 Curriculums (idem a avatares)
-- C: admin o a si mismo (createdBy)
+- C: ciudadano o mas
 - R: admin o a si mismo (createdBy)
 - U: admin o a si mismo (createdBy)
 - D: admin o a si mismo (createdBy)
@@ -137,8 +149,8 @@ Habilitaciones
 Imagenes (idem a archivos)
 - C: ciudadano o mas
 - R: publico
-- U: admin
-- D: admin
+- U: admin o a si mismo (createdBy)
+- D: admin o a si mismo (createdBy)
 
 Intimaciones
 - C: admin y juzgado

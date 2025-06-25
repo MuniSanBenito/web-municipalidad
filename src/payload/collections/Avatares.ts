@@ -1,6 +1,10 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-import { isAdminOrCreatedByAccess } from '../access/collection'
+import {
+  isAdminOrCreatedByAccess,
+  isAdminOrCreatedByWithDataAccess,
+  isCiudadanoOrMoreCollectionAccess,
+} from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
 export const Avatares: CollectionConfig = {
@@ -13,10 +17,10 @@ export const Avatares: CollectionConfig = {
     interface: 'Avatar',
   },
   access: {
-    create: isAdminOrCreatedByAccess,
+    create: isCiudadanoOrMoreCollectionAccess,
     read: isAdminOrCreatedByAccess,
-    update: isAdminOrCreatedByAccess,
-    delete: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByWithDataAccess,
+    delete: isAdminOrCreatedByWithDataAccess,
   },
   admin: {
     group: 'Almacenamiento',
