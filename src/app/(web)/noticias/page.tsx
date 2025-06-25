@@ -13,6 +13,11 @@ export default async function PageNoticias({ searchParams }: Props) {
     collection: 'noticias',
     page,
     limit: 12,
+    where: {
+      _status: {
+        equals: 'published',
+      },
+    },
   })
 
   return (
