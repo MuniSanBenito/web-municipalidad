@@ -156,6 +156,11 @@ export default async function Page() {
     basePayload.find({
       collection: 'noticias',
       limit: 4,
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
     }),
     basePayload.find({
       collection: 'eventos',
