@@ -1,16 +1,18 @@
 import { EventCalendar } from '@/components/ui/EventCalendar'
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
-import type { Alerta } from '@/types/alerta'
 import type { Evento } from '@/types/evento'
 import { basePayload } from '@/web/lib/payload'
 import {
-  IconAlertCircle,
   IconBallFootball,
+  IconBrandWhatsapp,
   IconBuilding,
   IconBuildingStore,
   IconCash,
   IconClipboardList,
+  IconHeadset,
   IconLicense,
+  IconMail,
+  IconUserCircle,
   type Icon,
   type IconProps,
 } from '@tabler/icons-react'
@@ -27,6 +29,11 @@ const TRAMITES: {
     title: 'Licencia de Conducir',
     icon: IconLicense,
     link: '/tramites/licencia',
+  },
+  {
+    title: 'Centro de Atención Al Vecino',
+    icon: IconHeadset,
+    link: '/tramites/cav',
   },
   {
     title: 'Habilitaciones Comerciales',
@@ -76,13 +83,12 @@ const TRAMITES: {
     icon: IconBuildingCommunity,
     link: '/tramites/cic-barrio-san-pedro',
     description: 'Actividades y talleres en el Centro Integrador Comunitario',
-  },
+  },*/
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
     link: 'http://181.228.27.231/personal/personal.aspx',
-    description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
-  }, */
+  },
 ]
 
 function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
@@ -127,13 +133,13 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
         <div className="absolute top-1/2 right-1 left-1 z-0 flex -translate-y-1/2 transform justify-between">
           <a
             href={`#noticia${index === 0 ? noticias.length : index}`}
-            className="btn btn-square btn-soft btn-sm rounded-xs"
+            className="btn btn-square btn-soft btn-sm focus-visible:ring-primary rounded-xs focus-visible:ring-2"
           >
             ❮
           </a>
           <a
             href={`#noticia${index === noticias.length - 1 ? 1 : index + 2}`}
-            className="btn btn-square btn-soft btn-sm rounded-xs"
+            className="btn btn-square btn-soft btn-sm focus-visible:ring-primary rounded-xs focus-visible:ring-2"
           >
             ❯
           </a>
@@ -141,7 +147,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
       </div>
       <div className="bg-base-100 flex flex-col gap-3 px-5 py-4 md:hidden">
         <h3 className="text-lg font-bold">{noticia.titulo}</h3>
-        <p>{noticia.descripcion}</p>
+        <p className="text-base-content/80">{noticia.descripcion}</p>
       </div>
     </article>
   )
@@ -152,6 +158,11 @@ export default async function Page() {
     basePayload.find({
       collection: 'noticias',
       limit: 4,
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
     }),
     basePayload.find({
       collection: 'eventos',
@@ -180,41 +191,31 @@ export default async function Page() {
     }
   })
 
-  // Alerta estática para demostración
-  const alertas: Alerta[] = [
-    {
-      id: '1',
-      mensaje:
-        'Recordá mantener actualizada tu información de contacto para recibir notificaciones importantes.',
-      activa: true,
-      tipo: 'info',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ]
-
   return (
     <main className="min-h-screen">
       {/* Alertas Importantes */}
-      {alertas.length > 0 && (
-        <div className="bg-warning/20 px-4 py-3">
-          <div className="container mx-auto flex items-center gap-2">
-            <IconAlertCircle className="text-warning" />
-            <p className="font-medium">{alertas[0].mensaje}</p>
-          </div>
+
+      <div className="bg-yellow-100 px-4 py-3">
+        <div className="container mx-auto flex items-center gap-2">
+          <p className="font-medium text-yellow-700"></p>
         </div>
-      )}
+      </div>
 
       <div className="container mx-auto flex flex-col items-center justify-center">
         <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
-        <div className="hidden w-full justify-center gap-2 py-2 md:flex">
-          {noticias.docs.map((noticia, i) => (
-            <a key={noticia.id} href={`#noticia${i + 1}`} className="btn btn-xs">
-              {i + 1}
-            </a>
-          ))}
-        </div>
-        <section id="tramites" className="my-12 w-full text-center">
+      <div className="hidden w-full justify-center gap-2 py-2 md:flex">
+        {noticias.docs.map((noticia, i) => (
+          <a key={noticia.id} href={`#noticia${i + 1}`} className="btn btn-xs">
+            {i + 1}
+          </a>
+        ))}
+      </div>
+      <div className="my-6 flex w-full justify-center">
+        <Link href="/noticias" className="btn btn-outline btn-primary px-6 py-2 rounded-full shadow hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary transition">
+          Ver más noticias
+        </Link>
+      </div>
+        <section id="tramites" className="border-base-200 my-12 w-full border-t pt-12 text-center">
           <h2 className="mb-4 text-4xl font-bold">Trámites y Servicios</h2>
           <p className="text-base-content/80 mx-auto mb-10 max-w-2xl text-lg">
             Accedé a los principales servicios municipales de forma online.
@@ -224,12 +225,15 @@ export default async function Page() {
               <Link
                 key={tramite.link}
                 href={tramite.link}
-                className="card bg-base-100 hover:bg-base-200 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="card bg-base-100 hover:bg-base-200 border-base-200 focus-visible:ring-primary rounded-xl border shadow-lg transition-all duration-200 outline-none hover:scale-105 hover:shadow-2xl focus-visible:ring-2"
                 aria-label={`Ir a ${tramite.title}`}
+                tabIndex={0}
               >
                 <article className="card-body items-center p-6 text-center">
-                  <tramite.icon className="text-primary" stroke={1.2} size={56} />
-                  <h3 className="card-title mt-4 text-sm font-semibold">{tramite.title}</h3>
+                  <tramite.icon className="text-primary" stroke={1.3} size={48} />
+                  <h3 className="card-title text-base-content/90 mt-3 text-base font-semibold">
+                    {tramite.title}
+                  </h3>
                 </article>
               </Link>
             ))}
@@ -239,10 +243,10 @@ export default async function Page() {
         {/* <QuickAccess /> */}
 
         {/* Event Calendar */}
-        <EventCalendar events={eventos} />
+        <EventCalendar events={eventos} highlightToday highlightNext />
 
         {/* Portal Tributario */}
-        <section className="from-primary to-primary-focus text-primary-content my-8 w-full bg-gradient-to-r">
+        <section className="from-primary text-primary-content my-8 w-full bg-gradient-to-r to-white">
           <div className="container mx-auto grid grid-cols-1 gap-8 px-6 py-12 md:grid-cols-2 lg:px-8">
             <div className="flex flex-col items-start justify-center text-left">
               <h3 className="mb-4 text-4xl font-bold">Portal Tributario</h3>
@@ -258,20 +262,34 @@ export default async function Page() {
               </Link>
             </div>
             <div className="flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="stats bg-base-100/10 shadow">
-                  <div className="stat">
-                    <div className="stat-title text-base-100">Descuento</div>
-                    <div className="stat-value text-base-100">20%</div>
-                    <div className="stat-desc text-base-100">Pago en término</div>
-                  </div>
+              <div className="bg-base-100/10 flex flex-col items-center gap-5 rounded-xl p-8 shadow-lg">
+                <div className="flex items-center gap-2">
+                  {/* Icono WhatsApp Tabler */}
+                  <IconBrandWhatsapp
+                    size={18}
+                    className="flex-shrink-0 text-green-500"
+                    stroke={1.5}
+                  />
+                  <span className="font-medium whitespace-nowrap">WhatsApp Rentas:</span>
+                  <a
+                    href="https://wa.me/+543436127015"
+                    target="_blank"
+                    rel="noopener"
+                    className="whitespace-nowrap underline hover:text-green-600"
+                  >
+                    3436127015
+                  </a>
                 </div>
-                <div className="stats bg-base-100/10 shadow">
-                  <div className="stat">
-                    <div className="stat-title text-base-100">Medios de Pago</div>
-                    <div className="stat-value text-base-100">+5</div>
-                    <div className="stat-desc text-base-100">Opciones disponibles</div>
-                  </div>
+                <div className="flex items-center gap-2">
+                  {/* Icono Mail Tabler */}
+                  <IconMail size={18} className="text-primary flex-shrink-0" stroke={1.5} />
+                  <span className="font-medium whitespace-nowrap">Correo Rentas:</span>
+                  <a
+                    href="mailto:rentas@munisanbenito.gov.ar"
+                    className="hover:text-primary whitespace-nowrap underline"
+                  >
+                    rentas@munisanbenito.gov.ar
+                  </a>
                 </div>
               </div>
             </div>
