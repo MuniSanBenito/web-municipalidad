@@ -1,5 +1,5 @@
-import { YouTuveVideo } from '@/components/youtube-video'
 import type { Imagen } from '@/payload-types'
+import { YouTuveVideo } from '@/web/components/youtube-video'
 import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import Image from 'next/image'
@@ -16,17 +16,17 @@ export default async function PruebaPage() {
         <article key={noticia.id} className={styles.noticia}>
           <h1>{noticia.titulo}</h1>
           <p>{noticia.descripcion}</p>
-          {(noticia.portada && (noticia.portada as Imagen).url) ? (
+          {noticia.portada && (noticia.portada as Imagen).url ? (
             <Image
               src={(noticia.portada as Imagen).url || '/images/placeholder.jpg'}
               alt={(noticia.portada as Imagen).alt || 'Imagen de noticia'}
               width={800}
               height={450}
-              className="rounded-lg object-cover w-full h-64"
+              className="h-64 w-full rounded-lg object-cover"
               priority={true}
             />
           ) : (
-            <div className="bg-base-200 flex h-64 w-full items-center justify-center rounded-lg text-base-content/60">
+            <div className="bg-base-200 text-base-content/60 flex h-64 w-full items-center justify-center rounded-lg">
               <span>Sin imagen</span>
             </div>
           )}

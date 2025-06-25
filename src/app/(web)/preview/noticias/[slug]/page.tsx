@@ -1,6 +1,6 @@
-import { RefreshRouteOnSave } from '@/components/refresh-route-on-save'
-import { YouTuveVideo } from '@/components/youtube-video'
 import type { Imagen } from '@/payload-types'
+import { RefreshRouteOnSave } from '@/web/components/refresh-route-on-save'
+import { YouTuveVideo } from '@/web/components/youtube-video'
 import config from '@payload-config'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { notFound } from 'next/navigation'

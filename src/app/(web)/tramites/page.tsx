@@ -1,4 +1,4 @@
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import {
   IconBallFootball,
   IconBook,
@@ -9,10 +9,10 @@ import {
   IconCash,
   IconClipboardList,
   IconGenderFemale,
+  IconHeadset,
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
-  IconHeadset,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -104,7 +104,7 @@ const tramites = [
     title: 'Agenda Cultural',
     icon: IconCalendarEvent,
     link: '/agenda',
-    description: 'Eventos culturales, artísticos y recreativos de la ciudad'
+    description: 'Eventos culturales, artísticos y recreativos de la ciudad',
   },
 ]
 

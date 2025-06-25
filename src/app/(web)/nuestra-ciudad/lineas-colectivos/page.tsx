@@ -1,4 +1,4 @@
-import { LineasColectivos } from '@/components/lineas-colectivos'
+import { LineasColectivos } from '@/web/components/lineas-colectivos'
 
 export default function Coleectivos() {
   return (

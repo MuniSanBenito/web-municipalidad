@@ -1,6 +1,6 @@
-import { EventCalendar } from '@/components/ui/EventCalendar'
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
 import type { Evento } from '@/types/evento'
+import { EventCalendar } from '@/web/components/ui/EventCalendar'
 import { basePayload } from '@/web/lib/payload'
 import {
   IconBallFootball,
@@ -203,18 +203,21 @@ export default async function Page() {
 
       <div className="container mx-auto flex flex-col items-center justify-center">
         <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
-      <div className="hidden w-full justify-center gap-2 py-2 md:flex">
-        {noticias.docs.map((noticia, i) => (
-          <a key={noticia.id} href={`#noticia${i + 1}`} className="btn btn-xs">
-            {i + 1}
-          </a>
-        ))}
-      </div>
-      <div className="my-6 flex w-full justify-center">
-        <Link href="/noticias" className="btn btn-outline btn-primary px-6 py-2 rounded-full shadow hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary transition">
-          Ver más noticias
-        </Link>
-      </div>
+        <div className="hidden w-full justify-center gap-2 py-2 md:flex">
+          {noticias.docs.map((noticia, i) => (
+            <a key={noticia.id} href={`#noticia${i + 1}`} className="btn btn-xs">
+              {i + 1}
+            </a>
+          ))}
+        </div>
+        <div className="my-6 flex w-full justify-center">
+          <Link
+            href="/noticias"
+            className="btn btn-outline btn-primary focus-visible:ring-primary rounded-full px-6 py-2 shadow transition hover:scale-105 focus-visible:ring-2"
+          >
+            Ver más noticias
+          </Link>
+        </div>
         <section id="tramites" className="border-base-200 my-12 w-full border-t pt-12 text-center">
           <h2 className="mb-4 text-4xl font-bold">Trámites y Servicios</h2>
           <p className="text-base-content/80 mx-auto mb-10 max-w-2xl text-lg">

@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import { basePayload } from '@/web/lib/payload'
 // Definir el tipo para los eventos de Payload
 interface EventoDoc {
@@ -51,10 +51,10 @@ export default async function AgendaPage({ searchParams }: Props) {
   })
 
   // Filtrar y ordenar eventos futuros
-  const now = new Date();
+  const now = new Date()
   const eventosFuturos = eventos.docs
-    .filter(ev => new Date(ev.fecha) >= new Date(now.toDateString()))
-    .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    .filter((ev) => new Date(ev.fecha) >= new Date(now.toDateString()))
+    .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())
 
   return (
     <main className="min-h-screen py-8">

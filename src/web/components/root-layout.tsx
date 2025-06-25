@@ -1,7 +1,7 @@
 'use client'
-import { AccessibilityControls } from '@/components/ui/AccessibilityControls'
-import { Footer } from '@/components/ui/Footer'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeToggle } from '@/web/components/theme-toggle'
+import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
+import { Footer } from '@/web/components/ui/Footer'
 import { IconMenu2 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -48,7 +48,7 @@ export function RootLayout({ children }: PropsWithChildren) {
   return (
     <>
       <AccessibilityControls />
-      <div className="drawer-content pb-10">
+      <div className="drawer-content">
         {/* Page content here */}
         <header
           className={twJoin(

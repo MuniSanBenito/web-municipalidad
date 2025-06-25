@@ -1,5 +1,5 @@
 'use client'
-import { MapaColectivos } from '@/components/mapa-colectivos'
+import { MapaColectivos } from '@/web/components/mapa-colectivos'
 import { useState } from 'react'
 
 const LINEAS_COLECTIVOS = ['4', '20', '22', 'AM'] as const

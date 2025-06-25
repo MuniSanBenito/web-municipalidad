@@ -1,5 +1,5 @@
 'use client'
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 
 export default function PageBalancesMensuales() {
   return (
@@ -7,7 +7,8 @@ export default function PageBalancesMensuales() {
       <PageTitle title="Balances Mensuales" />
       <div className="mb-12 text-center">
         <p className="text-lg text-gray-600">
-          Consulte los balances financieros mensuales del municipio. Esta información se actualiza regularmente para mantener la transparencia de nuestra gestión.
+          Consulte los balances financieros mensuales del municipio. Esta información se actualiza
+          regularmente para mantener la transparencia de nuestra gestión.
         </p>
       </div>
 

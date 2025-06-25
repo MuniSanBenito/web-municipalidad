@@ -1,5 +1,5 @@
-import PageTitle from '@/components/ui/PageTitle'
 import type { Archivo } from '@/payload-types'
+import PageTitle from '@/web/components/ui/PageTitle'
 import { basePayload } from '@/web/lib/payload'
 import { IconArrowLeft, IconCalendar, IconDownload, IconFile } from '@tabler/icons-react'
 import Link from 'next/link'

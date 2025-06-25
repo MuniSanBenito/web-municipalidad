@@ -1,4 +1,4 @@
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import { basePayload } from '@/web/lib/payload'
 import { IconCalendar, IconChevronRight } from '@tabler/icons-react'
 import Image from 'next/image'
