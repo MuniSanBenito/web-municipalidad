@@ -1,6 +1,7 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { GlobalConfig } from 'payload'
 import { isAdminCollectionAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Autoridades: GlobalConfig = {
   slug: 'autoridades',
@@ -8,6 +9,9 @@ export const Autoridades: GlobalConfig = {
   access: {
     read: () => true,
     update: isAdminCollectionAccess,
+  },
+  admin: {
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,

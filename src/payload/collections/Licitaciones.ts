@@ -1,5 +1,7 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
+import { isHaciendaOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Licitaciones: CollectionConfig = {
   slug: 'licitaciones',
@@ -7,9 +9,16 @@ export const Licitaciones: CollectionConfig = {
     singular: 'Licitacion',
     plural: 'Licitaciones',
   },
+  access: {
+    create: isHaciendaOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isHaciendaOrAdminCollectionAccess,
+    delete: isHaciendaOrAdminCollectionAccess,
+  },
   admin: {
     useAsTitle: 'titulo',
     defaultColumns: ['titulo', 'fecha', 'estado'],
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,

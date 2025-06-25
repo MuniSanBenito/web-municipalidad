@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const EventosTags: CollectionConfig = {
   slug: 'eventos-tags',
@@ -15,6 +16,7 @@ export const EventosTags: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'nombre',
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     {

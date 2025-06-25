@@ -5,6 +5,7 @@ import {
   isCiudadanoOrMoreCollectionAccess,
   isPublicAccess,
 } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Archivos: CollectionConfig = {
   slug: 'archivos',
@@ -20,6 +21,7 @@ export const Archivos: CollectionConfig = {
   },
   admin: {
     group: 'Almacenamiento',
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [CreatedBy],
   upload: {

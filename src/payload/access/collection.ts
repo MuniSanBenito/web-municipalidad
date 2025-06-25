@@ -92,17 +92,17 @@ Avatares
 - U: admin o a si mismo (createdBy)
 - D: admin o a si mismo (createdBy)
 
-Balances mensuales
-- C: 
-- R: 
-- U: 
-- D: 
+Balances mensuales (idem a contabilidad)
+- C: admin y hacienda
+- R: publico
+- U: admin y hacienda
+- D: admin y hacienda
 
-Concursos
-- C: 
-- R: 
-- U: 
-- D: 
+Concursos (idem a contabilidad)
+- C: admin y hacienda
+- R: publico
+- U: admin y hacienda
+- D: admin y hacienda
 
 Contabilidad
 - C: admin y hacienda
@@ -146,11 +146,11 @@ Intimaciones
 - U: admin y juzgado
 - D: admin y juzgado
 
-Licitaciones
-- C: 
-- R: 
-- U: 
-- D: 
+Licitaciones (idem a contabilidad)
+- C: admin y hacienda
+- R: publico
+- U: admin y hacienda
+- D: admin y hacienda
 
 Memorias (idem contabilidad)
 - C: admin y hacienda

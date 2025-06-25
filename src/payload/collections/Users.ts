@@ -7,6 +7,7 @@ import {
   ROLES,
 } from '@/payload/constants/roles'
 import type { CollectionConfig, Condition, FieldAccess } from 'payload'
+import { HIDE_API_URL } from '../config'
 
 const isAdminFieldAccess: FieldAccess<User> = ({ req }) =>
   req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
@@ -22,6 +23,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
+    hideAPIURL: HIDE_API_URL,
   },
   auth: true,
   access: {

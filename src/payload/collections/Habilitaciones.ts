@@ -2,6 +2,7 @@ import { CreatedBy } from '@/payload/fields/created_by'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 import { isHabilitacionesOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Habilitaciones: CollectionConfig = {
   slug: 'habilitaciones',
@@ -17,6 +18,7 @@ export const Habilitaciones: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'nombre',
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     {

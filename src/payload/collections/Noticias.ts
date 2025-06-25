@@ -2,6 +2,7 @@ import { contenido } from '@/payload/fields/contenido'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Noticias: CollectionConfig = {
   slug: 'noticias',
@@ -24,6 +25,7 @@ export const Noticias: CollectionConfig = {
     maxPerDoc: 50,
   },
   admin: {
+    hideAPIURL: HIDE_API_URL,
     useAsTitle: 'titulo',
     livePreview: {
       url: ({ data }) => `${process.env.NEXT_PUBLIC_BASE_URL}/preview/noticias/${data.slug}`,
