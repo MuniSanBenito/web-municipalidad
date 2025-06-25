@@ -1,11 +1,14 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { GlobalConfig } from 'payload'
-
-const SLUG = 'autoridades'
+import { isAdminCollectionAccess } from '../access/collection'
 
 export const Autoridades: GlobalConfig = {
   slug: 'autoridades',
   label: 'Autoridades',
+  access: {
+    read: () => true,
+    update: isAdminCollectionAccess,
+  },
   fields: [
     CreatedBy,
     {

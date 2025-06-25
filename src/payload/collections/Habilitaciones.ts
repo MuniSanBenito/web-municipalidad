@@ -1,14 +1,19 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import { HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'habilitaciones'
+import { isHabilitacionesOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Habilitaciones: CollectionConfig = {
-  slug: SLUG,
+  slug: 'habilitaciones',
   labels: {
     singular: 'Habilitación',
     plural: 'Habilitaciones',
+  },
+  access: {
+    create: isHabilitacionesOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isHabilitacionesOrAdminCollectionAccess,
+    delete: isHabilitacionesOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'nombre',

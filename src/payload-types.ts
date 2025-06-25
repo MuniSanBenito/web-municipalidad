@@ -155,7 +155,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES')[];
+  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {

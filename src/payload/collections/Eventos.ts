@@ -1,13 +1,18 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'eventos'
+import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Eventos: CollectionConfig = {
-  slug: SLUG,
+  slug: 'eventos',
   labels: {
     singular: 'Evento',
     plural: 'Eventos',
+  },
+  access: {
+    create: isComunicacionOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isComunicacionOrAdminCollectionAccess,
+    delete: isComunicacionOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'nombre',

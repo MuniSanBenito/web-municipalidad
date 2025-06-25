@@ -1,8 +1,7 @@
 import type { Curriculum } from '@/payload-types'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
-
-const SLUG = 'curriculums'
+import { isAdminOrCreatedByAccess } from '../access/collection'
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
   let { user } = data
@@ -18,10 +17,16 @@ const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req 
 }
 
 export const Curriculums: CollectionConfig = {
-  slug: SLUG,
+  slug: 'curriculums',
   labels: {
     singular: 'Curriculum',
     plural: 'Curriculums',
+  },
+  access: {
+    create: isAdminOrCreatedByAccess,
+    read: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByAccess,
+    delete: isAdminOrCreatedByAccess,
   },
   admin: {
     useAsTitle: 'titulo',

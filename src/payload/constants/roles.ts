@@ -8,6 +8,8 @@ export const ROLES = [
   ROL_CIUDADANO_VALUE,
   'COMUNICACION',
   'HABILITACIONES',
+  'HACIENDA',
+  'JUZGADO',
 ] as const
 export type Rol = (typeof ROLES)[number]
 

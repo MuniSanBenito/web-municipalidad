@@ -1,16 +1,21 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'avatares'
+import { isAdminOrCreatedByAccess } from '../access/collection'
 
 export const Avatares: CollectionConfig = {
-  slug: SLUG,
+  slug: 'avatares',
   labels: {
     singular: 'Avatar',
     plural: 'Avatares',
   },
   typescript: {
     interface: 'Avatar',
+  },
+  access: {
+    create: isAdminOrCreatedByAccess,
+    read: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByAccess,
+    delete: isAdminOrCreatedByAccess,
   },
   admin: {
     group: 'Almacenamiento',

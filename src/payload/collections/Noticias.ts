@@ -1,14 +1,19 @@
 import { contenido } from '@/payload/fields/contenido'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'noticias'
+import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Noticias: CollectionConfig = {
-  slug: SLUG,
+  slug: 'noticias',
   labels: {
     singular: 'Noticia',
     plural: 'Noticias',
+  },
+  access: {
+    create: isComunicacionOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isComunicacionOrAdminCollectionAccess,
+    delete: isComunicacionOrAdminCollectionAccess,
   },
   versions: {
     drafts: {

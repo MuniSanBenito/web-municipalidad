@@ -1,86 +1,75 @@
-import { ROL_ADMIN_VALUE } from '@/payload/constants/roles'
+import type { User } from '@/payload-types'
+import { ROL_ADMIN_VALUE, ROLES } from '@/payload/constants/roles'
 import type { Access } from 'payload'
+
+export function isPublicAccess() {
+  return true
+}
 
 export const isAdminCollectionAccess: Access = ({ req }) =>
   req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
 
-// type PermisoCollection = keyof Permiso
-// type PermisoAction = keyof PermisoActions
+export const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) => {
+  if (req?.user?.id === id) {
+    return true
+  }
+  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+    return true
+  }
+  return false
+}
 
-// const permisosAccess = async (
-//   args: AccessArgs & { collection: PermisoCollection; accion: PermisoAction },
-// ): Promise<AccessResult> => {
-//   const { req, collection, accion } = args
+export const isCiudadanoOrMoreCollectionAccess: Access = ({ req }) => {
+  let canCreate = false
 
-//   const permisosGlobales = await req.payload.findGlobal({
-//     slug: 'permisos',
-//   })
-//   const permisosCollection = permisosGlobales[collection] as PermisoActions // {crear: [...], leer: [...], ...}
-//   if (!permisosCollection || Object.keys(permisosCollection).length === 0) {
-//     return false
-//   }
+  for (const rol of ROLES) {
+    if (req.user?.rol.includes(rol)) {
+      canCreate = true
+      break
+    }
+  }
 
-//   const rolesPermitidosPorAccion = permisosCollection[accion] // ['ADMIN', 'PUBLICO', ...]
-//   if (!rolesPermitidosPorAccion || rolesPermitidosPorAccion.length === 0) {
-//     return false
-//   }
+  return canCreate
+}
 
-//   const isPublic = rolesPermitidosPorAccion?.includes(ROL_PUBLICO_VALUE)
-//   if (isPublic) {
-//     return true
-//   }
+export const isHaciendaOrAdminCollectionAccess: Access = ({ req }) => {
+  return (
+    (req?.user?.rol?.includes('HACIENDA') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
+  )
+}
 
-//   if (!req?.user?.rol || !req?.user?.rol.length) {
-//     return false
-//   }
+export const isAdminOrCreatedByAccess: Access = async ({ req, data }) => {
+  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+    return true
+  }
+  // si no hay datos, se permite la creación
+  if (!data) {
+    return true
+  }
 
-//   let tienePermiso = false
-//   for (const userRol of req.user.rol) {
-//     if (rolesPermitidosPorAccion.includes(userRol)) {
-//       tienePermiso = true
-//       break
-//     }
-//   }
+  if (data?.created_by === req?.user?.id) {
+    return true
+  }
 
-//   return tienePermiso
-// }
+  return false
+}
 
-// export const accessCreate = async (
-//   args: AccessArgs & { collection: PermisoCollection },
-// ): Promise<AccessResult> => {
-//   return await permisosAccess({
-//     ...args,
-//     collection: args.collection,
-//     accion: PERMISO_ACCION_CREAR,
-//   })
-// }
-// export const accessRead = async (
-//   args: AccessArgs & { collection: PermisoCollection },
-// ): Promise<AccessResult> => {
-//   return await permisosAccess({
-//     ...args,
-//     collection: args.collection,
-//     accion: PERMISO_ACCION_LEER,
-//   })
-// }
-// export const accessUpdate = async (
-//   args: AccessArgs & { collection: PermisoCollection },
-// ): Promise<AccessResult> => {
-//   return await permisosAccess({
-//     ...args,
-//     collection: args.collection,
-//     accion: PERMISO_ACCION_ACTUALIZAR,
-//   })
-// }
-// export const accessDelete = async (
-//   args: AccessArgs & { collection: PermisoCollection },
-// ): Promise<AccessResult> => {
-//   return await permisosAccess({
-//     ...args,
-//     collection: args.collection,
-//     accion: PERMISO_ACCION_BORRAR,
-//   })
-// }
+export const isComunicacionOrAdminCollectionAccess: Access = ({ req }) => {
+  return (
+    (req?.user?.rol?.includes('COMUNICACION') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
+  )
+}
+
+export const isHabilitacionesOrAdminCollectionAccess: Access = ({ req }) => {
+  return (
+    (req?.user?.rol?.includes('HABILITACIONES') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ??
+    false
+  )
+}
+
+export const isJuzgadoOrAdminCollectionAccess: Access = ({ req }) => {
+  return (req?.user?.rol?.includes('JUZGADO') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
+}
 
 /*
 GLOBALS
@@ -97,7 +86,7 @@ Archivos
 - U: admin
 - D: admin
 
-Avatares (idem a users)
+Avatares
 - C: admin o a si mismo (createdBy)
 - R: admin o a si mismo (createdBy)
 - U: admin o a si mismo (createdBy)
@@ -121,7 +110,7 @@ Contabilidad
 - U: admin y hacienda
 - D: admin y hacienda
 
-Curriculums (ideam a avatares)
+Curriculums (idem a avatares)
 - C: admin o a si mismo (createdBy)
 - R: admin o a si mismo (createdBy)
 - U: admin o a si mismo (createdBy)

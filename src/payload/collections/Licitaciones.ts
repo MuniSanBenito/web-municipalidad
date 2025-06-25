@@ -1,10 +1,8 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 
-const SLUG = 'licitaciones'
-
 export const Licitaciones: CollectionConfig = {
-  slug: SLUG,
+  slug: 'licitaciones',
   labels: {
     singular: 'Licitacion',
     plural: 'Licitaciones',
