@@ -57,7 +57,7 @@ export const Noticias: CollectionConfig = {
       label: 'Slug',
       required: true,
       unique: true,
-      defaultValue: crypto.randomUUID(),
+      defaultValue: () => Date.now(),
     },
     {
       type: 'textarea',
