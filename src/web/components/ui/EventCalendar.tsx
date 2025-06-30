@@ -98,7 +98,7 @@ export function EventCalendar({
           <div className="bg-base-100/90 flex flex-col items-center justify-center gap-6 rounded-xl py-16 shadow-lg">
             <IconCalendar size={48} className="text-primary/60" />
             <h3 className="text-base-content/80 text-2xl font-bold">
-              No hay eventos próximos, ¡volvé pronto!"
+              No hay eventos próximos, ¡volvé pronto!
             </h3>
             <div className="mt-2 flex gap-4">
               <Link href="/noticias" className="btn btn-primary btn-md rounded-full">
