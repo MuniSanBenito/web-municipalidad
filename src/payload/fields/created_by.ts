@@ -10,6 +10,8 @@ export const CreatedBy: Field = {
     readOnly: true,
     hidden: true,
   },
+  hasMany: false,
+  unique: false,
   hooks: {
     beforeChange: [async ({ req }) => req?.user?.id],
   },

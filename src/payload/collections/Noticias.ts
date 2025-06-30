@@ -1,8 +1,8 @@
 import { contenido } from '@/payload/fields/contenido'
-import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+import { CreatedBy } from '../fields/created_by'
 
 export const Noticias: CollectionConfig = {
   slug: 'noticias',
@@ -57,6 +57,7 @@ export const Noticias: CollectionConfig = {
       label: 'Slug',
       required: true,
       unique: true,
+      defaultValue: crypto.randomUUID(),
     },
     {
       type: 'textarea',
