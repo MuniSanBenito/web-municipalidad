@@ -1,6 +1,5 @@
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
 import type { Evento } from '@/types/evento'
-import { CarouselNoticias } from '@/web/components/carousel-noticias'
 import { EventCalendar } from '@/web/components/ui/EventCalendar'
 import { basePayload } from '@/web/lib/payload'
 import {
@@ -154,7 +153,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
   )
 }
 
-// export const revalidate = 0 // No cache, always fresh
+export const revalidate = 0 // No cache, always fresh
 
 export default async function Page() {
   const [noticias, eventosData] = await Promise.all([
@@ -206,7 +205,14 @@ export default async function Page() {
       </div>
 
       <div className="container mx-auto flex flex-col items-center justify-center">
-        <CarouselNoticias />
+        <div className="carousel carousel-center w-full">{noticias.docs.map(renderNoticia)}</div>
+        <div className="hidden w-full justify-center gap-2 py-2 md:flex">
+          {noticias.docs.map((noticia, i) => (
+            <a key={noticia.id} href={`#noticia${i + 1}`} className="btn btn-xs">
+              {i + 1}
+            </a>
+          ))}
+        </div>
         <div className="my-6 flex w-full justify-center">
           <Link
             href="/noticias"
