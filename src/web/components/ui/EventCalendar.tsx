@@ -34,12 +34,14 @@ type EventCalendarProps = {
   events: Evento[]
   highlightToday?: boolean
   highlightNext?: boolean
+  backgroundImage?: 'agenda1' | 'agenda2'
 }
 
 export function EventCalendar({
   events,
   highlightToday = false,
   highlightNext = false,
+  backgroundImage = 'agenda1',
 }: EventCalendarProps) {
   // Filtrar y ordenar eventos: solo futuros y ordenados por fecha ascendente
   const now = new Date()
@@ -60,59 +62,92 @@ export function EventCalendar({
     day: 'numeric',
   })
 
+  // Determinar la imagen de fondo
+  const bgUrl = backgroundImage === 'agenda2' ? '/images/agenda2.jpg' : '/images/agenda1.jpg'
+
   return (
-    <section className="container mx-auto my-8 px-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Agenda Municipal</h2>
-          <p className="text-base-content/70">Próximos eventos en San Benito</p>
+    <section className="w-full">
+      {/* Hero con imagen de fondo y overlay */}
+      <div
+        className="relative flex min-h-[260px] w-full flex-col items-center justify-center overflow-hidden rounded-xl md:min-h-[340px]"
+        style={{
+          backgroundImage: `url(${bgUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: '0 10%',
+        }}
+      >
+        {/* Overlay degradado para mejor contraste */}
+
+        {/* Contenido centrado sobre la imagen */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-4 py-10 text-center md:py-16">
+          <h2 className="mb-2 text-3xl font-extrabold text-white drop-shadow-xl md:text-5xl">
+            Agenda
+          </h2>
+          <p className="mb-6 text-white/80 drop-shadow md:text-xl">
+            Conocé todo lo que sucede en la ciudad
+          </p>
+          <Link href="/agenda" className="btn btn-primary btn-lg gap-2 shadow-xl">
+            <IconCalendar size={22} />
+            Ver Calendario Completo
+          </Link>
         </div>
-        <Link href="/agenda" className="btn btn-primary btn-sm gap-2">
-          <IconCalendar size={18} />
-          Ver Calendario Completo
-        </Link>
       </div>
-      {formattedEvents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-6 py-16">
-          <IconCalendar size={48} className="text-primary/60" />
-          <h3 className="text-2xl font-bold text-base-content/80">No hay eventos próximos, ¡volvé pronto!</h3>
-          <div className="flex gap-4 mt-2">
-            <Link href="/noticias" className="btn btn-primary btn-md rounded-full">Ver noticias</Link>
-            <Link href="/" className="btn btn-outline btn-md rounded-full">Volver al inicio</Link>
+      {/* Cards flotantes de eventos */}
+      <div className="relative z-20 -mt-8 mb-4 flex w-full flex-col items-center px-2 md:-mt-16 md:px-8">
+        {formattedEvents.length === 0 ? (
+          <div className="bg-base-100/90 flex flex-col items-center justify-center gap-6 rounded-xl py-16 shadow-lg">
+            <IconCalendar size={48} className="text-primary/60" />
+            <h3 className="text-base-content/80 text-2xl font-bold">
+              No hay eventos próximos, ¡volvé pronto!"
+            </h3>
+            <div className="mt-2 flex gap-4">
+              <Link href="/noticias" className="btn btn-primary btn-md rounded-full">
+                Ver noticias
+              </Link>
+              <Link href="/" className="btn btn-outline btn-md rounded-full">
+                Volver al inicio
+              </Link>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {formattedEvents.map((event, idx) => {
-            const isToday = highlightToday && event.fecha.includes(todayStr)
-            const isNext = highlightNext && idx === nextIdx
-            return (
-              <article
-                key={event.id}
-                className={`card relative bg-base-100 border transition-all duration-300 hover:shadow-xl ${isNext ? 'border-primary/60 bg-primary/5 shadow-lg scale-[1.01]' : 'border-base-200 shadow-sm hover:border-primary/40'}`}
-              >
-                <div className="card-body">
-                  <div className="flex items-center gap-2 mb-1">
-                    <time className="text-primary text-sm font-medium">{event.fecha}</time>
-                    {isToday && (
-                      <span className="badge badge-success badge-sm">Hoy</span>
-                    )}
-                    {isNext && (
-                      <span className="badge badge-primary badge-sm">Próximo</span>
+        ) : (
+          <div className="flex w-full gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible lg:grid-cols-3">
+            {formattedEvents.map((event, idx) => {
+              const isToday = highlightToday && event.fecha.includes(todayStr)
+              const isNext = highlightNext && idx === nextIdx
+              return (
+                <article
+                  key={event.id}
+                  className={`card bg-base-100/70 relative max-w-sm min-w-[320px] rounded-2xl border shadow-lg transition-all duration-200 hover:scale-[1.025] hover:shadow-2xl md:min-w-0 ${isNext ? 'border-primary/70 bg-primary/20 scale-[1.03] shadow-xl' : 'border-base-200 hover:border-primary/40'}`}
+                  style={{
+                    backdropFilter: 'blur(6px)',
+                  }}
+                >
+                  <div className="card-body px-5 py-4 md:px-6 md:py-5">
+                    <div className="mb-2 flex items-center gap-2">
+                      <time className="text-primary text-xs font-semibold drop-shadow-sm">
+                        {event.fecha}
+                      </time>
+                      {isToday && <span className="badge badge-success badge-sm">Hoy</span>}
+                      {isNext && <span className="badge badge-primary badge-sm">Próximo</span>}
+                    </div>
+                    <h3 className="card-title text-base-content mb-1 text-lg font-bold drop-shadow-md">
+                      {event.titulo}
+                    </h3>
+                    <p className="text-base-content/70 mb-1 text-sm drop-shadow-sm">
+                      {event.lugar}
+                    </p>
+                    {event.descripcion && (
+                      <p className="text-base-content/80 mt-1 text-xs drop-shadow-sm">
+                        {event.descripcion}
+                      </p>
                     )}
                   </div>
-                  <h3 className="card-title">{event.titulo}</h3>
-                  <p className="text-base-content/70 text-sm">{event.lugar}</p>
-                  {event.descripcion && (
-                    <p className="text-base-content/80 mt-2 text-sm">{event.descripcion}</p>
-                  )}
-                </div>
-              </article>
-            )
-          })}
-        </div>
-      )}
-
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </div>
     </section>
   )
 }

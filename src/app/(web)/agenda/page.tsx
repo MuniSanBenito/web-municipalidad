@@ -37,6 +37,34 @@ export const metadata: Metadata = {
   description: 'Descubrí todos los eventos culturales, artísticos y recreativos de San Benito',
 }
 
+// Utilidad para limpiar y validar src de imagen para Next.js
+function getSafeImageUrl(imagen: any): string {
+  let url = '';
+  if (typeof imagen === 'object' && imagen?.sizes?.square?.url) {
+    url = imagen.sizes.square.url;
+  } else if (typeof imagen === 'object' && imagen?.url) {
+    url = imagen.url;
+  } else if (typeof imagen === 'string') {
+    url = imagen;
+  }
+  // Si es un id tipo "685933a2fd422a1e45ad2017", no es válido
+  if (!url || typeof url !== 'string') return getRandomAgendaFallback();
+  if (url.startsWith('http') || url.startsWith('/')) return url;
+  // Si parece ser solo un id o un nombre de archivo sin barra, prepende '/uploads/' (ajusta según tu backend)
+  if (/^[a-zA-Z0-9_-]+\.(jpg|jpeg|png|webp|gif)$/i.test(url)) {
+    return `/uploads/${url}`;
+  }
+  // Si es solo un id (sin extensión), no es válido
+  return getRandomAgendaFallback();
+}
+
+function getRandomAgendaFallback(): string {
+  // Alterna entre las dos imágenes por defecto
+  const fallbacks = ['/images/agenda1.jpg', '/images/agenda2.jpg'];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+}
+
+
 type Props = {
   searchParams: Promise<{ [key: string]: string }>
 }
@@ -124,17 +152,11 @@ export default async function AgendaPage({ searchParams }: Props) {
                 {/* Miniatura de imagen */}
                 <figure className="relative h-48 w-full overflow-hidden">
                   <Image
-                    src={
-                      typeof evento.imagen === 'object' && evento.imagen?.sizes?.square?.url
-                        ? evento.imagen.sizes.square.url
-                        : typeof evento.imagen === 'string'
-                          ? evento.imagen
-                          : '/images/placeholder.jpg'
-                    }
+                    src={getSafeImageUrl(evento.imagen)}
                     alt={
                       typeof evento.imagen === 'object' && evento.imagen?.alt
                         ? evento.imagen.alt
-                        : './images/agenda-default.jpg'
+                        : evento.nombre || 'Imagen de evento'
                     }
                     width={400}
                     height={250}

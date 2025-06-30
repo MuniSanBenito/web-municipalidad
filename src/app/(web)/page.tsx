@@ -249,11 +249,11 @@ export default async function Page() {
         <EventCalendar events={eventos} highlightToday highlightNext />
 
         {/* Portal Tributario */}
-        <section className="from-primary text-primary-content my-8 w-full bg-gradient-to-r to-white">
+        <section className="my-8 w-full bg-gradient-to-r from-primary to-base-100 text-primary-content">
           <div className="container mx-auto grid grid-cols-1 gap-8 px-6 py-12 md:grid-cols-2 lg:px-8">
             <div className="flex flex-col items-start justify-center text-left">
-              <h3 className="mb-4 text-4xl font-bold">Portal Tributario</h3>
-              <p className="mb-6 text-lg">
+              <h3 className="mb-4 text-4xl font-bold text-primary-content">Portal Tributario</h3>
+              <p className="mb-6 text-lg text-base-content">
                 Consultá, imprimí y pagá tus tasas municipales de forma rápida y segura.
               </p>
               <Link
@@ -265,20 +265,20 @@ export default async function Page() {
               </Link>
             </div>
             <div className="flex items-center justify-center">
-              <div className="bg-base-100/10 flex flex-col items-center gap-5 rounded-xl p-8 shadow-lg">
+              <div className="bg-base-100/80 flex flex-col items-center gap-5 rounded-xl p-8 shadow-lg">
                 <div className="flex items-center gap-2">
                   {/* Icono WhatsApp Tabler */}
                   <IconBrandWhatsapp
                     size={18}
-                    className="flex-shrink-0 text-green-500"
+                    className="flex-shrink-0 text-accent"
                     stroke={1.5}
                   />
-                  <span className="font-medium whitespace-nowrap">WhatsApp Rentas:</span>
+                  <span className="font-medium whitespace-nowrap text-base-content">WhatsApp Rentas:</span>
                   <a
                     href="https://wa.me/+543436127015"
                     target="_blank"
                     rel="noopener"
-                    className="whitespace-nowrap underline hover:text-green-600"
+                    className="whitespace-nowrap underline hover:text-accent"
                   >
                     3436127015
                   </a>
@@ -286,7 +286,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2">
                   {/* Icono Mail Tabler */}
                   <IconMail size={18} className="text-primary flex-shrink-0" stroke={1.5} />
-                  <span className="font-medium whitespace-nowrap">Correo Rentas:</span>
+                  <span className="font-medium whitespace-nowrap text-base-content">Correo Rentas:</span>
                   <a
                     href="mailto:rentas@munisanbenito.gov.ar"
                     className="hover:text-primary whitespace-nowrap underline"
