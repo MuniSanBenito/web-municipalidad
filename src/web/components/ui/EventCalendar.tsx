@@ -99,10 +99,9 @@ export function EventCalendar({
             className="relative w-full max-w-2xl mx-auto overflow-hidden rounded-2xl shadow-lg"
             style={{
               backdropFilter: 'blur(6px)',
-              background: 'var(--color-neutral, #076633)',
               backgroundColor: typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
-                ? 'rgba(7,102,51,0.15)'
-                : 'rgba(7,102,51,0.05)',
+                ? 'rgba(7,102,51,0.45)'
+                : 'rgba(7,102,51,0.85)'
             }}
           >
             <div className="px-6 py-12 text-center">
@@ -114,10 +113,10 @@ export function EventCalendar({
                   </div>
                 </div>
               </div>
-              <h3 className="mb-4 text-2xl font-bold text-base-content/90">
+              <h3 className="mb-4 text-2xl font-bold text-white">
                 No hay eventos programados
               </h3>
-              <p className="mb-8 text-base-content/70">
+              <p className="mb-8 text-white">
                 ¡Mantente atento! Pronto publicaremos nuevos eventos en la agenda municipal.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
@@ -129,7 +128,7 @@ export function EventCalendar({
                 </Link>
                 <Link 
                   href="/" 
-                  className="btn btn-outline btn-md gap-2 rounded-full hover:bg-base-100/10 transition-all duration-200"
+                  className="btn btn-outline text-white border-white btn-md gap-2 rounded-full hover:bg-white/10 transition-all duration-200"
                 >
                   Volver al inicio
                 </Link>
