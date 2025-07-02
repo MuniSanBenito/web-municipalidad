@@ -3,13 +3,11 @@ import type { Evento } from '@/types/evento'
 import { EventCalendar } from '@/web/components/ui/EventCalendar'
 import { basePayload } from '@/web/lib/payload'
 import {
-  IconBallFootball,
   IconBrandWhatsapp,
   IconBuilding,
   IconBuildingStore,
-  IconCash,
-  IconClipboardList,
   IconHeadset,
+  IconHomeEdit,
   IconLicense,
   IconMail,
   IconUserCircle,
@@ -46,44 +44,10 @@ const TRAMITES: {
     link: '/tramites/obras-privadas',
   },
   {
-    title: 'Rentas',
-    icon: IconCash,
-    link: '/tramites/rentas',
+    title: 'Catastro Municipal',
+    icon: IconHomeEdit,
+    link: '/tramites/catastro',
   },
-  {
-    title: 'Actividades Deportivas',
-    icon: IconBallFootball,
-    link: '/tramites/actividades-deportivas',
-  },
-  {
-    title: 'Mesa de Entrada',
-    icon: IconClipboardList,
-    link: '/tramites/mesa-de-entrada',
-  },
-  /* {
-    title: 'Área Mujer y Género',
-    icon: IconGenderFemale,
-    link: '/tramites/area-mujer',
-    description: 'Servicios y asistencia del área de mujer y género',
-  },
-  {
-    title: 'Punto Digital - Biblioteca',
-    icon: IconBook,
-    link: '/tramites/punto-digital-biblioteca',
-    description: 'Talleres y actividades en la Biblioteca Municipal',
-  },
-  {
-    title: 'Talleres Culturales',
-    icon: IconMusic,
-    link: '/tramites/talleres-culturales',
-    description: 'Información sobre talleres artísticos municipales',
-  },
-  {
-    title: 'CIC Barrio San Pedro',
-    icon: IconBuildingCommunity,
-    link: '/tramites/cic-barrio-san-pedro',
-    description: 'Actividades y talleres en el Centro Integrador Comunitario',
-  },*/
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
@@ -279,7 +243,7 @@ export default async function Page() {
                     href="https://wa.me/+543436127015"
                     target="_blank"
                     rel="noopener"
-                    className="hover:text-accent whitespace-nowrap underline"
+                    className="hover:text-accent whitespace-nowrap underline dark:text-white"
                   >
                     3436127015
                   </a>
@@ -292,7 +256,7 @@ export default async function Page() {
                   </span>
                   <a
                     href="mailto:rentas@munisanbenito.gov.ar"
-                    className="hover:text-primary whitespace-nowrap underline"
+                    className="hover:text-primary whitespace-nowrap underline dark:text-white"
                   >
                     rentas@munisanbenito.gov.ar
                   </a>

@@ -1,5 +1,6 @@
 'use client'
 import { ThemeToggle } from '@/web/components/theme-toggle'
+import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
 import { IconMenu2 } from '@tabler/icons-react'
@@ -31,6 +32,10 @@ const NAV_LINKS: { href: string; label: string }[] = [
 ] as const
 
 export function RootLayout({ children }: PropsWithChildren) {
+  // ...
+  // Agrega el script de tema lo más arriba posible
+  // (idealmente, justo después de abrir el body)
+
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
@@ -47,6 +52,7 @@ export function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <>
+      <ThemeInitScript />
       <AccessibilityControls />
       <div className="drawer-content">
         {/* Page content here */}

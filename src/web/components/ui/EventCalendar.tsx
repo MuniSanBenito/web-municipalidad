@@ -95,18 +95,45 @@ export function EventCalendar({
       {/* Cards flotantes de eventos */}
       <div className="relative z-20 -mt-8 mb-4 flex w-full flex-col items-center px-2 md:-mt-16 md:px-8">
         {formattedEvents.length === 0 ? (
-          <div className="bg-base-100/90 flex flex-col items-center justify-center gap-6 rounded-xl py-16 shadow-lg">
-            <IconCalendar size={48} className="text-primary/60" />
-            <h3 className="text-base-content/80 text-2xl font-bold">
-              No hay eventos próximos, ¡volvé pronto!
-            </h3>
-            <div className="mt-2 flex gap-4">
-              <Link href="/noticias" className="btn btn-primary btn-md rounded-full">
-                Ver noticias
-              </Link>
-              <Link href="/" className="btn btn-outline btn-md rounded-full">
-                Volver al inicio
-              </Link>
+          <div 
+            className="relative w-full max-w-2xl mx-auto overflow-hidden rounded-2xl shadow-lg"
+            style={{
+              backdropFilter: 'blur(6px)',
+              background: 'var(--color-neutral, #076633)',
+              backgroundColor: typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
+                ? 'rgba(7,102,51,0.15)'
+                : 'rgba(7,102,51,0.05)',
+            }}
+          >
+            <div className="px-6 py-12 text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 animate-ping rounded-full bg-primary/20"></div>
+                  <div className="relative rounded-full bg-base-100/95 p-4">
+                    <IconCalendar size={48} className="text-primary" />
+                  </div>
+                </div>
+              </div>
+              <h3 className="mb-4 text-2xl font-bold text-base-content/90">
+                No hay eventos programados
+              </h3>
+              <p className="mb-8 text-base-content/70">
+                ¡Mantente atento! Pronto publicaremos nuevos eventos en la agenda municipal.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link 
+                  href="/noticias" 
+                  className="btn btn-primary btn-md gap-2 rounded-full shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  Ver noticias
+                </Link>
+                <Link 
+                  href="/" 
+                  className="btn btn-outline btn-md gap-2 rounded-full hover:bg-base-100/10 transition-all duration-200"
+                >
+                  Volver al inicio
+                </Link>
+              </div>
             </div>
           </div>
         ) : (
@@ -117,12 +144,21 @@ export function EventCalendar({
               return (
                 <article
                   key={event.id}
-                  className={`card bg-base-100/70 relative max-w-sm min-w-[320px] rounded-2xl border shadow-lg transition-all duration-200 hover:scale-[1.025] hover:shadow-2xl md:min-w-0 ${isNext ? 'border-primary/70 bg-primary/20 scale-[1.03] shadow-xl' : 'border-base-200 hover:border-primary/40'}`}
+                  className={`card relative max-w-sm min-w-[320px] rounded-2xl border shadow-lg transition-all duration-200 hover:scale-[1.025] hover:shadow-2xl md:min-w-0 text-white ${isNext ? 'border-primary/70 bg-primary/20 scale-[1.03] shadow-xl' : 'border-base-200 hover:border-primary/40'}`}
                   style={{
                     backdropFilter: 'blur(6px)',
+                    background:
+                      "var(--color-neutral, #076633)" +
+                      (typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
+                        ? 'b3'
+                        : 'e6'),
+                    backgroundColor:
+                      typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
+                        ? 'rgba(7,102,51,0.45)'
+                        : 'rgba(7,102,51,0.85)',
                   }}
                 >
-                  <div className="card-body px-5 py-4 md:px-6 md:py-5">
+                  <div className="card-body px-5 py-4 md:px-6 md:py-5 text-white">
                     <div className="mb-2 flex items-center gap-2">
                       <time className="text-primary text-xs font-semibold drop-shadow-sm">
                         {event.fecha}
@@ -130,14 +166,14 @@ export function EventCalendar({
                       {isToday && <span className="badge badge-success badge-sm">Hoy</span>}
                       {isNext && <span className="badge badge-primary badge-sm">Próximo</span>}
                     </div>
-                    <h3 className="card-title text-base-content mb-1 text-lg font-bold drop-shadow-md">
+                    <h3 className="card-title mb-1 text-lg font-bold drop-shadow-md text-white">
                       {event.titulo}
                     </h3>
-                    <p className="text-base-content/70 mb-1 text-sm drop-shadow-sm">
+                    <p className="mb-1 text-sm drop-shadow-sm text-white/90">
                       {event.lugar}
                     </p>
                     {event.descripcion && (
-                      <p className="text-base-content/80 mt-1 text-xs drop-shadow-sm">
+                      <p className="mt-1 text-xs drop-shadow-sm text-white/80">
                         {event.descripcion}
                       </p>
                     )}

@@ -10,6 +10,7 @@ import {
   IconClipboardList,
   IconGenderFemale,
   IconHeadset,
+  IconHomeEdit,
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
@@ -52,12 +53,12 @@ const tramites = [
     link: '/tramites/obras-privadas',
     description: 'Trámites relacionados con construcciones y proyectos',
   },
-  // {
-  //   title: 'Catastro Municipal',
-  //   icon: IconHomeEdit,
-  //   link: '/tramites/catastro',
-  //   description: 'Información sobre presentación de trámites generales',
-  // },
+  {
+    title: 'Catastro Municipal',
+    icon: IconHomeEdit,
+    link: '/tramites/catastro',
+    description: 'Información sobre presentación de trámites generales',
+  },
   {
     title: 'Mesa de Entrada',
     icon: IconClipboardList,
