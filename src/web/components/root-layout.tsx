@@ -32,14 +32,19 @@ const NAV_LINKS: { href: string; label: string }[] = [
 ] as const
 
 export function RootLayout({ children }: PropsWithChildren) {
-  // ...
-  // Agrega el script de tema lo más arriba posible
-  // (idealmente, justo después de abrir el body)
-
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const closeDrawer = () => {
+    const drawerCheckbox = document.getElementById('my-drawer') as HTMLInputElement
+    if (drawerCheckbox) {
+      drawerCheckbox.checked = false
+      setIsDrawerOpen(false)
+    }
+  }
 
   useEffect(() => {
     const scrollListener = () => {
@@ -54,6 +59,7 @@ export function RootLayout({ children }: PropsWithChildren) {
     <>
       <ThemeInitScript />
       <AccessibilityControls />
+      <input type="checkbox" id="my-drawer" className="drawer-toggle" checked={isDrawerOpen} onChange={(e) => setIsDrawerOpen(e.target.checked)} />
       <div className="drawer-content">
         {/* Page content here */}
         <header
@@ -112,6 +118,7 @@ export function RootLayout({ children }: PropsWithChildren) {
                 <Link
                   href={link.href}
                   className="btn btn-ghost btn-primary dark:btn-neutral btn-lg w-fit"
+                  onClick={closeDrawer}
                 >
                   {link.label}
                 </Link>
