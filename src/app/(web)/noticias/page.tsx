@@ -28,9 +28,11 @@ export default async function PageNoticias({ searchParams }: Props) {
       {/* Lista de noticias */}
       <section className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {noticias.docs.map((noticia) => (
-          <div
+          <Link
+            href={`/noticias/${noticia.slug}`}
             key={noticia.id}
-            className="group card bg-base-100 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl"
+            className="group card bg-base-100 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl hover:bg-base-200 cursor-pointer"
+            aria-label={`Leer noticia: ${noticia.titulo}`}
           >
             {/* Imagen de la noticia */}
             <figure className="relative h-48 w-full overflow-hidden">
@@ -64,19 +66,16 @@ export default async function PageNoticias({ searchParams }: Props) {
               <p className="text-base-content/80 mt-2 line-clamp-3">{noticia.descripcion}</p>
 
               <div className="card-actions mt-4 justify-end">
-                <Link
-                  href={`/noticias/${noticia.slug}`}
-                  className="btn btn-link btn-sm group gap-2 outline-none focus:ring-0"
-                >
+                <span className="btn btn-link btn-sm group gap-2">
                   Leer más
                   <IconChevronRight
                     size={16}
                     className="transition-transform group-hover:translate-x-1"
                   />
-                </Link>
+                </span>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </section>
 
