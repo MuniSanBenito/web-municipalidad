@@ -65,36 +65,45 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
     >
       <div id={`noticia${index + 1}`} className="-z-50 h-32 w-full"></div>
       <div className="relative w-full">
+        {/* La misma imagen como fondo difuminado */}
+        <div
+          className="absolute inset-0 -z-30 bg-cover bg-center blur-sm"
+          style={{ backgroundImage: `url('${portada.url}')` }}
+        ></div>
         <div
           id="foto-texto"
           className="flex h-72 items-center justify-between overflow-hidden sm:h-80 lg:mx-5 lg:my-5 lg:h-96 2xl:justify-center"
         >
-          <div id="foto" className="relative h-full w-full 2xl:w-[40%]">
-            <Image
-              alt={portada.alt}
-              src={portada.url!}
-              fill
-              className="absolute inset-0 -z-20 object-contain"
-              priority
-            />
-          </div>
-          <div
-            id="text"
+          <Link href={`/noticias/${noticia.slug}`} className="relative h-full w-full 2xl:w-[40%]">
+            <div id="foto" className="relative h-full w-full">
+              <Image
+                alt={portada.alt}
+                src={portada.url!}
+                fill
+                className="absolute inset-0 -z-20 object-contain"
+                priority
+              />
+            </div>
+          </Link>
+          <Link
+            href={`/noticias/${noticia.slug}`}
             className="bg-base-100/80 hidden h-full w-full max-w-1/3 flex-col gap-3 px-5 py-4 md:flex"
           >
             <h3 className="text-xl font-extrabold">{noticia.titulo}</h3>
             <p className="line-clamp-none max-h-full overflow-hidden text-lg md:line-clamp-4 lg:line-clamp-6 xl:line-clamp-none">
               {noticia.descripcion}
             </p>
-          </div>
+          </Link>
         </div>
-        {/* La misma imagen como fondo difuminado */}
-        <div
-          className="absolute inset-0 -z-30 bg-cover bg-center blur-sm"
-          style={{ backgroundImage: `url('${portada.url}')` }}
-        ></div>
+        <Link
+          href={`/noticias/${noticia.slug}`}
+          className="bg-base-100 flex flex-col gap-3 px-5 py-4 md:hidden"
+        >
+          <h3 className="text-lg font-bold">{noticia.titulo}</h3>
+          <p className="text-base-content/80">{noticia.descripcion}</p>
+        </Link>
         {/* Flechas */}
-        <div className="absolute top-1/2 right-1 left-1 z-0 flex -translate-y-1/2 transform justify-between">
+        <div className="absolute top-1/2 right-1 left-1 z-10 flex -translate-y-1/2 transform justify-between">
           <a
             href={`#noticia${index === 0 ? noticias.length : index}`}
             className="btn btn-square btn-soft btn-sm focus-visible:ring-primary rounded-xs focus-visible:ring-2"
@@ -108,10 +117,6 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
             ❯
           </a>
         </div>
-      </div>
-      <div className="bg-base-100 flex flex-col gap-3 px-5 py-4 md:hidden">
-        <h3 className="text-lg font-bold">{noticia.titulo}</h3>
-        <p className="text-base-content/80">{noticia.descripcion}</p>
       </div>
     </article>
   )
