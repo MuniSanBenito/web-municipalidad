@@ -1,22 +1,13 @@
 import type { User } from '@/payload-types'
-import { isAdminCollectionAccess } from '@/payload/access/collection'
+import { isAdminCollectionAccess, isAdminOrMeCollectionAccess } from '@/payload/access/collection'
 import {
   ROL_ADMIN_VALUE,
   ROL_CIUDADANO_VALUE,
   ROL_DEFAULT_VALUE,
   ROLES,
 } from '@/payload/constants/roles'
-import type { Access, CollectionConfig, Condition, FieldAccess } from 'payload'
-
-const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) => {
-  if (req?.user?.id === id) {
-    return true
-  }
-  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
-    return true
-  }
-  return false
-}
+import type { CollectionConfig, Condition, FieldAccess } from 'payload'
+import { HIDE_API_URL } from '../config'
 
 const isAdminFieldAccess: FieldAccess<User> = ({ req }) =>
   req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
@@ -32,6 +23,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
+    hideAPIURL: HIDE_API_URL,
   },
   auth: true,
   access: {
@@ -48,7 +40,7 @@ export const Users: CollectionConfig = {
       name: 'rol',
       label: 'Rol',
       options: [...ROLES],
-      defaultValue: ROL_DEFAULT_VALUE,
+      defaultValue: [ROL_DEFAULT_VALUE],
       required: true,
       hasMany: true,
       access: {

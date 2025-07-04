@@ -1,9 +1,12 @@
 import type { Curriculum } from '@/payload-types'
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
-
-const SLUG = 'curriculums'
+import {
+  isAdminOrCreatedByAccess,
+  isAdminOrCreatedByWithDataAccess,
+  isCiudadanoOrMoreCollectionAccess,
+} from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
   let { user } = data
@@ -19,22 +22,23 @@ const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req 
 }
 
 export const Curriculums: CollectionConfig = {
-  slug: SLUG,
+  slug: 'curriculums',
   labels: {
     singular: 'Curriculum',
     plural: 'Curriculums',
   },
+  access: {
+    create: isCiudadanoOrMoreCollectionAccess,
+    read: isAdminOrCreatedByAccess,
+    update: isAdminOrCreatedByWithDataAccess,
+    delete: isAdminOrCreatedByWithDataAccess,
+  },
   admin: {
     useAsTitle: 'titulo',
+    hideAPIURL: HIDE_API_URL,
   },
   hooks: {
     beforeChange: [beforeChange],
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
   },
   fields: [
     CreatedBy,

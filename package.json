@@ -15,6 +15,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@payloadcms/db-mongodb": "3.39.1",
     "@payloadcms/live-preview-react": "3.39.1",
     "@payloadcms/next": "3.39.1",
@@ -29,10 +30,28 @@
     "next-themes": "0.4.6",
     "payload": "3.39.1",
     "postcss": "8.5.3",
+=======
+    "@payloadcms/db-mongodb": "3.44.0",
+    "@payloadcms/email-nodemailer": "3.44.0",
+    "@payloadcms/live-preview-react": "3.44.0",
+    "@payloadcms/next": "3.44.0",
+    "@payloadcms/payload-cloud": "3.44.0",
+    "@payloadcms/richtext-lexical": "3.44.0",
+    "@payloadcms/storage-s3": "3.44.0",
+    "@payloadcms/ui": "3.44.0",
+    "@tabler/icons-react": "3.34.0",
+    "@tailwindcss/postcss": "4.1.11",
+    "cross-env": "7.0.3",
+    "next": "15.3.4",
+    "next-themes": "0.4.6",
+    "payload": "3.44.0",
+    "postcss": "8.5.6",
+>>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
     "react": "19.1.0",
     "react-chatbot-kit": "^2.2.2",
     "react-dom": "19.1.0",
     "sharp": "0.34.2",
+<<<<<<< HEAD
     "tailwind-merge": "3.3.0",
     "tailwindcss": "4.1.7"
   },
@@ -53,6 +72,28 @@
     "bun": "1.2.14"
   },
   "packageManager": "bun@1.2.14",
+=======
+    "tailwind-merge": "3.3.1",
+    "tailwindcss": "4.1.11"
+  },
+  "devDependencies": {
+    "@types/jsdom": "21.1.7",
+    "@types/node": "24.0.7",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "daisyui": "5.0.43",
+    "eslint": "9.30.0",
+    "eslint-config-next": "15.3.4",
+    "jsdom": "26.1.0",
+    "prettier": "3.6.2",
+    "prettier-plugin-tailwindcss": "0.6.13",
+    "typescript": "5.8.3"
+  },
+  "engines": {
+    "bun": "1.2.17"
+  },
+  "packageManager": "bun@1.2.17",
+>>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
   "trustedDependencies": [
     "sharp"
   ]

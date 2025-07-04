@@ -1,23 +1,23 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'eventos'
+import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Eventos: CollectionConfig = {
-  slug: SLUG,
+  slug: 'eventos',
   labels: {
     singular: 'Evento',
     plural: 'Eventos',
   },
+  access: {
+    create: isComunicacionOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isComunicacionOrAdminCollectionAccess,
+    delete: isComunicacionOrAdminCollectionAccess,
+  },
   admin: {
     useAsTitle: 'nombre',
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,
@@ -29,10 +29,11 @@ export const Eventos: CollectionConfig = {
       unique: true,
     },
     {
-      type: 'textarea',
+      type: 'text',
       name: 'descripcion',
-      label: 'Descripción',
+      label: 'Descripción Corta',
       required: true,
+      maxLength: 256,
     },
     {
       type: 'date',
@@ -51,6 +52,34 @@ export const Eventos: CollectionConfig = {
       relationTo: 'ubicaciones',
       required: true,
       label: 'Ubicación',
+    },
+    {
+      type: 'text',
+      name: 'entradas',
+      label: 'Entradas',
+      required: true,
+      admin: {
+        description: 'Enlace a la página de entradas o información adicional',
+        placeholder: 'Entrada libre y gratuita',
+      },
+    },
+    {
+      type: 'text',
+      name: 'organiza',
+      label: 'Organiza',
+      required: true,
+      admin: {
+        description: 'Nombre de la organización o persona que organiza el evento',
+        placeholder: 'Municipalidad de San Benito',
+      },
+    },
+    {
+      type: 'relationship',
+      name: 'tags',
+      label: 'Etiquetas',
+      required: false,
+      hasMany: true,
+      relationTo: 'eventos-tags',
     },
     {
       name: 'imagen',

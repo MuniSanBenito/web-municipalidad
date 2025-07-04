@@ -1,15 +1,20 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { contenido } from '@/payload/fields/contenido'
-import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'noticias'
+import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
+import { CreatedBy } from '../fields/created_by'
 
 export const Noticias: CollectionConfig = {
-  slug: SLUG,
+  slug: 'noticias',
   labels: {
     singular: 'Noticia',
     plural: 'Noticias',
+  },
+  access: {
+    create: isComunicacionOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isComunicacionOrAdminCollectionAccess,
+    delete: isComunicacionOrAdminCollectionAccess,
   },
   versions: {
     drafts: {
@@ -20,6 +25,7 @@ export const Noticias: CollectionConfig = {
     maxPerDoc: 50,
   },
   admin: {
+    hideAPIURL: HIDE_API_URL,
     useAsTitle: 'titulo',
     livePreview: {
       url: ({ data }) => `${process.env.NEXT_PUBLIC_BASE_URL}/preview/noticias/${data.slug}`,
@@ -37,12 +43,6 @@ export const Noticias: CollectionConfig = {
       },
     },
   },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
-  },
   fields: [
     CreatedBy,
     {
@@ -57,6 +57,7 @@ export const Noticias: CollectionConfig = {
       label: 'Slug',
       required: true,
       unique: true,
+      defaultValue: () => Date.now(),
     },
     {
       type: 'textarea',

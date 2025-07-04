@@ -1,17 +1,19 @@
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import {
   IconBallFootball,
   IconBook,
   IconBuilding,
   IconBuildingCommunity,
   IconBuildingStore,
+  IconCalendarEvent,
   IconCash,
   IconClipboardList,
   IconGenderFemale,
+  IconHeadset,
+  IconHomeEdit,
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
-  IconHeadset,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -51,12 +53,12 @@ const tramites = [
     link: '/tramites/obras-privadas',
     description: 'Trámites relacionados con construcciones y proyectos',
   },
-  // {
-  //   title: 'Catastro Municipal',
-  //   icon: IconHomeEdit,
-  //   link: '/tramites/catastro',
-  //   description: 'Información sobre presentación de trámites generales',
-  // },
+  {
+    title: 'Catastro Municipal',
+    icon: IconHomeEdit,
+    link: '/tramites/catastro',
+    description: 'Información sobre presentación de trámites generales',
+  },
   {
     title: 'Mesa de Entrada',
     icon: IconClipboardList,
@@ -98,6 +100,12 @@ const tramites = [
     icon: IconHeadset,
     link: '/tramites/cav',
     description: 'Gestión de reclamos y atención ciudadana',
+  },
+  {
+    title: 'Agenda Cultural',
+    icon: IconCalendarEvent,
+    link: '/agenda',
+    description: 'Eventos culturales, artísticos y recreativos de la ciudad',
   },
 ]
 

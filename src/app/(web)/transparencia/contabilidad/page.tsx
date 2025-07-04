@@ -1,5 +1,5 @@
 'use client'
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import { IconChartBar, IconFileText, IconGavel, IconScale } from '@tabler/icons-react'
 import Link from 'next/link'
 

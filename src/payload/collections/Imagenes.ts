@@ -1,11 +1,14 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'imagenes'
+import {
+  isAdminOrCreatedByWithDataAccess,
+  isCiudadanoOrMoreCollectionAccess,
+  isPublicAccess,
+} from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Imagenes: CollectionConfig = {
-  slug: SLUG,
+  slug: 'imagenes',
   labels: {
     singular: 'Imagen',
     plural: 'Imagenes',
@@ -13,14 +16,15 @@ export const Imagenes: CollectionConfig = {
   typescript: {
     interface: 'Imagen',
   },
+  access: {
+    create: isCiudadanoOrMoreCollectionAccess,
+    read: isPublicAccess,
+    update: isAdminOrCreatedByWithDataAccess,
+    delete: isAdminOrCreatedByWithDataAccess,
+  },
   admin: {
     group: 'Almacenamiento',
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,

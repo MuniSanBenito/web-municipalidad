@@ -1,24 +1,24 @@
-import { accessCreate, accessDelete, accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
-
-const SLUG = 'balances-mensuales'
+import { isHaciendaOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const BalancesMensuales: CollectionConfig = {
-  slug: SLUG,
+  slug: 'balances-mensuales',
   labels: {
     singular: 'Balance Mensual',
     plural: 'Balances Mensuales',
   },
+  access: {
+    create: isHaciendaOrAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isHaciendaOrAdminCollectionAccess,
+    delete: isHaciendaOrAdminCollectionAccess,
+  },
   admin: {
     useAsTitle: 'titulo',
     defaultColumns: ['titulo', 'fecha'],
-  },
-  access: {
-    create: async (args) => await accessCreate({ ...args, collection: SLUG }),
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
-    delete: async (args) => await accessDelete({ ...args, collection: SLUG }),
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,
@@ -79,4 +79,4 @@ export const BalancesMensuales: CollectionConfig = {
       ],
     },
   ],
-} 
+}

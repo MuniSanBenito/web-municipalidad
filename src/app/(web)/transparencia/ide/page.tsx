@@ -1,5 +1,5 @@
 'use client'
-import PageTitle from '@/components/ui/PageTitle'
+import PageTitle from '@/web/components/ui/PageTitle'
 import {
   IconExternalLink,
   IconFiles,

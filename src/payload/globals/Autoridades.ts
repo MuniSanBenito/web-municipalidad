@@ -1,15 +1,17 @@
-import { accessRead, accessUpdate } from '@/payload/access/collection'
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { GlobalConfig } from 'payload'
-
-const SLUG = 'autoridades'
+import { isAdminCollectionAccess } from '../access/collection'
+import { HIDE_API_URL } from '../config'
 
 export const Autoridades: GlobalConfig = {
   slug: 'autoridades',
   label: 'Autoridades',
   access: {
-    read: async (args) => await accessRead({ ...args, collection: SLUG }),
-    update: async (args) => await accessUpdate({ ...args, collection: SLUG }),
+    read: () => true,
+    update: isAdminCollectionAccess,
+  },
+  admin: {
+    hideAPIURL: HIDE_API_URL,
   },
   fields: [
     CreatedBy,

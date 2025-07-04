@@ -1,0 +1,18 @@
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
+README.md
+.next
+.git
+
+build
+dist / media
+.DS_Store
+.env
+
+# Payload default media upload directory
+public/media/
+
+public/robots.txt
+public/sitemap*.xml

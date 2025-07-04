@@ -7,13 +7,6 @@
  */
 
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoRoles".
- */
-export type PermisoRoles =
-  | ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'A SI MISMO' | 'PUBLICO')[]
-  | null;
-/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -89,6 +82,7 @@ export interface Config {
     licitaciones: Licitacione;
     concursos: Concurso;
     'balances-mensuales': BalancesMensuale;
+    'eventos-tags': EventosTag;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -114,6 +108,7 @@ export interface Config {
     licitaciones: LicitacionesSelect<false> | LicitacionesSelect<true>;
     concursos: ConcursosSelect<false> | ConcursosSelect<true>;
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
+    'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -123,11 +118,9 @@ export interface Config {
   };
   globals: {
     autoridades: Autoridade;
-    permisos: Permiso;
   };
   globalsSelect: {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
-    permisos: PermisosSelect<false> | PermisosSelect<true>;
   };
   locale: null;
   user: User & {
@@ -162,7 +155,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES')[];
+  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   datos_ciudadano?: {
@@ -524,8 +517,28 @@ export interface Evento {
   descripcion: string;
   fecha: string;
   ubicacion: string | Ubicacione;
+  /**
+   * Enlace a la página de entradas o información adicional
+   */
+  entradas: string;
+  /**
+   * Nombre de la organización o persona que organiza el evento
+   */
+  organiza: string;
+  tags?: (string | EventosTag)[] | null;
   imagen?: (string | null) | Imagen;
   archivos?: (string | Archivo)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos-tags".
+ */
+export interface EventosTag {
+  id: string;
+  nombre: string;
+  descripcion: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -730,6 +743,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'balances-mensuales';
         value: string | BalancesMensuale;
+      } | null)
+    | ({
+        relationTo: 'eventos-tags';
+        value: string | EventosTag;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1138,6 +1155,9 @@ export interface EventosSelect<T extends boolean = true> {
   descripcion?: T;
   fecha?: T;
   ubicacion?: T;
+  entradas?: T;
+  organiza?: T;
+  tags?: T;
   imagen?: T;
   archivos?: T;
   updatedAt?: T;
@@ -1220,6 +1240,16 @@ export interface BalancesMensualesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "eventos-tags_select".
+ */
+export interface EventosTagsSelect<T extends boolean = true> {
+  nombre?: T;
+  descripcion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -1276,41 +1306,6 @@ export interface Autoridade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "permisos".
- */
-export interface Permiso {
-  id: string;
-  users?: PermisoActions;
-  noticias?: PermisoActions;
-  imagenes?: PermisoActions;
-  curriculums?: PermisoActions;
-  archivos?: PermisoActions;
-  avatares?: PermisoActions;
-  memorias?: PermisoActions;
-  contabilidad?: PermisoActions;
-  intimaciones?: PermisoActions;
-  ubicaciones?: PermisoActions;
-  eventos?: PermisoActions;
-  habilitaciones?: PermisoActions;
-  licitaciones?: PermisoActions;
-  concursos?: PermisoActions;
-  'balances-mensuales'?: PermisoActions;
-  autoridades?: PermisoActions;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoActions".
- */
-export interface PermisoActions {
-  crear?: PermisoRoles;
-  leer?: PermisoRoles;
-  actualizar?: PermisoRoles;
-  borrar?: PermisoRoles;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
@@ -1332,41 +1327,6 @@ export interface AutoridadesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "permisos_select".
- */
-export interface PermisosSelect<T extends boolean = true> {
-  users?: T | PermisoActionsSelect<T>;
-  noticias?: T | PermisoActionsSelect<T>;
-  imagenes?: T | PermisoActionsSelect<T>;
-  curriculums?: T | PermisoActionsSelect<T>;
-  archivos?: T | PermisoActionsSelect<T>;
-  avatares?: T | PermisoActionsSelect<T>;
-  memorias?: T | PermisoActionsSelect<T>;
-  contabilidad?: T | PermisoActionsSelect<T>;
-  intimaciones?: T | PermisoActionsSelect<T>;
-  ubicaciones?: T | PermisoActionsSelect<T>;
-  eventos?: T | PermisoActionsSelect<T>;
-  habilitaciones?: T | PermisoActionsSelect<T>;
-  licitaciones?: T | PermisoActionsSelect<T>;
-  concursos?: T | PermisoActionsSelect<T>;
-  'balances-mensuales'?: T | PermisoActionsSelect<T>;
-  autoridades?: T | PermisoActionsSelect<T>;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PermisoActions_select".
- */
-export interface PermisoActionsSelect<T extends boolean = true> {
-  crear?: T;
-  leer?: T;
-  actualizar?: T;
-  borrar?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

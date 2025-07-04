@@ -10,9 +10,21 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './payload/collections/Archivos'
 import { Avatares } from './payload/collections/Avatares'
+import { BalancesMensuales } from './payload/collections/BalancesMensuales'
+import { Concursos } from './payload/collections/Concursos'
+import { Contabilidad } from './payload/collections/Contabilidad'
+import { Curriculums } from './payload/collections/Curriculums'
+import { Eventos } from './payload/collections/Eventos'
+import { EventosTags } from './payload/collections/EventosTags'
+import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
+import { Intimaciones } from './payload/collections/Intimaciones'
+import { Licitaciones } from './payload/collections/Licitaciones'
+import { Memorias } from './payload/collections/Memorias'
+import { Noticias } from './payload/collections/Noticias'
+import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
-import { COLLECTIONS, GLOBALS, Permisos } from './payload/globals/Permisos'
+import { Autoridades } from './payload/globals/Autoridades'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -120,8 +132,25 @@ export default buildConfig({
       ],
     },
   },
-  collections: COLLECTIONS,
-  globals: [...GLOBALS, Permisos],
+  collections: [
+    Users,
+    Noticias,
+    Imagenes,
+    Curriculums,
+    Archivos,
+    Avatares,
+    Memorias,
+    Contabilidad,
+    Intimaciones,
+    Ubicaciones,
+    Eventos,
+    Habilitaciones,
+    Licitaciones,
+    Concursos,
+    BalancesMensuales,
+    EventosTags,
+  ],
+  globals: [Autoridades],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

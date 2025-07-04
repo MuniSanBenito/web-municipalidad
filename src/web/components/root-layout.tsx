@@ -1,7 +1,15 @@
 'use client'
+<<<<<<< HEAD
 // Keep existing imports
 import { ThemeToggle } from '@/components/theme-toggle'
 import { IconMenu2, IconMessageChatbot, IconX } from '@tabler/icons-react' // Added IconMessageChatbot and IconX
+=======
+import { ThemeToggle } from '@/web/components/theme-toggle'
+import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
+import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
+import { Footer } from '@/web/components/ui/Footer'
+import { IconMenu2 } from '@tabler/icons-react'
+>>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
@@ -45,7 +53,19 @@ export function RootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
   const [isScrolled, setIsScrolled] = useState(false)
+<<<<<<< HEAD
   const [showChatbot, setShowChatbot] = useState(false) // State for chatbot visibility
+=======
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const closeDrawer = () => {
+    const drawerCheckbox = document.getElementById('my-drawer') as HTMLInputElement
+    if (drawerCheckbox) {
+      drawerCheckbox.checked = false
+      setIsDrawerOpen(false)
+    }
+  }
+>>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
 
   useEffect(() => {
     const scrollListener = () => {
@@ -59,6 +79,9 @@ export function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <>
+      <ThemeInitScript />
+      <AccessibilityControls />
+      <input type="checkbox" id="my-drawer" className="drawer-toggle" checked={isDrawerOpen} onChange={(e) => setIsDrawerOpen(e.target.checked)} />
       <div className="drawer-content">
         <header
           // ... (existing header attributes)
@@ -107,6 +130,7 @@ export function RootLayout({ children }: PropsWithChildren) {
         <main className={twJoin('min-h-svh', isHome ? null : isScrolled ? 'pt-24' : 'pt-32')}>
           {children}
         </main>
+<<<<<<< HEAD
 
         {/* Chatbot Container */}
         <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
@@ -128,6 +152,9 @@ export function RootLayout({ children }: PropsWithChildren) {
             {showChatbot ? <IconX size={32} /> : <IconMessageChatbot size={32} />}
           </button>
         </div>
+=======
+        <Footer />
+>>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
       </div>
       <aside className="drawer-side z-50">
         {/* ... (existing aside content) */}
@@ -139,6 +166,7 @@ export function RootLayout({ children }: PropsWithChildren) {
                 <Link
                   href={link.href}
                   className="btn btn-ghost btn-primary dark:btn-neutral btn-lg w-fit"
+                  onClick={closeDrawer}
                 >
                   {link.label}
                 </Link>
