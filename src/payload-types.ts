@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    ciudadanos: CiudadanoAuthOperations;
   };
   blocks: {};
   collections: {
@@ -83,6 +84,7 @@ export interface Config {
     concursos: Concurso;
     'balances-mensuales': BalancesMensuale;
     'eventos-tags': EventosTag;
+    ciudadanos: Ciudadano;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -90,6 +92,9 @@ export interface Config {
   collectionsJoins: {
     users: {
       'datos_ciudadano.curriculums': 'curriculums';
+    };
+    ciudadanos: {
+      curriculum: 'curriculums';
     };
   };
   collectionsSelect: {
@@ -109,6 +114,7 @@ export interface Config {
     concursos: ConcursosSelect<false> | ConcursosSelect<true>;
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
     'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
+    ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -123,15 +129,37 @@ export interface Config {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
   };
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (Ciudadano & {
+        collection: 'ciudadanos';
+      });
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface CiudadanoAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -181,6 +209,13 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -271,6 +306,7 @@ export interface Curriculum {
   created_by: string | User;
   titulo?: string | null;
   user: string | User;
+  ciudadano: string | Ciudadano;
   estudios?:
     | {
         institucion?: string | null;
@@ -310,6 +346,44 @@ export interface Curriculum {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ciudadanos".
+ */
+export interface Ciudadano {
+  id: string;
+  activo?: boolean | null;
+  avatar?: (string | null) | Avatar;
+  nombre?: string | null;
+  apellido?: string | null;
+  dni: string;
+  domicilio?: string | null;
+  fecha_nacimiento?: string | null;
+  ciudad?: string | null;
+  telefono?: string | null;
+  curriculum?: {
+    docs?: (string | Curriculum)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -747,12 +821,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'eventos-tags';
         value: string | EventosTag;
+      } | null)
+    | ({
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -762,10 +845,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
   key?: string | null;
   value?:
     | {
@@ -819,6 +907,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -946,6 +1041,7 @@ export interface CurriculumsSelect<T extends boolean = true> {
   created_by?: T;
   titulo?: T;
   user?: T;
+  ciudadano?: T;
   estudios?:
     | T
     | {
@@ -1247,6 +1343,38 @@ export interface EventosTagsSelect<T extends boolean = true> {
   descripcion?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ciudadanos_select".
+ */
+export interface CiudadanosSelect<T extends boolean = true> {
+  activo?: T;
+  avatar?: T;
+  nombre?: T;
+  apellido?: T;
+  dni?: T;
+  domicilio?: T;
+  fecha_nacimiento?: T;
+  ciudad?: T;
+  telefono?: T;
+  curriculum?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
