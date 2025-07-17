@@ -1,15 +1,10 @@
 'use client'
-<<<<<<< HEAD
-// Keep existing imports
-import { ThemeToggle } from '@/components/theme-toggle'
-import { IconMenu2, IconMessageChatbot, IconX } from '@tabler/icons-react' // Added IconMessageChatbot and IconX
-=======
+// Imports
 import { ThemeToggle } from '@/web/components/theme-toggle'
-import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
+import { ThemeInitScript } from './ThemeInitScript'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2 } from '@tabler/icons-react'
->>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
+import { IconMenu2, IconMessageChatbot, IconX } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
@@ -53,9 +48,7 @@ export function RootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
   const [isScrolled, setIsScrolled] = useState(false)
-<<<<<<< HEAD
   const [showChatbot, setShowChatbot] = useState(false) // State for chatbot visibility
-=======
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const closeDrawer = () => {
@@ -65,7 +58,6 @@ export function RootLayout({ children }: PropsWithChildren) {
       setIsDrawerOpen(false)
     }
   }
->>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
 
   useEffect(() => {
     const scrollListener = () => {
@@ -130,7 +122,6 @@ export function RootLayout({ children }: PropsWithChildren) {
         <main className={twJoin('min-h-svh', isHome ? null : isScrolled ? 'pt-24' : 'pt-32')}>
           {children}
         </main>
-<<<<<<< HEAD
 
         {/* Chatbot Container */}
         <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
@@ -152,9 +143,7 @@ export function RootLayout({ children }: PropsWithChildren) {
             {showChatbot ? <IconX size={32} /> : <IconMessageChatbot size={32} />}
           </button>
         </div>
-=======
         <Footer />
->>>>>>> cf53397837656140fd53beb68fab016c8cc19ee2
       </div>
       <aside className="drawer-side z-50">
         {/* ... (existing aside content) */}

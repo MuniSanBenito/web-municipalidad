@@ -17,6 +17,7 @@ import MessageParser from './MessageParser';
 import ActionProvider from './ActionProvider';
 import GeneralOptions from './widgets/GeneralOptions';
 import LinkButton from './widgets/LinkButton';
+import OllamaStatus from './OllamaStatus';
 
 const botName = 'Beni';
 
@@ -171,6 +172,10 @@ const config: Config = {
           </div>
         </div>
       ),
+    },
+    {
+      widgetName: 'ollamaStatus',
+      widgetFunc: (props: any) => <OllamaStatus {...props} />,
     },
   ],
   messageParser: MessageParser,

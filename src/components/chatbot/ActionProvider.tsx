@@ -120,7 +120,7 @@ class ActionProvider implements IActionProvider {
       this._updateChatbotState(processingMessage);
       
       // Obtener respuesta de la IA
-      const aiResponse = await fetchAIResponse(userMessage);
+      const { response: aiResponse, usedGemma } = await fetchAIResponse(userMessage);
       
       // Reemplazar mensaje de procesamiento con la respuesta real
       this.setState((prevState: any) => {
@@ -132,26 +132,29 @@ class ActionProvider implements IActionProvider {
         };
       });
       
-      // Mostrar sugerencias de seguimiento
-      this._showSuggestions();
-      
+      // Si se usó Gemma 2B, mostrar un mensaje informativo
+      if (usedGemma) {
+        setTimeout(() => {
+          this.setState((prevState: any) => {
+            return {
+              ...prevState, 
+              messages: [...prevState.messages, 
+                this.createChatBotMessage(
+                  "Esta respuesta fue generada por el modelo de IA Gemma 2B.", 
+                  { widget: "ollamaStatus" }
+                )
+              ]
+            };
+          });
+        }, 1000);
+      } else {
+        this._showSuggestions();
+      }
     } catch (error) {
-      console.error('Error en handleUnknown:', error);
-      
-      // Reemplazar mensaje de procesamiento con mensaje de error
       this.setState((prevState: any) => {
         const messages = [...prevState.messages];
-        messages.pop(); // Eliminar mensaje de procesamiento
-        
-        const errorMessage = this.createChatBotMessage(
-          "❌ Lo siento, ha ocurrido un error al procesar tu consulta. Por favor, inténtalo de nuevo más tarde o comunícate directamente con la municipalidad."
-        );
-        
-        return {
-          ...prevState,
-          messages: [...messages, errorMessage]
-        };
-      });
+        messages.pop();
+        return {...prevState, messages: [...messages, this.createChatBotMessage('Lo siento, ocurrió un error al procesar tu consulta. Por favor, intenta nuevamente.')]}});
     } finally {
       this._hideTypingIndicator();
     }
@@ -283,6 +286,17 @@ class ActionProvider implements IActionProvider {
       "📍 Rentas: Lunes a Viernes de 7:00 a 13:00 hs\n" +
       "📍 Obras Privadas: Lunes a Viernes de 7:00 a 12:00 hs\n" +
       "📍 Punto Digital: Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs"
+    );
+    this._updateChatbotState(message);
+  }
+  
+  // Método para mostrar el estado de Gemma 2B
+  handleShowOllamaStatus() {
+    const message = this.createChatBotMessage(
+      "Aquí puedes ver el estado actual del modelo de IA Gemma 2B:",
+      {
+        widget: "ollamaStatus",
+      }
     );
     this._updateChatbotState(message);
   }

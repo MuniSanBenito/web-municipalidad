@@ -67,6 +67,16 @@ class MessageParser implements IMessageParser {
   parse(message: string): void {
     const lowerCaseMessage = message.toLowerCase();
 
+    // Verificar si es una consulta sobre el modelo de IA o Gemma 2B
+    if (lowerCaseMessage.includes('gemma') || 
+        lowerCaseMessage.includes('modelo de ia') || 
+        lowerCaseMessage.includes('modelo ia') || 
+        lowerCaseMessage.includes('inteligencia artificial') ||
+        lowerCaseMessage.includes('ollama')) {
+      this.actionProvider.handleShowOllamaStatus();
+      return;
+    }
+    
     // Verificar si es una consulta de horarios
     if (lowerCaseMessage.includes('horario') || lowerCaseMessage.includes('hora de atención') || lowerCaseMessage.includes('cuando atienden')) {
       this.actionProvider.handleHorarios();
