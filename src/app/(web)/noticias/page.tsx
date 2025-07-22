@@ -1,6 +1,6 @@
 import PageTitle from '@/web/components/ui/PageTitle'
 import { basePayload } from '@/web/lib/payload'
-import { IconCalendar, IconChevronRight } from '@tabler/icons-react'
+import { IconCalendar, IconChevronRight, IconNewsOff } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -34,7 +34,7 @@ export default async function PageNoticias({ searchParams }: Props) {
               <Link
                 href={`/noticias/${noticia.slug}`}
                 key={noticia.id}
-                className="group card bg-base-100 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl hover:bg-base-200 cursor-pointer"
+                className="group card bg-base-100 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl hover:bg-base-200 cursor-pointer rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-base-100"
                 aria-label={`Leer noticia: ${noticia.titulo}`}
               >
                 {/* Imagen de la noticia */}
@@ -53,6 +53,7 @@ export default async function PageNoticias({ searchParams }: Props) {
                     }
                     width={400}
                     height={250}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/30"></div>
@@ -129,9 +130,10 @@ export default async function PageNoticias({ searchParams }: Props) {
         </>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-2xl font-bold">No se encontraron noticias</p>
+          <IconNewsOff size={64} className="text-base-content/30 mb-4" />
+          <p className="text-2xl font-bold">No hay noticias para mostrar</p>
           <p className="text-base-content/70 mt-2">
-            Por favor, intente de nuevo más tarde.
+            Vuelve a intentarlo más tarde o explora otras secciones del sitio.
           </p>
         </div>
       )}

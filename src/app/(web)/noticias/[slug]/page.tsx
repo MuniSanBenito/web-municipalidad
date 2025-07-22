@@ -1,7 +1,7 @@
 import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { Archivo, Noticia } from '@/payload-types'
-import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
+import { IconArrowLeft, IconFileDownload, IconNewsOff } from '@tabler/icons-react'
 import type { Metadata, ResolvingMetadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -64,78 +64,22 @@ export default async function PageNoticia({ params }: Props) {
     },
   })
 
-  if (!docs.length) return <div className="text-error py-20 text-center">Noticia no encontrada</div>
-
-  const noticia = docs[0]
-  const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
-  if (noticia.is_old) {
+    if (!docs.length) {
     return (
-      <main className="bg-base-100 min-h-screen">
-        {/* Portada */}
-        {noticia.portada && (
-          <div className="relative h-96 w-full">
-            <Image
-              src={
-                typeof noticia.portada === 'string'
-                  ? noticia.portada
-                  : noticia.portada?.url || '/images/placeholder.jpg'
-              }
-              alt={
-                typeof noticia.portada === 'string'
-                  ? 'Portada de la noticia'
-                  : noticia.portada?.alt || 'Portada de la noticia'
-              }
-              className="h-full w-full object-cover"
-              fill
-              priority
-            />
-          </div>
-        )}
-
-        {/* Título y fecha */}
-        <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
-          <Link href="/noticias" className="btn btn-link mb-4 pl-0">
-            <IconArrowLeft size={16} />
-            Volver a Noticias
-          </Link>
-          <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
-          <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
-        </div>
-
-        {/* Contenido */}
-        <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
-          <div
-            dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
-            className="prose lg:prose-lg text-base-content"
-          />
-        </section>
-
-        {/* Archivos adjuntos */}
-        {noticia.archivos && noticia.archivos.length > 0 && (
-          <section className="container mx-auto max-w-4xl px-4 pb-8 sm:px-6">
-            <h2 className="text-primary mb-4 text-2xl font-bold">Archivos adjuntos</h2>
-            <div className="space-y-2">
-              {noticia.archivos.map((archivo: string | Archivo, index: number) => (
-                <div key={index} className="flex items-center gap-2">
-                  <IconFileDownload size={20} />
-                  <a
-                    href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
+      <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+        <IconNewsOff size={64} className="text-base-content/30 mb-4" />
+        <p className="text-2xl font-bold">Noticia no encontrada</p>
+        <p className="text-base-content/70 mt-2">El enlace puede ser incorrecto o la noticia ha sido eliminada.</p>
+        <Link href="/noticias" className="btn btn-primary mt-6">
+          Volver a Noticias
+        </Link>
+      </div>
     )
   }
 
-  // Versión para noticias nuevas (no old)
+  const noticia = docs[0]
+  const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
+
   return (
     <main className="bg-base-100 min-h-screen">
       {/* Portada */}
@@ -155,25 +99,31 @@ export default async function PageNoticia({ params }: Props) {
             className="h-full w-full object-cover"
             fill
             priority
+            sizes="100vw"
           />
         </div>
       )}
 
       {/* Título y fecha */}
       <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
-        <Link href="/noticias" className="btn btn-link mb-4 pl-0">
+        <Link href="/noticias" className="btn btn-link mb-4 pl-0 text-primary hover:no-underline">
           <IconArrowLeft size={16} />
           Volver a Noticias
         </Link>
-        <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
+        <h1 className="text-primary mb-2 text-4xl font-bold leading-tight">{noticia.titulo}</h1>
         <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
       </div>
 
       {/* Contenido */}
-      <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        <div className="prose-lg">
+      <section className="container prose-lg mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        {noticia.is_old ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
+            className="prose lg:prose-lg text-base-content"
+          />
+        ) : (
           <RichText data={noticia.contenido!} className="space-y-6" />
-        </div>
+        )}
       </section>
 
       {/* Archivos adjuntos */}
@@ -181,19 +131,23 @@ export default async function PageNoticia({ params }: Props) {
         <section className="container mx-auto max-w-4xl px-4 pb-8 sm:px-6">
           <h2 className="text-primary mb-4 text-2xl font-bold">Archivos adjuntos</h2>
           <div className="space-y-2">
-            {noticia.archivos.map((archivo: string | Archivo, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <IconFileDownload size={20} />
+            {(noticia.archivos as (string | Archivo)[]).map((archivo, index) => {
+              const url = typeof archivo === 'string' ? archivo : archivo.url || '#'
+              const filename = typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'
+
+              return (
                 <a
-                  href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
+                  key={index}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="flex items-center gap-2 text-primary hover:underline"
                 >
-                  {typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'}
+                  <IconFileDownload size={20} />
+                  <span>{filename}</span>
                 </a>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       )}
