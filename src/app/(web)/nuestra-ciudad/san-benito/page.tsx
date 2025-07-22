@@ -1,12 +1,48 @@
+import { IconArrowLeft, IconBook, IconScale } from '@tabler/icons-react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'San Benito - Ciudad',
+  description:
+    'Descubrí la historia, economía y los barrios que conforman la ciudad de San Benito, un lugar que combina lo urbano y lo rural en Entre Ríos.',
 }
+
+const BARRIOS = [
+  'Las Tunas',
+  'Loteo Aguer Cavallo',
+  'San Pedro',
+  'La Loma',
+  'San Miguel',
+  'Loteo Dobanton Mizawak Martinez',
+  'San Sebastián',
+  'La Virgencita II',
+  'Loteo Bizai',
+  'San Martín',
+  'Portal del Sol',
+  'Senger',
+  'Puesta del Sol',
+  'Centro',
+  'Loteo Furios',
+  'Jardines',
+  'Sur',
+  'Loteo Cumini',
+  'Altos del Este',
+  'Solvencia',
+  '250 Viviendas',
+]
 
 export default function PageNuestraCiudad() {
   return (
     <main className="container mx-auto p-6">
+      <Link
+        href="/nuestra-ciudad"
+        className="btn btn-link mb-4 pl-0 text-primary hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Nuestra Ciudad
+      </Link>
+
       <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
@@ -21,10 +57,14 @@ export default function PageNuestraCiudad() {
           </div>
         </div>
       </section>
+
       <section className="mt-10 space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="bg-base-100 rounded-lg p-6 shadow-md transition-shadow hover:shadow-lg">
-            <h2 className="mb-4 text-3xl font-semibold">Historia</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <IconBook className="text-primary" size={36} stroke={1.5} />
+              <h2 className="text-3xl font-semibold">Historia</h2>
+            </div>
             <p className="text-lg leading-relaxed">
               San Benito nació con la llegada de inmigrantes italianos, eslovenos y austríacos en
               1879. La colonia &quot;3 de Febrero&quot; fue el primer asentamiento, evolucionando
@@ -34,7 +74,10 @@ export default function PageNuestraCiudad() {
           </div>
 
           <div className="bg-base-100 rounded-lg p-6 shadow-md transition-shadow hover:shadow-lg">
-            <h2 className="mb-4 text-3xl font-semibold">Economía</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <IconScale className="text-primary" size={36} stroke={1.5} />
+              <h2 className="text-3xl font-semibold">Economía</h2>
+            </div>
             <p className="text-lg leading-relaxed">
               La ciudad está dividida naturalmente por el Arroyo Las Tunas y cuenta con diversas
               instituciones y servicios. Su economía se sustenta principalmente en el empleo
@@ -47,32 +90,10 @@ export default function PageNuestraCiudad() {
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
           <h2 className="mb-6 text-center text-3xl font-semibold">Nuestros Barrios</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {[
-              'Las Tunas',
-              'Loteo Aguer Cavallo',
-              'San Pedro',
-              'La Loma',
-              'San Miguel',
-              'Loteo Dobanton Mizawak Martinez',
-              'San Sebastián',
-              'La Virgencita II',
-              'Loteo Bizai',
-              'San Martín',
-              'Portal del Sol',
-              'Senger',
-              'Puesta del Sol',
-              'Centro',
-              'Loteo Furios',
-              'Jardines',
-              'Sur',
-              'Loteo Cumini',
-              'Altos del Este',
-              'Solvencia',
-              '250 Viviendas',
-            ].map((barrio) => (
+            {BARRIOS.map((barrio) => (
               <div
                 key={barrio}
-                className="bg-base-200 hover:bg-base-300 rounded-lg p-3 text-center shadow-sm transition-all duration-300 hover:shadow-md"
+                className="bg-base-200 hover:bg-base-300 rounded-lg p-3 text-center font-medium shadow-sm transition-all duration-300 hover:shadow-md"
               >
                 {barrio}
               </div>
