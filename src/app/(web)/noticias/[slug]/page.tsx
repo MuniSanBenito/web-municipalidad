@@ -1,14 +1,59 @@
 import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import type { Archivo } from '@/payload-types'
+import type { Archivo, Noticia } from '@/payload-types'
+import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
+import type { Metadata, ResolvingMetadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 
 type Props = {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string }>
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { slug } = params
+
+  const { docs } = await basePayload.find({
+    collection: 'noticias',
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+    limit: 1,
+  })
+
+  const noticia = docs[0] as Noticia | undefined
+
+  if (!noticia) {
+    return {
+      title: 'Noticia no encontrada',
+    }
+  }
+
+  const previousImages = (await parent).openGraph?.images || []
+
+  const imageUrl =
+    typeof noticia.portada === 'object' && noticia.portada?.url
+      ? noticia.portada.url
+      : '/images/og-image.png' // Fallback OG image
+
+  return {
+    title: noticia.titulo,
+    description: noticia.descripcion,
+    openGraph: {
+      title: noticia.titulo,
+      description: noticia.descripcion || '',
+      images: [imageUrl, ...previousImages],
+    },
+  }
 }
 
 export default async function PageNoticia({ params }: Props) {
-  const { slug } = await params
+  const { slug } = params
 
   const { docs } = await basePayload.find({
     collection: 'noticias',
@@ -23,14 +68,13 @@ export default async function PageNoticia({ params }: Props) {
 
   const noticia = docs[0]
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
-  console.log(noticia)
   if (noticia.is_old) {
     return (
       <main className="bg-base-100 min-h-screen">
         {/* Portada */}
         {noticia.portada && (
           <div className="relative h-96 w-full">
-            <img
+            <Image
               src={
                 typeof noticia.portada === 'string'
                   ? noticia.portada
@@ -41,13 +85,19 @@ export default async function PageNoticia({ params }: Props) {
                   ? 'Portada de la noticia'
                   : noticia.portada?.alt || 'Portada de la noticia'
               }
-              className="h-96 w-full object-cover"
+              className="h-full w-full object-cover"
+              fill
+              priority
             />
           </div>
         )}
 
         {/* Título y fecha */}
         <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
+          <Link href="/noticias" className="btn btn-link mb-4 pl-0">
+            <IconArrowLeft size={16} />
+            Volver a Noticias
+          </Link>
           <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
           <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
         </div>
@@ -67,9 +117,7 @@ export default async function PageNoticia({ params }: Props) {
             <div className="space-y-2">
               {noticia.archivos.map((archivo: string | Archivo, index: number) => (
                 <div key={index} className="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                  </svg>
+                  <IconFileDownload size={20} />
                   <a
                     href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
                     target="_blank"
@@ -92,8 +140,8 @@ export default async function PageNoticia({ params }: Props) {
     <main className="bg-base-100 min-h-screen">
       {/* Portada */}
       {noticia.portada && (
-        <div className="w-full">
-          <img
+        <div className="relative h-96 w-full">
+          <Image
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
@@ -104,13 +152,19 @@ export default async function PageNoticia({ params }: Props) {
                 ? 'Portada de la noticia'
                 : noticia.portada?.alt || 'Portada de la noticia'
             }
-            className="h-96 w-full object-cover"
+            className="h-full w-full object-cover"
+            fill
+            priority
           />
         </div>
       )}
 
       {/* Título y fecha */}
       <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
+        <Link href="/noticias" className="btn btn-link mb-4 pl-0">
+          <IconArrowLeft size={16} />
+          Volver a Noticias
+        </Link>
         <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
         <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
       </div>
@@ -129,9 +183,7 @@ export default async function PageNoticia({ params }: Props) {
           <div className="space-y-2">
             {noticia.archivos.map((archivo: string | Archivo, index: number) => (
               <div key={index} className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                </svg>
+                <IconFileDownload size={20} />
                 <a
                   href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
                   target="_blank"
