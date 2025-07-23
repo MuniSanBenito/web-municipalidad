@@ -1,5 +1,5 @@
 import { basePayload } from '@/web/lib/payload'
-import { IconDownload, IconFileText } from '@tabler/icons-react'
+import { IconArrowLeft, IconDownload, IconFileText } from '@tabler/icons-react'
 import Link from 'next/link'
 
 export default async function MemoriasPage() {
@@ -10,6 +10,13 @@ export default async function MemoriasPage() {
 
   return (
     <main className="container mx-auto p-6">
+      <Link
+        href="/transparencia"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Transparencia
+      </Link>
       <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
@@ -34,8 +41,7 @@ export default async function MemoriasPage() {
                   typeof memoria.archivo === 'object' && memoria.archivo?.url
                     ? memoria.archivo.url
                     : '#'
-                const year =
-                  memoria.nombre || new Date(memoria.createdAt).getFullYear().toString()
+                const year = memoria.nombre || new Date(memoria.createdAt).getFullYear().toString()
 
                 return (
                   <Link
@@ -43,7 +49,7 @@ export default async function MemoriasPage() {
                     href={archivoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`card bg-base-100 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${archivoUrl === '#' ? 'pointer-events-none opacity-50' : ''}`}
+                    className={`card bg-base-100 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${archivoUrl === '#' ? 'pointer-events-none opacity-50' : ''}`}
                   >
                     <div className="card-body items-center text-center">
                       <span className="text-primary mb-4">
@@ -69,7 +75,7 @@ export default async function MemoriasPage() {
           </div>
         </div>
 
-        <div className="bg-base-100 rounded-lg p-8 shadow-md mt-10">
+        <div className="bg-base-100 mt-10 rounded-lg p-8 shadow-md">
           <h2 className="mb-4 text-3xl font-semibold">Importancia de las Memorias</h2>
           <p className="text-lg leading-relaxed">
             Las memorias anuales del Intendente son documentos oficiales que presentan un balance

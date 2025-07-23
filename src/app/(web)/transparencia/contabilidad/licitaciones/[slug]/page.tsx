@@ -76,15 +76,13 @@ export default async function LicitacionDetalle({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-4">
-        <Link
-          href="/transparencia/contabilidad/licitaciones"
-          className="btn btn-outline btn-sm gap-2"
-        >
-          <IconArrowLeft size={16} />
-          <span>Volver a licitaciones</span>
-        </Link>
-      </div>
+      <Link
+        href="/transparencia/contabilidad/licitaciones"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Licitaciones
+      </Link>
 
       <PageTitle title={licitacion.titulo} />
 

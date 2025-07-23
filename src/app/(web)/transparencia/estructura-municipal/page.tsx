@@ -1,10 +1,18 @@
 'use client'
 
+import { IconArrowLeft } from '@tabler/icons-react'
 import Link from 'next/link'
 
 export default function EstructuraMunicipal() {
   return (
     <main className="container mx-auto p-6">
+      <Link
+        href="/transparencia"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Transparencia
+      </Link>
       <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
