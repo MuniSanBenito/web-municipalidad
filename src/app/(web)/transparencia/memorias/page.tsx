@@ -1,15 +1,22 @@
 import { basePayload } from '@/web/lib/payload'
+import { IconArrowLeft, IconDownload, IconFileText } from '@tabler/icons-react'
 import Link from 'next/link'
 
 export default async function MemoriasPage() {
   const { docs: memorias } = await basePayload.find({
     collection: 'memorias',
+    sort: '-createdAt',
   })
-
-  console.log(memorias)
 
   return (
     <main className="container mx-auto p-6">
+      <Link
+        href="/transparencia"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Transparencia
+      </Link>
       <section className="hero bg-base-200 rounded-lg p-10 text-center shadow-lg">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
@@ -23,32 +30,39 @@ export default async function MemoriasPage() {
         </div>
       </section>
 
-      <section className="mt-10 space-y-6">
+      <section className="mt-10">
         <div className="bg-base-100 rounded-lg p-8 shadow-md">
-          <h2 className="mb-6 text-3xl font-semibold">Documentos Disponibles</h2>
-          <p className="mb-6 text-lg">
-            Selecciona el año que deseas consultar para acceder al documento completo:
-          </p>
+          <h2 className="mb-6 text-center text-3xl font-semibold">Documentos Disponibles</h2>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {memorias && memorias.length > 0 ? (
-              memorias.map((memoria, index) => {
+              memorias.map((memoria) => {
                 const archivoUrl =
-                  typeof memoria.archivo === 'string'
-                    ? memoria.archivo
-                    : memoria.archivo?.url || '#'
+                  typeof memoria.archivo === 'object' && memoria.archivo?.url
+                    ? memoria.archivo.url
+                    : '#'
                 const year = memoria.nombre || new Date(memoria.createdAt).getFullYear().toString()
 
                 return (
                   <Link
-                    key={index}
+                    key={memoria.id}
                     href={archivoUrl}
                     target="_blank"
-                    className="bg-base-200 hover:bg-primary hover:text-primary-content rounded-lg p-6 text-center shadow-md transition-all hover:shadow-lg"
+                    rel="noopener noreferrer"
+                    className={`card bg-base-100 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${archivoUrl === '#' ? 'pointer-events-none opacity-50' : ''}`}
                   >
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <span className="text-3xl font-bold">{year}</span>
-                      <span className="text-sm">Memoria Anual</span>
+                    <div className="card-body items-center text-center">
+                      <span className="text-primary mb-4">
+                        <IconFileText size={60} stroke={1.5} />
+                      </span>
+                      <h3 className="card-title text-2xl font-bold">{year}</h3>
+                      <p className="text-base-content/70">Memoria Anual</p>
+                      <div className="card-actions mt-4">
+                        <span className="btn btn-primary btn-sm">
+                          <IconDownload size={18} className="mr-2" />
+                          Ver Documento
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 )
@@ -61,7 +75,7 @@ export default async function MemoriasPage() {
           </div>
         </div>
 
-        <div className="bg-base-100 rounded-lg p-8 shadow-md">
+        <div className="bg-base-100 mt-10 rounded-lg p-8 shadow-md">
           <h2 className="mb-4 text-3xl font-semibold">Importancia de las Memorias</h2>
           <p className="text-lg leading-relaxed">
             Las memorias anuales del Intendente son documentos oficiales que presentan un balance

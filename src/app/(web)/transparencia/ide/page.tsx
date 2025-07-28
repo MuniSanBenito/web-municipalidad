@@ -1,6 +1,7 @@
 'use client'
 import PageTitle from '@/web/components/ui/PageTitle'
 import {
+  IconArrowLeft,
   IconExternalLink,
   IconFiles,
   IconSitemap,
@@ -82,6 +83,13 @@ export default function PageIde() {
 
   return (
     <main className="container mx-auto px-4 py-6">
+      <Link
+        href="/transparencia"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Transparencia
+      </Link>
       <PageTitle title="Infraestructura de Datos Espaciales" />
 
       <section className="hero bg-base-200 mb-8 rounded-lg p-4 text-center shadow-lg md:p-10">

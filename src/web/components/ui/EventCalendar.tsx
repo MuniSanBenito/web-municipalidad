@@ -99,9 +99,7 @@ export function EventCalendar({
             className="relative w-full max-w-2xl mx-auto overflow-hidden rounded-2xl shadow-lg"
             style={{
               backdropFilter: 'blur(6px)',
-              backgroundColor: typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
-                ? 'rgba(7,102,51,0.45)'
-                : 'rgba(7,102,51,0.85)'
+              backgroundColor: 'rgba(7, 102, 51, 0.85)'
             }}
           >
             <div className="px-6 py-12 text-center">
@@ -146,15 +144,8 @@ export function EventCalendar({
                   className={`card relative max-w-sm min-w-[320px] rounded-2xl border shadow-lg transition-all duration-200 hover:scale-[1.025] hover:shadow-2xl md:min-w-0 text-white ${isNext ? 'border-primary/70 bg-primary/20 scale-[1.03] shadow-xl' : 'border-base-200 hover:border-primary/40'}`}
                   style={{
                     backdropFilter: 'blur(6px)',
-                    background:
-                      "var(--color-neutral, #076633)" +
-                      (typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
-                        ? 'b3'
-                        : 'e6'),
-                    backgroundColor:
-                      typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
-                        ? 'rgba(7,102,51,0.45)'
-                        : 'rgba(7,102,51,0.85)',
+                    background: 'var(--color-neutral, #076633)e6',
+                    backgroundColor: 'rgba(7, 102, 51, 0.85)'
                   }}
                 >
                   <div className="card-body px-5 py-4 md:px-6 md:py-5 text-white">
