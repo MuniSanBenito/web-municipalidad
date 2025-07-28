@@ -87,7 +87,7 @@ export default async function LicitacionDetalle({ params }: Props) {
       <PageTitle title={licitacion.titulo} />
 
       <div className="bg-base-100 mb-8 rounded-lg p-6 shadow-md">
-        <div className="mb-4 flex flex-wrap items-center gap-2 text-gray-500">
+        <div className="text-base-content/80 mb-4 flex flex-wrap items-center gap-2">
           <IconCalendar size={20} />
           <span>Fecha: {new Date(licitacion.fecha).toLocaleDateString('es-AR')}</span>
           <span

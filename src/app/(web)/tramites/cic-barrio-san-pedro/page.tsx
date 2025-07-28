@@ -1,158 +1,145 @@
+import {
+  IconAlertTriangle,
+  IconBrandWhatsapp,
+  IconDeviceDesktop,
+  IconExternalLink,
+  IconHeartHandshake,
+  IconInfoCircle,
+  IconLocation,
+  IconScissors,
+} from '@tabler/icons-react'
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { IconArrowLeft, IconBrandWhatsapp } from '@tabler/icons-react'
 
 export const metadata: Metadata = {
-  title: 'CIC Barrio San Pedro - San Benito',
+  title: 'Actividades en el CIC Barrio San Pedro - San Benito',
 }
+
+const talleres = [
+  {
+    category: 'Computación',
+    icon: IconDeviceDesktop,
+    subTalleres: [
+      { name: 'Niños y adolescentes (8 a 14 años)', link: 'https://forms.gle/PunossoQFuQrCHhD9' },
+      { name: 'Jóvenes (15 a 25 años)', link: 'https://forms.gle/hrteym7LjbRYHQmg6' },
+      { name: 'Adultos (mayores de 25 años)', link: 'https://forms.gle/4AfY2megQeb1XASC9' },
+    ],
+  },
+  {
+    category: 'Bienestar',
+    icon: IconHeartHandshake,
+    subTalleres: [
+      { name: 'Envejecientemente Activ@', link: 'https://forms.gle/8nmE7754QMXG2kLL6' },
+      { name: 'Yoga', link: 'https://forms.gle/7gDELwJ7cPxnQp4m6' },
+    ],
+  },
+  {
+    category: 'Taller de Telar',
+    icon: IconScissors,
+    subTalleres: [
+      { name: 'Telar para Principiantes', link: 'https://forms.gle/cssjjrpRCj7xTm2c7' },
+      { name: 'Telar Avanzado', link: 'https://forms.gle/EZzD9BD5xDjZvVVCA' },
+    ],
+  },
+]
 
 export default function PageCICBarrioSanPedro() {
   return (
-    <main className="container mx-auto px-4 py-6">
-      <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
+    <main className="container mx-auto px-4 py-8">
+      <section className="hero bg-base-200 rounded-xl p-6 text-center shadow-lg transition-all duration-300 hover:shadow-xl md:p-12">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-3xl font-bold md:text-5xl">CIC Barrio San Pedro</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">Actividades en el CIC Barrio San Pedro</h1>
+            <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full"></div>
+            <p className="text-base-content mt-6 text-base leading-relaxed transition-colors duration-300 md:text-lg">
+              Descubrí las actividades y talleres gratuitos que ofrecemos para toda la comunidad en el Centro
+              Integrador Comunitario.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="mt-8 space-y-6">
-        <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <div className="prose max-w-none">
-            <p className="text-lg">
-              Desde el área de juventud, se abren las inscripciones para las distintas actividades que se llevarán adelante en el 
-              <strong> CIC del Barrio San Pedro de la ciudad de San Benito, ubicado en calle Garay y Nogoyá</strong>.
+      <div className="alert alert-info mt-12 shadow-lg">
+        <IconAlertTriangle size={24} />
+        <div>
+          <h3 className="font-bold">¡Cupos limitados!</h3>
+          <div className="text-xs">
+            Recordá que para inscribirte debés tener domicilio en San Benito.
+          </div>
+        </div>
+      </div>
+
+      <section className="mt-12">
+        <h2 className="mb-8 text-center text-3xl font-bold">Nuestros Talleres</h2>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {talleres.map((taller, index) => (
+            <div
+              key={index}
+              className="card bg-base-200 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+            >
+              <div className="card-body">
+                <h3 className="card-title text-primary">
+                  <taller.icon size={28} />
+                  {taller.category}
+                </h3>
+                <ul className="mt-4 space-y-3">
+                  {taller.subTalleres.map((sub, i) => (
+                    <li key={i} className="flex items-center justify-between">
+                      <span className="text-base-content text-sm">{sub.name}</span>
+                      <a
+                        href={sub.link}
+                        className="btn btn-primary btn-sm gap-2"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Inscribite
+                        <IconExternalLink size={16} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="card bg-base-100 border-primary border p-6 shadow-lg">
+          <div className="card-body">
+            <h2 className="card-title text-2xl font-bold">
+              <IconInfoCircle size={28} className="text-primary" />
+              Sobre el CIC
+            </h2>
+            <p className="mt-2">
+              El Centro Integrador Comunitario (CIC) es un espacio para promover actividades culturales,
+              educativas y recreativas para todos los vecinos.
             </p>
-            
-            <div className="alert alert-warning mt-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-              <span><strong>Recuerda que los cupos son limitados y para inscribirte deberás contar con domicilio en nuestra localidad.</strong></span>
+            <div className="mt-4 flex items-center gap-2">
+              <IconLocation size={20} className="text-secondary" />
+              <span className="font-semibold">Ubicación:</span>
+              <span>Calle Garay y Nogoyá, Barrio San Pedro.</span>
             </div>
-            
-            <h2 className="text-2xl font-semibold mt-6 mb-4">Actividades Disponibles</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Computación</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Para niños y adolescentes (8 a 14 años)</span>
-                        <a href="https://forms.gle/PunossoQFuQrCHhD9" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Para jóvenes (15 a 25 años)</span>
-                        <a href="https://forms.gle/hrteym7LjbRYHQmg6" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Para adultos (mayores de 25 años)</span>
-                        <a href="https://forms.gle/4AfY2megQeb1XASC9" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Talleres de Bienestar</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Envejecientemente Activ@</span>
-                        <a href="https://forms.gle/8nmE7754QMXG2kLL6" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Yoga</span>
-                        <a href="https://forms.gle/7gDELwJ7cPxnQp4m6" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Talleres de Telar</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Taller de Telar para Principiantes</span>
-                        <a href="https://forms.gle/cssjjrpRCj7xTm2c7" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Taller de Telar Avanzado</span>
-                        <a href="https://forms.gle/EZzD9BD5xDjZvVVCA" className="btn btn-primary btn-sm ml-2" target="_blank">
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Información del CIC</h3>
-                  <p>El Centro Integrador Comunitario (CIC) del Barrio San Pedro es un espacio dedicado a promover actividades culturales, educativas y recreativas para todos los vecinos de San Benito.</p>
-                  <p className="mt-2">Dirección: Calle Garay y Nogoyá, Barrio San Pedro, San Benito.</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-8 bg-base-200 p-4 rounded-lg flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">¿Necesitás más información?</h3>
-                <p>Contactanos por WhatsApp al 3434508085 (SOLO MENSAJES, NO LLAMADAS NI AUDIOS)</p>
-              </div>
-              <a 
-                href="https://wa.me/+543434508085" 
-                className="btn btn-success gap-2"
+          </div>
+        </div>
+
+        <div className="card bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
+          <div className="card-body items-center text-center">
+            <h3 className="card-title text-primary">¿Tenés alguna consulta?</h3>
+            <p className="text-base-content">Comunicate con nosotros por WhatsApp.</p>
+            <div className="card-actions mt-2">
+              <a
+                href="https://wa.me/5493434508085"
+                className="btn btn-success gap-2 text-success-content"
                 target="_blank"
+                rel="noopener noreferrer"
               >
-                <IconBrandWhatsapp size={20} />
-                <span>WhatsApp</span>
+                <IconBrandWhatsapp size={22} />
+                Consultar (Solo mensajes)
               </a>
             </div>
           </div>
         </div>
       </section>
-
-      <div className="mt-8 flex justify-center">
-        <Link href="/tramites" className="btn btn-outline gap-2">
-          <IconArrowLeft size={20} />
-          <span>Volver a Trámites</span>
-        </Link>
-      </div>
     </main>
   )
 }

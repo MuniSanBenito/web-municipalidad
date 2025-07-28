@@ -1,229 +1,189 @@
-import { IconBrandWhatsapp } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconBook,
+  IconBrandWhatsapp,
+  IconBrain,
+  IconCode,
+  IconDeviceLaptop,
+  IconLanguage,
+  IconYoga,
+} from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Punto Digital - Biblioteca - San Benito',
 }
 
+const talleres = {
+  idiomas: [
+    { nombre: 'Inglés Inicial (7 a 9 años)', link: 'https://forms.gle/Pr9DaKQKxqYrbsTN8' },
+    { nombre: 'Inglés Inicial (10 a 14 años)', link: 'https://forms.gle/4cfjCqgLQd8akmPcA' },
+    { nombre: 'Inglés Inicial (+15 años)', link: 'https://forms.gle/gjqoppWZYZ3AqfPv7' },
+    { nombre: 'Portugués Inicial (7 a 10 años)', link: 'https://forms.gle/7PAcbvFHnUCqxCai9' },
+    { nombre: 'Portugués Inicial (11 a 14 años)', link: 'https://forms.gle/XgjRrT1EjUc9rKfe7' },
+    { nombre: 'Portugués Inicial (+15 años)', link: 'https://forms.gle/FTsPdjC7hojfKbVC8' },
+  ],
+  tecnologia: [
+    {
+      nombre: 'Programación Web Full Stack',
+      link: 'https://forms.gle/1LjQu5QF3dZzTizV6',
+      icon: IconCode,
+    },
+    {
+      nombre: 'Computación para Adultos (+40 años)',
+      link: 'https://forms.gle/kHKoSM2dzVqmT8gi8',
+      icon: IconDeviceLaptop,
+    },
+    {
+      nombre: 'Robótica para Niños (8 a 11 años)',
+      link: 'https://forms.gle/MFqa4tPjdbxmogKu9',
+      icon: IconCode, // O un ícono más específico si lo encuentras
+    },
+  ],
+  bienestar: [
+    {
+      nombre: 'Envejecientemente Activ@',
+      link: 'https://forms.gle/KGvkQwazKGXMENmJ9',
+      icon: IconBrain,
+    },
+    { nombre: 'Yoga en el Vieytes', link: 'https://forms.gle/Q2s7h3t8d9J4Rk6t7', icon: IconYoga },
+  ],
+}
+
 export default function PagePuntoDigitalBiblioteca() {
   return (
-    <main className="container mx-auto px-4 py-6">
-      <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
+    <main className="container mx-auto px-4 py-8">
+      <section className="hero bg-base-200 rounded-xl p-6 text-center shadow-lg transition-all duration-300 hover:shadow-xl md:p-12">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-3xl font-bold md:text-5xl">PUNTO DIGITAL - BIBLIOTECA</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">Punto Digital - Biblioteca</h1>
+            <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full"></div>
+            <p className="text-base-content mt-6 text-base leading-relaxed transition-colors duration-300 md:text-lg">
+              Comienzan las actividades municipales en el Punto Digital - Biblioteca Municipal
+              &quot;Santiago Tórtul&quot;. Explora nuestros talleres e inscríbete.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="mt-8 space-y-6">
-        <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <div className="prose max-w-none">
-            <p className="text-lg">
-              <strong>
-                Comienzan las actividades municipales en el Punto Digital - Biblioteca Municipal
-                &quot;Santiago Tórtul&quot;
-              </strong>
-              , y a continuación se disponen las inscripciones para los talleres que se brindarán.
-            </p>
-
-            <div className="alert alert-warning mt-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 shrink-0 stroke-current"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <span>
-                <strong>
-                  Recordá que los cupos son limitados y para inscribirte deberás contar con
-                  domicilio en nuestra localidad.
-                </strong>
-              </span>
+      <section className="mt-12">
+        <div className="alert alert-warning shadow-lg">
+          <IconAlertTriangle size={24} />
+          <div>
+            <h3 className="font-bold">¡Atención!</h3>
+            <div className="text-xs">
+              Los cupos son limitados. Para inscribirte, es requisito tener domicilio en San Benito.
             </div>
+          </div>
+        </div>
 
-            <h2 className="mt-6 mb-4 text-2xl font-semibold">Talleres Disponibles</h2>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Idiomas</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Inglés Inicial (7 a 9 años)</span>
-                        <a
-                          href="https://forms.gle/Pr9DaKQKxqYrbsTN8"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Inglés Inicial (10 a 14 años)</span>
-                        <a
-                          href="https://forms.gle/4cfjCqgLQd8akmPcA"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Inglés Inicial (+15 años)</span>
-                        <a
-                          href="https://forms.gle/gjqoppWZYZ3AqfPv7"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Portugués Inicial (7 a 10 años)</span>
-                        <a
-                          href="https://forms.gle/7PAcbvFHnUCqxCai9"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Portugués Inicial (11 a 14 años)</span>
-                        <a
-                          href="https://forms.gle/XgjRrT1EjUc9rKfe7"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Portugués Inicial (+15 años)</span>
-                        <a
-                          href="https://forms.gle/FTsPdjC7hojfKbVC8"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h3 className="card-title">Tecnología y Bienestar</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Programación Web Full Stack</span>
-                        <a
-                          href="https://forms.gle/1LjQu5QF3dZzTizV6"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Computación para Adultos (+40 años)</span>
-                        <a
-                          href="https://forms.gle/kHKoSM2dzVqmT8gi8"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Robótica para Niños (8 a 11 años)</span>
-                        <a
-                          href="https://forms.gle/MFqa4tPjdbxmogKu9"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Envejecientemente Activ@</span>
-                        <a
-                          href="https://forms.gle/KGvkQwazKGXMENmJ9"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="mr-2">•</span>
-                      <div>
-                        <span>Yoga en el Vieytes</span>
-                        <a
-                          href="https://forms.gle/kgBsh4rJf93haKBS8"
-                          className="btn btn-primary btn-sm ml-2"
-                          target="_blank"
-                        >
-                          Inscripción
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+        <div className="mt-10 grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+          {/* Card de Idiomas */}
+          <div className="card bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <div className="card-body">
+              <h2 className="card-title text-primary">
+                <IconLanguage size={28} />
+                Idiomas
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {talleres.idiomas.map((taller, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                  >
+                    <span className="text-base-content">{taller.nombre}</span>
+                    <a
+                      href={taller.link}
+                      className="btn btn-primary btn-sm text-primary-content"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Inscribirse
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
 
-            <div className="bg-base-200 mt-8 flex items-center justify-between rounded-lg p-4">
-              <div>
-                <h3 className="font-semibold">¿Necesitás más información?</h3>
-                <p>Contactanos por WhatsApp al 3434508085 (SOLO MENSAJES, NO LLAMADAS NI AUDIOS)</p>
-              </div>
+          {/* Card de Tecnología */}
+          <div className="card bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <div className="card-body">
+              <h2 className="card-title text-primary">
+                <IconDeviceLaptop size={28} />
+                Tecnología
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {talleres.tecnologia.map((taller, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                  >
+                    <span className="flex items-center gap-2 text-base-content">
+                      <taller.icon size={20} />
+                      {taller.nombre}
+                    </span>
+                    <a
+                      href={taller.link}
+                      className="btn btn-primary btn-sm text-primary-content"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Inscribirse
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Card de Bienestar */}
+          <div className="card bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <div className="card-body">
+              <h2 className="card-title text-primary">
+                <IconBook size={28} />
+                Bienestar y Cultura
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {talleres.bienestar.map((taller, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                  >
+                    <span className="flex items-center gap-2 text-base-content">
+                      <taller.icon size={20} />
+                      {taller.nombre}
+                    </span>
+                    <a
+                      href={taller.link}
+                      className="btn btn-primary btn-sm text-primary-content"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Inscribirse
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <div className="card bg-base-200 shadow-xl transition-all duration-300 hover:shadow-2xl">
+          <div className="card-body items-center text-center">
+            <h3 className="card-title text-primary">¿Tenés alguna consulta?</h3>
+            <p className="text-base-content">Comunícate directamente con nosotros.</p>
+            <div className="card-actions mt-2">
               <a
-                href="https://wa.me/+543434508085"
-                className="btn btn-success gap-2"
+                href="https://wa.me/5493435180121"
+                className="btn btn-success gap-2 text-success-content"
                 target="_blank"
+                rel="noopener noreferrer"
               >
-                <IconBrandWhatsapp size={20} />
-                <span>WhatsApp</span>
+                <IconBrandWhatsapp size={22} />
+                Consultas por WhatsApp
               </a>
             </div>
 
