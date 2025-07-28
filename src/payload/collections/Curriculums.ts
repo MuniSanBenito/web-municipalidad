@@ -1,4 +1,5 @@
-import type { CollectionConfig } from 'payload'
+import type { Curriculum } from '@/payload-types'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import {
   isAdminOrCreatedByAccess,
   isAdminOrCreatedByWithDataAccess,
@@ -6,18 +7,18 @@ import {
 } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
-/* const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
-  let { user } = data
-  if (typeof user === 'string') {
-    user = await req.payload.findByID({
-      collection: 'users',
-      id: user,
+const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
+  let { ciudadano } = data
+  if (typeof ciudadano === 'string') {
+    ciudadano = await req.payload.findByID({
+      collection: 'ciudadanos',
+      id: ciudadano,
     })
   }
-  const titulo = `${user?.datos_ciudadano?.nombre} ${user?.datos_ciudadano?.apellido}`
+  const titulo = `${ciudadano?.nombre} ${ciudadano?.apellido}`
 
   return { ...data, titulo }
-} */
+}
 
 export const Curriculums: CollectionConfig = {
   slug: 'curriculums',
@@ -36,7 +37,7 @@ export const Curriculums: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
   },
   hooks: {
-    // beforeChange: [beforeChange],
+    beforeChange: [beforeChange],
   },
   fields: [
     // CreatedBy,
@@ -49,19 +50,6 @@ export const Curriculums: CollectionConfig = {
         hidden: true,
       },
     },
-    /* {
-      type: 'relationship',
-      name: 'user',
-      label: 'Usuario',
-      relationTo: 'users',
-      // unique: true,
-      // required: true,
-      filterOptions: {
-        rol: {
-          equals: 'CIUDADANO',
-        },
-      },
-    }, */
     {
       type: 'relationship',
       name: 'ciudadano',

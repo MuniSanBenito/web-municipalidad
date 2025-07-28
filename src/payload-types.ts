@@ -180,7 +180,7 @@ export interface CiudadanoAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
+  rol: ('ADMIN' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   updatedAt: string;

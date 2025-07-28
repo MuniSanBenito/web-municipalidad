@@ -24,7 +24,6 @@ import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e0
 import { LogoutButton as LogoutButton_b69d8efee05336a20193a089da8ce5b3 } from '../../../payload/components/logout-button'
 import { Icon as Icon_91c64a225659a7617d2277cca23737c9 } from '../../../payload/brand/icon'
 import { Logo as Logo_ddf2d2f79243e59a3e81e749911eee83 } from '../../../payload/brand/logo'
-import { RedirectCiudadano as RedirectCiudadano_aeb96030f6c7d6f0aafb5fc5cb68e8fc } from '../../../payload/components/redirect-ciudadano'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
@@ -54,6 +53,5 @@ export const importMap = {
   "/payload/components/logout-button#LogoutButton": LogoutButton_b69d8efee05336a20193a089da8ce5b3,
   "/payload/brand/icon#Icon": Icon_91c64a225659a7617d2277cca23737c9,
   "/payload/brand/logo#Logo": Logo_ddf2d2f79243e59a3e81e749911eee83,
-  "/payload/components/redirect-ciudadano#RedirectCiudadano": RedirectCiudadano_aeb96030f6c7d6f0aafb5fc5cb68e8fc,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -86,7 +86,7 @@ export default buildConfig({
       logout: {
         Button: '/payload/components/logout-button#LogoutButton',
       },
-      afterDashboard: ['/payload/components/redirect-ciudadano#RedirectCiudadano'],
+      // afterDashboard: ['/payload/components/redirect-ciudadano#RedirectCiudadano'],
     },
     theme: 'light',
     avatar: 'default',
