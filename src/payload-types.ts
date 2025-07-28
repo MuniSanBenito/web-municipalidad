@@ -90,9 +90,6 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    users: {
-      'datos_ciudadano.curriculums': 'curriculums';
-    };
     ciudadanos: {
       curriculum: 'curriculums';
     };
@@ -186,20 +183,6 @@ export interface User {
   rol: ('ADMIN' | 'CIUDADANO' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
-  datos_ciudadano?: {
-    nombre?: string | null;
-    apellido?: string | null;
-    dni?: string | null;
-    domicilio?: string | null;
-    fecha_nacimiento?: string | null;
-    ciudad?: string | null;
-    telefono?: string | null;
-    curriculums?: {
-      docs?: (string | Curriculum)[];
-      hasNextPage?: boolean;
-      totalDocs?: number;
-    };
-  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -296,94 +279,6 @@ export interface Avatar {
       filename?: string | null;
     };
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "curriculums".
- */
-export interface Curriculum {
-  id: string;
-  created_by: string | User;
-  titulo?: string | null;
-  user: string | User;
-  ciudadano: string | Ciudadano;
-  estudios?:
-    | {
-        institucion?: string | null;
-        fecha_inicio?: string | null;
-        fecha_finalizacion?: string | null;
-        nivel?: ('PRIMARIO' | 'SECUNDARIO' | 'TERCIARIO' | 'GRADO' | 'POSTGRADO' | 'CURSO/TALLER') | null;
-        descripcion?: string | null;
-        is_old?: boolean | null;
-        nivel_old?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  experiencias?:
-    | {
-        institucion?: string | null;
-        fecha_inicio?: string | null;
-        fecha_finalizacion?: string | null;
-        puesto?: string | null;
-        descripcion?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  referencias?:
-    | {
-        nombre?: string | null;
-        telefono?: string | null;
-        email?: string | null;
-        descripcion?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  categorias?:
-    | {
-        nombre?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ciudadanos".
- */
-export interface Ciudadano {
-  id: string;
-  activo?: boolean | null;
-  avatar?: (string | null) | Avatar;
-  nombre?: string | null;
-  apellido?: string | null;
-  dni: string;
-  domicilio?: string | null;
-  fecha_nacimiento?: string | null;
-  ciudad?: string | null;
-  telefono?: string | null;
-  curriculum?: {
-    docs?: (string | Curriculum)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -522,6 +417,92 @@ export interface Archivo {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "curriculums".
+ */
+export interface Curriculum {
+  id: string;
+  titulo?: string | null;
+  ciudadano: string | Ciudadano;
+  estudios?:
+    | {
+        institucion?: string | null;
+        fecha_inicio?: string | null;
+        fecha_finalizacion?: string | null;
+        nivel?: ('PRIMARIO' | 'SECUNDARIO' | 'TERCIARIO' | 'GRADO' | 'POSTGRADO' | 'CURSO/TALLER') | null;
+        descripcion?: string | null;
+        is_old?: boolean | null;
+        nivel_old?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  experiencias?:
+    | {
+        institucion?: string | null;
+        fecha_inicio?: string | null;
+        fecha_finalizacion?: string | null;
+        puesto?: string | null;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  referencias?:
+    | {
+        nombre?: string | null;
+        telefono?: string | null;
+        email?: string | null;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  categorias?:
+    | {
+        nombre?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ciudadanos".
+ */
+export interface Ciudadano {
+  id: string;
+  activo?: boolean | null;
+  avatar?: (string | null) | Avatar;
+  nombre?: string | null;
+  apellido?: string | null;
+  dni: string;
+  domicilio?: string | null;
+  fecha_nacimiento?: string | null;
+  ciudad?: string | null;
+  telefono?: string | null;
+  curriculum?: {
+    docs?: (string | Curriculum)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -886,18 +867,6 @@ export interface UsersSelect<T extends boolean = true> {
   rol?: T;
   activo?: T;
   avatar?: T;
-  datos_ciudadano?:
-    | T
-    | {
-        nombre?: T;
-        apellido?: T;
-        dni?: T;
-        domicilio?: T;
-        fecha_nacimiento?: T;
-        ciudad?: T;
-        telefono?: T;
-        curriculums?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1038,9 +1007,7 @@ export interface ImagenesSelect<T extends boolean = true> {
  * via the `definition` "curriculums_select".
  */
 export interface CurriculumsSelect<T extends boolean = true> {
-  created_by?: T;
   titulo?: T;
-  user?: T;
   ciudadano?: T;
   estudios?:
     | T
