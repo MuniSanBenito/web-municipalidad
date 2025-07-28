@@ -6,13 +6,12 @@ import {
   IconDashboard,
   IconDatabase,
   IconMapPin,
-  IconRoad,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
 const sections = [
-  { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' },
+  // { title: 'Obras', icon: IconRoad, link: 'transparencia/obras' },
   {
     title: 'Estructura Municipal',
     icon: IconBuildings,
