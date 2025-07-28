@@ -4,7 +4,7 @@ export const CreatedBy: Field = {
   name: 'created_by',
   label: 'Creado por',
   type: 'relationship',
-  relationTo: 'users',
+  relationTo: ['users', 'ciudadanos'],
   required: true,
   admin: {
     readOnly: true,

@@ -1,53 +1,63 @@
 import type { User } from '@/payload-types'
-import { ROL_ADMIN_VALUE, ROLES } from '@/payload/constants/roles'
+import { ROL_ADMIN_VALUE } from '@/payload/constants/roles'
 import type { Access } from 'payload'
 
 export function isPublicAccess() {
   return true
 }
 
-export const isAdminCollectionAccess: Access = ({ req }) =>
-  req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
+export const isAdminCollectionAccess: Access<User> = ({ req }) => {
+  if (req.user?.collection === 'users') {
+    return req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
+  }
+
+  return false
+}
 
 export const isAdminOrMeCollectionAccess: Access<User> = ({ req, id }) => {
-  if (req?.user?.id === id) {
-    return true
+  if (req.user?.collection === 'users') {
+    if (req?.user?.id === id) {
+      return true
+    }
+    if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+      return true
+    }
   }
-  if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
-    return true
-  }
+
   return false
 }
 
 export const isCiudadanoOrMoreCollectionAccess: Access = ({ req }) => {
-  let canCreate = false
-
-  for (const rol of ROLES) {
-    if (req.user?.rol.includes(rol)) {
-      canCreate = true
-      break
-    }
-  }
-
-  return canCreate
+  return Boolean(req.user)
 }
 
 export const isHaciendaOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
   return (
     (req?.user?.rol?.includes('HACIENDA') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
   )
 }
 
 export const isAdminOrCreatedByAccess: Access = async ({ req, data }) => {
+  if (!req.user) {
+    return false
+  }
+
+  if (req.user?.collection === 'ciudadanos') {
+    return req.user.id === data?.created_by
+  }
+
   if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
     return true
   }
-  // si no hay datos, se permite la creación
-  if (!data) {
+
+  if (req?.user?.id === data?.created_by) {
     return true
   }
 
-  if (data?.created_by === req?.user?.id) {
+  // si no hay datos, se permite la creación
+  if (!data) {
     return true
   }
 
@@ -55,6 +65,14 @@ export const isAdminOrCreatedByAccess: Access = async ({ req, data }) => {
 }
 
 export const isAdminOrCreatedByWithDataAccess: Access = async ({ req, data }) => {
+  if (!req.user) {
+    return false
+  }
+
+  if (req.user?.collection === 'ciudadanos') {
+    return req.user.id === data?.created_by
+  }
+
   if (req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
     return true
   }
@@ -67,12 +85,16 @@ export const isAdminOrCreatedByWithDataAccess: Access = async ({ req, data }) =>
 }
 
 export const isComunicacionOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
   return (
     (req?.user?.rol?.includes('COMUNICACION') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
   )
 }
 
 export const isHabilitacionesOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
   return (
     (req?.user?.rol?.includes('HABILITACIONES') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ??
     false
@@ -80,6 +102,8 @@ export const isHabilitacionesOrAdminCollectionAccess: Access = ({ req }) => {
 }
 
 export const isJuzgadoOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
   return (req?.user?.rol?.includes('JUZGADO') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
 }
 
