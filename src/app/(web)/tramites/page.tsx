@@ -15,6 +15,7 @@ import {
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
+  IconAccessible,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -113,6 +114,12 @@ const tramites = [
     icon: IconCalendarEvent,
     link: '/agenda',
     description: 'Eventos culturales, artísticos y recreativos de la ciudad',
+  },
+  {
+    title: 'Área de Tercera Edad y Discapacidad',
+    icon: IconAccessible,
+    link: '/tramites/tercera-edad-discapacidad',
+    description: 'Servicios y asistencia para personas mayores y personas con discapacidad',
   },
 ]
 
