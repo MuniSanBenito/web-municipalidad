@@ -15,7 +15,7 @@ export function LineasColectivos() {
         <select
           value={lineaSeleccionada}
           onChange={(e) => setLineaSeleccionada(e.target.value as LineasColectivos)}
-          className="rounded-md border p-2"
+          className="select select-bordered w-full max-w-xs text-base"
         >
           {LINEAS_COLECTIVOS.map((linea) => (
             <option key={linea} value={linea}>

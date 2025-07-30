@@ -1,14 +1,59 @@
 import { basePayload } from '@/web/lib/payload'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import type { Archivo } from '@/payload-types'
+import type { Archivo, Noticia } from '@/payload-types'
+import { IconArrowLeft, IconFileDownload, IconNewsOff } from '@tabler/icons-react'
+import type { Metadata, ResolvingMetadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 
 type Props = {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string }>
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { slug } = params
+
+  const { docs } = await basePayload.find({
+    collection: 'noticias',
+    where: {
+      slug: {
+        equals: slug,
+      },
+    },
+    limit: 1,
+  })
+
+  const noticia = docs[0] as Noticia | undefined
+
+  if (!noticia) {
+    return {
+      title: 'Noticia no encontrada',
+    }
+  }
+
+  const previousImages = (await parent).openGraph?.images || []
+
+  const imageUrl =
+    typeof noticia.portada === 'object' && noticia.portada?.url
+      ? noticia.portada.url
+      : '/images/og-image.png' // Fallback OG image
+
+  return {
+    title: noticia.titulo,
+    description: noticia.descripcion,
+    openGraph: {
+      title: noticia.titulo,
+      description: noticia.descripcion || '',
+      images: [imageUrl, ...previousImages],
+    },
+  }
 }
 
 export default async function PageNoticia({ params }: Props) {
-  const { slug } = await params
+  const { slug } = params
 
   const { docs } = await basePayload.find({
     collection: 'noticias',
@@ -19,81 +64,28 @@ export default async function PageNoticia({ params }: Props) {
     },
   })
 
-  if (!docs.length) return <div className="text-error py-20 text-center">Noticia no encontrada</div>
-
-  const noticia = docs[0]
-  const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
-  console.log(noticia)
-  if (noticia.is_old) {
+    if (!docs.length) {
     return (
-      <main className="bg-base-100 min-h-screen">
-        {/* Portada */}
-        {noticia.portada && (
-          <div className="relative h-96 w-full">
-            <img
-              src={
-                typeof noticia.portada === 'string'
-                  ? noticia.portada
-                  : noticia.portada?.url || '/images/placeholder.jpg'
-              }
-              alt={
-                typeof noticia.portada === 'string'
-                  ? 'Portada de la noticia'
-                  : noticia.portada?.alt || 'Portada de la noticia'
-              }
-              className="h-96 w-full object-cover"
-            />
-          </div>
-        )}
-
-        {/* Título y fecha */}
-        <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
-          <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
-          <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
-        </div>
-
-        {/* Contenido */}
-        <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
-          <div
-            dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
-            className="prose lg:prose-lg text-base-content"
-          />
-        </section>
-
-        {/* Archivos adjuntos */}
-        {noticia.archivos && noticia.archivos.length > 0 && (
-          <section className="container mx-auto max-w-4xl px-4 pb-8 sm:px-6">
-            <h2 className="text-primary mb-4 text-2xl font-bold">Archivos adjuntos</h2>
-            <div className="space-y-2">
-              {noticia.archivos.map((archivo: string | Archivo, index: number) => (
-                <div key={index} className="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                  </svg>
-                  <a
-                    href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
+      <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+        <IconNewsOff size={64} className="text-base-content/30 mb-4" />
+        <p className="text-2xl font-bold">Noticia no encontrada</p>
+        <p className="text-base-content/70 mt-2">El enlace puede ser incorrecto o la noticia ha sido eliminada.</p>
+        <Link href="/noticias" className="btn btn-primary mt-6">
+          Volver a Noticias
+        </Link>
+      </div>
     )
   }
 
-  // Versión para noticias nuevas (no old)
+  const noticia = docs[0]
+  const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
+
   return (
     <main className="bg-base-100 min-h-screen">
       {/* Portada */}
       {noticia.portada && (
-        <div className="w-full">
-          <img
+        <div className="relative h-96 w-full">
+          <Image
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
@@ -104,22 +96,34 @@ export default async function PageNoticia({ params }: Props) {
                 ? 'Portada de la noticia'
                 : noticia.portada?.alt || 'Portada de la noticia'
             }
-            className="h-96 w-full object-cover"
+            className="h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
           />
         </div>
       )}
 
       {/* Título y fecha */}
       <div className="container mx-auto max-w-4xl px-4 py-4 sm:px-6">
-        <h1 className="text-primary mb-2 text-4xl font-bold">{noticia.titulo}</h1>
+        <Link href="/noticias" className="btn btn-link mb-4 pl-0 text-primary hover:no-underline">
+          <IconArrowLeft size={16} />
+          Volver a Noticias
+        </Link>
+        <h1 className="text-primary mb-2 text-4xl font-bold leading-tight">{noticia.titulo}</h1>
         <div className="text-base-content/80 text-sm">Publicado el: {fechaPublicacion}</div>
       </div>
 
       {/* Contenido */}
-      <section className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
-        <div className="prose-lg">
+      <section className="container prose-lg mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        {noticia.is_old ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: noticia.contenido_old ?? '' }}
+            className="prose lg:prose-lg text-base-content"
+          />
+        ) : (
           <RichText data={noticia.contenido!} className="space-y-6" />
-        </div>
+        )}
       </section>
 
       {/* Archivos adjuntos */}
@@ -127,21 +131,23 @@ export default async function PageNoticia({ params }: Props) {
         <section className="container mx-auto max-w-4xl px-4 pb-8 sm:px-6">
           <h2 className="text-primary mb-4 text-2xl font-bold">Archivos adjuntos</h2>
           <div className="space-y-2">
-            {noticia.archivos.map((archivo: string | Archivo, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                </svg>
+            {(noticia.archivos as (string | Archivo)[]).map((archivo, index) => {
+              const url = typeof archivo === 'string' ? archivo : archivo.url || '#'
+              const filename = typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'
+
+              return (
                 <a
-                  href={typeof archivo === 'string' ? archivo : archivo.url || '#'}
+                  key={index}
+                  href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="flex items-center gap-2 text-primary hover:underline"
                 >
-                  {typeof archivo === 'string' ? 'Archivo adjunto' : archivo.filename || 'Archivo adjunto'}
+                  <IconFileDownload size={20} />
+                  <span>{filename}</span>
                 </a>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
       )}

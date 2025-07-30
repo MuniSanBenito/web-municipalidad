@@ -2,6 +2,7 @@ import PageTitle from '@/web/components/ui/PageTitle'
 import {
   IconBallFootball,
   IconBook,
+  IconBriefcase,
   IconBuilding,
   IconBuildingCommunity,
   IconBuildingStore,
@@ -14,6 +15,7 @@ import {
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
+  IconAccessible,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -40,6 +42,12 @@ const tramites = [
     icon: IconCash,
     link: '/tramites/rentas',
     description: 'Información sobre impuestos y tasas municipales',
+  },
+  {
+    title: 'Centro de Atención Al Vecino',
+    icon: IconHeadset,
+    link: '/tramites/cav',
+    description: 'Gestión de reclamos y atención ciudadana',
   },
   {
     title: 'Área Mujer y Género',
@@ -90,22 +98,28 @@ const tramites = [
     description: 'Actividades y talleres en el Centro Integrador Comunitario',
   },
   {
+    title: 'Área de Producción y Empleo',
+    icon: IconBriefcase,
+    link: '/tramites/produccion-empleo',
+    description: 'Programas y servicios para el desarrollo productivo y laboral.',
+  },
+  {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
     link: 'http://181.228.27.231/personal/personal.aspx',
     description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
   },
   {
-    title: 'Centro de Atención Al Vecino',
-    icon: IconHeadset,
-    link: '/tramites/cav',
-    description: 'Gestión de reclamos y atención ciudadana',
-  },
-  {
     title: 'Agenda Cultural',
     icon: IconCalendarEvent,
     link: '/agenda',
     description: 'Eventos culturales, artísticos y recreativos de la ciudad',
+  },
+  {
+    title: 'Área de Tercera Edad y Discapacidad',
+    icon: IconAccessible,
+    link: '/tramites/tercera-edad-discapacidad',
+    description: 'Servicios y asistencia para personas mayores y personas con discapacidad',
   },
 ]
 

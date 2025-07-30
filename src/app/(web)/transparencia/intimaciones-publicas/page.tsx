@@ -1,6 +1,12 @@
 'use client'
 
-import { IconCalendar, IconDownload, IconFileText, IconSearch } from '@tabler/icons-react'
+import {
+  IconArrowLeft,
+  IconCalendar,
+  IconDownload,
+  IconFileText,
+  IconSearch,
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -29,11 +35,11 @@ export default function IntimacionesPublicas() {
         const data = await response.json()
 
         // Verificamos la estructura de la respuesta y aseguramos que sea un array
-        const intimacionesData = Array.isArray(data.docs) 
-          ? data.docs 
-          : Array.isArray(data) 
-            ? data 
-            : [];
+        const intimacionesData = Array.isArray(data.docs)
+          ? data.docs
+          : Array.isArray(data)
+            ? data
+            : []
 
         // Ordenamos por fecha de creación (más reciente primero)
         const sortedIntimaciones = intimacionesData.sort(
@@ -80,6 +86,13 @@ export default function IntimacionesPublicas() {
 
   return (
     <main className="container mx-auto px-4 py-6">
+      <Link
+        href="/transparencia"
+        className="btn btn-link text-primary mb-4 pl-0 hover:no-underline"
+      >
+        <IconArrowLeft size={18} />
+        Volver a Transparencia
+      </Link>
       <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
         <div className="hero-content p-0 md:p-4">
           <div className="mx-auto max-w-4xl">
@@ -150,7 +163,7 @@ export default function IntimacionesPublicas() {
                   <tr>
                     <th className="text-base md:text-lg">Nombre</th>
                     <th className="hidden text-base md:table-cell md:text-lg">Fecha</th>
-                    <th className="text-base md:text-lg text-center">Descargar</th>
+                    <th className="text-center text-base md:text-lg">Descargar</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -158,7 +171,7 @@ export default function IntimacionesPublicas() {
                     <tr key={intimacion.id} className="hover">
                       <td className="align-middle">
                         <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-2">
-                          <IconFileText size={18} className="hidden md:inline flex-shrink-0" />
+                          <IconFileText size={18} className="hidden flex-shrink-0 md:inline" />
                           <span className="line-clamp-2">{intimacion.nombre}</span>
                           <span className="text-xs text-gray-500 md:hidden">
                             {formatDate(intimacion.createdAt)}
