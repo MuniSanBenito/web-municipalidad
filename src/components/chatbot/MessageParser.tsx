@@ -40,27 +40,36 @@ class MessageParser implements IMessageParser {
 
     // Initialize tramiteMatchers here to correctly bind actionProvider methods
     this.tramiteMatchers = [
-      { keywords: ['actividades deportivas'], handler: () => this.actionProvider.handleActividadesDeportivas() },
-      { keywords: ['area mujer', 'área mujer'], handler: () => this.actionProvider.handleAreaMujer() },
-      { keywords: ['catastro'], handler: () => this.actionProvider.handleCatastro() },
-      { keywords: ['cav'], handler: () => this.actionProvider.handleCav() },
-      { keywords: ['cic barrio san pedro'], handler: () => this.actionProvider.handleCicBarrioSanPedro() },
-      // Specific Habilitaciones slug keywords might be too dynamic for this simple list.
-      // The general 'habilitaciones' keyword will lead to the main Habilitaciones page or options.
-      { keywords: ['habilitaciones'], handler: () => this.actionProvider.handleHabilitaciones() },
-      { keywords: ['licencia original'], handler: () => this.actionProvider.handleLicenciaOriginal() },
-      { keywords: ['licencia renovacion', 'licencia renovación'], handler: () => this.actionProvider.handleLicenciaRenovacion() },
-      { keywords: ['licencia ampliacion', 'licencia ampliación'], handler: () => this.actionProvider.handleLicenciaAmpliacion() },
-      { keywords: ['licencia'], handler: () => this.actionProvider.handleLicencia() }, // General licencia if more specific not matched
-      { keywords: ['mesa de entrada'], handler: () => this.actionProvider.handleMesaDeEntrada() },
+      // Licencias
+      { keywords: ['licencia de conducir', 'licencia conducir', 'carnet de conducir'], handler: () => this.actionProvider.handleLicencia() },
+      { keywords: ['licencia original', 'primera licencia'], handler: () => this.actionProvider.handleLicenciaOriginal() },
+      { keywords: ['licencia renovacion', 'licencia renovación', 'renovar licencia'], handler: () => this.actionProvider.handleLicenciaRenovacion() },
+      { keywords: ['licencia ampliacion', 'licencia ampliación', 'ampliar licencia'], handler: () => this.actionProvider.handleLicenciaAmpliacion() },
+      
+      // Rentas e impuestos
+      { keywords: ['rentas', 'impuestos', 'tasas', 'tributos', 'pagar impuestos'], handler: () => this.actionProvider.handleRentas() },
+      
+      // Obras privadas
+      { keywords: ['obras privadas', 'construccion', 'construcción', 'edificacion', 'edificación'], handler: () => this.actionProvider.handleObrasPrivadas() },
       { keywords: ['inscripcion municipal', 'inscripción municipal'], handler: () => this.actionProvider.handleObrasInscripcionMunicipal() },
       { keywords: ['final de obra'], handler: () => this.actionProvider.handleObrasFinalDeObra() },
       { keywords: ['presentacion de proyecto', 'presentación de proyecto'], handler: () => this.actionProvider.handleObrasPresentacionProyecto() },
       { keywords: ['relevamiento'], handler: () => this.actionProvider.handleObrasRelevamiento() },
-      { keywords: ['obras privadas'], handler: () => this.actionProvider.handleObrasPrivadas() }, // General Obras Privadas
-      { keywords: ['punto digital', 'biblioteca'], handler: () => this.actionProvider.handlePuntoDigitalBiblioteca() },
-      { keywords: ['rentas'], handler: () => this.actionProvider.handleRentas() },
-      { keywords: ['talleres culturales'], handler: () => this.actionProvider.handleTalleresCulturales() },
+      
+      // Habilitaciones
+      { keywords: ['habilitaciones', 'habilitacion comercial', 'habilitación comercial', 'local comercial'], handler: () => this.actionProvider.handleHabilitaciones() },
+      
+      // Servicios municipales
+      { keywords: ['actividades deportivas', 'deportes', 'polideportivo'], handler: () => this.actionProvider.handleActividadesDeportivas() },
+      { keywords: ['area mujer', 'área mujer', 'mujer y genero', 'mujer y género'], handler: () => this.actionProvider.handleAreaMujer() },
+      { keywords: ['catastro', 'catastro municipal'], handler: () => this.actionProvider.handleCatastro() },
+      { keywords: ['cav', 'centro de atencion', 'centro de atención', 'atencion al vecino', 'atención al vecino'], handler: () => this.actionProvider.handleCav() },
+      { keywords: ['cic barrio san pedro', 'cic san pedro', 'centro integrador'], handler: () => this.actionProvider.handleCicBarrioSanPedro() },
+      { keywords: ['mesa de entrada', 'tramites generales', 'trámites generales'], handler: () => this.actionProvider.handleMesaDeEntrada() },
+      { keywords: ['punto digital', 'biblioteca', 'biblioteca municipal'], handler: () => this.actionProvider.handlePuntoDigitalBiblioteca() },
+      { keywords: ['talleres culturales', 'cultura', 'talleres artisticos', 'talleres artísticos'], handler: () => this.actionProvider.handleTalleresCulturales() },
+      { keywords: ['produccion y empleo', 'producción y empleo', 'empleo', 'trabajo'], handler: () => this.actionProvider.handleProduccionEmpleo() },
+      { keywords: ['tercera edad', 'discapacidad', 'adultos mayores'], handler: () => this.actionProvider.handleTerceraEdadDiscapacidad() },
     ];
   }
 

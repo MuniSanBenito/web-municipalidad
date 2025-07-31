@@ -1,5 +1,6 @@
 // src/components/chatbot/aiService.ts
-import { generateOllamaResponse, isOllamaAvailable } from './ollamaService';
+import { generateOllamaResponse, isOllamaAvailable, checkOllamaAvailability } from './ollamaService';
+import { validateResponse, sanitizeResponse, generateFallbackResponse, getVerifiedInformation } from './contentValidator';
 
 // Cache para respuestas frecuentes
 const responseCache = new Map<string, string>();
@@ -378,6 +379,57 @@ export function detectIntent(query: string): string | null {
 }
 
 /**
+ * Función local para validación básica de respuestas (renombrada para evitar conflictos)
+ * @param response Respuesta generada
+ * @param query Consulta del usuario
+ * @returns Verdadero si la respuesta es verificada, falso de lo contrario
+ */
+function basicValidateResponse(response: string, query: string): boolean {
+  // Palabras clave que indican información no verificada
+  const invalidIndicators = [
+    'creo que', 'posiblemente', 'probablemente', 'supongo',
+    'me parece', 'podría ser', 'tal vez', 'quizás',
+    'no estoy seguro', 'aproximadamente'
+  ];
+  
+  const lowerResponse = response.toLowerCase();
+  return !invalidIndicators.some(indicator => lowerResponse.includes(indicator));
+}
+
+/**
+ * Función para extraer información relevante de la base de conocimiento
+ * @param query Consulta del usuario
+ * @returns Información relevante
+ */
+function getRelevantKnowledge(query: string): string {
+  const lowerQuery = query.toLowerCase();
+  let relevantInfo = [];
+  
+  // Buscar información específica según la consulta
+  if (lowerQuery.includes('licencia') || lowerQuery.includes('conducir')) {
+    relevantInfo.push('Licencia de Conducir: DNI original y fotocopia, certificado de domicilio, certificado de aptitud psicofísica, fotos 4x4 color, pago de tasa municipal ($5,000)');
+  }
+  
+  if (lowerQuery.includes('obra') || lowerQuery.includes('construcción') || lowerQuery.includes('construccion')) {
+    relevantInfo.push('Obras Privadas: Plano firmado por profesional matriculado, título de propiedad o autorización, CUIT/CUIL del profesional, pago de tasas');
+  }
+  
+  if (lowerQuery.includes('habilitación') || lowerQuery.includes('habilitacion') || lowerQuery.includes('comercial')) {
+    relevantInfo.push('Habilitaciones Comerciales: DNI y CUIT/CUIL, título de propiedad o contrato de alquiler, planos del local, habilitación Bomberos si corresponde');
+  }
+  
+  if (lowerQuery.includes('horario') || lowerQuery.includes('atención') || lowerQuery.includes('atencion')) {
+    relevantInfo.push('Horario de atención: Lunes a Viernes de 7:00 a 13:00 hs');
+  }
+  
+  if (lowerQuery.includes('teléfono') || lowerQuery.includes('telefono') || lowerQuery.includes('contacto')) {
+    relevantInfo.push('Contactos: Principal (0343) 497-2222, Mesa de entrada (0343) 497-2345');
+  }
+  
+  return relevantInfo.join('. ');
+}
+
+/**
  * Función principal para obtener una respuesta de IA mejorada
  * @param query Consulta del usuario
  * @returns Objeto con la respuesta generada y si se usó Gemma 2B
@@ -470,19 +522,57 @@ export async function fetchAIResponse(query: string): Promise<{ response: string
       // Verificar si Ollama está disponible y habilitado globalmente
       const ollamaEnabled = typeof window !== 'undefined' ? window.ollamaEnabled !== false : true;
       
-      if (useOllama && ollamaEnabled) {
+      // Verificar disponibilidad del servidor Ollama antes de intentar usarlo
+      const ollamaAvailable = await checkOllamaAvailability();
+      const canUseOllama = useOllama && ollamaEnabled && ollamaAvailable;
+      
+      if (canUseOllama) {
         try {
           console.log('Usando Gemma 2B para generar respuesta...');
           
           // Notificar a la interfaz que estamos comenzando a usar Gemma 2B
           console.log('Iniciando generación con Gemma 2B');
           
-          const ollamaResponse = await generateOllamaResponse(query);
+          // Establecer un timeout para la solicitud a Ollama
+          const timeoutPromise = new Promise<string>((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout al esperar respuesta de Ollama')), 15000) // 15 segundos
+          });
+          
+          // Intentar obtener respuesta de Ollama con timeout
+          const ollamaResponse = await Promise.race([
+            generateOllamaResponse(query),
+            timeoutPromise
+          ]);
           
           if (ollamaResponse && ollamaResponse.trim() !== '') {
-            response = ollamaResponse;
-            usedGemma = true;
-            console.log('Respuesta generada exitosamente con Gemma 2B');
+            // Validar la respuesta de Ollama
+            const validation = validateResponse(ollamaResponse, query);
+            
+            if (validation.isValid && validation.confidence >= 70) {
+              response = ollamaResponse;
+              usedGemma = true;
+              console.log('Respuesta generada exitosamente con Gemma 2B (validada)');
+            } else {
+              console.warn('Respuesta de Gemma 2B no pasó la validación:', validation.issues);
+              
+              // Intentar sanitizar la respuesta
+              const sanitizedResponse = sanitizeResponse(ollamaResponse, query);
+              
+              if (sanitizedResponse.length > 20) {
+                response = sanitizedResponse;
+                usedGemma = true;
+                console.log('Respuesta de Gemma 2B sanitizada y utilizada');
+              } else {
+                // Usar información verificada como fallback
+                const verifiedInfo = getVerifiedInformation(query);
+                if (verifiedInfo) {
+                  response = verifiedInfo;
+                  console.log('Usando información verificada como alternativa');
+                } else {
+                  throw new Error('Respuesta no válida de Gemma 2B');
+                }
+              }
+            }
           } else {
             console.warn('Gemma 2B devolvió una respuesta vacía');
             throw new Error('Respuesta vacía de Gemma 2B');
@@ -495,8 +585,10 @@ export async function fetchAIResponse(query: string): Promise<{ response: string
       } else {
         if (!ollamaEnabled) {
           console.log('Gemma 2B está desactivado por configuración del administrador');
-        } else if (!useOllama) {
+        } else if (!ollamaAvailable) {
           console.log('Gemma 2B no está disponible - el servidor no responde');
+        } else if (!useOllama) {
+          console.log('Gemma 2B no está habilitado para esta consulta');
         }
         response = getFallbackResponse();
         console.log('Usando respuesta alternativa sin Gemma 2B');

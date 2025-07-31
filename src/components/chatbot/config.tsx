@@ -17,6 +17,8 @@ import MessageParser from './MessageParser';
 import ActionProvider from './ActionProvider';
 import GeneralOptions from './widgets/GeneralOptions';
 import LinkButton from './widgets/LinkButton';
+import SmartSuggestions from './widgets/SmartSuggestions';
+import TramiteOptions from './widgets/TramiteOptions';
 import OllamaStatus from './OllamaStatus';
 
 const botName = 'Beni';
@@ -25,14 +27,13 @@ const config: Config = {
   botName: botName,
   initialMessages: [
     createChatBotMessage("¡Hola! Soy Beni, tu asistente virtual de la Municipalidad de San Benito 😊", {
-      widget: "botAvatar",
       delay: 200,
     }),
-    createChatBotMessage("Estoy aquí para ayudarte con información sobre trámites, horarios de atención, contactos y servicios municipales.", {
+    createChatBotMessage("Estoy aquí para ayudarte con información precisa sobre trámites, horarios, contactos y servicios municipales.", {
       delay: 800,
     }),
     createChatBotMessage("¿En qué puedo ayudarte hoy?", {
-      widget: "tramiteOptions",
+      widget: "smartSuggestions",
       delay: 1200,
     })
   ],
@@ -42,17 +43,17 @@ const config: Config = {
     // Personalizar el header del chatbot
     header: () => (
       <div style={{
-        backgroundColor: '#2d6a84',
+        backgroundColor: '#b6c544', // primary
         padding: '12px',
         borderRadius: '8px 8px 0 0',
         fontWeight: 'bold',
         fontSize: '1.2rem',
-        color: 'white',
+        color: 'oklch(37% 0 0)', // primary-content
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-        borderBottom: '2px solid #1d5a74'
+        borderBottom: '2px solid #9fb03a' // primary darker
       }}>
         <span style={{ marginRight: '8px' }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -66,12 +67,12 @@ const config: Config = {
   customStyles: {
     // Estilos generales del chatbot
     botMessageBox: {
-      backgroundColor: '#2d6a84',
-      color: 'white',
+      backgroundColor: '#b6c544', // primary
+      color: 'oklch(37% 0 0)', // primary-content
       borderRadius: '12px 12px 12px 0',
       padding: '12px',
       fontFamily: 'Arial, sans-serif',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      boxShadow: '0 2px 8px rgba(182, 197, 68, 0.15)',
       margin: '8px 0',
       maxWidth: '85%',
       lineHeight: '1.4',
@@ -89,7 +90,7 @@ const config: Config = {
       border: '1px solid #e0e0e0',
     },
     chatButton: {
-      backgroundColor: '#2d6a84',
+      backgroundColor: '#b6c544', // primary
       borderRadius: '50%',
       width: '40px',
       height: '40px',
@@ -97,7 +98,7 @@ const config: Config = {
       minWidth: 'unset',
       borderWidth: '0',
       transition: 'all 0.3s ease',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+      boxShadow: '0 2px 5px rgba(182, 197, 68, 0.2)',
       cursor: 'pointer',
     },
   },
@@ -134,6 +135,44 @@ const config: Config = {
         id: 6
       }
     ],
+    smartSuggestions: [
+      {
+        text: "¿Qué trámites puedo hacer?",
+        handler: (props: any) => props.actionProvider.handleTramiteIntro(),
+        category: "tramites",
+        icon: "📋"
+      },
+      {
+        text: "Horarios de atención",
+        handler: (props: any) => props.actionProvider.handleHorarios(),
+        category: "horarios",
+        icon: "🕒"
+      },
+      {
+        text: "Teléfonos y contacto",
+        handler: (props: any) => props.actionProvider.handleContactoInfo(),
+        category: "contacto",
+        icon: "📞"
+      },
+      {
+        text: "Licencia de conducir",
+        handler: (props: any) => props.actionProvider.handleLicencia(),
+        category: "tramites",
+        icon: "🚗"
+      },
+      {
+        text: "Obras privadas",
+        handler: (props: any) => props.actionProvider.handleObrasPrivadas(),
+        category: "tramites",
+        icon: "🏠"
+      },
+      {
+        text: "Servicios municipales",
+        handler: (props: any) => props.actionProvider.handleGeneralInquiry(),
+        category: "servicios",
+        icon: "🏢"
+      }
+    ],
   },
   widgets: [
     {
@@ -146,8 +185,13 @@ const config: Config = {
       widgetFunc: (props: any) => <LinkButton {...props} />,
     },
     {
+      widgetName: 'smartSuggestions',
+      widgetFunc: (props: any) => <SmartSuggestions {...props} />,
+      mapStateToProps: ['smartSuggestions'],
+    },
+    {
       widgetName: 'tramiteOptions',
-      widgetFunc: (props: any) => <GeneralOptions {...props} />,
+      widgetFunc: (props: any) => <TramiteOptions {...props} />,
       mapStateToProps: ['tramiteOptions'],
     },
     {
