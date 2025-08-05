@@ -1,9 +1,14 @@
 'use client'
-import { redirect } from 'next/navigation'
+import type { ErrorResult } from 'payload'
+import { useState } from 'react'
 
 export default function LoginPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setIsSubmitting(true)
+
     const formData = new FormData(e.currentTarget)
     const email = formData.get('email')
     const password = formData.get('password')
@@ -20,9 +25,14 @@ export default function LoginPage() {
           password,
         }),
       })
-      const data = await response.json()
-      console.log(data)
-      redirect('/')
+      const data: ErrorResult = await response.json()
+      if (response.ok) {
+        console.log(data)
+        // redirect('/')
+      } else {
+        console.error(data)
+      }
+      setIsSubmitting(false)
     }
   }
 
