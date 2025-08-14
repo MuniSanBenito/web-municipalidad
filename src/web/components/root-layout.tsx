@@ -1,4 +1,5 @@
 'use client'
+import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
@@ -31,7 +32,11 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
 ] as const
 
-export function RootLayout({ children }: PropsWithChildren) {
+interface Props extends PropsWithChildren {
+  ciudadano: Ciudadano | null
+}
+
+export function RootLayout({ children, ciudadano }: Props) {
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
@@ -101,9 +106,15 @@ export function RootLayout({ children }: PropsWithChildren) {
             </ul>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <Link href="/login" className="btn btn-primary">
-              Iniciar sesion
-            </Link>
+            {ciudadano ? (
+              <Link href="/perfil" className="btn btn-primary">
+                Mi perfil
+              </Link>
+            ) : (
+              <Link href="/login" className="btn btn-primary">
+                Iniciar sesion
+              </Link>
+            )}
             <label
               htmlFor="my-drawer"
               className="drawer-button btn btn-ghost btn-primary btn-square dark:btn-neutral lg:hidden"
