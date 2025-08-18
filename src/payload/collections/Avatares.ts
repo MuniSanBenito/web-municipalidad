@@ -1,7 +1,6 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByAccess,
   isAdminOrCreatedByWithDataAccess,
   isCiudadanoOrMoreCollectionAccess,
 } from '../access/collection'
@@ -18,7 +17,7 @@ export const Avatares: CollectionConfig = {
   },
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
-    read: isAdminOrCreatedByAccess,
+    // read: isAdminOrCreatedByAccess,
     update: isAdminOrCreatedByWithDataAccess,
     delete: isAdminOrCreatedByWithDataAccess,
   },

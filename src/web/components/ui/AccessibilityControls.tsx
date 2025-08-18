@@ -4,20 +4,18 @@ import {
   IconAccessible,
   IconChevronLeft,
   IconChevronRight,
-  IconMoon,
-  IconSun,
   IconZoomIn,
   IconZoomOut,
   IconRefresh,
 } from '@tabler/icons-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { ThemeToggle } from '../theme-toggle'
 
 export function AccessibilityControls() {
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
   const [fontSize, setFontSize] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
 
   // Estado para la posición vertical del panel (en px)
   const NAVBAR_HEIGHT = 130 // altura del navbar en px (ajustar si es necesario)
@@ -33,6 +31,7 @@ export function AccessibilityControls() {
   const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
+<<<<<<< HEAD
     setMounted(true)
     // Medidas iniciales de viewport
     const vh = window.innerHeight
@@ -75,6 +74,10 @@ export function AccessibilityControls() {
       if (typeof mq.removeEventListener === 'function') mq.removeEventListener('change', onMqChange)
       else if (typeof mq.removeListener === 'function') mq.removeListener(onMqChange)
     }
+=======
+    // Solo en cliente: centra el panel verticalmente usando la altura estimada
+    setPanelTop(window.innerHeight / 2 - PANEL_HEIGHT / 2)
+>>>>>>> 3d14410e90717c8155ec717e738b8910c3e08676
   }, [])
 
   // Eventos de drag (mouse y touch)
@@ -256,6 +259,7 @@ export function AccessibilityControls() {
 
           {/* Tema oscuro/claro */}
           <li>
+<<<<<<< HEAD
             <button
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               className="btn btn-circle btn-sm"
@@ -264,6 +268,9 @@ export function AccessibilityControls() {
             >
               {mounted && (theme === 'light' ? <IconMoon size={24} /> : <IconSun size={24} />)}
             </button>
+=======
+            <ThemeToggle />
+>>>>>>> 3d14410e90717c8155ec717e738b8910c3e08676
           </li>
 
           {/* Control de tamaño de texto */}

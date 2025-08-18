@@ -14,7 +14,7 @@ export function ThemeToggle({ className }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setDefaultTheme(resolvedTheme), [])
 
-  if (!defaultTheme) return null
+  if (!defaultTheme) return <div className="aspect-square h-8"></div>
 
   return (
     <label className={twJoin('swap swap-rotate btn btn-ghost btn-circle btn-sm', className)}>
@@ -24,8 +24,8 @@ export function ThemeToggle({ className }: Props) {
         value={resolvedTheme}
         onChange={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
       />
-      <IconMoon className={twJoin(defaultTheme === 'light' ? 'swap-on' : 'swap-off')} />
-      <IconSun className={twJoin(defaultTheme === 'light' ? 'swap-off' : 'swap-on')} />
+      <IconMoon className={twJoin(defaultTheme === 'light' ? 'swap-off' : 'swap-on')} />
+      <IconSun className={twJoin(defaultTheme === 'light' ? 'swap-on' : 'swap-off')} />
     </label>
   )
 }

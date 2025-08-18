@@ -1,6 +1,6 @@
 'use client'
+import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
-import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
 import { IconMenu2 } from '@tabler/icons-react'
@@ -11,6 +11,7 @@ import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
+import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
 
 const NAV_LINKS: { href: string; label: string }[] = [
   {
@@ -31,7 +32,11 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
 ] as const
 
-export function RootLayout({ children }: PropsWithChildren) {
+interface Props extends PropsWithChildren {
+  ciudadano: Ciudadano | null
+}
+
+export function RootLayout({ children, ciudadano }: Props) {
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
@@ -59,7 +64,13 @@ export function RootLayout({ children }: PropsWithChildren) {
     <>
       <ThemeInitScript />
       <AccessibilityControls />
-      <input type="checkbox" id="my-drawer" className="drawer-toggle" checked={isDrawerOpen} onChange={(e) => setIsDrawerOpen(e.target.checked)} />
+      <input
+        type="checkbox"
+        id="my-drawer"
+        className="drawer-toggle"
+        checked={isDrawerOpen}
+        onChange={(e) => setIsDrawerOpen(e.target.checked)}
+      />
       <div className="drawer-content">
         {/* Page content here */}
         <header
@@ -95,7 +106,15 @@ export function RootLayout({ children }: PropsWithChildren) {
             </ul>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <ThemeToggle className="lg:swap hidden" />
+            {ciudadano ? (
+              <Link href="/perfil" className="btn btn-primary">
+                Mi perfil
+              </Link>
+            ) : (
+              <Link href="/login" className="btn btn-primary">
+                Iniciar sesion
+              </Link>
+            )}
             <label
               htmlFor="my-drawer"
               className="drawer-button btn btn-ghost btn-primary btn-square dark:btn-neutral lg:hidden"
@@ -125,9 +144,14 @@ export function RootLayout({ children }: PropsWithChildren) {
               </li>
             ))}
           </ul>
-          <span className="self-center">
-            <ThemeToggle />
-          </span>
+          <div className="flex w-full flex-col items-center justify-end gap-4">
+            <Link href="/login" className="btn btn-neutral">
+              Iniciar sesion
+            </Link>
+            <span className="self-center">
+              <ThemeToggle />
+            </span>
+          </div>
         </nav>
       </aside>
     </>

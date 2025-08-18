@@ -1,19 +1,12 @@
 import type { User } from '@/payload-types'
 import { isAdminCollectionAccess, isAdminOrMeCollectionAccess } from '@/payload/access/collection'
-import {
-  ROL_ADMIN_VALUE,
-  ROL_CIUDADANO_VALUE,
-  ROL_DEFAULT_VALUE,
-  ROLES,
-} from '@/payload/constants/roles'
-import type { CollectionConfig, Condition, FieldAccess } from 'payload'
+import { ROL_ADMIN_VALUE, ROL_DEFAULT_VALUE, ROLES } from '@/payload/constants/roles'
+import type { CollectionConfig, FieldAccess } from 'payload'
 import { HIDE_API_URL } from '../config'
 
-const isAdminFieldAccess: FieldAccess<User> = ({ req }) =>
-  req?.user?.rol?.includes(ROL_ADMIN_VALUE) ?? false
-
-const datosCiudadanoCondition: Condition<User, User> = (_, siblingData) =>
-  siblingData?.rol?.includes(ROL_CIUDADANO_VALUE) ?? false
+const isAdminFieldAccess: FieldAccess<User> = ({ req }) => {
+  return (req?.user as User)?.rol?.includes(ROL_ADMIN_VALUE) ?? false
+}
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -71,58 +64,6 @@ export const Users: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-    },
-    {
-      type: 'group',
-      name: 'datos_ciudadano',
-      label: 'Datos del Ciudadano',
-      admin: {
-        condition: datosCiudadanoCondition,
-      },
-      fields: [
-        {
-          type: 'text',
-          name: 'nombre',
-          label: 'Nombre',
-        },
-        {
-          type: 'text',
-          name: 'apellido',
-          label: 'Apellido',
-        },
-        {
-          type: 'text',
-          name: 'dni',
-          label: 'DNI',
-        },
-        {
-          type: 'text',
-          name: 'domicilio',
-          label: 'Domicilio',
-        },
-        {
-          type: 'date',
-          name: 'fecha_nacimiento',
-          label: 'Fecha de Nacimiento',
-        },
-        {
-          type: 'text',
-          name: 'ciudad',
-          label: 'Ciudad',
-        },
-        {
-          type: 'text',
-          name: 'telefono',
-          label: 'Teléfono',
-        },
-        {
-          type: 'join',
-          name: 'curriculums',
-          label: 'Curriculums',
-          collection: 'curriculums',
-          on: 'user',
-        },
-      ],
     },
   ],
 }
