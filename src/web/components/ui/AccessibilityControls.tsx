@@ -8,6 +8,7 @@ import {
   IconSun,
   IconZoomIn,
   IconZoomOut,
+  IconRefresh,
 } from '@tabler/icons-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -27,11 +28,53 @@ export function AccessibilityControls() {
   const [panelStartTop, setPanelStartTop] = useState(0)
   // Estado para animación de rebote
   const [bounce, setBounce] = useState(false)
+  // Altura del viewport y preferencia de movimiento reducido
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null)
+  const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Solo en cliente: centra el panel verticalmente usando la altura estimada
-    setPanelTop(window.innerHeight / 2 - PANEL_HEIGHT / 2)
+    // Medidas iniciales de viewport
+    const vh = window.innerHeight
+    setViewportHeight(vh)
+
+    // Preferencias de movimiento reducido
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReduceMotion(mq.matches)
+    const onMqChange = (e: MediaQueryListEvent) => setReduceMotion(e.matches)
+    // Compatibilidad amplia para Safari
+    if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onMqChange)
+    else if (typeof mq.addListener === 'function') mq.addListener(onMqChange)
+
+    // Restaurar tamaño de fuente
+    try {
+      const savedFont = localStorage.getItem('a11y-font-size')
+      if (savedFont) {
+        const f = Number(savedFont)
+        if (!Number.isNaN(f)) setFontSize(Math.min(1.5, Math.max(0.8, f)))
+      }
+    } catch {}
+
+    // Restaurar posición del panel o centrar
+    try {
+      const savedTop = localStorage.getItem('a11y-panel-top')
+      const minTop = NAVBAR_HEIGHT
+      const maxTop = Math.max(NAVBAR_HEIGHT, vh - 120)
+      if (savedTop) {
+        const t = Number(savedTop)
+        if (!Number.isNaN(t)) setPanelTop(Math.max(minTop, Math.min(maxTop, t)))
+        else setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
+      } else {
+        setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
+      }
+    } catch {
+      setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
+    }
+
+    return () => {
+      if (typeof mq.removeEventListener === 'function') mq.removeEventListener('change', onMqChange)
+      else if (typeof mq.removeListener === 'function') mq.removeListener(onMqChange)
+    }
   }, [])
 
   // Eventos de drag (mouse y touch)
@@ -41,12 +84,13 @@ export function AccessibilityControls() {
       const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
       let newTop = panelStartTop + (clientY - dragStartY)
       // Limitar el movimiento para que no se meta debajo del navbar ni salga de la ventana
-      newTop = Math.max(NAVBAR_HEIGHT, Math.min(window.innerHeight - 120, newTop))
+      const vh = viewportHeight ?? window.innerHeight
+      newTop = Math.max(NAVBAR_HEIGHT, Math.min(vh - 120, newTop))
       setPanelTop(newTop)
     }
     const handleUp = () => {
       setDragging(false)
-      setBounce(true) // activa el rebote
+      if (!reduceMotion) setBounce(true) // activa el rebote si no hay motion reducido
     }
     window.addEventListener('mousemove', handleMove)
     window.addEventListener('touchmove', handleMove)
@@ -58,7 +102,7 @@ export function AccessibilityControls() {
       window.removeEventListener('mouseup', handleUp)
       window.removeEventListener('touchend', handleUp)
     }
-  }, [dragging, dragStartY, panelStartTop])
+  }, [dragging, dragStartY, panelStartTop, viewportHeight, reduceMotion])
 
   // Al terminar la animación de rebote, la desactiva
   useEffect(() => {
@@ -66,6 +110,36 @@ export function AccessibilityControls() {
     const timeout = setTimeout(() => setBounce(false), 400)
     return () => clearTimeout(timeout)
   }, [bounce])
+
+  // Persistencia de tamaño de fuente y posición del panel
+  useEffect(() => {
+    if (!mounted) return
+    try {
+      localStorage.setItem('a11y-font-size', String(fontSize))
+    } catch {}
+  }, [fontSize, mounted])
+
+  useEffect(() => {
+    if (!mounted) return
+    try {
+      localStorage.setItem('a11y-panel-top', String(panelTop))
+    } catch {}
+  }, [panelTop, mounted])
+
+  // Ajuste en cambios de tamaño de ventana
+  useEffect(() => {
+    const onResize = () => {
+      const vh = window.innerHeight
+      setViewportHeight(vh)
+      setPanelTop((prev) => {
+        const min = NAVBAR_HEIGHT
+        const max = Math.max(NAVBAR_HEIGHT, vh - 120)
+        return Math.max(min, Math.min(max, prev))
+      })
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
     setDragging(true)
@@ -76,6 +150,35 @@ export function AccessibilityControls() {
 
   const increaseFontSize = () => setFontSize((prev) => Math.min(prev + 0.1, 1.5))
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 0.1, 0.8))
+
+  const handleReset = () => {
+    // Restablecer tamaño de fuente
+    setFontSize(1)
+    // Recentrar panel
+    const vh = (viewportHeight ?? window.innerHeight)
+    setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
+    // Persistencia
+    try {
+      localStorage.removeItem('a11y-font-size')
+      localStorage.removeItem('a11y-panel-top')
+    } catch {}
+  }
+
+  const onHandleKeyDown = (e: React.KeyboardEvent) => {
+    const step = e.shiftKey ? 50 : 10
+    let delta = 0
+    if (e.key === 'ArrowUp') delta = -step
+    else if (e.key === 'ArrowDown') delta = step
+    else if (e.key === 'PageUp') delta = -100
+    else if (e.key === 'PageDown') delta = 100
+    if (delta !== 0) {
+      e.preventDefault()
+      const vh = viewportHeight ?? window.innerHeight
+      const min = NAVBAR_HEIGHT
+      const max = Math.max(NAVBAR_HEIGHT, vh - 120)
+      setPanelTop((prev) => Math.max(min, Math.min(max, prev + delta)))
+    }
+  }
 
   const currentDate = new Date()
   const day = currentDate.getDate()
@@ -99,7 +202,7 @@ export function AccessibilityControls() {
         className={`bg-base-100/95 ring-base-300/20 fixed right-0 z-50 rounded-l-lg ring-1 backdrop-blur-sm transition-transform duration-300 ${(isOpen ? 'translate-x-0 scale-100 shadow-[0_0_20px_rgba(0,0,0,0.15)]' : 'translate-x-full scale-95 shadow-[0_0_8px_rgba(0,0,0,0.07)]') + ' md:translate-x-0 md:scale-100 md:shadow-[0_0_20px_rgba(0,0,0,0.15)]'} ${bounce ? 'animate-bounce-panel' : ''}`}
         style={{
           top: panelTop,
-          /* quitamos translateY(-50%) */ transform: `${isOpen ? 'translateX(0)' : 'translateX(100%)'}${' md:translateX(0)'}`,
+          /* transform controlado por clases, no inline */
         }}
         onAnimationEnd={() => setBounce(false)}
       >
@@ -110,6 +213,20 @@ export function AccessibilityControls() {
           onMouseDown={startDrag}
           onTouchStart={startDrag}
           aria-label="Mover panel de accesibilidad"
+          tabIndex={0}
+          role="slider"
+          aria-orientation="vertical"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={(() => {
+            if (!mounted) return 50
+            const vh = viewportHeight ?? window.innerHeight
+            const min = NAVBAR_HEIGHT
+            const max = Math.max(NAVBAR_HEIGHT, vh - 120)
+            if (max === min) return 50
+            return Math.round(((panelTop - min) / (max - min)) * 100)
+          })()}
+          onKeyDown={onHandleKeyDown}
         >
           <span className="bg-base-300 flex h-2 w-8 items-center justify-center rounded-full">
             <svg width="24" height="8">
@@ -143,6 +260,7 @@ export function AccessibilityControls() {
               onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               className="btn btn-circle btn-sm"
               aria-label="Cambiar tema"
+              title="Cambiar tema"
             >
               {mounted && (theme === 'light' ? <IconMoon size={24} /> : <IconSun size={24} />)}
             </button>
@@ -154,6 +272,7 @@ export function AccessibilityControls() {
               onClick={increaseFontSize}
               className="btn btn-circle btn-sm"
               aria-label="Aumentar tamaño de texto"
+              title="Aumentar tamaño de texto"
             >
               <IconZoomIn size={24} />
             </button>
@@ -163,8 +282,21 @@ export function AccessibilityControls() {
               onClick={decreaseFontSize}
               className="btn btn-circle btn-sm"
               aria-label="Reducir tamaño de texto"
+              title="Reducir tamaño de texto"
             >
               <IconZoomOut size={24} />
+            </button>
+          </li>
+
+          {/* Restablecer ajustes */}
+          <li>
+            <button
+              onClick={handleReset}
+              className="btn btn-circle btn-sm"
+              aria-label="Restablecer ajustes"
+              title="Restablecer ajustes"
+            >
+              <IconRefresh size={24} />
             </button>
           </li>
 
@@ -174,12 +306,17 @@ export function AccessibilityControls() {
               onClick={() => setTheme('high-contrast')}
               className="btn btn-circle btn-sm"
               aria-label="Modo alto contraste"
+              title="Modo alto contraste"
             >
               <IconAccessible size={24} />
             </button>
           </li>
         </ul>
       </aside>
+      {/* Anuncio discreto para lectores de pantalla sobre cambios de tamaño de fuente */}
+      <div aria-live="polite" role="status" className="sr-only">
+        Tamaño de fuente: {Math.round(fontSize * 100)}%
+      </div>
       <style jsx global>{`
         :root {
           font-size: ${fontSize}rem;
@@ -203,6 +340,11 @@ export function AccessibilityControls() {
         }
         .animate-bounce-panel {
           animation: bounce-panel 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-bounce-panel {
+            animation: none !important;
+          }
         }
       `}</style>
     </>
