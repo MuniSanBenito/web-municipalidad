@@ -15,8 +15,6 @@ export default async function Layout({ children }: PropsWithChildren) {
   const headers = await nextHeaders()
   const result = await basePayload.auth({ headers, canSetHeaders: false })
 
-  console.log('Usuario autenticado:', result.user)
-
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
