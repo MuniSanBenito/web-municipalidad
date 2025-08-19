@@ -199,12 +199,12 @@ export default function LoginPage() {
               </div>
 
               {/* Remember me */}
-              <div className="form-control">
+              {/*  <div className="form-control">
                 <label className="label cursor-pointer justify-start gap-3">
                   <input type="checkbox" className="checkbox checkbox-primary" />
                   <span className="label-text">Recordar mi sesión</span>
                 </label>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <button
