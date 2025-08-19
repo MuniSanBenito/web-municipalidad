@@ -25,9 +25,7 @@ export default async function Layout({ children }: PropsWithChildren) {
       <body className="drawer scroll-smooth">
         <ThemeProvider>
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-          <RootLayout
-            initialCiudadano={result.user?.collection === 'ciudadanos' ? result.user : null}
-          >
+          <RootLayout ciudadano={result.user?.collection === 'ciudadanos' ? result.user : null}>
             {children}
           </RootLayout>
           <Toaster richColors closeButton />
