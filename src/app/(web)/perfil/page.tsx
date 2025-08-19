@@ -338,7 +338,7 @@ export default async function PerfilPage() {
           <div className="card-body">
             <h2 className="card-title text-primary">Acciones</h2>
             <div className="flex flex-wrap gap-4">
-              <Link href="/perfil/editar-perfil" className="btn btn-primary">
+              <Link href="/perfil/editar" className="btn btn-primary">
                 Editar Perfil
               </Link>
               <Link href="/perfil/cambiar-password" className="btn btn-secondary">
