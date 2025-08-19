@@ -4,9 +4,9 @@ import {
   IconAccessible,
   IconChevronLeft,
   IconChevronRight,
+  IconRefresh,
   IconZoomIn,
   IconZoomOut,
-  IconRefresh,
 } from '@tabler/icons-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -31,8 +31,6 @@ export function AccessibilityControls() {
   const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
-<<<<<<< HEAD
-    setMounted(true)
     // Medidas iniciales de viewport
     const vh = window.innerHeight
     setViewportHeight(vh)
@@ -74,10 +72,6 @@ export function AccessibilityControls() {
       if (typeof mq.removeEventListener === 'function') mq.removeEventListener('change', onMqChange)
       else if (typeof mq.removeListener === 'function') mq.removeListener(onMqChange)
     }
-=======
-    // Solo en cliente: centra el panel verticalmente usando la altura estimada
-    setPanelTop(window.innerHeight / 2 - PANEL_HEIGHT / 2)
->>>>>>> 3d14410e90717c8155ec717e738b8910c3e08676
   }, [])
 
   // Eventos de drag (mouse y touch)
@@ -116,18 +110,16 @@ export function AccessibilityControls() {
 
   // Persistencia de tamaño de fuente y posición del panel
   useEffect(() => {
-    if (!mounted) return
     try {
       localStorage.setItem('a11y-font-size', String(fontSize))
     } catch {}
-  }, [fontSize, mounted])
+  }, [fontSize])
 
   useEffect(() => {
-    if (!mounted) return
     try {
       localStorage.setItem('a11y-panel-top', String(panelTop))
     } catch {}
-  }, [panelTop, mounted])
+  }, [panelTop])
 
   // Ajuste en cambios de tamaño de ventana
   useEffect(() => {
@@ -158,7 +150,7 @@ export function AccessibilityControls() {
     // Restablecer tamaño de fuente
     setFontSize(1)
     // Recentrar panel
-    const vh = (viewportHeight ?? window.innerHeight)
+    const vh = viewportHeight ?? window.innerHeight
     setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
     // Persistencia
     try {
@@ -222,8 +214,7 @@ export function AccessibilityControls() {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={(() => {
-            if (!mounted) return 50
-            const vh = viewportHeight ?? window.innerHeight
+            const vh = viewportHeight ?? (typeof window !== 'undefined' ? window.innerHeight : 800)
             const min = NAVBAR_HEIGHT
             const max = Math.max(NAVBAR_HEIGHT, vh - 120)
             if (max === min) return 50
@@ -259,18 +250,7 @@ export function AccessibilityControls() {
 
           {/* Tema oscuro/claro */}
           <li>
-<<<<<<< HEAD
-            <button
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="btn btn-circle btn-sm"
-              aria-label="Cambiar tema"
-              title="Cambiar tema"
-            >
-              {mounted && (theme === 'light' ? <IconMoon size={24} /> : <IconSun size={24} />)}
-            </button>
-=======
             <ThemeToggle />
->>>>>>> 3d14410e90717c8155ec717e738b8910c3e08676
           </li>
 
           {/* Control de tamaño de texto */}

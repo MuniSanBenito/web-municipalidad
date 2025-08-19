@@ -3,9 +3,9 @@ import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2 } from '@tabler/icons-react'
+import { IconLogout, IconMenu2, IconUser } from '@tabler/icons-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
@@ -33,15 +33,17 @@ const NAV_LINKS: { href: string; label: string }[] = [
 ] as const
 
 interface Props extends PropsWithChildren {
-  ciudadano: Ciudadano | null
+  initialCiudadano: Ciudadano | null
 }
 
-export function RootLayout({ children, ciudadano }: Props) {
+export function RootLayout({ children, initialCiudadano }: Props) {
   const pathname = usePathname()
+  const router = useRouter()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [ciudadano, setCiudadano] = useState<Ciudadano | null>(initialCiudadano)
 
   const closeDrawer = () => {
     const drawerCheckbox = document.getElementById('my-drawer') as HTMLInputElement
@@ -50,6 +52,63 @@ export function RootLayout({ children, ciudadano }: Props) {
       setIsDrawerOpen(false)
     }
   }
+
+  // Función para verificar el estado de autenticación
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch('/api/ciudadanos/me', {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setCiudadano(data.user)
+      } else {
+        setCiudadano(null)
+      }
+    } catch (error) {
+      console.error('Error checking auth status:', error)
+      setCiudadano(null)
+    }
+  }
+
+  // Función para cerrar sesión
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/ciudadanos/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      setCiudadano(null)
+      router.push('/')
+      router.refresh()
+    } catch (error) {
+      console.error('Error during logout:', error)
+    }
+  }
+
+  useEffect(() => {
+    // Verificar el estado de autenticación al cargar
+    if (initialCiudadano !== ciudadano) {
+      setCiudadano(initialCiudadano)
+    }
+
+    // Escuchar eventos de autenticación
+    const handleAuthChange = () => {
+      checkAuthStatus()
+    }
+
+    // Agregar listeners para cambios de autenticación
+    window.addEventListener('authStateChanged', handleAuthChange)
+    window.addEventListener('focus', handleAuthChange)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange)
+      window.removeEventListener('focus', handleAuthChange)
+    }
+  }, [initialCiudadano, ciudadano])
 
   useEffect(() => {
     const scrollListener = () => {
@@ -107,9 +166,28 @@ export function RootLayout({ children, ciudadano }: Props) {
           </div>
           <div className="flex items-center justify-center gap-2">
             {ciudadano ? (
-              <Link href="/perfil" className="btn btn-primary">
-                Mi perfil
-              </Link>
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                  <IconUser size={20} />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/perfil">
+                      <IconUser size={16} />
+                      Mi perfil
+                    </Link>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout}>
+                      <IconLogout size={16} />
+                      Cerrar sesión
+                    </button>
+                  </li>
+                </ul>
+              </div>
             ) : (
               <Link href="/login" className="btn btn-primary">
                 Iniciar sesion
