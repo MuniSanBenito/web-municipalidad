@@ -72,8 +72,6 @@ export default async function LicitacionDetalle({ params }: Props) {
   // Eliminamos la referencia a resultados ya que no existe en el objeto
   // const resultadosHTML = licitacion.resultados ? richTextToHTML(licitacion.resultados) : '';
 
-  console.log(licitacion?.archivos_adicionales)
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Link
