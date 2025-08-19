@@ -1,11 +1,32 @@
 import type { Curriculum } from '@/payload-types'
-import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import type { Access, CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import {
   isAdminOrCreatedByAccess,
   isAdminOrCreatedByWithDataAccess,
   isCiudadanoOrMoreCollectionAccess,
 } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+import { ROL_ADMIN_VALUE } from '../constants/roles'
+
+export const update: Access<Curriculum> = async ({ req, data }) => {
+  if (req.user?.collection === 'ciudadanos') {
+    let ciudadano = data?.ciudadano
+    if (typeof ciudadano === 'string') {
+      ciudadano = await req.payload.findByID({
+        collection: 'ciudadanos',
+        id: ciudadano,
+      })
+    }
+
+    if (ciudadano?.id === req.user.id) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  return req.user?.rol.includes(ROL_ADMIN_VALUE) || false
+}
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
   let { ciudadano } = data
@@ -29,7 +50,7 @@ export const Curriculums: CollectionConfig = {
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
     read: isAdminOrCreatedByAccess,
-    update: isAdminOrCreatedByWithDataAccess,
+    update,
     delete: isAdminOrCreatedByWithDataAccess,
   },
   admin: {
