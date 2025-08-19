@@ -1,5 +1,6 @@
 import type { Ciudadano } from '@/payload-types'
 import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
+import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -70,34 +71,42 @@ export default async function PerfilPage() {
         {/* Header del perfil */}
         <div className="card bg-base-200 mb-8 shadow-lg">
           <div className="card-body">
-            <div className="flex flex-col items-center gap-6 sm:flex-row">
-              {/* Avatar */}
-              <div className="avatar">
-                <div className="w-24 rounded-full">
-                  {typeof ciudadano.avatar === 'object' && ciudadano.avatar?.url ? (
-                    <img
-                      src={ciudadano.avatar.url}
-                      alt={ciudadano.avatar.alt || 'Avatar del usuario'}
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold shadow-lg">
-                      {ciudadano.nombre && ciudadano.apellido
-                        ? `${ciudadano.nombre[0]}${ciudadano.apellido[0]}`
-                        : ciudadano.nombre?.[0] || ciudadano.email[0].toUpperCase()}
-                    </div>
-                  )}
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
+              {/* Avatar e Información básica */}
+              <div className="flex flex-col items-center gap-6 sm:flex-row">
+                {/* Avatar */}
+                <div className="avatar">
+                  <div className="w-24 rounded-full">
+                    {typeof ciudadano.avatar === 'object' && ciudadano.avatar?.url ? (
+                      <img
+                        src={ciudadano.avatar.url}
+                        alt={ciudadano.avatar.alt || 'Avatar del usuario'}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold shadow-lg">
+                        {ciudadano.nombre && ciudadano.apellido
+                          ? `${ciudadano.nombre[0]}${ciudadano.apellido[0]}`
+                          : ciudadano.nombre?.[0] || ciudadano.email[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Información básica */}
+                <div className="text-center sm:text-left">
+                  <h1 className="text-primary text-3xl font-bold">
+                    {ciudadano.nombre && ciudadano.apellido
+                      ? `${ciudadano.nombre} ${ciudadano.apellido}`
+                      : ciudadano.email}
+                  </h1>
+                  <p className="text-base-content/80 mt-1">DNI: {ciudadano.dni}</p>
                 </div>
               </div>
 
-              {/* Información básica */}
-              <div className="text-center sm:text-left">
-                <h1 className="text-primary text-3xl font-bold">
-                  {ciudadano.nombre && ciudadano.apellido
-                    ? `${ciudadano.nombre} ${ciudadano.apellido}`
-                    : ciudadano.email}
-                </h1>
-                <p className="text-base-content/80 mt-1">DNI: {ciudadano.dni}</p>
+              {/* Botón de cerrar sesión */}
+              <div className="flex flex-col gap-2 sm:items-end">
+                <LogoutButton />
               </div>
             </div>
           </div>
