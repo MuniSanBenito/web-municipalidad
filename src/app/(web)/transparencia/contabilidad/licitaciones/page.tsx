@@ -21,8 +21,6 @@ export default async function PageLicitaciones({ searchParams }: Props) {
     limit: 10,
   })
 
-  console.log(licitaciones)
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Link
