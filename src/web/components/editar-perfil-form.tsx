@@ -1,6 +1,6 @@
 'use client'
 
-import type { Ciudadano } from '@/payload-types'
+import type { Ciudadano, Curriculum } from '@/payload-types'
 import {
   IconCalendar,
   IconCheck,
@@ -14,36 +14,143 @@ import {
   IconX,
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 
 interface EditarPerfilFormProps {
   ciudadano: Ciudadano
+  cv: Curriculum | null
 }
 
-export function EditarPerfilForm({ ciudadano }: EditarPerfilFormProps) {
+// Componente InputField separado para evitar re-creación
+interface InputFieldProps {
+  name: string
+  label: string
+  type?: string
+  icon?: React.ReactNode
+  placeholder?: string
+  required?: boolean
+  className?: string
+  value: string
+  onChange: (name: string, value: string) => void
+  hasError?: string
+  disabled?: boolean
+}
+
+function InputField({
+  name,
+  label,
+  type = 'text',
+  icon,
+  placeholder,
+  required = false,
+  className = '',
+  value,
+  onChange,
+  hasError,
+  disabled,
+  ...props
+}: InputFieldProps) {
+  return (
+    <div className={`form-control ${className}`}>
+      <label className="label">
+        <span className="label-text text-base-content/80 flex items-center gap-2 font-semibold">
+          {icon}
+          {label}
+          {required && <span className="text-error">*</span>}
+        </span>
+      </label>
+      <div className="relative">
+        <input
+          type={type}
+          name={name}
+          value={value}
+          placeholder={placeholder}
+          required={required}
+          disabled={disabled}
+          onChange={(e) => onChange(name, e.target.value)}
+          className={`input input-bordered w-full ${
+            hasError
+              ? 'input-error border-error focus:border-error'
+              : 'focus:border-primary hover:border-primary/50'
+          } placeholder:text-base-content/40`}
+          {...props}
+        />
+      </div>
+      {hasError && (
+        <label className="label">
+          <span className="label-text-alt text-error flex items-center gap-1">
+            <IconX size={14} />
+            {hasError}
+          </span>
+        </label>
+      )}
+    </div>
+  )
+}
+
+export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
   const router = useRouter()
+
+  // Función para formatear fechas
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return ''
+    try {
+      const date = new Date(dateString)
+      return date.toISOString().split('T')[0]
+    } catch {
+      return ''
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [activeSection, setActiveSection] = useState<string | null>(null)
+
+  // Estado controlado para el formulario
+  const [formData, setFormData] = useState({
+    nombre: ciudadano.nombre || '',
+    apellido: ciudadano.apellido || '',
+    dni: ciudadano.dni || '',
+    domicilio: ciudadano.domicilio || '',
+    fecha_nacimiento: ciudadano.fecha_nacimiento ? formatDate(ciudadano.fecha_nacimiento) : '',
+    ciudad: ciudadano.ciudad || '',
+    telefono: ciudadano.telefono || '',
+    email: ciudadano.email || '',
+  })
+
+  // Función para manejar cambios en los inputs
+  const handleInputChange = useCallback(
+    (name: string, value: string) => {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+      // Limpiar error cuando el usuario empiece a escribir
+      if (errors[name]) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: '',
+        }))
+      }
+    },
+    [errors],
+  )
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsSubmitting(true)
     setErrors({})
 
-    const formData = new FormData(e.currentTarget)
-
-    // Extraer datos del formulario
+    // Usar el estado del formulario en lugar de FormData
     const data = {
-      nombre: formData.get('nombre')?.toString().trim(),
-      apellido: formData.get('apellido')?.toString().trim(),
-      dni: formData.get('dni')?.toString().trim(),
-      domicilio: formData.get('domicilio')?.toString().trim(),
-      fecha_nacimiento: formData.get('fecha_nacimiento')?.toString(),
-      ciudad: formData.get('ciudad')?.toString().trim(),
-      telefono: formData.get('telefono')?.toString().trim(),
-      email: formData.get('email')?.toString().trim(),
+      nombre: formData.nombre.trim(),
+      apellido: formData.apellido.trim(),
+      dni: formData.dni.trim(),
+      domicilio: formData.domicilio.trim(),
+      fecha_nacimiento: formData.fecha_nacimiento,
+      ciudad: formData.ciudad.trim(),
+      telefono: formData.telefono.trim(),
+      email: formData.email.trim(),
     }
 
     // Validaciones básicas
@@ -74,6 +181,18 @@ export function EditarPerfilForm({ ciudadano }: EditarPerfilFormProps) {
       })
 
       if (response.ok) {
+        await fetch(`/api/curriculums/${cv?.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            titulo: `${data.nombre} ${data.apellido}`,
+            ciudadano: ciudadano.id,
+          }),
+        })
+
         toast.success('Perfil actualizado exitosamente')
         router.push('/perfil')
       } else {
@@ -102,84 +221,6 @@ export function EditarPerfilForm({ ciudadano }: EditarPerfilFormProps) {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const formatDate = (dateString: string | null | undefined) => {
-    if (!dateString) return ''
-    try {
-      const date = new Date(dateString)
-      return date.toISOString().split('T')[0]
-    } catch {
-      return ''
-    }
-  }
-
-  const InputField = ({
-    name,
-    label,
-    type = 'text',
-    defaultValue,
-    icon,
-    placeholder,
-    required = false,
-    className = '',
-    ...props
-  }: {
-    name: string
-    label: string
-    type?: string
-    defaultValue?: string
-    icon?: React.ReactNode
-    placeholder?: string
-    required?: boolean
-    className?: string
-    [key: string]: any
-  }) => {
-    const hasError = errors[name]
-    const isFocused = activeSection === name
-
-    return (
-      <div className={`form-control group ${className}`}>
-        <label className="label">
-          <span className="label-text text-base-content/80 flex items-center gap-2 font-semibold">
-            {icon}
-            {label}
-            {required && <span className="text-error">*</span>}
-          </span>
-        </label>
-        <div className="relative">
-          <input
-            type={type}
-            name={name}
-            defaultValue={defaultValue || ''}
-            placeholder={placeholder}
-            required={required}
-            disabled={isSubmitting}
-            onFocus={() => setActiveSection(name)}
-            onBlur={() => setActiveSection(null)}
-            className={`input input-bordered w-full transition-all duration-300 ease-in-out ${
-              hasError
-                ? 'input-error border-error focus:border-error'
-                : isFocused
-                  ? 'border-primary shadow-primary/20 scale-[1.02] shadow-lg'
-                  : 'hover:border-primary/50 hover:shadow-md'
-            } ${isFocused ? 'bg-base-100' : 'bg-base-50'} placeholder:text-base-content/40`}
-            {...props}
-          />
-          {isFocused && (
-            <div className="ring-primary/30 ring-offset-base-100 pointer-events-none absolute inset-0 rounded-lg ring-2 ring-offset-2 transition-all duration-300" />
-          )}
-        </div>
-        {hasError && (
-          <label className="label">
-            <span className="label-text-alt text-error flex animate-pulse items-center gap-1">
-              <IconX size={14} />
-              {hasError}
-            </span>
-          </label>
-        )}
-      </div>
-    )
   }
 
   return (
@@ -227,47 +268,62 @@ export function EditarPerfilForm({ ciudadano }: EditarPerfilFormProps) {
               <InputField
                 name="nombre"
                 label="Nombre"
-                defaultValue={ciudadano.nombre || ''}
                 icon={<IconUser size={18} />}
                 placeholder="Tu nombre"
                 required
+                value={formData.nombre}
+                onChange={handleInputChange}
+                hasError={errors.nombre}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="apellido"
                 label="Apellido"
-                defaultValue={ciudadano.apellido || ''}
                 icon={<IconUser size={18} />}
                 placeholder="Tu apellido"
                 required
+                value={formData.apellido}
+                onChange={handleInputChange}
+                hasError={errors.apellido}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="dni"
                 label="DNI"
-                defaultValue={ciudadano.dni}
                 icon={<IconId size={18} />}
                 placeholder="12.345.678"
                 required
+                value={formData.dni}
+                onChange={handleInputChange}
+                hasError={errors.dni}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="fecha_nacimiento"
                 label="Fecha de Nacimiento"
                 type="date"
-                defaultValue={formatDate(ciudadano.fecha_nacimiento)}
                 icon={<IconCalendar size={18} />}
+                value={formData.fecha_nacimiento}
+                onChange={handleInputChange}
+                hasError={errors.fecha_nacimiento}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="email"
                 label="Email"
                 type="email"
-                defaultValue={ciudadano.email}
                 icon={<IconMail size={18} />}
                 placeholder="tu@email.com"
                 required
                 className="md:col-span-2"
+                value={formData.email}
+                onChange={handleInputChange}
+                hasError={errors.email}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -288,26 +344,35 @@ export function EditarPerfilForm({ ciudadano }: EditarPerfilFormProps) {
                 name="telefono"
                 label="Teléfono"
                 type="tel"
-                defaultValue={ciudadano.telefono || ''}
                 icon={<IconPhone size={18} />}
                 placeholder="+54 9 11 1234-5678"
+                value={formData.telefono}
+                onChange={handleInputChange}
+                hasError={errors.telefono}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="ciudad"
                 label="Ciudad"
-                defaultValue={ciudadano.ciudad || ''}
                 icon={<IconMapPin size={18} />}
                 placeholder="San Benito"
+                value={formData.ciudad}
+                onChange={handleInputChange}
+                hasError={errors.ciudad}
+                disabled={isSubmitting}
               />
 
               <InputField
                 name="domicilio"
                 label="Domicilio"
-                defaultValue={ciudadano.domicilio || ''}
                 icon={<IconHome size={18} />}
                 placeholder="Calle 123, N° 456"
                 className="md:col-span-2"
+                value={formData.domicilio}
+                onChange={handleInputChange}
+                hasError={errors.domicilio}
+                disabled={isSubmitting}
               />
             </div>
           </div>
