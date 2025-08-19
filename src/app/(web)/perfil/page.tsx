@@ -2,6 +2,7 @@ import type { Ciudadano } from '@/payload-types'
 import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
 import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
+import { IconAlertTriangle, IconBriefcase, IconSchool, IconUsers } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 
@@ -37,7 +38,7 @@ export default async function PerfilPage() {
 
   const ciudadano = user as Ciudadano
 
-  // Obtener los currículums del ciudadano
+  // Obtener el curriculum del ciudadano (solo uno permitido)
   const { docs: curriculums } = await basePayload.find({
     collection: 'curriculums',
     where: {
@@ -45,8 +46,10 @@ export default async function PerfilPage() {
         equals: ciudadano.id,
       },
     },
-    limit: 10,
+    limit: 1,
   })
+
+  const curriculum = curriculums.length > 0 ? curriculums[0] : null
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No especificado'
@@ -113,12 +116,12 @@ export default async function PerfilPage() {
         </div>
 
         {/* Contenido del perfil */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-1">
           {/* Información Personal */}
           <div className="card bg-base-100 shadow-lg">
             <div className="card-body">
-              <h2 className="card-title text-primary">Información Personal</h2>
-              <div className="space-y-4">
+              <h2 className="card-title text-primary mb-6">Información Personal</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <label className="fieldset-legend">Email</label>
                   <p className="text-base-content">{ciudadano.email}</p>
@@ -156,226 +159,173 @@ export default async function PerfilPage() {
           </div>
         </div>
 
-        {/* Sección de Currículums Detallada */}
-        {curriculums && curriculums.length > 0 && (
+        {/* Sección de Curriculum */}
+        {curriculum && (
           <div className="card bg-base-100 mt-8 shadow-lg">
             <div className="card-body">
-              <h2 className="card-title text-primary">Mis Currículums</h2>
+              <h2 className="card-title text-primary">Mi Currículum</h2>
               <div className="space-y-6">
-                {curriculums.map((curriculum) => (
-                  <div key={curriculum.id} className="border-base-300 rounded-lg border p-6">
-                    {/* Título del currículum */}
-                    <div className="mb-4 flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-primary text-lg font-bold">
-                          {curriculum.titulo || 'Currículum sin título'}
-                        </h3>
-                        <div className="text-base-content/60 mt-1 text-sm">
-                          Actualizado: {formatDate(curriculum.updatedAt)}
-                        </div>
-                      </div>
-                      <div className="ml-4 flex gap-2">
-                        <CurriculumPDFDownload ciudadano={ciudadano} curriculum={curriculum} />
+                <div className="border-base-300 rounded-lg border p-6">
+                  {/* Título del currículum */}
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-primary text-lg font-bold">
+                        {curriculum.titulo || 'Mi Currículum'}
+                      </h3>
+                      <div className="text-base-content/60 mt-1 text-sm">
+                        Actualizado: {formatDate(curriculum.updatedAt)}
                       </div>
                     </div>
+                    <div className="ml-4 flex gap-2">
+                      <CurriculumPDFDownload ciudadano={ciudadano} curriculum={curriculum} />
+                    </div>
+                  </div>
 
-                    {/* Categorías */}
-                    {curriculum.categorias && curriculum.categorias.length > 0 && (
-                      <div className="mb-4">
-                        <h4 className="text-base-content/80 mb-2 text-sm font-semibold">
-                          Categorías:
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {curriculum.categorias.map((categoria, index) => (
-                            <div
-                              key={categoria.id || index}
-                              className="badge badge-secondary badge-outline"
-                            >
-                              {categoria.nombre}
+                  {/* Categorías */}
+                  {curriculum.categorias && curriculum.categorias.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-base-content/80 mb-2 text-sm font-semibold">
+                        Categorías:
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {curriculum.categorias.map((categoria, index) => (
+                          <div
+                            key={categoria.id || index}
+                            className="badge badge-secondary badge-outline"
+                          >
+                            {categoria.nombre}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    {/* Estudios */}
+                    <div>
+                      <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
+                        <IconSchool size={20} />
+                        Estudios
+                      </h4>
+                      {curriculum.estudios && curriculum.estudios.length > 0 ? (
+                        <div className="space-y-3">
+                          {curriculum.estudios.map((estudio, index) => (
+                            <div key={estudio.id || index} className="bg-base-200 rounded-lg p-3">
+                              <div className="text-sm font-medium">{estudio.institucion}</div>
+                              <div className="text-base-content/70 mt-1 text-xs">
+                                {estudio.is_old ? estudio.nivel_old : estudio.nivel}
+                              </div>
+                              <div className="text-base-content/60 text-xs">
+                                {formatDateShort(estudio.fecha_inicio)} -{' '}
+                                {formatDateShort(estudio.fecha_finalizacion)}
+                              </div>
+                              {estudio.descripcion && (
+                                <div className="text-base-content/80 mt-2 text-xs">
+                                  {estudio.descripcion}
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="text-base-content/60 text-sm">
+                          No hay estudios registrados
+                        </div>
+                      )}
+                    </div>
 
-                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                      {/* Estudios */}
-                      <div>
-                        <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="h-5 w-5"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443a55.381 55.381 0 0 1 5.25 2.882V15"
-                            />
-                          </svg>
-                          Estudios
-                        </h4>
-                        {curriculum.estudios && curriculum.estudios.length > 0 ? (
-                          <div className="space-y-3">
-                            {curriculum.estudios.map((estudio, index) => (
-                              <div key={estudio.id || index} className="bg-base-200 rounded-lg p-3">
-                                <div className="text-sm font-medium">{estudio.institucion}</div>
+                    {/* Experiencias */}
+                    <div>
+                      <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
+                        <IconBriefcase size={20} />
+                        Experiencia
+                      </h4>
+                      {curriculum.experiencias && curriculum.experiencias.length > 0 ? (
+                        <div className="space-y-3">
+                          {curriculum.experiencias.map((experiencia, index) => (
+                            <div
+                              key={experiencia.id || index}
+                              className="bg-base-200 rounded-lg p-3"
+                            >
+                              <div className="text-sm font-medium">{experiencia.institucion}</div>
+                              <div className="text-base-content/70 mt-1 text-xs">
+                                {experiencia.puesto}
+                              </div>
+                              <div className="text-base-content/60 text-xs">
+                                {formatDateShort(experiencia.fecha_inicio)} -{' '}
+                                {formatDateShort(experiencia.fecha_finalizacion)}
+                              </div>
+                              {experiencia.descripcion && (
+                                <div className="text-base-content/80 mt-2 text-xs">
+                                  {experiencia.descripcion}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-base-content/60 text-sm">
+                          No hay experiencias registradas
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Referencias */}
+                    <div>
+                      <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
+                        <IconUsers size={20} />
+                        Referencias
+                      </h4>
+                      {curriculum.referencias && curriculum.referencias.length > 0 ? (
+                        <div className="space-y-3">
+                          {curriculum.referencias.map((referencia, index) => (
+                            <div
+                              key={referencia.id || index}
+                              className="bg-base-200 rounded-lg p-3"
+                            >
+                              <div className="text-sm font-medium">{referencia.nombre}</div>
+                              {referencia.telefono && (
                                 <div className="text-base-content/70 mt-1 text-xs">
-                                  {estudio.is_old ? estudio.nivel_old : estudio.nivel}
+                                  Tel: {referencia.telefono}
                                 </div>
-                                <div className="text-base-content/60 text-xs">
-                                  {formatDateShort(estudio.fecha_inicio)} -{' '}
-                                  {formatDateShort(estudio.fecha_finalizacion)}
+                              )}
+                              {referencia.email && (
+                                <div className="text-base-content/70 text-xs">
+                                  Email: {referencia.email}
                                 </div>
-                                {estudio.descripcion && (
-                                  <div className="text-base-content/80 mt-2 text-xs">
-                                    {estudio.descripcion}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-base-content/60 text-sm">
-                            No hay estudios registrados
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Experiencias */}
-                      <div>
-                        <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="h-5 w-5"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
-                            />
-                          </svg>
-                          Experiencia
-                        </h4>
-                        {curriculum.experiencias && curriculum.experiencias.length > 0 ? (
-                          <div className="space-y-3">
-                            {curriculum.experiencias.map((experiencia, index) => (
-                              <div
-                                key={experiencia.id || index}
-                                className="bg-base-200 rounded-lg p-3"
-                              >
-                                <div className="text-sm font-medium">{experiencia.institucion}</div>
-                                <div className="text-base-content/70 mt-1 text-xs">
-                                  {experiencia.puesto}
+                              )}
+                              {referencia.descripcion && (
+                                <div className="text-base-content/80 mt-2 text-xs">
+                                  {referencia.descripcion}
                                 </div>
-                                <div className="text-base-content/60 text-xs">
-                                  {formatDateShort(experiencia.fecha_inicio)} -{' '}
-                                  {formatDateShort(experiencia.fecha_finalizacion)}
-                                </div>
-                                {experiencia.descripcion && (
-                                  <div className="text-base-content/80 mt-2 text-xs">
-                                    {experiencia.descripcion}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-base-content/60 text-sm">
-                            No hay experiencias registradas
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Referencias */}
-                      <div>
-                        <h4 className="text-primary mb-3 flex items-center gap-2 font-semibold">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="h-5 w-5"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
-                            />
-                          </svg>
-                          Referencias
-                        </h4>
-                        {curriculum.referencias && curriculum.referencias.length > 0 ? (
-                          <div className="space-y-3">
-                            {curriculum.referencias.map((referencia, index) => (
-                              <div
-                                key={referencia.id || index}
-                                className="bg-base-200 rounded-lg p-3"
-                              >
-                                <div className="text-sm font-medium">{referencia.nombre}</div>
-                                {referencia.telefono && (
-                                  <div className="text-base-content/70 mt-1 text-xs">
-                                    Tel: {referencia.telefono}
-                                  </div>
-                                )}
-                                {referencia.email && (
-                                  <div className="text-base-content/70 text-xs">
-                                    Email: {referencia.email}
-                                  </div>
-                                )}
-                                {referencia.descripcion && (
-                                  <div className="text-base-content/80 mt-2 text-xs">
-                                    {referencia.descripcion}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-base-content/60 text-sm">
-                            No hay referencias registradas
-                          </div>
-                        )}
-                      </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-base-content/60 text-sm">
+                          No hay referencias registradas
+                        </div>
+                      )}
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Mensaje si no hay currículums */}
-        {(!curriculums || curriculums.length === 0) && (
+        {/* Mensaje si no hay curriculum */}
+        {!curriculum && (
           <div className="card bg-base-100 mt-8 shadow-lg">
             <div className="card-body">
-              <h2 className="card-title text-primary">Mis Currículums</h2>
+              <h2 className="card-title text-primary">Mi Currículum</h2>
               <div className="alert alert-warning">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-6 w-6 shrink-0 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 15.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
+                <IconAlertTriangle size={24} className="shrink-0 stroke-current" />
                 <div>
-                  <h3 className="font-bold">No tienes currículums registrados</h3>
+                  <h3 className="font-bold">No tienes un currículum registrado</h3>
                   <div className="text-xs">
-                    Puedes crear tu primer currículum desde el panel correspondiente.
+                    Puedes crear tu currículum desde el panel de gestión.
                   </div>
                 </div>
               </div>
@@ -395,7 +345,7 @@ export default async function PerfilPage() {
                 Cambiar Contraseña
               </Link>
               <Link href="/perfil/curriculum" className="btn btn-accent">
-                Gestionar Currículum
+                {curriculum ? 'Editar Currículum' : 'Crear Currículum'}
               </Link>
             </div>
           </div>
