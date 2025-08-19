@@ -14,6 +14,8 @@ import { ThemeToggle } from '../theme-toggle'
 
 export function AccessibilityControls() {
   const { setTheme } = useTheme()
+  const [isMounted, setIsMounted] = useState(false)
+
   const [fontSize, setFontSize] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -31,6 +33,8 @@ export function AccessibilityControls() {
   const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+
     // Medidas iniciales de viewport
     const vh = window.innerHeight
     setViewportHeight(vh)
@@ -68,9 +72,26 @@ export function AccessibilityControls() {
       setPanelTop(vh / 2 - PANEL_HEIGHT / 2)
     }
 
+    // Ajuste en cambios de tamaño de ventana
+    const onResize = () => {
+      const vh = window.innerHeight
+      setViewportHeight(vh)
+      setPanelTop((prev) => {
+        const min = NAVBAR_HEIGHT
+        const max = Math.max(NAVBAR_HEIGHT, vh - 120)
+        return Math.max(min, Math.min(max, prev))
+      })
+    }
+    window.addEventListener('resize', onResize)
+    // return () => window.removeEventListener('resize', onResize)
+
     return () => {
-      if (typeof mq.removeEventListener === 'function') mq.removeEventListener('change', onMqChange)
-      else if (typeof mq.removeListener === 'function') mq.removeListener(onMqChange)
+      if (typeof mq.removeEventListener === 'function') {
+        mq.removeEventListener('change', onMqChange)
+      } else if (typeof mq.removeListener === 'function') {
+        mq.removeListener(onMqChange)
+      }
+      window.removeEventListener('resize', onResize)
     }
   }, [])
 
@@ -121,21 +142,6 @@ export function AccessibilityControls() {
     } catch {}
   }, [panelTop])
 
-  // Ajuste en cambios de tamaño de ventana
-  useEffect(() => {
-    const onResize = () => {
-      const vh = window.innerHeight
-      setViewportHeight(vh)
-      setPanelTop((prev) => {
-        const min = NAVBAR_HEIGHT
-        const max = Math.max(NAVBAR_HEIGHT, vh - 120)
-        return Math.max(min, Math.min(max, prev))
-      })
-    }
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
   const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
     setDragging(true)
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
@@ -178,6 +184,8 @@ export function AccessibilityControls() {
   const currentDate = new Date()
   const day = currentDate.getDate()
   const month = currentDate.toLocaleString('es-AR', { month: 'short' }).toUpperCase()
+
+  if (!isMounted) return null
 
   return (
     <>
