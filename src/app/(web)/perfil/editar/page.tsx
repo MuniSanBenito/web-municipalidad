@@ -43,6 +43,19 @@ export default async function EditarPerfilPage() {
 
   const ciudadano = user as Ciudadano
 
+  // Obtener el curriculum del ciudadano (solo uno permitido)
+  const { docs: cvs } = await basePayload.find({
+    collection: 'curriculums',
+    where: {
+      ciudadano: {
+        equals: ciudadano.id,
+      },
+    },
+    limit: 1,
+  })
+
+  const cv = cvs.length > 0 ? cvs[0] : null
+
   return (
     <main className="bg-base-100 min-h-screen">
       <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
@@ -57,11 +70,7 @@ export default async function EditarPerfilPage() {
         </div>
 
         {/* Form */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <EditarPerfilForm ciudadano={ciudadano} />
-          </div>
-        </div>
+        <EditarPerfilForm ciudadano={ciudadano} cv={cv} />
       </div>
     </main>
   )
