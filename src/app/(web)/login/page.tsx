@@ -56,7 +56,6 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (response.ok) {
-        console.log('Login exitoso:', data)
         toast.success('¡Bienvenido! Inicio de sesión exitoso')
 
         // Disparar evento personalizado para que RootLayout actualice el estado
