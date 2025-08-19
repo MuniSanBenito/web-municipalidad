@@ -3,15 +3,16 @@ import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconLogout, IconMenu2, IconUser } from '@tabler/icons-react'
+import { IconMenu2, IconUser } from '@tabler/icons-react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
 import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
+import { LogoutButton } from './logout-button'
 
 const NAV_LINKS: { href: string; label: string }[] = [
   {
@@ -33,17 +34,15 @@ const NAV_LINKS: { href: string; label: string }[] = [
 ] as const
 
 interface Props extends PropsWithChildren {
-  initialCiudadano: Ciudadano | null
+  ciudadano: Ciudadano | null
 }
 
-export function RootLayout({ children, initialCiudadano }: Props) {
+export function RootLayout({ children, ciudadano }: Props) {
   const pathname = usePathname()
-  const router = useRouter()
   const isHome = useMemo(() => pathname === '/', [pathname])
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [ciudadano, setCiudadano] = useState<Ciudadano | null>(initialCiudadano)
 
   const closeDrawer = () => {
     const drawerCheckbox = document.getElementById('my-drawer') as HTMLInputElement
@@ -52,63 +51,6 @@ export function RootLayout({ children, initialCiudadano }: Props) {
       setIsDrawerOpen(false)
     }
   }
-
-  // Función para verificar el estado de autenticación
-  const checkAuthStatus = async () => {
-    try {
-      const response = await fetch('/api/ciudadanos/me', {
-        method: 'GET',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setCiudadano(data.user)
-      } else {
-        setCiudadano(null)
-      }
-    } catch (error) {
-      console.error('Error checking auth status:', error)
-      setCiudadano(null)
-    }
-  }
-
-  // Función para cerrar sesión
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/ciudadanos/logout', {
-        method: 'POST',
-        credentials: 'include',
-      })
-      setCiudadano(null)
-      router.push('/')
-      router.refresh()
-    } catch (error) {
-      console.error('Error during logout:', error)
-    }
-  }
-
-  useEffect(() => {
-    // Verificar el estado de autenticación al cargar
-    if (initialCiudadano !== ciudadano) {
-      setCiudadano(initialCiudadano)
-    }
-
-    // Escuchar eventos de autenticación
-    const handleAuthChange = () => {
-      checkAuthStatus()
-    }
-
-    // Agregar listeners para cambios de autenticación
-    window.addEventListener('authStateChanged', handleAuthChange)
-    window.addEventListener('focus', handleAuthChange)
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('authStateChanged', handleAuthChange)
-      window.removeEventListener('focus', handleAuthChange)
-    }
-  }, [initialCiudadano, ciudadano])
 
   useEffect(() => {
     const scrollListener = () => {
@@ -181,10 +123,7 @@ export function RootLayout({ children, initialCiudadano }: Props) {
                     </Link>
                   </li>
                   <li>
-                    <button onClick={handleLogout}>
-                      <IconLogout size={16} />
-                      Cerrar sesión
-                    </button>
+                    <LogoutButton className=" " />
                   </li>
                 </ul>
               </div>
