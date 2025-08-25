@@ -162,9 +162,31 @@ export function RootLayout({ children, ciudadano }: Props) {
             ))}
           </ul>
           <div className="flex w-full flex-col items-center justify-end gap-4">
-            <Link href="/login" className="btn btn-neutral">
-              Iniciar sesion
-            </Link>
+            {ciudadano ? (
+              <div className="dropdown dropdown-top dropdown-center">
+                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                  <IconUser size={20} />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-100 rounded-box z-[1] mb-2 w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/perfil" onClick={closeDrawer}>
+                      <IconUser size={16} />
+                      Mi perfil
+                    </Link>
+                  </li>
+                  <li>
+                    <LogoutButton className=" " />
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <Link href="/login" className="btn btn-neutral">
+                Iniciar sesion
+              </Link>
+            )}
             <span className="self-center">
               <ThemeToggle />
             </span>
