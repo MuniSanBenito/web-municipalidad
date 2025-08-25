@@ -1,5 +1,6 @@
 import PageTitle from '@/web/components/ui/PageTitle'
 import {
+  IconAccessible,
   IconBallFootball,
   IconBook,
   IconBriefcase,
@@ -15,7 +16,6 @@ import {
   IconLicense,
   IconMasksTheater,
   IconUserCircle,
-  IconAccessible,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -106,7 +106,7 @@ const tramites = [
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
-    link: 'http://181.228.27.231/personal/personal.aspx',
+    link: 'http://sigem.sanbenito.gob.ar/personal/personal.aspx',
     description: 'Recibos de sueldo y certificación de haberes para empleados municipales',
   },
   {

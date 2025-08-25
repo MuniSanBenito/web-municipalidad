@@ -31,7 +31,7 @@ const sections = [
   {
     title: 'Sistema SIGEM',
     icon: IconChartBar,
-    link: 'http://181.228.27.231/contable/contable.aspx',
+    link: 'http://sigem.sanbenito.gob.ar/contable/contable.aspx',
     description: 'Acceso al sistema de gestión municipal reportes financieros',
     external: true,
   },

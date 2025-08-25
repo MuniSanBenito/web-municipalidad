@@ -51,7 +51,7 @@ const TRAMITES: {
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
-    link: 'http://181.228.27.231/personal/personal.aspx',
+    link: 'http://sigem.sanbenito.gob.ar/personal/personal.aspx',
   },
 ]
 
@@ -229,7 +229,7 @@ export default async function Page() {
                 Consultá, imprimí y pagá tus tasas municipales de forma rápida y segura.
               </p>
               <Link
-                href="http://181.228.27.231/ingresospublicos/ingresospublicos.aspx"
+                href="http://sigem.sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx"
                 className="btn btn-accent btn-lg gap-2"
               >
                 Ir al Portal

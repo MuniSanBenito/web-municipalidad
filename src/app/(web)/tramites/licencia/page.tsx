@@ -1,4 +1,10 @@
-import { IconArrowsUp, IconBrandWhatsapp, IconIdBadge2, IconRefresh } from '@tabler/icons-react'
+import {
+  IconArrowsUp,
+  IconBrandWhatsapp,
+  IconIdBadge2,
+  IconRefresh,
+  IconTruckDelivery,
+} from '@tabler/icons-react'
 import Link from 'next/link'
 
 export default function PageLicencia() {
@@ -45,6 +51,14 @@ export default function PageLicencia() {
             >
               <IconArrowsUp size={20} stroke={2} />
               <span className="font-medium">Ampliación</span>
+            </Link>
+
+            <Link
+              href="/tramites/licencia/profesional"
+              className="btn btn-info hover:btn-info-focus gap-2 shadow-md transition-all duration-300"
+            >
+              <IconTruckDelivery size={20} stroke={2} />
+              <span className="font-medium">Licencia Profesional Interjurisdiccional</span>
             </Link>
           </div>
 
