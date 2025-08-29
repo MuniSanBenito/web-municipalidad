@@ -5,4 +5,8 @@ module.exports = {
     project: ['./tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
+  rules: {
+    // Deshabilitar warning de img en componentes específicos de Payload
+    '@next/next/no-img-element': 'off',
+  },
 }
