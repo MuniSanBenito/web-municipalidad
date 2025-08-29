@@ -17,7 +17,7 @@ async function seed() {
       pagination: false,
     })
 
-    await Promise.all(
+    /* await Promise.all(
       ciudadanos.map((ciudadano) => {
         const { datos_ciudadano, hash, rol, password, ...data } = ciudadano
         return payload.create({
@@ -29,7 +29,7 @@ async function seed() {
           },
         })
       }),
-    )
+    ) */
 
     console.log(`Found ${ciudadanos.length} ciudadanos`)
 
