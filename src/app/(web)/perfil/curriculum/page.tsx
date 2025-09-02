@@ -1,4 +1,4 @@
-import type { Ciudadano, Curriculum } from '@/payload-types'
+import type { Ciudadano } from '@/payload-types'
 import { CurriculumManager } from '@/web/components/curriculum-manager'
 import { basePayload } from '@/web/lib/payload'
 import { headers as nextHeaders } from 'next/headers'
@@ -46,8 +46,9 @@ export default async function PerfilCVPage() {
         equals: ciudadano.id,
       },
     },
-    limit: 10,
+    limit: 1,
   })
+  const curriculum = curriculums.length > 0 ? curriculums[0] : null
 
   return (
     <main className="bg-base-100 min-h-screen">
@@ -76,7 +77,7 @@ export default async function PerfilCVPage() {
         </div>
 
         {/* Curriculum Manager */}
-        <CurriculumManager initialCurriculums={curriculums as Curriculum[]} ciudadano={ciudadano} />
+        <CurriculumManager curriculum={curriculum} ciudadano={ciudadano} />
       </div>
     </main>
   )
