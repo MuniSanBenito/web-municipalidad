@@ -1,5 +1,6 @@
 'use client'
 import type { Ciudadano, Curriculum } from '@/payload-types'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -52,7 +53,6 @@ const formatDateForInput = (dateString: string | undefined | null): string => {
 
 export function CurriculumEditForm({ ciudadano, curriculum }: CurriculumEditFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  // const [editingId, setEditingId] = useState<string | null>(null)
 
   // Estados del formulario
   const [titulo, setTitulo] = useState(curriculum?.titulo || '')
@@ -585,9 +585,9 @@ export function CurriculumEditForm({ ciudadano, curriculum }: CurriculumEditForm
           </button>
 
           {curriculum && (
-            <button type="button" onClick={clearForm} className="btn btn-ghost">
+            <Link href="/perfil" className="btn btn-ghost">
               Cancelar
-            </button>
+            </Link>
           )}
         </div>
       </form>
