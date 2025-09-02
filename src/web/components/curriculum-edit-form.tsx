@@ -1,12 +1,12 @@
 'use client'
-
 import type { Ciudadano, Curriculum } from '@/payload-types'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 
 interface CurriculumEditFormProps {
   ciudadano: Ciudadano
-  existingCurriculums: Curriculum[]
+  curriculum: Curriculum | null
 }
 
 interface EstudioForm {
@@ -40,74 +40,62 @@ interface CategoriaForm {
   nombre: string
 }
 
-export function CurriculumEditForm({ ciudadano, existingCurriculums }: CurriculumEditFormProps) {
+// Función para convertir fecha ISO a formato YYYY-MM-DD para inputs tipo date
+const formatDateForInput = (dateString: string | undefined | null): string => {
+  if (!dateString) return ''
+  try {
+    const date = new Date(dateString)
+    return date.toISOString().split('T')[0]
+  } catch {
+    return ''
+  }
+}
+
+export function CurriculumEditForm({ ciudadano, curriculum }: CurriculumEditFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
 
   // Estados del formulario
-  const [titulo, setTitulo] = useState('')
-  const [estudios, setEstudios] = useState<EstudioForm[]>([
-    { institucion: '', fecha_inicio: '', fecha_finalizacion: '', nivel: '', descripcion: '' },
-  ])
-  const [experiencias, setExperiencias] = useState<ExperienciaForm[]>([
-    { institucion: '', fecha_inicio: '', fecha_finalizacion: '', puesto: '', descripcion: '' },
-  ])
-  const [referencias, setReferencias] = useState<ReferenciaForm[]>([
-    { nombre: '', telefono: '', email: '', descripcion: '' },
-  ])
-  const [categorias, setCategorias] = useState<CategoriaForm[]>([{ nombre: '' }])
+  const [titulo, setTitulo] = useState(curriculum?.titulo || '')
+  const [estudios, setEstudios] = useState<EstudioForm[]>(
+    curriculum?.estudios?.map((e) => ({
+      id: e.id || undefined,
+      institucion: e.institucion || '',
+      fecha_inicio: formatDateForInput(e.fecha_inicio),
+      fecha_finalizacion: formatDateForInput(e.fecha_finalizacion),
+      nivel: (e.nivel as any) || '',
+      descripcion: e.descripcion || '',
+    })) || [
+      { institucion: '', fecha_inicio: '', fecha_finalizacion: '', nivel: '', descripcion: '' },
+    ],
+  )
 
-  // Función para cargar un currículum existente
-  const loadCurriculum = (curriculum: Curriculum) => {
-    setEditingId(curriculum.id)
-    setTitulo(curriculum.titulo || '')
-
-    setEstudios(
-      curriculum.estudios?.map((e) => ({
-        id: e.id || undefined,
-        institucion: e.institucion || '',
-        fecha_inicio: e.fecha_inicio || '',
-        fecha_finalizacion: e.fecha_finalizacion || '',
-        nivel: (e.nivel as any) || '',
-        descripcion: e.descripcion || '',
-      })) || [
-        { institucion: '', fecha_inicio: '', fecha_finalizacion: '', nivel: '', descripcion: '' },
-      ],
-    )
-
-    setExperiencias(
-      curriculum.experiencias?.map((e) => ({
-        id: e.id || undefined,
-        institucion: e.institucion || '',
-        fecha_inicio: e.fecha_inicio || '',
-        fecha_finalizacion: e.fecha_finalizacion || '',
-        puesto: e.puesto || '',
-        descripcion: e.descripcion || '',
-      })) || [
-        { institucion: '', fecha_inicio: '', fecha_finalizacion: '', puesto: '', descripcion: '' },
-      ],
-    )
-
-    setReferencias(
-      curriculum.referencias?.map((r) => ({
-        id: r.id || undefined,
-        nombre: r.nombre || '',
-        telefono: r.telefono || '',
-        email: r.email || '',
-        descripcion: r.descripcion || '',
-      })) || [{ nombre: '', telefono: '', email: '', descripcion: '' }],
-    )
-
-    setCategorias(
-      curriculum.categorias?.map((c) => ({
-        id: c.id || undefined,
-        nombre: c.nombre || '',
-      })) || [{ nombre: '' }],
-    )
-
-    // Scroll al formulario
-    document.getElementById('curriculum-form')?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const [experiencias, setExperiencias] = useState<ExperienciaForm[]>(
+    curriculum?.experiencias?.map((e) => ({
+      id: e.id || undefined,
+      institucion: e.institucion || '',
+      fecha_inicio: formatDateForInput(e.fecha_inicio),
+      fecha_finalizacion: formatDateForInput(e.fecha_finalizacion),
+      puesto: e.puesto || '',
+      descripcion: e.descripcion || '',
+    })) || [
+      { institucion: '', fecha_inicio: '', fecha_finalizacion: '', puesto: '', descripcion: '' },
+    ],
+  )
+  const [referencias, setReferencias] = useState<ReferenciaForm[]>(
+    curriculum?.referencias?.map((r) => ({
+      id: r.id || undefined,
+      nombre: r.nombre || '',
+      telefono: r.telefono || '',
+      email: r.email || '',
+      descripcion: r.descripcion || '',
+    })) || [{ nombre: '', telefono: '', email: '', descripcion: '' }],
+  )
+  const [categorias, setCategorias] = useState<CategoriaForm[]>(
+    curriculum?.categorias?.map((c) => ({
+      id: c.id || undefined,
+      nombre: c.nombre || '',
+    })) || [{ nombre: '' }],
+  )
 
   // Funciones para agregar/remover elementos
   const addEstudio = () => {
@@ -150,7 +138,7 @@ export function CurriculumEditForm({ ciudadano, existingCurriculums }: Curriculu
 
   // Limpiar formulario
   const clearForm = () => {
-    setEditingId(null)
+    // setEditingId(null)
     setTitulo('')
     setEstudios([
       { institucion: '', fecha_inicio: '', fecha_finalizacion: '', nivel: '', descripcion: '' },
@@ -177,9 +165,9 @@ export function CurriculumEditForm({ ciudadano, existingCurriculums }: Curriculu
         categorias: categorias.filter((c) => c.nombre.trim() !== ''),
       }
 
-      const url = editingId ? `/api/curriculums/${editingId}` : '/api/curriculums'
+      const url = curriculum ? `/api/curriculums/${curriculum.id}` : '/api/curriculums'
 
-      const method = editingId ? 'PATCH' : 'POST'
+      const method = curriculum ? 'PATCH' : 'POST'
 
       const response = await fetch(url, {
         method,
@@ -192,7 +180,7 @@ export function CurriculumEditForm({ ciudadano, existingCurriculums }: Curriculu
 
       if (response.ok) {
         toast.success(
-          editingId ? 'Currículum actualizado exitosamente' : 'Currículum creado exitosamente',
+          curriculum ? 'Currículum actualizado exitosamente' : 'Currículum creado exitosamente',
         )
         // Recargar la página para mostrar los cambios
         window.location.reload()
@@ -207,23 +195,15 @@ export function CurriculumEditForm({ ciudadano, existingCurriculums }: Curriculu
     }
   }
 
-  // Exponer la función loadCurriculum globalmente
-  React.useEffect(() => {
-    const element = document.getElementById('curriculum-edit-form')
-    if (element) {
-      ;(element as any).loadCurriculum = loadCurriculum
-    }
-  }, [])
-
   return (
     <div id="curriculum-edit-form">
       <form id="curriculum-form" onSubmit={handleSubmit} className="space-y-8">
         {/* Header del formulario */}
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">
-            {editingId ? 'Editando Currículum' : 'Nuevo Currículum'}
+            {curriculum ? 'Editando Currículum' : 'Nuevo Currículum'}
           </h3>
-          {editingId && (
+          {curriculum && (
             <button type="button" onClick={clearForm} className="btn btn-ghost btn-sm">
               Crear Nuevo
             </button>
@@ -597,17 +577,17 @@ export function CurriculumEditForm({ ciudadano, existingCurriculums }: Curriculu
                 <span className="loading loading-spinner loading-sm"></span>
                 Guardando...
               </>
-            ) : editingId ? (
+            ) : curriculum ? (
               'Actualizar Currículum'
             ) : (
               'Crear Currículum'
             )}
           </button>
 
-          {editingId && (
-            <button type="button" onClick={clearForm} className="btn btn-ghost">
+          {curriculum && (
+            <Link href="/perfil" className="btn btn-ghost">
               Cancelar
-            </button>
+            </Link>
           )}
         </div>
       </form>
