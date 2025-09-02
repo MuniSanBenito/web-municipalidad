@@ -69,16 +69,33 @@ export function CambiarContrasenaForm({ ciudadano }: CambiarContrasenaFormProps)
     }
 
     try {
-      // Usar nuestro endpoint personalizado para cambiar la contraseña
-      const response = await fetch('/api/change-password', {
+      // Verificar contraseña actual usando el endpoint de login de Payload
+      const loginResponse = await fetch('/api/ciudadanos/login', {
         method: 'POST',
-        credentials: 'include', // Importante para incluir las cookies de sesión
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          currentPassword,
-          newPassword,
+          email: ciudadano.email,
+          password: currentPassword,
+        }),
+      })
+
+      if (!loginResponse.ok) {
+        setErrors({ currentPassword: 'La contraseña actual es incorrecta' })
+        return
+      }
+
+      // Si la verificación es exitosa, proceder a cambiar la contraseña
+      const response = await fetch(`/api/ciudadanos/${ciudadano.id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: newPassword,
         }),
       })
 
@@ -86,8 +103,23 @@ export function CambiarContrasenaForm({ ciudadano }: CambiarContrasenaFormProps)
 
       if (!response.ok) {
         // Manejo de errores específicos
-        if (response.status === 401 && data.message?.includes('contraseña actual')) {
-          setErrors({ currentPassword: data.message })
+        if (response.status === 401) {
+          setErrors({
+            general: 'No tienes permisos para realizar esta acción. Inicia sesión nuevamente.',
+          })
+        } else if (response.status === 400 && data.errors) {
+          // Errores de validación de Payload
+          const fieldErrors: typeof errors = {}
+          data.errors.forEach((error: any) => {
+            if (error.field === 'password') {
+              fieldErrors.newPassword = error.message
+            }
+          })
+          setErrors(
+            fieldErrors.newPassword
+              ? fieldErrors
+              : { general: data.message || 'Error de validación' },
+          )
         } else {
           setErrors({ general: data.message || 'Error al cambiar la contraseña' })
         }
