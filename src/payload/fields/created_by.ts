@@ -16,8 +16,8 @@ export const CreatedBy: Field = {
       ({ req }) =>
         req.user
           ? {
-              relationTo: req.user?.collection,
-              value: req.user?.id,
+              relationTo: req.user.collection,
+              value: req.user.id,
             }
           : undefined,
     ],
