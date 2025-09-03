@@ -7,12 +7,19 @@ export const CreatedBy: Field = {
   relationTo: ['users', 'ciudadanos'],
   required: true,
   admin: {
-    readOnly: true,
     hidden: true,
   },
   hasMany: false,
   unique: false,
   hooks: {
-    beforeChange: [async ({ req }) => req?.user?.id],
+    beforeChange: [
+      ({ req }) =>
+        req.user
+          ? {
+              relationTo: req.user.collection,
+              value: req.user.id,
+            }
+          : undefined,
+    ],
   },
 }
