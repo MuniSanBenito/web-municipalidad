@@ -2,19 +2,23 @@
 
 interface ShareButtonProps {
   eventName: string
-  eventUrl: string
+  eventUrl?: string
 }
 
 export default function ShareButton({ eventName, eventUrl }: ShareButtonProps) {
   const handleShare = () => {
+    // Use current window location if no eventUrl provided, or if eventUrl contains localhost
+    const currentUrl = typeof window !== 'undefined' ? window.location.href : eventUrl || ''
+    const shareUrl = eventUrl && !eventUrl.includes('localhost') ? eventUrl : currentUrl
+    
     if (navigator.share) {
       navigator.share({
         title: eventName,
         text: `Te invito a este evento: ${eventName}`,
-        url: eventUrl
+        url: shareUrl
       });
     } else {
-      navigator.clipboard.writeText(eventUrl);
+      navigator.clipboard.writeText(shareUrl);
       alert('Enlace copiado al portapapeles');
     }
   };
