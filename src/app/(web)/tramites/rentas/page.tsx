@@ -22,7 +22,7 @@ export default function PageRentas() {
             </p>
             <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
               <a
-                href="https://sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx"
+                href="https://sigem.sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary gap-2"
