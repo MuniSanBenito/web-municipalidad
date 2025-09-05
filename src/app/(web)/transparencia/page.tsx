@@ -5,6 +5,7 @@ import {
   IconCoin,
   IconDashboard,
   IconDatabase,
+  IconGavel,
   IconMapPin,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
@@ -16,6 +17,11 @@ const sections = [
     title: 'Estructura Municipal',
     icon: IconBuildings,
     link: 'transparencia/estructura-municipal',
+  },
+  {
+    title: 'Concejo Deliberante',
+    icon: IconGavel,
+    link: 'https://ben-ent-hcd.paisdigital.innovacion.gob.ar/',
   },
   { title: 'Memorias del intendente', icon: IconMapPin, link: 'transparencia/memorias' },
   { title: 'Infraestructura de Datos Espaciales', icon: IconDatabase, link: 'transparencia/ide' },
@@ -39,21 +45,47 @@ export default function PageTransparencia() {
     <main className="container mx-auto px-4 py-8">
       <PageTitle title="Portal de Transparencia" />
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
-        {sections.map((section) => (
-          <Link
-            key={section.title}
-            href={section.link}
-            className="card bg-base-100 hover:bg-base-200 focus-visible:ring-primary focus-visible:ring-offset-base-100 rounded-lg p-8 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            aria-label={`Ir a ${section.title}`}
-          >
-            <div className="card-body items-center text-center">
-              <span className="text-primary mb-8 text-6xl">
-                <section.icon stroke={1.2} size={80} />
-              </span>
-              <h2 className="card-title text-2xl font-bold">{section.title}</h2>
-            </div>
-          </Link>
-        ))}
+        {sections.map((section) => {
+          const isExternal = section.link.startsWith('http')
+          const cardClasses =
+            'card bg-base-100 hover:bg-base-200 focus-visible:ring-primary focus-visible:ring-offset-base-100 rounded-lg p-8 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+
+          if (isExternal) {
+            return (
+              <a
+                key={section.title}
+                href={section.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cardClasses}
+                aria-label={`Ir a ${section.title} (en una nueva pestaña)`}
+              >
+                <div className="card-body items-center text-center">
+                  <span className="text-primary mb-8 text-6xl">
+                    <section.icon stroke={1.2} size={80} />
+                  </span>
+                  <h2 className="card-title text-2xl font-bold">{section.title}</h2>
+                </div>
+              </a>
+            )
+          }
+
+          return (
+            <Link
+              key={section.title}
+              href={section.link}
+              className={cardClasses}
+              aria-label={`Ir a ${section.title}`}
+            >
+              <div className="card-body items-center text-center">
+                <span className="text-primary mb-8 text-6xl">
+                  <section.icon stroke={1.2} size={80} />
+                </span>
+                <h2 className="card-title text-2xl font-bold">{section.title}</h2>
+              </div>
+            </Link>
+          )
+        })}
       </div>
     </main>
   )
