@@ -3,6 +3,7 @@ import { basePayload } from '@/web/lib/payload'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { headers as nextHeaders } from 'next/headers'
+import Script from 'next/script'
 import type { PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
 import './globals.css'
@@ -19,6 +20,14 @@ export default async function Layout({ children }: PropsWithChildren) {
     <html lang="es" suppressHydrationWarning>
       <head>
         <meta name="apple-mobile-web-app-title" content="San Benito" />
+        {process.env.NODE_ENV === 'production' ? (
+          <Script
+            src="https://umami.sanbenito.gob.ar/script.js"
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_TRACKING_CODE ?? ''}
+            async
+            defer
+          />
+        ) : null}
       </head>
       <body className="drawer scroll-smooth">
         <ThemeProvider>
