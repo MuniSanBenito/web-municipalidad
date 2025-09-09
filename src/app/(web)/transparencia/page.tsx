@@ -1,4 +1,5 @@
 import PageTitle from '@/web/components/ui/PageTitle'
+import { generateMetadata as generateSEOMetadata } from '@/web/lib/metadata'
 import {
   IconAlertCircle,
   IconBuildings,
@@ -34,11 +35,24 @@ const sections = [
   },
 ]
 
-export const metadata: Metadata = {
-  title: 'Portal de Transparencia - Municipalidad de San Benito',
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Portal de Transparencia',
   description:
     'Accedé a información pública sobre la gestión municipal, estructura, obras, contabilidad y más. Comprometidos con un gobierno abierto y transparente.',
-}
+  keywords: [
+    'transparencia',
+    'gobierno abierto',
+    'informacion publica',
+    'gestion municipal',
+    'estructura municipal',
+    'contabilidad publica',
+    'obras publicas',
+    'licitaciones',
+    'concursos publicos',
+    'memoria municipal',
+  ],
+  url: '/transparencia',
+})
 
 export default function PageTransparencia() {
   return (

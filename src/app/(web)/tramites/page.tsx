@@ -1,4 +1,5 @@
 import PageTitle from '@/web/components/ui/PageTitle'
+import { generateMetadata as generateSEOMetadata } from '@/web/lib/metadata'
 import {
   IconAccessible,
   IconBallFootball,
@@ -19,9 +20,23 @@ import {
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: 'Trámites - San Benito',
-}
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Trámites y Servicios',
+  description:
+    'Guía completa de trámites municipales en San Benito. Licencias de conducir, catastro, rentas, habilitaciones, obras privadas y más servicios municipales.',
+  keywords: [
+    'tramites municipales',
+    'licencia de conducir',
+    'catastro',
+    'rentas municipales',
+    'habilitaciones comerciales',
+    'obras privadas',
+    'servicios municipales',
+    'gestiones municipales',
+    'mesa de entrada',
+  ],
+  url: '/tramites',
+})
 
 // Definición de las secciones de trámites con sus iconos y enlaces
 const tramites = [
@@ -133,7 +148,7 @@ export default function PageTramites() {
           <a
             key={index}
             href={tramite.link}
-            className="card bg-base-100 hover:bg-base-200 p-8 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
+            className="card bg-base-100 hover:bg-base-200 hover:scale-102 p-8 shadow-lg transition-all duration-300 hover:shadow-2xl"
             aria-label={`Ir a ${tramite.title}`}
           >
             <div className="card-body items-center text-center">
