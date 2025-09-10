@@ -1,8 +1,9 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByWithDataAccess,
+  isAdminOrCreatedByWithDataCollectionAccess,
   isCiudadanoOrMoreCollectionAccess,
+  isGestorCiudadanoOrAdminCollectionAccess,
 } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
@@ -17,9 +18,12 @@ export const Avatares: CollectionConfig = {
   },
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
-    // read: isAdminOrCreatedByAccess,
-    update: isAdminOrCreatedByWithDataAccess,
-    delete: isAdminOrCreatedByWithDataAccess,
+    update: (args) =>
+      isAdminOrCreatedByWithDataCollectionAccess(args) ||
+      isGestorCiudadanoOrAdminCollectionAccess(args),
+    delete: (args) =>
+      isAdminOrCreatedByWithDataCollectionAccess(args) ||
+      isGestorCiudadanoOrAdminCollectionAccess(args),
   },
   admin: {
     group: 'Almacenamiento',

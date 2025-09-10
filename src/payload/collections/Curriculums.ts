@@ -1,14 +1,13 @@
 import type { Curriculum } from '@/payload-types'
 import type { Access, CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByAccess,
-  isAdminOrCreatedByWithDataAccess,
   isCiudadanoOrMoreCollectionAccess,
+  isGestorCiudadanoOrAdminCollectionAccess,
 } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 import { ROL_ADMIN_VALUE } from '../constants/roles'
 
-export const update: Access<Curriculum> = async ({ req, data }) => {
+const isMyCvGestorCiudadanoOrAdmin: Access<Curriculum> = async ({ req, data }) => {
   if (req.user?.collection === 'ciudadanos') {
     let ciudadano = data?.ciudadano
     if (typeof ciudadano === 'string') {
@@ -18,14 +17,12 @@ export const update: Access<Curriculum> = async ({ req, data }) => {
       })
     }
 
-    if (ciudadano?.id === req.user.id) {
-      return true
-    } else {
-      return false
-    }
+    return ciudadano?.id === req.user.id
   }
 
-  return req.user?.rol.includes(ROL_ADMIN_VALUE) || false
+  return (
+    req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes(ROL_ADMIN_VALUE) || false
+  )
 }
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
@@ -49,9 +46,9 @@ export const Curriculums: CollectionConfig = {
   },
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
-    read: isAdminOrCreatedByAccess,
-    update,
-    delete: isAdminOrCreatedByWithDataAccess,
+    read: isMyCvGestorCiudadanoOrAdmin,
+    update: isMyCvGestorCiudadanoOrAdmin,
+    delete: isGestorCiudadanoOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'titulo',
@@ -60,6 +57,7 @@ export const Curriculums: CollectionConfig = {
   hooks: {
     beforeChange: [beforeChange],
   },
+  trash: true,
   fields: [
     // CreatedBy,
     {

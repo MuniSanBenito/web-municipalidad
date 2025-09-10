@@ -180,7 +180,7 @@ export interface CiudadanoAuthOperations {
  */
 export interface User {
   id: string;
-  rol: ('ADMIN' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO')[];
+  rol: ('ADMIN' | 'COMUNICACION' | 'HABILITACIONES' | 'HACIENDA' | 'JUZGADO' | 'GESTOR CIUDADANO')[];
   activo?: boolean | null;
   avatar?: (string | null) | Avatar;
   updatedAt: string;
@@ -373,6 +373,7 @@ export interface Curriculum {
     | null;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1152,6 +1153,7 @@ export interface CurriculumsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  deletedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
