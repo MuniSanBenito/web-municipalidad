@@ -1,5 +1,21 @@
-import type { CollectionConfig } from 'payload'
+import type { Ciudadano } from '@/payload-types'
+import type { Access, CollectionConfig, FieldAccess } from 'payload'
+import { isGestorCiudadanoOrAdminCollectionAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+
+const isMyselfGestorCiudadanoOrAdmin: Access<Ciudadano> = ({ req, id }) => {
+  if (req.user?.collection === 'ciudadanos') {
+    return req.user.id === id
+  }
+
+  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
+}
+
+const isGestorOrAdminFieldAccess: FieldAccess<Ciudadano> = ({ req, data, id }) => {
+  if (req.user?.collection !== 'users') return false
+
+  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
+}
 
 export const Ciudadanos: CollectionConfig = {
   slug: 'ciudadanos',
@@ -12,6 +28,12 @@ export const Ciudadanos: CollectionConfig = {
     useAsTitle: 'email',
     hideAPIURL: HIDE_API_URL,
   },
+  access: {
+    create: isGestorCiudadanoOrAdminCollectionAccess,
+    read: isMyselfGestorCiudadanoOrAdmin,
+    update: isMyselfGestorCiudadanoOrAdmin,
+    delete: isGestorCiudadanoOrAdminCollectionAccess,
+  },
   fields: [
     {
       type: 'checkbox',
@@ -22,9 +44,8 @@ export const Ciudadanos: CollectionConfig = {
         position: 'sidebar',
       },
       access: {
-        // create: ({ req }) => {},
-        read: () => true,
-        // update: isAdminFieldAccess,
+        create: isGestorOrAdminFieldAccess,
+        update: isGestorOrAdminFieldAccess,
       },
     },
     {
@@ -78,6 +99,7 @@ export const Ciudadanos: CollectionConfig = {
       label: 'Curriculum',
       collection: 'curriculums',
       on: 'ciudadano',
+      hasMany: false,
     },
   ],
 }
