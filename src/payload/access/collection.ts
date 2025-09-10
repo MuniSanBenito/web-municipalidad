@@ -64,11 +64,12 @@ export const isAdminOrCreatedByAccess: Access = async ({ req, data }) => {
   return false
 }
 
-export const isAdminOrCreatedByWithDataAccess: Access = async ({ req, data }) => {
+export const isAdminOrCreatedByWithDataCollectionAccess: Access = async ({ req, data }) => {
   if (!req.user) {
     return false
   }
 
+  console.log('DATA', data)
   if (req.user?.collection === 'ciudadanos') {
     return req.user.id === data?.created_by
   }
@@ -105,6 +106,15 @@ export const isJuzgadoOrAdminCollectionAccess: Access = ({ req }) => {
   if (req.user?.collection === 'ciudadanos') return false
 
   return (req?.user?.rol?.includes('JUZGADO') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ?? false
+}
+
+export const isGestorCiudadanoOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
+  return (
+    (req?.user?.rol?.includes('GESTOR CIUDADANO') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ??
+    false
+  )
 }
 
 /*
