@@ -69,7 +69,6 @@ export const isAdminOrCreatedByWithDataCollectionAccess: Access = async ({ req, 
     return false
   }
 
-  console.log('DATA', data)
   if (req.user?.collection === 'ciudadanos') {
     return req.user.id === data?.created_by
   }
