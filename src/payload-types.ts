@@ -381,15 +381,6 @@ export interface Curriculum {
  */
 export interface Noticia {
   id: string;
-  created_by:
-    | {
-        relationTo: 'users';
-        value: string | User;
-      }
-    | {
-        relationTo: 'ciudadanos';
-        value: string | Ciudadano;
-      };
   titulo: string;
   slug: string;
   descripcion: string;
@@ -994,7 +985,6 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "noticias_select".
  */
 export interface NoticiasSelect<T extends boolean = true> {
-  created_by?: T;
   titulo?: T;
   slug?: T;
   descripcion?: T;

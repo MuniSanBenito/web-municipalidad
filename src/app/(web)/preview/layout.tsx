@@ -7,7 +7,7 @@ export default async function PreviewLayout({ children }: PropsWithChildren) {
   const headers = await nextHeaders()
   const auth = await basePayload.auth({ headers })
 
-  if (auth.user?.collection === 'ciudadanos') {
+  if (!auth.user || auth.user?.collection === 'ciudadanos') {
     return notFound()
   }
 
