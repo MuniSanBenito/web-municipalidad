@@ -52,9 +52,6 @@ export default function PageAreaMujer() {
                     Duro Rivas Valeria – Abogada – asesoramiento legal
                   </li>
                   <li className="hover:text-primary transition-colors duration-300">
-                    Buffa Jorge – administrativo
-                  </li>
-                  <li className="hover:text-primary transition-colors duration-300">
                     Beber Claudia – administrativa
                   </li>
                   <li className="hover:text-primary transition-colors duration-300">
