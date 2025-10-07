@@ -1,10 +1,18 @@
 'use client'
+<<<<<<< HEAD
 // Imports
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { ThemeInitScript } from './ThemeInitScript'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
 import { IconMenu2, IconMessageChatbot, IconX } from '@tabler/icons-react'
+=======
+import type { Ciudadano } from '@/payload-types'
+import { ThemeToggle } from '@/web/components/theme-toggle'
+import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
+import { Footer } from '@/web/components/ui/Footer'
+import { IconMenu2, IconUser } from '@tabler/icons-react'
+>>>>>>> 9b47a6d01d9a9202ac9c8900a924bc82789fda08
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
@@ -12,6 +20,8 @@ import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
+import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
+import { LogoutButton } from './logout-button'
 
 // Import Chatbot related components
 import Chatbot from 'react-chatbot-kit'
@@ -44,7 +54,11 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
 ] as const
 
-export function RootLayout({ children }: PropsWithChildren) {
+interface Props extends PropsWithChildren {
+  ciudadano: Ciudadano | null
+}
+
+export function RootLayout({ children, ciudadano }: Props) {
   const pathname = usePathname()
   const isHome = useMemo(() => pathname === '/', [pathname])
   const [isScrolled, setIsScrolled] = useState(false)
@@ -73,12 +87,18 @@ export function RootLayout({ children }: PropsWithChildren) {
     <>
       <ThemeInitScript />
       <AccessibilityControls />
-      <input type="checkbox" id="my-drawer" className="drawer-toggle" checked={isDrawerOpen} onChange={(e) => setIsDrawerOpen(e.target.checked)} />
+      <input
+        type="checkbox"
+        id="my-drawer"
+        className="drawer-toggle"
+        checked={isDrawerOpen}
+        onChange={(e) => setIsDrawerOpen(e.target.checked)}
+      />
       <div className="drawer-content">
         <header
           // ... (existing header attributes)
           className={twJoin(
-            'bg-primary dark:bg-neutral fixed top-0 left-0 z-50 mb-2 flex w-screen items-center justify-between px-8 shadow-sm transition-all duration-100',
+            'bg-primary dark:bg-neutral fixed top-0 left-0 z-50 mb-2 flex w-screen items-center justify-between px-2 shadow-sm transition-all duration-100 sm:px-8',
             isScrolled ? 'h-24' : 'h-32',
           )}
         >
@@ -110,7 +130,31 @@ export function RootLayout({ children }: PropsWithChildren) {
             </ul>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <ThemeToggle className="lg:swap hidden" />
+            {ciudadano ? (
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                  <IconUser size={20} />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/perfil">
+                      <IconUser size={16} />
+                      Mi perfil
+                    </Link>
+                  </li>
+                  <li>
+                    <LogoutButton className=" " />
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <Link href="/login" className="btn-xs sm:btn-md btn btn-primary">
+                Iniciar sesion
+              </Link>
+            )}
             <label
               htmlFor="my-drawer"
               className="drawer-button btn btn-ghost btn-primary btn-square dark:btn-neutral lg:hidden"
@@ -162,9 +206,36 @@ export function RootLayout({ children }: PropsWithChildren) {
               </li>
             ))}
           </ul>
-          <span className="self-center">
-            <ThemeToggle />
-          </span>
+          <div className="flex w-full flex-col items-center justify-end gap-4">
+            {ciudadano ? (
+              <div className="dropdown dropdown-top dropdown-center">
+                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                  <IconUser size={20} />
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content bg-base-100 rounded-box z-[1] mb-2 w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/perfil" onClick={closeDrawer}>
+                      <IconUser size={16} />
+                      Mi perfil
+                    </Link>
+                  </li>
+                  <li>
+                    <LogoutButton className=" " />
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <Link href="/login" className="btn btn-neutral">
+                Iniciar sesion
+              </Link>
+            )}
+            <span className="self-center">
+              <ThemeToggle />
+            </span>
+          </div>
         </nav>
       </aside>
     </>

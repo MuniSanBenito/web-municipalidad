@@ -1,22 +1,39 @@
 import type { Curriculum } from '@/payload-types'
-import { CreatedBy } from '@/payload/fields/created_by'
-import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import type { Access, CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByAccess,
-  isAdminOrCreatedByWithDataAccess,
   isCiudadanoOrMoreCollectionAccess,
+  isGestorCiudadanoOrAdminCollectionAccess,
 } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+import { ROL_ADMIN_VALUE } from '../constants/roles'
+
+const isMyCvGestorCiudadanoOrAdmin: Access<Curriculum> = async ({ req, data }) => {
+  if (req.user?.collection === 'ciudadanos') {
+    let ciudadano = data?.ciudadano
+    if (typeof ciudadano === 'string') {
+      ciudadano = await req.payload.findByID({
+        collection: 'ciudadanos',
+        id: ciudadano,
+      })
+    }
+
+    return ciudadano?.id === req.user.id
+  }
+
+  return (
+    req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes(ROL_ADMIN_VALUE) || false
+  )
+}
 
 const beforeChange: CollectionBeforeChangeHook<Curriculum> = async ({ data, req }) => {
-  let { user } = data
-  if (typeof user === 'string') {
-    user = await req.payload.findByID({
-      collection: 'users',
-      id: user,
+  let { ciudadano } = data
+  if (typeof ciudadano === 'string') {
+    ciudadano = await req.payload.findByID({
+      collection: 'ciudadanos',
+      id: ciudadano,
     })
   }
-  const titulo = `${user?.datos_ciudadano?.nombre} ${user?.datos_ciudadano?.apellido}`
+  const titulo = `${ciudadano?.nombre} ${ciudadano?.apellido}`
 
   return { ...data, titulo }
 }
@@ -29,9 +46,9 @@ export const Curriculums: CollectionConfig = {
   },
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
-    read: isAdminOrCreatedByAccess,
-    update: isAdminOrCreatedByWithDataAccess,
-    delete: isAdminOrCreatedByWithDataAccess,
+    read: isMyCvGestorCiudadanoOrAdmin,
+    update: isMyCvGestorCiudadanoOrAdmin,
+    delete: isGestorCiudadanoOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'titulo',
@@ -40,8 +57,9 @@ export const Curriculums: CollectionConfig = {
   hooks: {
     beforeChange: [beforeChange],
   },
+  trash: true,
   fields: [
-    CreatedBy,
+    // CreatedBy,
     {
       type: 'text',
       name: 'titulo',
@@ -53,16 +71,11 @@ export const Curriculums: CollectionConfig = {
     },
     {
       type: 'relationship',
-      name: 'user',
-      label: 'Usuario',
-      relationTo: 'users',
+      name: 'ciudadano',
+      label: 'Ciudadano',
+      relationTo: 'ciudadanos',
       unique: true,
       required: true,
-      filterOptions: {
-        rol: {
-          equals: 'CIUDADANO',
-        },
-      },
     },
     {
       type: 'array',

@@ -1,4 +1,3 @@
-import type { User } from '@/payload-types'
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
@@ -13,7 +12,7 @@ async function seed() {
       depth: 2,
     })
 
-    for (const cv of cvs) {
+    /* for (const cv of cvs) {
       const usuario = cv.user as User
       const titulo = `${usuario.datos_ciudadano?.nombre} ${usuario.datos_ciudadano?.apellido}`
       console.log(titulo)
@@ -24,7 +23,7 @@ async function seed() {
           titulo,
         },
       })
-    }
+    } */
 
     console.log('LISTO!')
   } catch (error) {

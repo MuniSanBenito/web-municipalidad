@@ -6,7 +6,8 @@ import type { PropsWithChildren } from 'react'
 export default async function PreviewLayout({ children }: PropsWithChildren) {
   const headers = await nextHeaders()
   const auth = await basePayload.auth({ headers })
-  if (!auth.user || auth.user.rol.includes('CIUDADANO')) {
+
+  if (!auth.user || auth.user?.collection === 'ciudadanos') {
     return notFound()
   }
 

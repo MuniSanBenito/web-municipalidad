@@ -1,6 +1,7 @@
 import type { Imagen, Noticia, Ubicacione } from '@/payload-types'
 import type { Evento } from '@/types/evento'
 import { EventCalendar } from '@/web/components/ui/EventCalendar'
+import { generateMetadata as generateSEOMetadata, generateStructuredData } from '@/web/lib/metadata'
 import { basePayload } from '@/web/lib/payload'
 import {
   IconBrandWhatsapp,
@@ -14,8 +15,10 @@ import {
   type Icon,
   type IconProps,
 } from '@tabler/icons-react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import Script from 'next/script'
 import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 
 const TRAMITES: {
@@ -51,7 +54,7 @@ const TRAMITES: {
   {
     title: 'Recursos Humanos',
     icon: IconUserCircle,
-    link: 'http://181.228.27.231/personal/personal.aspx',
+    link: 'http://sigem.sanbenito.gob.ar/personal/personal.aspx',
   },
 ]
 
@@ -87,7 +90,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
           </Link>
           <Link
             href={`/noticias/${noticia.slug}`}
-            className="bg-base-100/80 hidden h-full w-full max-w-1/3 flex-col gap-3 px-5 py-4 md:flex"
+            className="bg-base-100/80 max-w-1/3 hidden h-full w-full flex-col gap-3 px-5 py-4 md:flex"
           >
             <h3 className="text-xl font-extrabold">{noticia.titulo}</h3>
             <p className="line-clamp-none max-h-full overflow-hidden text-lg md:line-clamp-4 lg:line-clamp-6 xl:line-clamp-none">
@@ -103,7 +106,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
           <p className="text-base-content/80">{noticia.descripcion}</p>
         </Link>
         {/* Flechas */}
-        <div className="absolute top-1/2 right-1 left-1 z-10 flex -translate-y-1/2 transform justify-between">
+        <div className="absolute left-1 right-1 top-1/2 z-10 flex -translate-y-1/2 transform justify-between">
           <a
             href={`#noticia${index === 0 ? noticias.length : index}`}
             className="btn btn-square btn-soft btn-sm focus-visible:ring-primary rounded-xs focus-visible:ring-2"
@@ -121,6 +124,22 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
     </article>
   )
 }
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Inicio',
+  description:
+    'Municipalidad de San Benito - Portal oficial con trámites en línea, últimas noticias, agenda de eventos y servicios municipales para los ciudadanos.',
+  keywords: [
+    'inicio',
+    'portal municipal',
+    'servicios publicos',
+    'agenda municipal',
+    'noticias san benito',
+    'tramites online',
+    'gobierno municipal',
+  ],
+  url: '/',
+})
 
 export const revalidate = 0 // No cache, always fresh
 
@@ -200,7 +219,7 @@ export default async function Page() {
               <Link
                 key={tramite.link}
                 href={tramite.link}
-                className="card bg-base-100 hover:bg-base-200 border-base-200 focus-visible:ring-primary rounded-xl border shadow-lg transition-all duration-200 outline-none hover:scale-105 hover:shadow-2xl focus-visible:ring-2"
+                className="card bg-base-100 hover:bg-base-200 border-base-200 focus-visible:ring-primary rounded-xl border shadow-lg outline-none transition-all duration-200 hover:scale-105 hover:shadow-2xl focus-visible:ring-2"
                 aria-label={`Ir a ${tramite.title}`}
                 tabIndex={0}
               >
@@ -229,7 +248,7 @@ export default async function Page() {
                 Consultá, imprimí y pagá tus tasas municipales de forma rápida y segura.
               </p>
               <Link
-                href="http://181.228.27.231/ingresospublicos/ingresospublicos.aspx"
+                href="http://sigem.sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx"
                 className="btn btn-accent btn-lg gap-2"
               >
                 Ir al Portal
@@ -241,7 +260,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2">
                   {/* Icono WhatsApp Tabler */}
                   <IconBrandWhatsapp size={18} className="text-accent flex-shrink-0" stroke={1.5} />
-                  <span className="text-base-content font-medium whitespace-nowrap">
+                  <span className="text-base-content whitespace-nowrap font-medium">
                     WhatsApp Rentas:
                   </span>
                   <a
@@ -256,7 +275,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2">
                   {/* Icono Mail Tabler */}
                   <IconMail size={18} className="text-primary flex-shrink-0" stroke={1.5} />
-                  <span className="text-base-content font-medium whitespace-nowrap">
+                  <span className="text-base-content whitespace-nowrap font-medium">
                     Correo Rentas:
                   </span>
                   <a
@@ -271,6 +290,22 @@ export default async function Page() {
           </div>
         </section>
       </div>
+
+      {/* Datos estructurados JSON-LD */}
+      <Script
+        id="structured-data-website"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateStructuredData('WebSite', {})),
+        }}
+      />
+      <Script
+        id="structured-data-organization"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateStructuredData('GovernmentOrganization', {})),
+        }}
+      />
     </main>
   )
 }

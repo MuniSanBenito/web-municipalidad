@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url'
 import { Archivos } from './payload/collections/Archivos'
 import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
+import { Ciudadanos } from './payload/collections/Ciudadanos'
 import { Concursos } from './payload/collections/Concursos'
 import { Contabilidad } from './payload/collections/Contabilidad'
 import { Curriculums } from './payload/collections/Curriculums'
@@ -85,7 +86,7 @@ export default buildConfig({
       logout: {
         Button: '/payload/components/logout-button#LogoutButton',
       },
-      afterDashboard: ['/payload/components/redirect-ciudadano#RedirectCiudadano'],
+      // afterDashboard: ['/payload/components/redirect-ciudadano#RedirectCiudadano'],
     },
     theme: 'light',
     avatar: 'default',
@@ -149,6 +150,7 @@ export default buildConfig({
     Concursos,
     BalancesMensuales,
     EventosTags,
+    Ciudadanos,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),

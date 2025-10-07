@@ -40,9 +40,9 @@ export default function Coleectivos() {
             </div>
             <p className="text-lg leading-relaxed">
               Se ha habilitado una nueva terminal de autoservicio SUBE en la{' '}
-              <strong>Biblioteca Municipal "Santiago Tórtul" (Punto Digital)</strong>. La misma está
-              disponible las 24hs para consultar saldo, acreditación de cargas virtuales y
-              habilitación de beneficios.
+              <strong>Biblioteca Municipal &quot;Santiago Tórtul&quot; (Punto Digital)</strong>. La
+              misma está disponible las 24hs para consultar saldo, acreditación de cargas virtuales
+              y habilitación de beneficios.
             </p>
           </div>
           <div className="bg-base-100 rounded-lg p-6 shadow-md">

@@ -39,8 +39,8 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/servicios" className="hover:text-primary">
-                Servicios
+              <Link href="/transparencia" className="hover:text-primary">
+                Transparencia
               </Link>
             </li>
             <li>

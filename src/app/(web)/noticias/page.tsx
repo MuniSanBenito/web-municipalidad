@@ -1,12 +1,30 @@
 import PageTitle from '@/web/components/ui/PageTitle'
+import { generateMetadata as generateSEOMetadata } from '@/web/lib/metadata'
 import { basePayload } from '@/web/lib/payload'
 import { IconCalendar, IconChevronRight, IconNewsOff } from '@tabler/icons-react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 
 type Props = {
   searchParams: Promise<{ [key: string]: string }>
 }
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Noticias',
+  description:
+    'Últimas noticias de la Municipalidad de San Benito. Mantente informado sobre eventos, anuncios y novedades del gobierno municipal.',
+  keywords: [
+    'noticias',
+    'actualidad',
+    'eventos municipales',
+    'anuncios oficiales',
+    'comunicados',
+    'novedades san benito',
+  ],
+  url: '/noticias',
+})
+
 export default async function PageNoticias({ searchParams }: Props) {
   const page = parseInt((await searchParams)?.page || '1')
   const noticias = await basePayload.find({
@@ -34,7 +52,7 @@ export default async function PageNoticias({ searchParams }: Props) {
               <Link
                 href={`/noticias/${noticia.slug}`}
                 key={noticia.id}
-                className="group card bg-base-100 overflow-hidden shadow-xl transition-all duration-300 hover:shadow-2xl hover:bg-base-200 cursor-pointer rounded-lg focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-base-100"
+                className="card bg-base-100 hover:bg-base-200 focus-within:ring-primary focus-within:ring-offset-base-100 group cursor-pointer overflow-hidden rounded-lg shadow-xl transition-all duration-300 focus-within:ring-2 focus-within:ring-offset-2 hover:shadow-2xl"
                 aria-label={`Leer noticia: ${noticia.titulo}`}
               >
                 {/* Imagen de la noticia */}
@@ -43,8 +61,7 @@ export default async function PageNoticias({ searchParams }: Props) {
                     src={
                       typeof noticia.portada === 'string'
                         ? noticia.portada
-                        : noticia.portada?.thumbnailURL ||
-                          '/images/placeholder.jpg'
+                        : noticia.portada?.thumbnailURL || '/images/placeholder.jpg'
                     }
                     alt={
                       typeof noticia.portada === 'string'
@@ -63,18 +80,14 @@ export default async function PageNoticias({ searchParams }: Props) {
                 <div className="card-body">
                   <div className="text-base-content/70 flex items-center gap-2 text-sm">
                     <IconCalendar size={16} />
-                    <span>
-                      {new Date(noticia.createdAt).toLocaleDateString()}
-                    </span>
+                    <span>{new Date(noticia.createdAt).toLocaleDateString()}</span>
                   </div>
 
                   <h2 className="card-title mt-2 line-clamp-2 text-lg font-bold">
                     {noticia.titulo}
                   </h2>
 
-                  <p className="text-base-content/80 mt-2 line-clamp-3">
-                    {noticia.descripcion}
-                  </p>
+                  <p className="text-base-content/80 mt-2 line-clamp-3">{noticia.descripcion}</p>
 
                   <div className="card-actions mt-4 justify-end">
                     <span className="btn btn-link btn-sm group gap-2">

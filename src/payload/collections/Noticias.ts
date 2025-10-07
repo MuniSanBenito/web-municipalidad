@@ -1,8 +1,16 @@
+import type { Noticia } from '@/payload-types'
 import { contenido } from '@/payload/fields/contenido'
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldHook } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
-import { CreatedBy } from '../fields/created_by'
+
+const beforeChangeSlug: FieldHook<Noticia> = ({ value }) => {
+  const slug = String(value || Date.now())
+  return slug
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '')
+}
 
 export const Noticias: CollectionConfig = {
   slug: 'noticias',
@@ -44,7 +52,7 @@ export const Noticias: CollectionConfig = {
     },
   },
   fields: [
-    CreatedBy,
+    // CreatedBy,
     {
       type: 'text',
       name: 'titulo',
@@ -57,13 +65,15 @@ export const Noticias: CollectionConfig = {
       label: 'Slug',
       required: true,
       unique: true,
-      defaultValue: () => Date.now(),
+      defaultValue: () => Date.now().toString(),
+      hooks: { beforeValidate: [beforeChangeSlug] },
     },
     {
       type: 'textarea',
       name: 'descripcion',
       label: 'Descripcion',
       required: true,
+      maxLength: 256,
     },
     {
       type: 'upload',
