@@ -1,6 +1,7 @@
 // src/components/chatbot/aiService.ts
 import { generateOllamaResponse, isOllamaAvailable, checkOllamaAvailability } from './ollamaService';
 import { validateResponse, sanitizeResponse, generateFallbackResponse, getVerifiedInformation } from './contentValidator';
+import { fetchEnhancedAIResponse } from './aiServiceEnhanced';
 
 // Cache para respuestas frecuentes
 const responseCache = new Map<string, string>();
@@ -431,10 +432,35 @@ function getRelevantKnowledge(query: string): string {
 
 /**
  * Función principal para obtener una respuesta de IA mejorada
+ * AHORA USA EL NUEVO SISTEMA MEJORADO CON MÚLTIPLES PROVEEDORES
  * @param query Consulta del usuario
  * @returns Objeto con la respuesta generada y si se usó Gemma 2B
  */
 export async function fetchAIResponse(query: string): Promise<{ response: string; usedGemma: boolean }> {
+  // USAR EL NUEVO SERVICIO MEJORADO
+  try {
+    const result = await fetchEnhancedAIResponse(query);
+    
+    // Mapear el provider a usedGemma para mantener compatibilidad
+    const usedGemma = result.provider === 'ollama' || result.provider === 'gemini';
+    
+    return {
+      response: result.response,
+      usedGemma: usedGemma,
+    };
+  } catch (error) {
+    console.error('Error en fetchAIResponse (nuevo sistema):', error);
+    // Fallback al sistema antiguo si el nuevo falla
+    return fetchAIResponseLegacy(query);
+  }
+}
+
+/**
+ * Función legacy (antigua) como fallback
+ * @param query Consulta del usuario
+ * @returns Objeto con la respuesta generada y si se usó Gemma 2B
+ */
+async function fetchAIResponseLegacy(query: string): Promise<{ response: string; usedGemma: boolean }> {
   if (!query || typeof query !== 'string' || query.trim() === '') {
     return { 
       response: 'Por favor, ingresa una consulta para que pueda ayudarte.',
@@ -608,6 +634,9 @@ export async function fetchAIResponse(query: string): Promise<{ response: string
   
   return { response, usedGemma };
 }
+
+// Exportar también la función mejorada directamente para uso avanzado
+export { fetchEnhancedAIResponse } from './aiServiceEnhanced';
 
 /**
  * Obtiene una respuesta predeterminada cuando no hay coincidencia clara

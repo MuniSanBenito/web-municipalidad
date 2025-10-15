@@ -58,23 +58,23 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
 
   return (
     <div className="smart-suggestions-container" style={{
-      padding: '16px',
-      backgroundColor: 'oklch(96% 0.003 264.542)', // base-200
-      borderRadius: '12px',
-      margin: '8px 0',
-      border: '1px solid oklch(92% 0.004 286.32)', // base-300
-      boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+      padding: '18px',
+      background: '#f0f9ff',
+      borderRadius: '16px',
+      margin: '10px 0',
+      border: '2px solid #7bcbe2',
+      boxShadow: '0 3px 10px rgba(123, 203, 226, 0.2)',
     }}>
       <div style={{
-        fontSize: '14px',
-        fontWeight: '600',
-        color: '#4d4d4d', // base-content
-        marginBottom: '12px',
+        fontSize: '15px',
+        fontWeight: '700',
+        color: '#076633',
+        marginBottom: '14px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px'
+        gap: '8px'
       }}>
-        <span>💡</span>
+        <span style={{ fontSize: '20px' }}>🤖</span>
         ¿Te puedo ayudar con alguno de estos temas?
       </div>
 
@@ -106,33 +106,34 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
                 onClick={() => handleSuggestionClick(suggestion.handler)}
                 style={{
                   backgroundColor: '#ffffff',
-                  border: '1px solid #b6c544', // primary
+                  border: '2px solid #b6c544',
                   borderRadius: '20px',
-                  padding: '8px 16px',
-                  fontSize: '13px',
-                  color: '#b6c544', // primary
+                  padding: '10px 18px',
+                  fontSize: '13.5px',
+                  color: '#076633',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  minHeight: '36px',
-                  fontWeight: '500'
+                  gap: '8px',
+                  minHeight: '40px',
+                  fontWeight: '600',
+                  boxShadow: '0 2px 8px rgba(182, 197, 68, 0.2)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#b6c544'; // primary
-                  e.currentTarget.style.color = 'oklch(37% 0 0)'; // primary-content
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(182, 197, 68, 0.3)';
+                  e.currentTarget.style.backgroundColor = '#b6c544';
+                  e.currentTarget.style.color = '#076633';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(182, 197, 68, 0.4)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.color = '#b6c544'; // primary
+                  e.currentTarget.style.color = '#076633';
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(182, 197, 68, 0.2)';
                 }}
               >
-                {suggestion.icon && <span>{suggestion.icon}</span>}
+                {suggestion.icon && <span style={{ fontSize: '16px' }}>{suggestion.icon}</span>}
                 {suggestion.text}
               </button>
             ))}
@@ -141,15 +142,23 @@ const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
       ))}
 
       <div style={{
-        marginTop: '12px',
-        padding: '8px',
-        backgroundColor: '#7bcbe2', // accent
-        borderRadius: '6px',
-        fontSize: '12px',
-        color: '#4d4d4d', // accent-content
-        textAlign: 'center'
+        marginTop: '16px',
+        padding: '12px 16px',
+        background: '#7bcbe2',
+        borderRadius: '12px',
+        fontSize: '13px',
+        color: '#4d4d4d',
+        textAlign: 'center',
+        fontWeight: '600',
+        border: '2px solid #076633',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        boxShadow: '0 2px 6px rgba(123, 203, 226, 0.3)'
       }}>
-        💬 También puedes escribir tu consulta directamente
+        <span style={{ fontSize: '16px' }}>💬</span>
+        También puedes escribir tu consulta directamente
       </div>
     </div>
   );

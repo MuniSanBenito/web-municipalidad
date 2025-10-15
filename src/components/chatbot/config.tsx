@@ -43,63 +43,125 @@ const config: Config = {
     // Personalizar el header del chatbot
     header: () => (
       <div style={{
-        backgroundColor: '#b6c544', // primary
-        padding: '12px',
-        borderRadius: '8px 8px 0 0',
-        fontWeight: 'bold',
-        fontSize: '1.2rem',
-        color: 'oklch(37% 0 0)', // primary-content
+        background: '#076633',
+        padding: '18px 20px',
+        borderRadius: '20px 20px 0 0',
+        color: '#e6e6e6',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-        borderBottom: '2px solid #9fb03a' // primary darker
+        justifyContent: 'space-between',
+        boxShadow: '0 2px 8px rgba(7, 102, 51, 0.2)',
+        borderBottom: '3px solid #b6c544',
       }}>
-        <span style={{ marginRight: '8px' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-          </svg>
-        </span>
-        Beni - Asistente Municipal
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Robot Beni - Amigable */}
+          <div style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '12px',
+            background: '#b6c544',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            boxShadow: '0 4px 8px rgba(182, 197, 68, 0.3)',
+          }}>
+            {/* Cara del robot */}
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Antena */}
+              <circle cx="16" cy="4" r="2" fill="#076633"/>
+              <rect x="15" y="4" width="2" height="4" fill="#076633"/>
+              {/* Cabeza */}
+              <rect x="8" y="8" width="16" height="16" rx="3" fill="#076633"/>
+              {/* Ojos amigables */}
+              <circle cx="13" cy="14" r="2.5" fill="#b6c544"/>
+              <circle cx="19" cy="14" r="2.5" fill="#b6c544"/>
+              <circle cx="13" cy="14" r="1" fill="#076633"/>
+              <circle cx="19" cy="14" r="1" fill="#076633"/>
+              {/* Sonrisa */}
+              <path d="M 11 19 Q 16 22 21 19" stroke="#b6c544" strokeWidth="2" strokeLinecap="round" fill="none"/>
+              {/* Detalles */}
+              <circle cx="10" cy="10" r="1" fill="#7bcbe2"/>
+              <circle cx="22" cy="10" r="1" fill="#7bcbe2"/>
+            </svg>
+            {/* Indicador online */}
+            <div style={{
+              position: 'absolute',
+              bottom: '-2px',
+              right: '-2px',
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+              background: '#b6c544',
+              border: '2px solid #076633',
+              boxShadow: '0 0 8px rgba(182, 197, 68, 0.8)',
+              animation: 'pulse 2s ease-in-out infinite',
+            }} />
+          </div>
+          <div>
+            <div style={{ fontWeight: '700', fontSize: '1.1rem', letterSpacing: '0.5px' }}>Beni 🤖</div>
+            <div style={{ fontSize: '0.8rem', opacity: 0.85, fontWeight: '400' }}>Tu asistente municipal</div>
+          </div>
+        </div>
+        <div style={{
+          fontSize: '0.75rem',
+          backgroundColor: '#b6c544',
+          color: '#076633',
+          padding: '4px 10px',
+          borderRadius: '12px',
+          fontWeight: '700',
+          boxShadow: '0 2px 4px rgba(182, 197, 68, 0.3)',
+        }}>EN LÍNEA</div>
       </div>
     ),
   },
   customStyles: {
     // Estilos generales del chatbot
     botMessageBox: {
-      backgroundColor: '#b6c544', // primary
-      color: 'oklch(37% 0 0)', // primary-content
-      borderRadius: '12px 12px 12px 0',
-      padding: '12px',
-      fontFamily: 'Arial, sans-serif',
-      boxShadow: '0 2px 8px rgba(182, 197, 68, 0.15)',
-      margin: '8px 0',
-      maxWidth: '85%',
-      lineHeight: '1.4',
+      background: '#076633',
+      color: '#e6e6e6',
+      borderRadius: '16px 16px 16px 4px',
+      padding: '14px 16px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      boxShadow: '0 3px 10px rgba(7, 102, 51, 0.2)',
+      margin: '10px 0',
+      maxWidth: '80%',
+      lineHeight: '1.5',
+      fontSize: '0.95rem',
+      animation: 'slideInLeft 0.3s ease-out',
+      border: '2px solid #b6c544',
+      position: 'relative',
     },
     userMessageBox: {
-      backgroundColor: '#f1f1f1',
-      color: '#333',
-      borderRadius: '12px 12px 0 12px',
-      padding: '12px',
-      fontFamily: 'Arial, sans-serif',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
-      margin: '8px 0',
-      maxWidth: '85%',
-      lineHeight: '1.4',
-      border: '1px solid #e0e0e0',
+      background: '#7bcbe2',
+      color: '#4d4d4d',
+      borderRadius: '16px 16px 4px 16px',
+      padding: '14px 16px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      boxShadow: '0 3px 10px rgba(123, 203, 226, 0.25)',
+      margin: '10px 0',
+      maxWidth: '80%',
+      lineHeight: '1.5',
+      fontSize: '0.95rem',
+      border: '2px solid #076633',
+      animation: 'slideInRight 0.3s ease-out',
+      fontWeight: '500',
     },
     chatButton: {
-      backgroundColor: '#b6c544', // primary
+      background: '#b6c544',
       borderRadius: '50%',
-      width: '40px',
-      height: '40px',
+      width: '64px',
+      height: '64px',
       padding: '0',
       minWidth: 'unset',
-      borderWidth: '0',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 2px 5px rgba(182, 197, 68, 0.2)',
+      border: '3px solid #076633',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      boxShadow: '0 6px 20px rgba(182, 197, 68, 0.4)',
       cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#076633',
     },
   },
   state: {

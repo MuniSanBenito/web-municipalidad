@@ -1,18 +1,9 @@
 'use client'
-<<<<<<< HEAD
-// Imports
-import { ThemeToggle } from '@/web/components/theme-toggle'
-import { ThemeInitScript } from './ThemeInitScript'
-import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
-import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2, IconMessageChatbot, IconX } from '@tabler/icons-react'
-=======
 import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2, IconUser } from '@tabler/icons-react'
->>>>>>> 9b47a6d01d9a9202ac9c8900a924bc82789fda08
+import { IconMenu2, IconUser, IconMessageChatbot, IconX } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
@@ -20,15 +11,16 @@ import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
-import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
 import { LogoutButton } from './logout-button'
+import { ThemeInitScript } from './ThemeInitScript'
 
 // Import Chatbot related components
-import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css' // Default styling
+import ActionProvider from '@/components/chatbot/ActionProvider'
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
-import ActionProvider from '@/components/chatbot/ActionProvider'
+import Chatbot from 'react-chatbot-kit'
+import 'react-chatbot-kit/build/main.css' // Default styling
+import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -81,7 +73,7 @@ export function RootLayout({ children, ciudadano }: Props) {
     return () => window.removeEventListener('scroll', scrollListener)
   }, [])
 
-  const toggleChatbot = () => setShowChatbot((prev) => !prev);
+  const toggleChatbot = () => setShowChatbot((prev) => !prev)
 
   return (
     <>
@@ -168,9 +160,21 @@ export function RootLayout({ children, ciudadano }: Props) {
         </main>
 
         {/* Chatbot Container */}
-        <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000 }}>
           {showChatbot && (
-            <div className="chatbot-container" style={{ boxShadow: '0 5px 15px rgba(0,0,0,0.2)', borderRadius: '10px', overflow: 'hidden' }}>
+            <div
+              className="chatbot-container"
+              style={{
+                width: '380px',
+                height: '600px',
+                boxShadow: '0 12px 40px rgba(7, 102, 51, 0.25), 0 0 0 2px #b6c544',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                marginBottom: '16px',
+                animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                background: '#ffffff',
+              }}
+            >
               <Chatbot
                 config={chatbotConfig}
                 messageParser={MessageParser}
@@ -180,11 +184,51 @@ export function RootLayout({ children, ciudadano }: Props) {
           )}
           <button
             onClick={toggleChatbot}
-            className="btn btn-circle btn-primary shadow-lg"
-            style={{ marginTop: '10px', width: '60px', height: '60px' }}
+            style={{
+              width: '68px',
+              height: '68px',
+              borderRadius: '50%',
+              border: '3px solid #076633',
+              background: '#b6c544',
+              color: '#076633',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(182, 197, 68, 0.4)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              marginLeft: 'auto',
+              position: 'relative',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1) translateY(-2px) rotate(5deg)';
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(182, 197, 68, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1) translateY(0) rotate(0deg)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(182, 197, 68, 0.4)';
+            }}
             aria-label={showChatbot ? 'Cerrar chat' : 'Abrir chat'}
           >
-            {showChatbot ? <IconX size={32} /> : <IconMessageChatbot size={32} />}
+            {showChatbot ? (
+              <IconX size={32} strokeWidth={2.5} />
+            ) : (
+              <>
+                <IconMessageChatbot size={32} strokeWidth={2.5} />
+                {/* Indicador de notificación */}
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: '#076633',
+                  border: '2px solid #b6c544',
+                  animation: 'pulse 2s ease-in-out infinite',
+                }} />
+              </>
+            )}
           </button>
         </div>
         <Footer />
