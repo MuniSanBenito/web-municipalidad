@@ -5,6 +5,7 @@ import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Script from 'next/script'
+import ShareButton from '@/web/components/ShareButton'
 
 interface Props {
   noticia: Noticia
@@ -87,6 +88,19 @@ export function TemplateNoticia({ noticia }: Props) {
           </div>
         </section>
       )}
+
+      {/* Botón de compartir */}
+      <section className="container mx-auto max-w-4xl px-4 pb-12 sm:px-6">
+        <div className="flex justify-center">
+          <div className="w-full max-w-md">
+            <ShareButton
+              title={noticia.titulo}
+              url={`${process.env.NEXT_PUBLIC_SERVER_URL || 'https://sanbenito.gob.ar'}/noticias/${noticia.slug}`}
+              type="noticia"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Datos estructurados JSON-LD para la noticia */}
       <Script
