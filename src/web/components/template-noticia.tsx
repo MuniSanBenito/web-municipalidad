@@ -12,23 +12,42 @@ interface Props {
 export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
+  const bgImage =
+    typeof noticia.portada === 'string'
+      ? noticia.portada
+      : noticia.portada.url || '/images/placeholder.jpg'
+
   return (
-    <main className="bg-base-100 min-h-screen">
+    <main className="min-h-screen">
       {/* Portada */}
       {noticia.portada && (
-        <div className="relative h-96 w-full">
+        <div className="relative h-40 w-full sm:h-64 lg:h-96">
+          {/* La misma imagen como fondo difuminado */}
+          <Image
+            src={bgImage}
+            alt={
+              typeof noticia.portada === 'string'
+                ? 'Portada de la noticia'
+                : noticia.portada?.alt || 'Portada de la noticia'
+            }
+            className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"
+            fill
+            priority
+            sizes="100vw"
+          />
+          {/* Imagen principal (OG) */}
           <Image
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
-                : noticia.portada?.url || '/images/placeholder.jpg'
+                : noticia.portada?.sizes?.og?.url || '/images/placeholder.jpg'
             }
             alt={
               typeof noticia.portada === 'string'
                 ? 'Portada de la noticia'
                 : noticia.portada?.alt || 'Portada de la noticia'
             }
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             fill
             priority
             sizes="100vw"
