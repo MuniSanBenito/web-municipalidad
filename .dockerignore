@@ -1,33 +1,13 @@
-Dockerfile
-.dockerignore
+.git
+.github
+.next
+.vscode
+bruno
+informes
+migration
 node_modules
+scripts
+.dockerignore
+Dockerfile
 npm-debug.log
 README.md
-.next
-.git
-
-build
-dist / media
-.DS_Store
-.env
-
-# Payload default media upload directory
-public/media/
-
-public/robots.txt
-public/sitemap*.xml
-
-# Sugerencias extra
-*.env*
-.vscode
-.idea
-coverage
-dist
-tmp
-*.log
-*.test.*
-tests
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-
