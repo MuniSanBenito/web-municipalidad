@@ -1,5 +1,3 @@
-import logo from '/public/images/logo.webp'
-
 export function Logo() {
-  return <img src={logo.src} alt="San Benito Logo" />
+  return <img src="/images/logo.webp" alt="San Benito Logo" />
 }
