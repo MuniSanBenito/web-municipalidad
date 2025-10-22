@@ -16,3 +16,18 @@ public/media/
 
 public/robots.txt
 public/sitemap*.xml
+
+# Sugerencias extra
+*.env*
+.vscode
+.idea
+coverage
+dist
+tmp
+*.log
+*.test.*
+tests
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
