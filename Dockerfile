@@ -1,18 +1,19 @@
-# Base image
-FROM node:lts-alpine AS base
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Build stage: usa Bun para instalar y construir
+FROM oven/bun:alpine AS base
 
-# Dependencies layer
 FROM base AS deps
+# Instala dependencias del sistema necesarias para sharp
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json ./
-# COPY bun.lock ./
-RUN npm install
 
-# Build layer
+COPY package.json bun.lock ./
+RUN bun install --no-save --frozen-lockfile
+
+# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
 # Declarar los argumentos de build
 ARG DATABASE_URI
@@ -48,15 +49,12 @@ ENV EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT}
 ENV EMAIL_AUTH_USER=${EMAIL_AUTH_USER}
 ENV EMAIL_AUTH_PASS=${EMAIL_AUTH_PASS}
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+RUN bun run build
 
 # Runner layer
 FROM base AS runner
@@ -111,6 +109,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 USER nextjs
-EXPOSE 3000
+
+ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
-CMD HOSTNAME="0.0.0.0" node server.js
+
+EXPOSE 3000
+
+CMD ["bun", "server.js"]
