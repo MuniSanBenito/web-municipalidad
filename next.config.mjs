@@ -5,7 +5,6 @@ const nextConfig = {
   // Your Next.js config here
   output: 'standalone',
   turbopack: {},
-  reactCompiler: true,
 }
 
 export default withPayload(nextConfig)
