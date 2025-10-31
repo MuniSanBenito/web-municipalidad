@@ -11,7 +11,6 @@ import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { twJoin } from 'tailwind-merge'
-import { ThemeInitScript } from './ThemeInitScript' // Importa el nuevo script de inicialización de tema
 import { LogoutButton } from './logout-button'
 
 const NAV_LINKS: { href: string; label: string }[] = [
@@ -63,7 +62,7 @@ export function RootLayout({ children, ciudadano }: Props) {
 
   return (
     <>
-      <ThemeInitScript />
+      {/* <ThemeInitScript /> */}
       <AccessibilityControls />
       <input
         type="checkbox"
