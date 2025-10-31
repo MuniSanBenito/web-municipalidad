@@ -6,9 +6,7 @@
   "type": "module",
   "browserslist": "> 1%",
   "scripts": {
-    "prebuild": "bun pkg set browserslist=\"> 1%\"",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "predev": "bun run pkg set browserslist=\"> 1%\"",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
