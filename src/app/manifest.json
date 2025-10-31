@@ -5,7 +5,7 @@
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#1e40af",
+  "theme_color": "#b6c544",
   "background_color": "#ffffff",
   "categories": ["government", "public-services"],
   "lang": "es",

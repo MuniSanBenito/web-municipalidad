@@ -85,6 +85,7 @@ export interface Config {
     'balances-mensuales': BalancesMensuale;
     'eventos-tags': EventosTag;
     ciudadanos: Ciudadano;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -112,6 +113,7 @@ export interface Config {
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
     'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -830,6 +832,23 @@ export interface BalancesMensuale {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -902,6 +921,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ciudadanos';
         value: string | Ciudadano;
+      } | null)
+    | ({
+        relationTo: 'payload-kv';
+        value: string | PayloadKv;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1438,6 +1461,14 @@ export interface CiudadanosSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
