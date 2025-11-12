@@ -1,21 +1,20 @@
 'use client'
 
 interface ShareButtonProps {
-  title: string
-  url?: string
-  type?: 'evento' | 'noticia'
+  eventName: string
+  eventUrl?: string
 }
 
-export default function ShareButton({ title, url, type = 'evento' }: ShareButtonProps) {
+export default function ShareButton({ eventName, eventUrl }: ShareButtonProps) {
   const handleShare = () => {
-    // Use current window location if no url provided, or if url contains localhost
-    const currentUrl = typeof window !== 'undefined' ? window.location.href : url || ''
-    const shareUrl = url && !url.includes('localhost') ? url : currentUrl
+    // Use current window location if no eventUrl provided, or if eventUrl contains localhost
+    const currentUrl = typeof window !== 'undefined' ? window.location.href : eventUrl || ''
+    const shareUrl = eventUrl && !eventUrl.includes('localhost') ? eventUrl : currentUrl
     
     if (navigator.share) {
       navigator.share({
-        title: title,
-        text: type === 'evento' ? `Te invito a este evento: ${title}` : `Lee esta noticia: ${title}`,
+        title: eventName,
+        text: `Te invito a este evento: ${eventName}`,
         url: shareUrl
       });
     } else {
@@ -26,7 +25,7 @@ export default function ShareButton({ title, url, type = 'evento' }: ShareButton
 
   return (
     <div className="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300">
-      <h3 className="text-lg font-semibold mb-3">{type === 'evento' ? 'Compartir Evento' : 'Compartir Noticia'}</h3>
+      <h3 className="text-lg font-semibold mb-3">Compartir Evento</h3>
       <button 
         onClick={handleShare}
         className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 rounded-xl py-3 px-4 font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"

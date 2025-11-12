@@ -327,9 +327,8 @@ export default async function EventoPage({ params }: Props) {
 
               {/* Botón de compartir */}
               <ShareButton
-                title={evento.nombre}
-                url={`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/agenda/${id}`}
-                type="evento"
+                eventName={evento.nombre}
+                eventUrl={`${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/agenda/${id}`}
               />
             </div>
           </div>
