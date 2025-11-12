@@ -32,15 +32,29 @@ export default function PagePresentacionProyecto() {
               <ul className="list-disc space-y-2 pl-5">
                 <li>
                   Carátula de Expediente.{' '}
-                  <strong>
-                    <em>Descargar.</em>
-                  </strong>
+                  <a
+                    href="/documents/Caratula del Expediente.pdf"
+                    className="link link-primary"
+                    target="_blank"
+                    download
+                  >
+                    <strong>
+                      <em>Descargar.</em>
+                    </strong>
+                  </a>
                 </li>
                 <li>
                   Solicitud de Construcción por duplicado.{' '}
-                  <strong>
-                    <em>Descargar.</em>
-                  </strong>
+                  <a
+                    href="/documents/Solicitud de Construcción.pdf"
+                    className="link link-primary"
+                    target="_blank"
+                    download
+                  >
+                    <strong>
+                      <em>Descargar.</em>
+                    </strong>
+                  </a>
                 </li>
                 <li>
                   Acreditación de dominio: Fotocopia de Escritura, Boleto de compra o Reserva de

@@ -81,13 +81,13 @@ export default async function Layout({ children }: PropsWithChildren) {
   const result = await basePayload.auth({ headers, canSetHeaders: false })
 
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning data-theme="light">
       <head>
         <meta name="apple-mobile-web-app-title" content="San Benito" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#1e40af" />
+        {/* <meta name="theme-color" content="#1e40af" /> */}
         <link rel="apple-touch-icon" href="/web-app-manifest-192x192.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
@@ -101,7 +101,7 @@ export default async function Layout({ children }: PropsWithChildren) {
         ) : null}
       </head>
       <body className="drawer scroll-smooth">
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="light">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <RootLayout ciudadano={result.user?.collection === 'ciudadanos' ? result.user : null}>
             {children}

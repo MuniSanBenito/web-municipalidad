@@ -61,7 +61,7 @@ export default async function PageNoticias({ searchParams }: Props) {
                     src={
                       typeof noticia.portada === 'string'
                         ? noticia.portada
-                        : noticia.portada?.thumbnailURL || '/images/placeholder.jpg'
+                        : noticia.portada?.sizes?.og?.url || '/images/placeholder.jpg'
                     }
                     alt={
                       typeof noticia.portada === 'string'
