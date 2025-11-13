@@ -29,7 +29,17 @@ export default function PageInscripcionMunicipal() {
           <div className="card bg-base-200 shadow-xl">
             <div className="card-body">
               <ul className="list-disc space-y-3 pl-5 text-lg">
-                <li>Formulario de Inscripción/Ratificación.</li>
+                <li>
+                  Formulario de Inscripción/Ratificación.{' '}
+                  <a
+                    href="/documents/FP-INSCRIPCION-PROFESIONAL.pdf"
+                    className="link link-primary"
+                    target="_blank"
+                    download
+                  >
+                    Descargar Formulario
+                  </a>
+                </li>
                 <li>Constancia de pago de inscripción/Ratificación.</li>
                 <li>Fotocopia DNI.</li>
                 <li>
