@@ -136,6 +136,12 @@ const tramites = [
     link: '/tramites/tercera-edad-discapacidad',
     description: 'Servicios y asistencia para personas mayores y personas con discapacidad',
   },
+  {
+    title: 'NIDO',
+    icon: IconBuildingCommunity,
+    link: '/tramites/nido',
+    description: 'Núcleo de innovación y Desarrollo de Oportunidades',
+  },
 ]
 
 export default function PageTramites() {
@@ -148,7 +154,7 @@ export default function PageTramites() {
           <a
             key={index}
             href={tramite.link}
-            className="card bg-base-100 hover:bg-base-200 hover:scale-102 p-8 shadow-lg transition-all duration-300 hover:shadow-2xl"
+            className="card bg-base-100 hover:bg-base-200 p-8 shadow-lg transition-all duration-300 hover:scale-102 hover:shadow-2xl"
             aria-label={`Ir a ${tramite.title}`}
           >
             <div className="card-body items-center text-center">
