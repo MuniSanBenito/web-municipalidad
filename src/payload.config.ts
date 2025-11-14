@@ -12,6 +12,7 @@ import { Archivos } from './payload/collections/Archivos'
 import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
 import { Ciudadanos } from './payload/collections/Ciudadanos'
+import { ComerciosHabilitados } from './payload/collections/ComerciosHabilitados'
 import { Concursos } from './payload/collections/Concursos'
 import { Contabilidad } from './payload/collections/Contabilidad'
 import { Curriculums } from './payload/collections/Curriculums'
@@ -24,6 +25,7 @@ import { Licitaciones } from './payload/collections/Licitaciones'
 import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
+import { RubrosComercios } from './payload/collections/RubrosComercios'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
@@ -153,6 +155,8 @@ export default buildConfig({
     EventosTags,
     Ciudadanos,
     Matriculados,
+    RubrosComercios,
+    ComerciosHabilitados,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),

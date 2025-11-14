@@ -86,6 +86,8 @@ export interface Config {
     'eventos-tags': EventosTag;
     ciudadanos: Ciudadano;
     matriculados: Matriculado;
+    'rubros-comercios': RubrosComercio;
+    'comercios-habilitados': ComerciosHabilitado;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -115,6 +117,8 @@ export interface Config {
     'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
+    'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
+    'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -851,6 +855,30 @@ export interface Matriculado {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios".
+ */
+export interface RubrosComercio {
+  id: string;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados".
+ */
+export interface ComerciosHabilitado {
+  id: string;
+  nombre: string;
+  cuit: string;
+  razonSocial: string;
+  direccion: string;
+  rubros?: (string | RubrosComercio)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -944,6 +972,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'matriculados';
         value: string | Matriculado;
+      } | null)
+    | ({
+        relationTo: 'rubros-comercios';
+        value: string | RubrosComercio;
+      } | null)
+    | ({
+        relationTo: 'comercios-habilitados';
+        value: string | ComerciosHabilitado;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1494,6 +1530,28 @@ export interface MatriculadosSelect<T extends boolean = true> {
   email?: T;
   profesion?: T;
   habilitado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios_select".
+ */
+export interface RubrosComerciosSelect<T extends boolean = true> {
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados_select".
+ */
+export interface ComerciosHabilitadosSelect<T extends boolean = true> {
+  nombre?: T;
+  cuit?: T;
+  razonSocial?: T;
+  direccion?: T;
+  rubros?: T;
   updatedAt?: T;
   createdAt?: T;
 }
