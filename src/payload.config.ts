@@ -21,6 +21,7 @@ import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Intimaciones } from './payload/collections/Intimaciones'
 import { Licitaciones } from './payload/collections/Licitaciones'
+import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
@@ -151,6 +152,7 @@ export default buildConfig({
     BalancesMensuales,
     EventosTags,
     Ciudadanos,
+    Matriculados,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),
