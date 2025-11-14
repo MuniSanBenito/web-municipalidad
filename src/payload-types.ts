@@ -873,6 +873,13 @@ export interface ComerciosHabilitado {
   cuit: string;
   razonSocial: string;
   direccion: string;
+  /**
+   * Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  localizacion: [number, number];
   rubros?: (string | RubrosComercio)[] | null;
   updatedAt: string;
   createdAt: string;
@@ -1551,6 +1558,7 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   cuit?: T;
   razonSocial?: T;
   direccion?: T;
+  localizacion?: T;
   rubros?: T;
   updatedAt?: T;
   createdAt?: T;

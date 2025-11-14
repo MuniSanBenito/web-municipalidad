@@ -35,6 +35,16 @@ export const ComerciosHabilitados: CollectionConfig = {
       required: true,
     },
     {
+      name: 'localizacion',
+      type: 'point',
+      label: 'Localización (Mapa)',
+      required: true,
+      admin: {
+        description:
+          'Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.',
+      },
+    },
+    {
       name: 'rubros',
       type: 'relationship',
       relationTo: 'rubros-comercios',
