@@ -125,7 +125,7 @@ export default function PageNido() {
 
       {/* Escuela de Emprendedores */}
       <section className="mt-12">
-        <div className="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow-xl">
+        <div className="card from-primary/10 to-secondary/10 bg-gradient-to-br shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl md:text-3xl">
               <IconPresentationAnalytics size={32} className="text-primary" />
@@ -134,8 +134,8 @@ export default function PageNido() {
             <p className="text-base-content mt-4 leading-relaxed">
               Una guía para todos aquellos que quieran emprender un negocio, centralizada en el
               desarrollo de habilidades para crear y gestionar sus propios proyectos en el contexto
-              local. Brindamos capacitaciones que les permitan identificar oportunidades, desarrollar
-              soluciones innovadoras y contribuir a la economía local.
+              local. Brindamos capacitaciones que les permitan identificar oportunidades,
+              desarrollar soluciones innovadoras y contribuir a la economía local.
             </p>
           </div>
         </div>
@@ -165,7 +165,8 @@ export default function PageNido() {
               <div className="divider my-2"></div>
               <p className="text-base-content text-sm">
                 Se reciben todo tipo de consultas o reclamos en relación a las actividades que se
-                brindan, como también de otras áreas del municipio donde se hará llegar su solicitud.
+                brindan, como también de otras áreas del municipio donde se hará llegar su
+                solicitud.
               </p>
             </div>
           </div>
@@ -233,6 +234,34 @@ export default function PageNido() {
         </div>
       </section>
 
+      {/* Ubicación */}
+      <section className="mt-12">
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title text-2xl md:text-3xl">
+              <IconInfoCircle size={32} className="text-primary" />
+              Ubicación
+            </h2>
+            <div className="divider"></div>
+            <p className="text-base-content mb-4 text-lg">
+              <strong>Calle Buenos Aires y Misiones</strong>
+            </p>
+            <div className="overflow-hidden rounded-xl shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2835.289050019975!2d-60.4337315!3d-31.777365300000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b44fe85ef4f903%3A0x64649f0b417554c0!2sNIDO%20-%20San%20Benito!5e1!3m2!1ses-419!2sar!4v1763114308790!5m2!1ses-419!2sar"
+                width="100%"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación de NIDO - San Benito"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contacto */}
       <section className="mt-12">
         <div className="card bg-base-200 shadow-xl">
@@ -243,8 +272,8 @@ export default function PageNido() {
               <strong>Jorge Buffa</strong>
             </p>
             <p className="text-base-content mt-4 text-sm">
-              Para más información sobre los talleres, servicios y disponibilidad del SUM, comunicate
-              durante los horarios de oficina.
+              Para más información sobre los talleres, servicios y disponibilidad del SUM,
+              comunicate durante los horarios de oficina.
             </p>
           </div>
         </div>
