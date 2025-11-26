@@ -85,6 +85,9 @@ export interface Config {
     'balances-mensuales': BalancesMensuale;
     'eventos-tags': EventosTag;
     ciudadanos: Ciudadano;
+    matriculados: Matriculado;
+    'rubros-comercios': RubrosComercio;
+    'comercios-habilitados': ComerciosHabilitado;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -113,6 +116,9 @@ export interface Config {
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
     'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
+    matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
+    'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
+    'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -832,6 +838,54 @@ export interface BalancesMensuale {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "matriculados".
+ */
+export interface Matriculado {
+  id: string;
+  dni: string;
+  nombreCompleto: string;
+  matricula: string;
+  direccion: string;
+  telefono: string;
+  email: string;
+  profesion: string;
+  habilitado?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios".
+ */
+export interface RubrosComercio {
+  id: string;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados".
+ */
+export interface ComerciosHabilitado {
+  id: string;
+  nombre: string;
+  cuit: string;
+  razonSocial: string;
+  direccion: string;
+  /**
+   * Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  localizacion: [number, number];
+  rubros?: (string | RubrosComercio)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -923,8 +977,16 @@ export interface PayloadLockedDocument {
         value: string | Ciudadano;
       } | null)
     | ({
-        relationTo: 'payload-kv';
-        value: string | PayloadKv;
+        relationTo: 'matriculados';
+        value: string | Matriculado;
+      } | null)
+    | ({
+        relationTo: 'rubros-comercios';
+        value: string | RubrosComercio;
+      } | null)
+    | ({
+        relationTo: 'comercios-habilitados';
+        value: string | ComerciosHabilitado;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1461,6 +1523,45 @@ export interface CiudadanosSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "matriculados_select".
+ */
+export interface MatriculadosSelect<T extends boolean = true> {
+  dni?: T;
+  nombreCompleto?: T;
+  matricula?: T;
+  direccion?: T;
+  telefono?: T;
+  email?: T;
+  profesion?: T;
+  habilitado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios_select".
+ */
+export interface RubrosComerciosSelect<T extends boolean = true> {
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados_select".
+ */
+export interface ComerciosHabilitadosSelect<T extends boolean = true> {
+  nombre?: T;
+  cuit?: T;
+  razonSocial?: T;
+  direccion?: T;
+  localizacion?: T;
+  rubros?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
