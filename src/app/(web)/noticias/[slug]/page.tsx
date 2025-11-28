@@ -43,7 +43,7 @@ export async function generateMetadata({
   }
 
   const imageUrl = portada
-    ? `https://sanbenito.gob.ar${portada.url}`
+    ? `https://sanbenito.gob.ar${portada?.url}`
     : 'https://sanbenito.gob.ar/images/og-image.png' // Fallback OG image
 
   return {
