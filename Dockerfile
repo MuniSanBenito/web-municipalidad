@@ -1,11 +1,28 @@
-# Build stage: usa Bun para instalar y construir
-FROM oven/bun:latest AS base
+# syntax=docker.io/docker/dockerfile:1
+
+FROM node:lts-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 # Install dependencies with bun
 FROM base AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json bun.lock ./
-RUN bun install --no-save --frozen-lockfile
+
+# Install dependencies based on the preferred package manager
+# COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+COPY package.json pnpm-lock.yaml .npmrc* ./
+
+# RUN \
+#   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+#   elif [ -f package-lock.json ]; then npm ci; \
+#   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+#   else echo "Lockfile not found." && exit 1; \
+#   fi
+
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -50,7 +67,13 @@ ENV EMAIL_AUTH_USER=$EMAIL_AUTH_USER
 ARG EMAIL_AUTH_PASS
 ENV EMAIL_AUTH_PASS=$EMAIL_AUTH_PASS
 
-RUN bun run build
+# RUN \
+#   if [ -f yarn.lock ]; then yarn run build; \
+#   elif [ -f package-lock.json ]; then npm run build; \
+#   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+#   else echo "Lockfile not found." && exit 1; \
+#   fi
+RUN corepack enable && pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -84,4 +107,4 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["bun", "server.js"]
+CMD ["node", "server.js"]
