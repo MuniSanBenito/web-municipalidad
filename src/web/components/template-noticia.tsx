@@ -13,10 +13,7 @@ interface Props {
 export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
-  const bgImage =
-    typeof noticia?.portada === 'string'
-      ? noticia.portada
-      : noticia.portada?.url || noticia.portada.url!
+  const bgImage = typeof noticia?.portada === 'string' ? noticia.portada : noticia.portada?.url
 
   return (
     <main className="min-h-screen">
@@ -24,18 +21,22 @@ export function TemplateNoticia({ noticia }: Props) {
       {noticia.portada && (
         <div className="relative h-40 w-full sm:h-64 lg:h-96">
           {/* La misma imagen como fondo difuminado */}
-          <Image
-            src={bgImage}
-            alt={
-              typeof noticia.portada === 'string'
-                ? 'Portada de la noticia'
-                : noticia.portada?.alt || 'Portada de la noticia'
-            }
-            className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"
-            fill
-            priority
-            sizes="100vw"
-          />
+          {bgImage ? (
+            <Image
+              src={bgImage}
+              alt={
+                typeof noticia.portada === 'string'
+                  ? 'Portada de la noticia'
+                  : noticia.portada?.alt || 'Portada de la noticia'
+              }
+              className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"
+              fill
+              priority
+              sizes="100vw"
+            />
+          ) : (
+            <div className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"></div>
+          )}
           {/* Imagen principal (OG) */}
           <Image
             src={
