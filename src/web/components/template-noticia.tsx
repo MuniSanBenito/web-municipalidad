@@ -13,7 +13,13 @@ interface Props {
 export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
-  const bgImage = typeof noticia?.portada === 'string' ? noticia.portada : noticia.portada?.url
+  const [bgImage, image] =
+    typeof noticia?.portada === 'string'
+      ? [noticia.portada, noticia.portada]
+      : [noticia.portada?.url, noticia.portada?.sizes?.og?.url]
+
+  console.log('bgImage', bgImage)
+  console.log('image', image)
 
   return (
     <main className="min-h-screen">
@@ -34,26 +40,22 @@ export function TemplateNoticia({ noticia }: Props) {
               priority
               sizes="100vw"
             />
-          ) : (
-            <div className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"></div>
-          )}
+          ) : null}
           {/* Imagen principal (OG) */}
-          <Image
-            src={
-              typeof noticia.portada === 'string'
-                ? noticia.portada
-                : noticia.portada?.sizes?.og?.url || noticia.portada.url!
-            }
-            alt={
-              typeof noticia.portada === 'string'
-                ? 'Portada de la noticia'
-                : noticia.portada?.alt || 'Portada de la noticia'
-            }
-            className="h-full w-full object-contain"
-            fill
-            priority
-            sizes="100vw"
-          />
+          {image ? (
+            <Image
+              src={image}
+              alt={
+                typeof noticia.portada === 'string'
+                  ? 'Portada de la noticia'
+                  : noticia.portada?.alt || 'Portada de la noticia'
+              }
+              className="h-full w-full object-contain"
+              fill
+              priority
+              sizes="100vw"
+            />
+          ) : null}
         </div>
       )}
 
