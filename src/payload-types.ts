@@ -73,6 +73,7 @@ export interface Config {
     imagenes: Imagen;
     curriculums: Curriculum;
     archivos: Archivo;
+    'archivos-obras': ArchivosObra;
     avatares: Avatar;
     memorias: Memoria;
     contabilidad: Contabilidad;
@@ -104,6 +105,7 @@ export interface Config {
     imagenes: ImagenesSelect<false> | ImagenesSelect<true>;
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     archivos: ArchivosSelect<false> | ArchivosSelect<true>;
+    'archivos-obras': ArchivosObrasSelect<false> | ArchivosObrasSelect<true>;
     avatares: AvataresSelect<false> | AvataresSelect<true>;
     memorias: MemoriasSelect<false> | MemoriasSelect<true>;
     contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
@@ -127,6 +129,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
   };
@@ -538,6 +541,30 @@ export interface Archivo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos-obras".
+ */
+export interface ArchivosObra {
+  id: string;
+  alt: string;
+  /**
+   * Indica a qué sección pertenece este archivo
+   */
+  categoria: 'proyecto' | 'relevamiento';
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "memorias".
  */
 export interface Memoria {
@@ -929,6 +956,10 @@ export interface PayloadLockedDocument {
         value: string | Archivo;
       } | null)
     | ({
+        relationTo: 'archivos-obras';
+        value: string | ArchivosObra;
+      } | null)
+    | ({
         relationTo: 'avatares';
         value: string | Avatar;
       } | null)
@@ -1236,6 +1267,26 @@ export interface CurriculumsSelect<T extends boolean = true> {
  */
 export interface ArchivosSelect<T extends boolean = true> {
   created_by?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos-obras_select".
+ */
+export interface ArchivosObrasSelect<T extends boolean = true> {
+  alt?: T;
+  categoria?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -1,11 +1,11 @@
 import type { Archivo, Noticia } from '@/payload-types'
+import ShareButton from '@/web/components/ShareButton'
 import { generateStructuredData } from '@/web/lib/metadata'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Script from 'next/script'
-import ShareButton from '@/web/components/ShareButton'
 
 interface Props {
   noticia: Noticia
@@ -14,9 +14,9 @@ export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
   const bgImage =
-    typeof noticia.portada === 'string'
+    typeof noticia?.portada === 'string'
       ? noticia.portada
-      : noticia.portada.url || '/images/placeholder.jpg'
+      : noticia.portada?.url || noticia.portada.url!
 
   return (
     <main className="min-h-screen">
@@ -41,7 +41,7 @@ export function TemplateNoticia({ noticia }: Props) {
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
-                : noticia.portada?.sizes?.og?.url || '/images/placeholder.jpg'
+                : noticia.portada?.sizes?.og?.url || noticia.portada.url!
             }
             alt={
               typeof noticia.portada === 'string'
@@ -132,7 +132,7 @@ export function TemplateNoticia({ noticia }: Props) {
               description: noticia.descripcion,
               image:
                 typeof noticia.portada === 'object' && noticia.portada?.url
-                  ? `https://sanbenito.gob.ar${noticia.portada.url}`
+                  ? `https://sanbenito.gob.ar${noticia.portada?.url}`
                   : 'https://sanbenito.gob.ar/images/og-image.png',
               publishedTime: noticia.createdAt,
               modifiedTime: noticia.updatedAt,

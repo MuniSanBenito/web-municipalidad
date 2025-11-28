@@ -71,7 +71,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
         {/* La misma imagen como fondo difuminado */}
         <div
           className="absolute inset-0 -z-30 bg-cover bg-center blur-sm"
-          style={{ backgroundImage: `url('${portada.url}')` }}
+          style={{ backgroundImage: `url('${portada?.url || ''}')` }}
         ></div>
         <div
           id="foto-texto"
@@ -81,7 +81,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
             <div id="foto" className="relative h-full w-full">
               <Image
                 alt={portada.alt}
-                src={portada.url!}
+                src={portada?.url || ''}
                 fill
                 className="absolute inset-0 -z-20 object-contain"
                 priority
@@ -90,7 +90,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
           </Link>
           <Link
             href={`/noticias/${noticia.slug}`}
-            className="bg-base-100/80 max-w-1/3 hidden h-full w-full flex-col gap-3 px-5 py-4 md:flex"
+            className="bg-base-100/80 hidden h-full w-full max-w-1/3 flex-col gap-3 px-5 py-4 md:flex"
           >
             <h3 className="text-xl font-extrabold">{noticia.titulo}</h3>
             <p className="line-clamp-none max-h-full overflow-hidden text-lg md:line-clamp-4 lg:line-clamp-6 xl:line-clamp-none">
@@ -106,7 +106,7 @@ function renderNoticia(noticia: Noticia, index: number, noticias: Noticia[]) {
           <p className="text-base-content/80">{noticia.descripcion}</p>
         </Link>
         {/* Flechas */}
-        <div className="absolute left-1 right-1 top-1/2 z-10 flex -translate-y-1/2 transform justify-between">
+        <div className="absolute top-1/2 right-1 left-1 z-10 flex -translate-y-1/2 transform justify-between">
           <a
             href={`#noticia${index === 0 ? noticias.length : index}`}
             className="btn btn-square btn-soft btn-sm focus-visible:ring-primary rounded-xs focus-visible:ring-2"
@@ -219,7 +219,7 @@ export default async function Page() {
               <Link
                 key={tramite.link}
                 href={tramite.link}
-                className="card bg-base-100 hover:bg-base-200 border-base-200 focus-visible:ring-primary rounded-xl border shadow-lg outline-none transition-all duration-200 hover:scale-105 hover:shadow-2xl focus-visible:ring-2"
+                className="card bg-base-100 hover:bg-base-200 border-base-200 focus-visible:ring-primary rounded-xl border shadow-lg transition-all duration-200 outline-none hover:scale-105 hover:shadow-2xl focus-visible:ring-2"
                 aria-label={`Ir a ${tramite.title}`}
                 tabIndex={0}
               >
@@ -260,7 +260,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2">
                   {/* Icono WhatsApp Tabler */}
                   <IconBrandWhatsapp size={18} className="text-accent flex-shrink-0" stroke={1.5} />
-                  <span className="text-base-content whitespace-nowrap font-medium">
+                  <span className="text-base-content font-medium whitespace-nowrap">
                     WhatsApp Rentas:
                   </span>
                   <a
@@ -275,7 +275,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2">
                   {/* Icono Mail Tabler */}
                   <IconMail size={18} className="text-primary flex-shrink-0" stroke={1.5} />
-                  <span className="text-base-content whitespace-nowrap font-medium">
+                  <span className="text-base-content font-medium whitespace-nowrap">
                     Correo Rentas:
                   </span>
                   <a
