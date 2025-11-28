@@ -3,7 +3,6 @@ import {
   IconCertificate,
   IconCopy,
   IconFileDescription,
-  IconInfoCircle,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -87,21 +86,36 @@ export default function PageObrasPrivadas() {
             Información Importante
           </h2>
 
-          <div className="alert alert-info shadow-lg transition-all duration-300 hover:shadow-xl">
+          <div className="alert alert-warning shadow-lg transition-all duration-300 hover:shadow-xl">
             <div>
-              <IconInfoCircle size={24} className="h-6 w-6 flex-shrink-0" />
               <div>
-                <h3 className="text-info font-bold">Horarios de Atención</h3>
-                <p className="text-info-content text-sm">
-                  Lunes a Viernes de 7:00 a 13:00 hs en el Edificio Municipal. Para consultas, puede
-                  comunicarse al teléfono (0343) 4973454 o por correo a
-                  <a
-                    href="mailto:obrasprivadas@munisanbenito.gov.ar"
-                    className="text-info font-bold hover:underline"
-                  >
-                    obrasprivadas@munisanbenito.gov.ar
-                  </a>
-                </p>
+                <h3 className="font-bold">Información de Contacto</h3>
+                <div className="space-y-1 text-sm">
+                  <p>
+                    <strong>Directora:</strong> Ing. Sara Carina Zapata
+                  </p>
+                  <p>
+                    <strong>Atención:</strong> Lunes a Viernes de 7:30 a 12:30 hs
+                  </p>
+                  <p>
+                    <strong>WhatsApp:</strong>{' '}
+                    <a
+                      href="https://wa.me/5493434171733"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link font-bold underline"
+                    >
+                      343-4171-733
+                    </a>{' '}
+                    (SOLO MENSAJES)
+                  </p>
+                  <p>
+                    <strong>Email:</strong>{' '}
+                    <a href="mailto:opriv.sanbenito@gmail.com" className="link font-bold underline">
+                      opriv.sanbenito@gmail.com
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>

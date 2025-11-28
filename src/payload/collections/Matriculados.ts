@@ -1,10 +1,17 @@
 import type { CollectionConfig } from 'payload'
+import { isAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Matriculados: CollectionConfig = {
   slug: 'matriculados',
   labels: {
     singular: 'Matriculado',
     plural: 'Matriculados',
+  },
+  access: {
+    create: isAdminCollectionAccess,
+    read: isPublicAccess,
+    update: isAdminCollectionAccess,
+    delete: isAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'nombreCompleto',

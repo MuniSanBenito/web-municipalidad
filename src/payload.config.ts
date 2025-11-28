@@ -9,6 +9,7 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './payload/collections/Archivos'
+import { ArchivosObras } from './payload/collections/ArchivosObras'
 import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
 import { Ciudadanos } from './payload/collections/Ciudadanos'
@@ -41,6 +42,9 @@ const storagePlugin = s3Storage({
     },
     [Archivos.slug]: {
       prefix: 'archivos',
+    },
+    [ArchivosObras.slug]: {
+      prefix: 'archivos-obras',
     },
     [Avatares.slug]: {
       prefix: 'avatares',
@@ -142,6 +146,7 @@ export default buildConfig({
     Imagenes,
     Curriculums,
     Archivos,
+    ArchivosObras,
     Avatares,
     Memorias,
     Contabilidad,
