@@ -14,7 +14,9 @@ export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
   const bgImage =
-    typeof noticia?.portada === 'string' ? noticia.portada : noticia.portada?.url || ''
+    typeof noticia?.portada === 'string'
+      ? noticia.portada
+      : noticia.portada?.url || '/images/placeholder.jpg'
 
   return (
     <main className="min-h-screen">
@@ -39,7 +41,7 @@ export function TemplateNoticia({ noticia }: Props) {
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
-                : noticia.portada?.sizes?.og?.url || ''
+                : noticia.portada?.sizes?.og?.url || '/images/placeholder.jpg'
             }
             alt={
               typeof noticia.portada === 'string'
