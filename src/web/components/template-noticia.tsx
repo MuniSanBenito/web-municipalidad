@@ -16,7 +16,7 @@ export function TemplateNoticia({ noticia }: Props) {
   const bgImage =
     typeof noticia?.portada === 'string'
       ? noticia.portada
-      : noticia.portada?.url || '/images/placeholder.jpg'
+      : noticia.portada?.url || noticia.portada.url!
 
   return (
     <main className="min-h-screen">
@@ -41,7 +41,7 @@ export function TemplateNoticia({ noticia }: Props) {
             src={
               typeof noticia.portada === 'string'
                 ? noticia.portada
-                : noticia.portada?.sizes?.og?.url || '/images/placeholder.jpg'
+                : noticia.portada?.sizes?.og?.url || noticia.portada.url!
             }
             alt={
               typeof noticia.portada === 'string'
