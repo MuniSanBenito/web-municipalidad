@@ -211,7 +211,19 @@ export default async function PagePresentacionProyecto() {
               <div className="card-body">
                 <p className="mb-3">Los profesionales involucrados deben presentar:</p>
                 <ul className="list-disc space-y-2 pl-5">
-                  <li>Formulario de Inscripción/Ratificación</li>
+                  <li>
+                    Formulario de Inscripción/Ratificación{' '}
+                    {inscripcionProfesional?.url && (
+                      <a
+                        href={inscripcionProfesional.url}
+                        className="link link-primary"
+                        target="_blank"
+                        download
+                      >
+                        <em>Descargar</em>
+                      </a>
+                    )}
+                  </li>
                   <li>
                     Constancia de pago de sellado de inscripción/ratificación en registro municipal
                   </li>
@@ -238,6 +250,13 @@ export default async function PagePresentacionProyecto() {
                   <p className="mt-1 text-sm">
                     <strong>LOTEOS ALTOS DEL ESTE Y SOLVENCIA:</strong> Corresponde retiro de 3,00m
                   </p>
+                  {retiros?.url && (
+                    <p className="mt-2">
+                      <a href={retiros.url} className="link link-black" target="_blank" download>
+                        <em>Descargar información de Retiros</em>
+                      </a>
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
