@@ -73,6 +73,7 @@ export interface Config {
     imagenes: Imagen;
     curriculums: Curriculum;
     archivos: Archivo;
+    'archivos-obras': ArchivosObra;
     avatares: Avatar;
     memorias: Memoria;
     contabilidad: Contabilidad;
@@ -85,6 +86,10 @@ export interface Config {
     'balances-mensuales': BalancesMensuale;
     'eventos-tags': EventosTag;
     ciudadanos: Ciudadano;
+    matriculados: Matriculado;
+    'rubros-comercios': RubrosComercio;
+    'comercios-habilitados': ComerciosHabilitado;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -100,6 +105,7 @@ export interface Config {
     imagenes: ImagenesSelect<false> | ImagenesSelect<true>;
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     archivos: ArchivosSelect<false> | ArchivosSelect<true>;
+    'archivos-obras': ArchivosObrasSelect<false> | ArchivosObrasSelect<true>;
     avatares: AvataresSelect<false> | AvataresSelect<true>;
     memorias: MemoriasSelect<false> | MemoriasSelect<true>;
     contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
@@ -112,6 +118,10 @@ export interface Config {
     'balances-mensuales': BalancesMensualesSelect<false> | BalancesMensualesSelect<true>;
     'eventos-tags': EventosTagsSelect<false> | EventosTagsSelect<true>;
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
+    matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
+    'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
+    'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -119,6 +129,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
   };
@@ -389,7 +400,7 @@ export interface Noticia {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -515,6 +526,30 @@ export interface Archivo {
         relationTo: 'ciudadanos';
         value: string | Ciudadano;
       };
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos-obras".
+ */
+export interface ArchivosObra {
+  id: string;
+  alt: string;
+  /**
+   * Indica a qué sección pertenece este archivo
+   */
+  categoria: 'proyecto' | 'relevamiento';
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -672,7 +707,7 @@ export interface Habilitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -716,7 +751,7 @@ export interface Licitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -760,7 +795,7 @@ export interface Concurso {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -804,7 +839,7 @@ export interface BalancesMensuale {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -827,6 +862,71 @@ export interface BalancesMensuale {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "matriculados".
+ */
+export interface Matriculado {
+  id: string;
+  dni: string;
+  nombreCompleto: string;
+  matricula: string;
+  direccion: string;
+  telefono: string;
+  email: string;
+  profesion: string;
+  habilitado?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios".
+ */
+export interface RubrosComercio {
+  id: string;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados".
+ */
+export interface ComerciosHabilitado {
+  id: string;
+  nombre: string;
+  cuit: string;
+  razonSocial: string;
+  direccion: string;
+  /**
+   * Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  localizacion: [number, number];
+  rubros?: (string | RubrosComercio)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -854,6 +954,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'archivos';
         value: string | Archivo;
+      } | null)
+    | ({
+        relationTo: 'archivos-obras';
+        value: string | ArchivosObra;
       } | null)
     | ({
         relationTo: 'avatares';
@@ -902,6 +1006,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ciudadanos';
         value: string | Ciudadano;
+      } | null)
+    | ({
+        relationTo: 'matriculados';
+        value: string | Matriculado;
+      } | null)
+    | ({
+        relationTo: 'rubros-comercios';
+        value: string | RubrosComercio;
+      } | null)
+    | ({
+        relationTo: 'comercios-habilitados';
+        value: string | ComerciosHabilitado;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1151,6 +1267,26 @@ export interface CurriculumsSelect<T extends boolean = true> {
  */
 export interface ArchivosSelect<T extends boolean = true> {
   created_by?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archivos-obras_select".
+ */
+export interface ArchivosObrasSelect<T extends boolean = true> {
+  alt?: T;
+  categoria?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1438,6 +1574,53 @@ export interface CiudadanosSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "matriculados_select".
+ */
+export interface MatriculadosSelect<T extends boolean = true> {
+  dni?: T;
+  nombreCompleto?: T;
+  matricula?: T;
+  direccion?: T;
+  telefono?: T;
+  email?: T;
+  profesion?: T;
+  habilitado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios_select".
+ */
+export interface RubrosComerciosSelect<T extends boolean = true> {
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados_select".
+ */
+export interface ComerciosHabilitadosSelect<T extends boolean = true> {
+  nombre?: T;
+  cuit?: T;
+  razonSocial?: T;
+  direccion?: T;
+  localizacion?: T;
+  rubros?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

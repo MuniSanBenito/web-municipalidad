@@ -2,18 +2,17 @@ import type { Noticia } from '@/payload-types'
 import { TemplateNoticia } from '@/web/components/template-noticia'
 import { basePayload } from '@/web/lib/payload'
 import { IconNewsOff } from '@tabler/icons-react'
-import type { Metadata, ResolvingMetadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 type Props = {
   params: { slug: string }
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const { slug } = params
+export async function generateMetadata({
+  params,
+}: PageProps<'/noticias/[slug]'>): Promise<Metadata> {
+  const { slug } = await params
 
   const { docs } = await basePayload.find({
     collection: 'noticias',
@@ -33,12 +32,19 @@ export async function generateMetadata(
     }
   }
 
-  const previousImages = (await parent).openGraph?.images || []
+  // const previousImages = (await parent).openGraph?.images || []
 
-  const imageUrl =
-    typeof noticia.portada === 'object' && noticia.portada?.url
-      ? `https://sanbenito.gob.ar${noticia.portada.url}`
-      : 'https://sanbenito.gob.ar/images/og-image.png' // Fallback OG image
+  let portada = noticia.portada
+  if (typeof portada === 'string') {
+    portada = await basePayload.findByID({
+      collection: 'imagenes',
+      id: portada,
+    })
+  }
+
+  const imageUrl = portada
+    ? `https://sanbenito.gob.ar${portada?.url}`
+    : 'https://sanbenito.gob.ar/images/og-image.png' // Fallback OG image
 
   return {
     title: noticia.titulo,
@@ -93,8 +99,8 @@ export async function generateMetadata(
   }
 }
 
-export default async function PageNoticia({ params }: Props) {
-  const { slug } = params
+export default async function PageNoticia({ params }: PageProps<'/noticias/[slug]'>) {
+  const { slug } = await params
 
   const { docs } = await basePayload.find({
     collection: 'noticias',

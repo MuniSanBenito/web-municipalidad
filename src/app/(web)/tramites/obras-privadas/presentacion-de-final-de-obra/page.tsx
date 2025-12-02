@@ -17,9 +17,9 @@ export default function PageFinalizacionObra() {
               Presentación de Final de Obra
             </h2>
             <p className="mt-4 text-base leading-relaxed md:text-lg">
-              El certificado de Final de Obra es un documento oficial que acredita que la construcción 
-              ha sido completada de acuerdo con los planos aprobados y cumple con todas las normativas 
-              municipales vigentes.
+              El certificado de Final de Obra es un documento oficial que acredita que la
+              construcción ha sido completada de acuerdo con los planos aprobados y cumple con todas
+              las normativas municipales vigentes.
             </p>
           </div>
         </div>
@@ -34,19 +34,31 @@ export default function PageFinalizacionObra() {
           <div className="card bg-base-200 shadow-xl">
             <div className="card-body">
               <p className="mb-4">
-                Para obtener el certificado de Final de Obra, es necesario completar el siguiente trámite:
+                Para obtener el certificado de Final de Obra, es necesario completar el siguiente
+                trámite:
               </p>
               <ul className="list-disc space-y-3 pl-5 text-lg">
                 <li>
                   Presentar Planilla firmada por el Profesional de la Construcción por Mesa de
-                  Entrada.
+                  Entrada.{' '}
+                  <a
+                    href="/documents/Planilla para Presentación de Final de Obra.pdf"
+                    className="link link-primary"
+                    target="_blank"
+                    download
+                  >
+                    <strong>
+                      <em>Descargar.</em>
+                    </strong>
+                  </a>
                 </li>
                 <li>
-                  La planilla debe estar completa con todos los datos de la obra y del profesional responsable.
+                  La planilla debe estar completa con todos los datos de la obra y del profesional
+                  responsable.
                 </li>
                 <li>
-                  Una vez presentada la documentación, se coordinará una inspección final para verificar 
-                  que la obra se haya realizado conforme a los planos aprobados.
+                  Una vez presentada la documentación, se coordinará una inspección final para
+                  verificar que la obra se haya realizado conforme a los planos aprobados.
                 </li>
               </ul>
             </div>
@@ -73,7 +85,7 @@ export default function PageFinalizacionObra() {
                   <p className="text-sm">
                     El certificado de Final de Obra es necesario para diversos trámites, como:
                   </p>
-                  <ul className="list-disc pl-5 mt-2 text-sm">
+                  <ul className="mt-2 list-disc pl-5 text-sm">
                     <li>Actualización catastral</li>
                     <li>Conexión definitiva de servicios</li>
                     <li>Escrituración</li>

@@ -1,19 +1,16 @@
 'use client'
-
 import {
-  IconAccessible,
   IconChevronLeft,
   IconChevronRight,
   IconRefresh,
   IconZoomIn,
   IconZoomOut,
 } from '@tabler/icons-react'
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from '../theme-toggle'
 
 export function AccessibilityControls() {
-  const { setTheme } = useTheme()
+  // const { setTheme } = useTheme()
   const [isMounted, setIsMounted] = useState(false)
 
   const [fontSize, setFontSize] = useState(1)
@@ -296,7 +293,7 @@ export function AccessibilityControls() {
           </li>
 
           {/* Accesibilidad */}
-          <li>
+          {/* <li>
             <button
               onClick={() => setTheme('high-contrast')}
               className="btn btn-circle btn-sm"
@@ -305,7 +302,7 @@ export function AccessibilityControls() {
             >
               <IconAccessible size={24} />
             </button>
-          </li>
+          </li> */}
         </ul>
       </aside>
       {/* Anuncio discreto para lectores de pantalla sobre cambios de tamaño de fuente */}

@@ -1,4 +1,5 @@
 import type { Archivo, Noticia } from '@/payload-types'
+import ShareButton from '@/web/components/ShareButton'
 import { generateStructuredData } from '@/web/lib/metadata'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
@@ -12,27 +13,49 @@ interface Props {
 export function TemplateNoticia({ noticia }: Props) {
   const fechaPublicacion = new Date(noticia.createdAt).toLocaleDateString('es-AR')
 
+  const [bgImage, image] =
+    typeof noticia?.portada === 'string'
+      ? [noticia.portada, noticia.portada]
+      : [noticia.portada?.url, noticia.portada?.sizes?.og?.url]
+
+  console.log('bgImage', bgImage)
+  console.log('image', image)
+
   return (
-    <main className="bg-base-100 min-h-screen">
+    <main className="min-h-screen">
       {/* Portada */}
       {noticia.portada && (
-        <div className="relative h-96 w-full">
-          <Image
-            src={
-              typeof noticia.portada === 'string'
-                ? noticia.portada
-                : noticia.portada?.url || '/images/placeholder.jpg'
-            }
-            alt={
-              typeof noticia.portada === 'string'
-                ? 'Portada de la noticia'
-                : noticia.portada?.alt || 'Portada de la noticia'
-            }
-            className="h-full w-full object-cover"
-            fill
-            priority
-            sizes="100vw"
-          />
+        <div className="relative h-40 w-full sm:h-64 lg:h-96">
+          {/* La misma imagen como fondo difuminado */}
+          {bgImage ? (
+            <Image
+              src={bgImage}
+              alt={
+                typeof noticia.portada === 'string'
+                  ? 'Portada de la noticia'
+                  : noticia.portada?.alt || 'Portada de la noticia'
+              }
+              className="absolute inset-0 -z-30 h-full w-full object-cover blur-sm"
+              fill
+              priority
+              sizes="100vw"
+            />
+          ) : null}
+          {/* Imagen principal (OG) */}
+          {image ? (
+            <Image
+              src={image}
+              alt={
+                typeof noticia.portada === 'string'
+                  ? 'Portada de la noticia'
+                  : noticia.portada?.alt || 'Portada de la noticia'
+              }
+              className="h-full w-full object-contain"
+              fill
+              priority
+              sizes="100vw"
+            />
+          ) : null}
         </div>
       )}
 
@@ -88,6 +111,19 @@ export function TemplateNoticia({ noticia }: Props) {
         </section>
       )}
 
+      {/* Botón de compartir */}
+      <section className="container mx-auto max-w-4xl px-4 pb-12 sm:px-6">
+        <div className="flex justify-center">
+          <div className="w-full max-w-md">
+            <ShareButton
+              title={noticia.titulo}
+              url={`${process.env.NEXT_PUBLIC_SERVER_URL || 'https://sanbenito.gob.ar'}/noticias/${noticia.slug}`}
+              type="noticia"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Datos estructurados JSON-LD para la noticia */}
       <Script
         id="structured-data-article"
@@ -99,7 +135,7 @@ export function TemplateNoticia({ noticia }: Props) {
               description: noticia.descripcion,
               image:
                 typeof noticia.portada === 'object' && noticia.portada?.url
-                  ? `https://sanbenito.gob.ar${noticia.portada.url}`
+                  ? `https://sanbenito.gob.ar${noticia.portada?.url}`
                   : 'https://sanbenito.gob.ar/images/og-image.png',
               publishedTime: noticia.createdAt,
               modifiedTime: noticia.updatedAt,

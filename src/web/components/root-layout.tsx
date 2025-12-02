@@ -77,7 +77,7 @@ export function RootLayout({ children, ciudadano }: Props) {
 
   return (
     <>
-      <ThemeInitScript />
+      {/* <ThemeInitScript /> */}
       <AccessibilityControls />
       <input
         type="checkbox"
@@ -113,7 +113,7 @@ export function RootLayout({ children, ciudadano }: Props) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="btn btn-ghost btn-primary dark:btn-neutral btn-lg"
+                    className="btn btn-ghost btn-primary dark:btn-neutral btn-lg text-primary-content dark:text-base-content"
                   >
                     {link.label}
                   </Link>
@@ -129,7 +129,7 @@ export function RootLayout({ children, ciudadano }: Props) {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                  className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow"
                 >
                   <li>
                     <Link href="/perfil">
@@ -149,7 +149,7 @@ export function RootLayout({ children, ciudadano }: Props) {
             )}
             <label
               htmlFor="my-drawer"
-              className="drawer-button btn btn-ghost btn-primary btn-square dark:btn-neutral lg:hidden"
+              className="drawer-button btn btn-ghost btn-primary btn-square dark:btn-neutral dark:text-base-content text-primary-content lg:hidden"
             >
               <IconMenu2 />
             </label>
@@ -242,7 +242,7 @@ export function RootLayout({ children, ciudadano }: Props) {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="btn btn-ghost btn-primary dark:btn-neutral btn-lg w-fit"
+                  className="btn btn-ghost btn-primary dark:btn-neutral btn-lg text-primary-content dark:text-base-content w-fit"
                   onClick={closeDrawer}
                 >
                   {link.label}
@@ -258,7 +258,7 @@ export function RootLayout({ children, ciudadano }: Props) {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="menu dropdown-content bg-base-100 rounded-box z-[1] mb-2 w-52 p-2 shadow"
+                  className="menu dropdown-content bg-base-100 rounded-box z-1 mb-2 w-52 p-2 shadow"
                 >
                   <li>
                     <Link href="/perfil" onClick={closeDrawer}>

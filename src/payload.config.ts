@@ -9,9 +9,11 @@ import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { Archivos } from './payload/collections/Archivos'
+import { ArchivosObras } from './payload/collections/ArchivosObras'
 import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
 import { Ciudadanos } from './payload/collections/Ciudadanos'
+import { ComerciosHabilitados } from './payload/collections/ComerciosHabilitados'
 import { Concursos } from './payload/collections/Concursos'
 import { Contabilidad } from './payload/collections/Contabilidad'
 import { Curriculums } from './payload/collections/Curriculums'
@@ -21,8 +23,10 @@ import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Intimaciones } from './payload/collections/Intimaciones'
 import { Licitaciones } from './payload/collections/Licitaciones'
+import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
+import { RubrosComercios } from './payload/collections/RubrosComercios'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
@@ -38,6 +42,9 @@ const storagePlugin = s3Storage({
     },
     [Archivos.slug]: {
       prefix: 'archivos',
+    },
+    [ArchivosObras.slug]: {
+      prefix: 'archivos-obras',
     },
     [Avatares.slug]: {
       prefix: 'avatares',
@@ -139,6 +146,7 @@ export default buildConfig({
     Imagenes,
     Curriculums,
     Archivos,
+    ArchivosObras,
     Avatares,
     Memorias,
     Contabilidad,
@@ -151,6 +159,9 @@ export default buildConfig({
     BalancesMensuales,
     EventosTags,
     Ciudadanos,
+    Matriculados,
+    RubrosComercios,
+    ComerciosHabilitados,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),
