@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { isObrasPrivadasOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Matriculados: CollectionConfig = {
   slug: 'matriculados',
@@ -8,10 +8,10 @@ export const Matriculados: CollectionConfig = {
     plural: 'Matriculados',
   },
   access: {
-    create: isAdminCollectionAccess,
+    create: isObrasPrivadasOrAdminCollectionAccess,
     read: isPublicAccess,
-    update: isAdminCollectionAccess,
-    delete: isAdminCollectionAccess,
+    update: isObrasPrivadasOrAdminCollectionAccess,
+    delete: isObrasPrivadasOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'nombreCompleto',

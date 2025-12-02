@@ -9,6 +9,7 @@ export const ROLES = [
   'HACIENDA',
   'JUZGADO',
   'GESTOR CIUDADANO',
+  'OBRAS PRIVADAS',
 ] as const
 export type Rol = (typeof ROLES)[number]
 
