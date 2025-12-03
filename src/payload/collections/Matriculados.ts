@@ -24,36 +24,43 @@ export const Matriculados: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      label: "DNI",
     },
     {
       name: 'nombreCompleto',
       type: 'text',
       required: true,
+      label: 'Nombre Completo',
     },
     {
       name: 'matricula',
       type: 'text',
       required: true,
+      label: 'Matrícula',
     },
     {
       name: 'direccion',
       type: 'text',
       required: true,
+      label: 'Dirección',
     },
     {
       name: 'telefono',
       type: 'text',
       required: true,
+      label: 'Teléfono',
     },
     {
       name: 'email',
       type: 'email',
       required: true,
+      label: 'Email',
     },
     {
       name: 'profesion',
       type: 'text',
       required: true,
+      label: 'Profesión',
     },
     {
       name: 'habilitado',
