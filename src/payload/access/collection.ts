@@ -116,6 +116,15 @@ export const isGestorCiudadanoOrAdminCollectionAccess: Access = ({ req }) => {
   )
 }
 
+export const isObrasPrivadasOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
+  return (
+    (req?.user?.rol?.includes('OBRAS PRIVADAS') || req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ??
+    false
+  )
+}
+
 /*
 GLOBALS
 Autoridades
@@ -208,6 +217,12 @@ Noticias (idem a eventos)
 - R: publico
 - U: admin y comunicacion
 - D: admin y comunicacion
+
+Matriculados (idem a eventos)
+- C: admin y ObreasPRivadas
+- R: publico
+- U: admin y ObreasPRivadas
+- D: admin y ObreasPRivadas
 
 Ubicaciones (idem a eventos)
 - C: admin y comunicacion
