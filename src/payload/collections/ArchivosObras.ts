@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { isObrasPrivadasOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
 export const ArchivosObras: CollectionConfig = {
@@ -9,10 +9,10 @@ export const ArchivosObras: CollectionConfig = {
     plural: 'Archivos Obras',
   },
   access: {
-    create: isAdminCollectionAccess,
+    create: isObrasPrivadasOrAdminCollectionAccess,
     read: isPublicAccess,
-    update: isAdminCollectionAccess,
-    delete: isAdminCollectionAccess,
+    update: isObrasPrivadasOrAdminCollectionAccess,
+    delete: isObrasPrivadasOrAdminCollectionAccess,
   },
   admin: {
     group: 'Almacenamiento',
