@@ -3,7 +3,7 @@ import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2, IconUser, IconMessageChatbot, IconX } from '@tabler/icons-react'
+import { IconMenu2, IconMessageChatbot, IconUser, IconX } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
@@ -12,15 +12,14 @@ import type { PropsWithChildren } from 'react'
 import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
 import { LogoutButton } from './logout-button'
-import { ThemeInitScript } from './ThemeInitScript'
 
 // Import Chatbot related components
 import ActionProvider from '@/components/chatbot/ActionProvider'
+import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
 import Chatbot from 'react-chatbot-kit'
 import 'react-chatbot-kit/build/main.css' // Default styling
-import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -159,20 +158,22 @@ export function RootLayout({ children, ciudadano }: Props) {
           {children}
         </main>
 
-        {/* Chatbot Container */}
+        {/* Chatbot Container - Premium Design */}
         <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000 }}>
           {showChatbot && (
             <div
               className="chatbot-container"
               style={{
-                width: '380px',
-                height: '600px',
-                boxShadow: '0 12px 40px rgba(7, 102, 51, 0.25), 0 0 0 2px #b6c544',
-                borderRadius: '20px',
+                width: '400px',
+                maxWidth: 'calc(100vw - 48px)',
+                height: '620px',
+                maxHeight: 'calc(100vh - 140px)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(7, 102, 51, 0.1)',
+                borderRadius: '24px',
                 overflow: 'hidden',
                 marginBottom: '16px',
                 animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                background: '#ffffff',
+                background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
               }}
             >
               <Chatbot
@@ -184,49 +185,57 @@ export function RootLayout({ children, ciudadano }: Props) {
           )}
           <button
             onClick={toggleChatbot}
+            className="chat-toggle-button"
             style={{
               width: '68px',
               height: '68px',
               borderRadius: '50%',
               border: '3px solid #076633',
-              background: '#b6c544',
+              background: 'linear-gradient(135deg, #b6c544 0%, #9ab038 100%)',
               color: '#076633',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 8px 24px rgba(182, 197, 68, 0.4)',
+              boxShadow: showChatbot
+                ? '0 4px 16px rgba(7, 102, 51, 0.3)'
+                : '0 8px 30px rgba(182, 197, 68, 0.5), 0 0 0 0 rgba(182, 197, 68, 0.4)',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               marginLeft: 'auto',
               position: 'relative',
+              animation: showChatbot ? 'none' : 'pulse 2.5s ease-in-out infinite',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.1) translateY(-2px) rotate(5deg)';
-              e.currentTarget.style.boxShadow = '0 12px 32px rgba(182, 197, 68, 0.5)';
+              e.currentTarget.style.transform = 'scale(1.1) translateY(-3px)'
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(182, 197, 68, 0.6)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1) translateY(0) rotate(0deg)';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(182, 197, 68, 0.4)';
+              e.currentTarget.style.transform = 'scale(1) translateY(0)'
+              e.currentTarget.style.boxShadow = showChatbot
+                ? '0 4px 16px rgba(7, 102, 51, 0.3)'
+                : '0 8px 30px rgba(182, 197, 68, 0.5)'
             }}
-            aria-label={showChatbot ? 'Cerrar chat' : 'Abrir chat'}
+            aria-label={showChatbot ? 'Cerrar chat' : 'Abrir chat con Beni'}
           >
             {showChatbot ? (
-              <IconX size={32} strokeWidth={2.5} />
+              <IconX size={28} strokeWidth={2.5} />
             ) : (
               <>
-                <IconMessageChatbot size={32} strokeWidth={2.5} />
-                {/* Indicador de notificación */}
-                <div style={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '8px',
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  background: '#076633',
-                  border: '2px solid #b6c544',
-                  animation: 'pulse 2s ease-in-out infinite',
-                }} />
+                <IconMessageChatbot size={30} strokeWidth={2} />
+                {/* Indicador de disponibilidad */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '4px',
+                    right: '4px',
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                    border: '2px solid #ffffff',
+                    boxShadow: '0 2px 8px rgba(34, 197, 94, 0.6)',
+                  }}
+                />
               </>
             )}
           </button>

@@ -1,288 +1,646 @@
 // src/components/chatbot/ActionProvider.tsx
-import { createChatBotMessage } from 'react-chatbot-kit';
-import { fetchAIResponse } from './aiService';
 
-// Definir la interfaz IActionProvider ya que no se exporta directamente de react-chatbot-kit
-interface IActionProvider {
-  createChatBotMessage: any;
-  setState: any;
-  createClientMessage: any;
+/**
+ * ActionProvider: Maneja todas las acciones del chatbot
+ * v2.0: Tipado TypeScript mejorado, rate limiting integrado
+ * v2.1: Sistema de feedback y handlers refactorizados
+ */
+
+import type React from 'react'
+import { fetchAIResponse } from './aiService'
+import { generateContextualSuggestions } from './aiServiceEnhanced'
+import { trackQuery } from './feedbackService'
+import { canMakeRequest } from './rateLimiter'
+import type {
+  AIProvider,
+  ChatMessage,
+  ChatMessageOptions,
+  ChatState,
+  ContextualSuggestion,
+  CreateChatBotMessageFunction,
+  CreateClientMessageFunction,
+  SetStateFunction,
+} from './types'
+
+// ===============================================
+// CONFIGURACIÓN DE TRÁMITES (Factory Pattern)
+// ===============================================
+
+interface TramiteConfig {
+  nombre: string
+  descripcion: string
+  url: string
+  etiquetaBoton: string
 }
 
-class ActionProvider implements IActionProvider {
-  createChatBotMessage: any;
-  setState: any;
-  stateRef: any;
-  createClientMessage: any;
-  addMessageToState: any;
+/**
+ * Configuración centralizada de todos los trámites municipales
+ * Evita la repetición de handlers similares
+ */
+const TRAMITES_CONFIG: Record<string, TramiteConfig> = {
+  actividadesDeportivas: {
+    nombre: 'Actividades Deportivas',
+    descripcion: 'Información sobre Actividades Deportivas:',
+    url: '/tramites/actividades-deportivas',
+    etiquetaBoton: 'Ver Actividades Deportivas',
+  },
+  areaMujer: {
+    nombre: 'Área Mujer',
+    descripcion: 'Información sobre el Área Mujer:',
+    url: '/tramites/area-mujer',
+    etiquetaBoton: 'Ver Área Mujer',
+  },
+  catastro: {
+    nombre: 'Catastro',
+    descripcion: 'Información sobre Catastro:',
+    url: '/tramites/catastro',
+    etiquetaBoton: 'Ver Catastro',
+  },
+  cav: {
+    nombre: 'CAV',
+    descripcion: 'Información sobre CAV (Centro de Atención al Vecino):',
+    url: '/tramites/cav',
+    etiquetaBoton: 'Ver CAV',
+  },
+  cicBarrioSanPedro: {
+    nombre: 'CIC Barrio San Pedro',
+    descripcion: 'Información sobre CIC Barrio San Pedro:',
+    url: '/tramites/cic-barrio-san-pedro',
+    etiquetaBoton: 'Ver CIC Barrio San Pedro',
+  },
+  habilitaciones: {
+    nombre: 'Habilitaciones',
+    descripcion: 'Información general sobre Habilitaciones:',
+    url: '/tramites/habilitaciones',
+    etiquetaBoton: 'Ver Habilitaciones',
+  },
+  licencia: {
+    nombre: 'Licencias de Conducir',
+    descripcion: 'Información general sobre Licencias de Conducir:',
+    url: '/tramites/licencia',
+    etiquetaBoton: 'Ver Licencias',
+  },
+  licenciaOriginal: {
+    nombre: 'Licencia Original',
+    descripcion: 'Información sobre Licencia de Conducir Original:',
+    url: '/tramites/licencia/original',
+    etiquetaBoton: 'Ver Licencia Original',
+  },
+  licenciaRenovacion: {
+    nombre: 'Renovación de Licencia',
+    descripcion: 'Información sobre Renovación de Licencia:',
+    url: '/tramites/licencia/renovacion',
+    etiquetaBoton: 'Ver Renovación',
+  },
+  licenciaAmpliacion: {
+    nombre: 'Ampliación de Licencia',
+    descripcion: 'Información sobre Ampliación de Licencia:',
+    url: '/tramites/licencia/ampliacion',
+    etiquetaBoton: 'Ver Ampliación',
+  },
+  rentas: {
+    nombre: 'Rentas',
+    descripcion: 'Información sobre Rentas e Impuestos Municipales:',
+    url: '/tramites/rentas',
+    etiquetaBoton: 'Ver Rentas',
+  },
+  obrasPrivadas: {
+    nombre: 'Obras Privadas',
+    descripcion: 'Información sobre Obras Privadas:',
+    url: '/tramites/obras-privadas',
+    etiquetaBoton: 'Ver Obras Privadas',
+  },
+  obrasInscripcion: {
+    nombre: 'Inscripción Municipal',
+    descripcion: 'Información sobre Inscripción Municipal:',
+    url: '/tramites/obras-privadas/inscripcion',
+    etiquetaBoton: 'Ver Inscripción',
+  },
+  obrasFinal: {
+    nombre: 'Final de Obra',
+    descripcion: 'Información sobre Final de Obra:',
+    url: '/tramites/obras-privadas/final',
+    etiquetaBoton: 'Ver Final de Obra',
+  },
+  obrasPresentacion: {
+    nombre: 'Presentación de Proyecto',
+    descripcion: 'Información sobre Presentación de Proyecto:',
+    url: '/tramites/obras-privadas/presentacion',
+    etiquetaBoton: 'Ver Presentación',
+  },
+  obrasRelevamiento: {
+    nombre: 'Relevamiento',
+    descripcion: 'Información sobre Relevamiento:',
+    url: '/tramites/obras-privadas/relevamiento',
+    etiquetaBoton: 'Ver Relevamiento',
+  },
+  mesaDeEntrada: {
+    nombre: 'Mesa de Entrada',
+    descripcion: 'Información sobre Mesa de Entrada:',
+    url: '/tramites/mesa-de-entrada',
+    etiquetaBoton: 'Ver Mesa de Entrada',
+  },
+  puntoDigital: {
+    nombre: 'Punto Digital y Biblioteca',
+    descripcion: 'Información sobre Punto Digital y Biblioteca:',
+    url: '/tramites/punto-digital-biblioteca',
+    etiquetaBoton: 'Ver Punto Digital',
+  },
+  talleresCulturales: {
+    nombre: 'Talleres Culturales',
+    descripcion: 'Información sobre Talleres Culturales:',
+    url: '/tramites/talleres-culturales',
+    etiquetaBoton: 'Ver Talleres',
+  },
+  produccionEmpleo: {
+    nombre: 'Producción y Empleo',
+    descripcion: 'Información sobre Producción y Empleo:',
+    url: '/tramites/produccion-empleo',
+    etiquetaBoton: 'Ver Producción y Empleo',
+  },
+  terceraEdad: {
+    nombre: 'Tercera Edad y Discapacidad',
+    descripcion: 'Información sobre Tercera Edad y Discapacidad:',
+    url: '/tramites/tercera-edad-discapacidad',
+    etiquetaBoton: 'Ver Tercera Edad',
+  },
+}
+
+/**
+ * Clase principal que maneja las acciones del chatbot
+ */
+class ActionProvider {
+  createChatBotMessage: CreateChatBotMessageFunction
+  setState: SetStateFunction
+  stateRef: React.MutableRefObject<ChatState> | undefined
+  createClientMessage: CreateClientMessageFunction
+  addMessageToState: ((message: ChatMessage) => void) | undefined
+  lastQuery: string = ''
+  lastResponse: string = ''
 
   constructor(
-    createChatBotMessage: any,
-    setStateFunc: any,
-    createClientMessage: any,
-    stateRef?: any,
-    addMessageToState?: any,
+    createChatBotMessage: CreateChatBotMessageFunction,
+    setStateFunc: SetStateFunction,
+    createClientMessage: CreateClientMessageFunction,
+    stateRef?: React.MutableRefObject<ChatState>,
+    addMessageToState?: (message: ChatMessage) => void,
   ) {
-    this.createChatBotMessage = createChatBotMessage;
-    this.setState = setStateFunc;
-    this.createClientMessage = createClientMessage;
-    this.stateRef = stateRef;
-    this.addMessageToState = addMessageToState;
+    this.createChatBotMessage = createChatBotMessage
+    this.setState = setStateFunc
+    this.createClientMessage = createClientMessage
+    this.stateRef = stateRef
+    this.addMessageToState = addMessageToState
   }
 
-  private _updateChatbotState(message: any) {
-    this.setState((prevState: any) => ({
+  private _updateChatbotState(message: ChatMessage): void {
+    this.setState((prevState) => ({
       ...prevState,
       messages: [...prevState.messages, message],
-    }));
+    }))
   }
 
-  private _createLinkedMessage(text: string, linkLabel: string, linkUrl: string) {
-    const message = this.createChatBotMessage(text, {
+  private _createLinkedMessage(text: string, linkLabel: string, linkUrl: string): void {
+    const options: ChatMessageOptions = {
       widget: 'linkButton',
       payload: { label: linkLabel, url: linkUrl },
-    });
-    this._updateChatbotState(message);
+    }
+    const message = this.createChatBotMessage(text, options)
+    this._updateChatbotState(message)
   }
 
-  greet() {
-    const greetingMessage = this.createChatBotMessage('¡Hola! ¿En qué puedo ayudarte hoy?');
-    this._updateChatbotState(greetingMessage);
+  /**
+   * Genera un ID único para mensajes (usado para tracking de feedback)
+   */
+  private _generateMessageId(): string {
+    return `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
   }
-  handleWebsiteInfo() {
+
+  /**
+   * Crea un mensaje con widget de feedback adjunto
+   */
+  private _createMessageWithFeedback(
+    text: string,
+    query: string,
+    provider: AIProvider = 'knowledge-base',
+  ): void {
+    const messageId = this._generateMessageId()
+    const message = this.createChatBotMessage(text)
+    this._updateChatbotState(message)
+
+    // Registrar para analytics
+    trackQuery(messageId, query, text, provider)
+
+    // Mostrar widget de feedback después de un delay
+    setTimeout(() => {
+      const feedbackMessage = this.createChatBotMessage('', {
+        widget: 'feedback',
+        payload: { messageId },
+        delay: 0,
+      })
+      this._updateChatbotState(feedbackMessage)
+    }, 500)
+  }
+
+  /**
+   * Factory method: Crea handler para un trámite específico
+   */
+  handleTramite(tramiteKey: string): void {
+    const config = TRAMITES_CONFIG[tramiteKey]
+    if (config) {
+      this._createLinkedMessage(config.descripcion, config.etiquetaBoton, config.url)
+    }
+  }
+
+  greet(): void {
+    const greetingMessage = this.createChatBotMessage('¡Hola! ¿En qué puedo ayudarte hoy?')
+    this._updateChatbotState(greetingMessage)
+  }
+
+  handleWebsiteInfo(): void {
     const message = this.createChatBotMessage(
-      'Este es el portal oficial de la Municipalidad de San Benito. Aquí encontrarás información sobre servicios municipales, noticias, transparencia y más.'
-    );
-    this._updateChatbotState(message);
+      'Este es el portal oficial de la Municipalidad de San Benito. Aquí encontrarás información sobre servicios municipales, noticias, transparencia y más.',
+    )
+    this._updateChatbotState(message)
   }
   handleNoticiasInfo() {
     this._createLinkedMessage(
       "Puedes encontrar las últimas noticias y novedades en la sección 'Noticias'.",
       'Ir a Noticias',
-      '/noticias'
-    );
+      '/noticias',
+    )
   }
   handleTransparenciaInfo() {
     this._createLinkedMessage(
       "Toda la información sobre transparencia, como documentos públicos, licitaciones y concursos, está en la sección 'Transparencia'.",
       'Ir a Transparencia',
-      '/transparencia'
-    );
+      '/transparencia',
+    )
   }
   handleContactoInfo() {
     const message = this.createChatBotMessage(
-      'Puedes contactar a la municipalidad a través de:\n\n📧 Email: Modernizacion@sanbenito.gob.ar\n📞 Teléfono principal: (0343) 497-2222\n📞 Mesa de entrada: (0343) 497-2345\n📞 Rentas: (0343) 497-2678\n📞 Obras privadas: (0343) 497-2890\n\nTambién puedes visitar nuestra página web www.sanbenito.gob.ar para más detalles.'
-    );
-    this._updateChatbotState(message);
+      'Puedes contactar a la municipalidad a través de:\n\n📧 Email: Modernizacion@sanbenito.gob.ar\n📞 Teléfono principal: (0343) 497-2222\n📞 Mesa de entrada: (0343) 497-2345\n📞 Rentas: (0343) 497-2678\n📞 Obras privadas: (0343) 497-2890\n\nTambién puedes visitar nuestra página web www.sanbenito.gob.ar para más detalles.',
+    )
+    this._updateChatbotState(message)
   }
   // Mostrar indicador de escritura
-  private _showTypingIndicator() {
-    this.setState((prevState: any) => ({
+  private _showTypingIndicator(): void {
+    this.setState((prevState) => ({
       ...prevState,
-      typing: true
-    }));
+      typing: true,
+    }))
   }
 
   // Ocultar indicador de escritura
-  private _hideTypingIndicator() {
-    this.setState((prevState: any) => ({
+  private _hideTypingIndicator(): void {
+    this.setState((prevState) => ({
       ...prevState,
-      typing: false
-    }));
+      typing: false,
+    }))
   }
 
-  // Mostrar sugerencias inteligentes
-  private _showSuggestions() {
-    const message = this.createChatBotMessage('¿En qué más te puedo ayudar?', {
-      widget: 'smartSuggestions',
-      loading: false,
-      delay: 500
-    });
+  // Mostrar sugerencias inteligentes contextuales
+  private _showSuggestions(contextQuery?: string, contextResponse?: string): void {
+    // Generar sugerencias basadas en el contexto de la conversación
+    const suggestions: ContextualSuggestion[] = generateContextualSuggestions(
+      contextQuery || this.lastQuery || '',
+      contextResponse || this.lastResponse || '',
+    )
 
-    this._updateChatbotState(message);
+    // Si hay sugerencias contextuales, mostrarlas
+    if (suggestions.length > 0) {
+      const options: ChatMessageOptions = {
+        widget: 'smartSuggestions',
+        payload: {
+          suggestions: suggestions.map((s) => ({
+            text: s.text,
+            handler: () => this.handleUnknown(s.query),
+            icon: s.icon,
+            category: s.category,
+          })),
+        },
+        loading: false,
+        delay: 300,
+      }
+      const message = this.createChatBotMessage('', options)
+      this._updateChatbotState(message)
+    } else {
+      // Sugerencias por defecto
+      const message = this.createChatBotMessage('¿Hay algo más en lo que pueda ayudarte?', {
+        widget: 'smartSuggestions',
+        loading: false,
+        delay: 500,
+      })
+      this._updateChatbotState(message)
+    }
   }
 
   // Manejar mensaje desconocido con mejor retroalimentación y validación
-  async handleUnknown(userMessage: string) {
+  async handleUnknown(userMessage: string): Promise<void> {
     // Validar entrada
     if (!userMessage || userMessage.trim().length === 0) {
       const errorMessage = this.createChatBotMessage(
-        "Por favor, escribe tu consulta para que pueda ayudarte."
-      );
-      this._updateChatbotState(errorMessage);
-      return;
+        'Por favor, escribe tu consulta para que pueda ayudarte. 😊',
+      )
+      this._updateChatbotState(errorMessage)
+      return
+    }
+
+    // Guardar la query para contexto
+    this.lastQuery = userMessage
+
+    // Verificar rate limiting antes de procesar
+    const rateLimitCheck = canMakeRequest()
+    if (!rateLimitCheck.allowed && rateLimitCheck.reason) {
+      const rateLimitMessage = this.createChatBotMessage(
+        `⏳ ${rateLimitCheck.reason}\n\nMientras tanto, podés consultar nuestra página web o llamar al (0343) 4973454.`,
+      )
+      this._updateChatbotState(rateLimitMessage)
+      return
     }
 
     // Mostrar indicador de escritura
-    this._showTypingIndicator();
-    
+    this._showTypingIndicator()
+
     try {
-      // Mostrar mensaje temporal de procesamiento
-      const processingMessage = this.createChatBotMessage(
-        "Estoy buscando la información más precisa para ti... 🔍"
-      );
-      this._updateChatbotState(processingMessage);
-      
+      // Mensaje de procesamiento más amigable
+      const processingMessages = [
+        'Buscando la mejor respuesta para vos... 🔍',
+        'Dame un momento, estoy consultando la información... 💭',
+        'Procesando tu consulta... 🤔',
+      ]
+      const randomProcessing =
+        processingMessages[Math.floor(Math.random() * processingMessages.length)]
+
+      const processingMessage = this.createChatBotMessage(randomProcessing)
+      this._updateChatbotState(processingMessage)
+
       // Obtener respuesta de la IA con timeout
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout')), 15000)
-      );
-      
-      const aiPromise = fetchAIResponse(userMessage);
-      const { response: aiResponse, usedGemma } = await Promise.race([
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 15000),
+      )
+
+      const aiPromise = fetchAIResponse(userMessage)
+      const { response: aiResponse, usedGemma } = (await Promise.race([
         aiPromise,
-        timeoutPromise
-      ]) as { response: string; usedGemma: boolean };
-      
+        timeoutPromise,
+      ])) as { response: string; usedGemma: boolean }
+
       // Validar que la respuesta no esté vacía
       if (!aiResponse || aiResponse.trim().length === 0) {
-        throw new Error('Respuesta vacía');
+        throw new Error('Respuesta vacía')
       }
-      
+
+      // Guardar respuesta para contexto
+      this.lastResponse = aiResponse
+
+      // Generar ID para tracking de feedback
+      const messageId = this._generateMessageId()
+      const provider: AIProvider = usedGemma ? 'gemini' : 'knowledge-base'
+
       // Reemplazar mensaje de procesamiento con la respuesta real
-      this.setState((prevState: any) => {
-        const messages = [...prevState.messages];
-        messages.pop(); // Eliminar mensaje de procesamiento
+      this.setState((prevState) => {
+        const messages = [...prevState.messages]
+        messages.pop() // Eliminar mensaje de procesamiento
         return {
           ...prevState,
-          messages: [...messages, this.createChatBotMessage(aiResponse)]
-        };
-      });
-      
+          messages: [...messages, this.createChatBotMessage(aiResponse)],
+        }
+      })
+
+      // Registrar para analytics y feedback
+      trackQuery(messageId, userMessage, aiResponse, provider)
+
+      // Mostrar widget de feedback después de la respuesta
+      setTimeout(() => {
+        const feedbackWidget = this.createChatBotMessage('', {
+          widget: 'feedback',
+          payload: { messageId },
+          delay: 0,
+        })
+        this._updateChatbotState(feedbackWidget)
+      }, 800)
+
       // Si se usó Gemma 2B, mostrar indicador discreto
       if (usedGemma) {
         setTimeout(() => {
           const gemmaIndicator = this.createChatBotMessage(
-            "🤖 Respuesta generada por IA - Gemma 2B", 
-            { 
-              widget: "ollamaStatus",
-              delay: 500
-            }
-          );
-          this._updateChatbotState(gemmaIndicator);
-        }, 800);
-      } else {
-        this._showSuggestions();
+            '🤖 Respuesta generada por IA - Gemma 2B',
+            {
+              widget: 'ollamaStatus',
+              delay: 500,
+            },
+          )
+          this._updateChatbotState(gemmaIndicator)
+        }, 800)
       }
+
+      // Siempre mostrar sugerencias contextuales después de responder
+      setTimeout(() => {
+        this._showSuggestions(userMessage, aiResponse)
+      }, 1000)
     } catch (error) {
-      console.error('Error en handleUnknown:', error);
-      
+      console.error('Error en handleUnknown:', error)
+
       // Determinar tipo de error y mostrar mensaje apropiado
-      let errorMessage = '';
-      
+      let errorMessage = ''
+
       if (error instanceof Error) {
         if (error.message === 'Timeout') {
-          errorMessage = 'La consulta está tomando más tiempo del esperado. Por favor, inténtalo nuevamente o contacta directamente a la municipalidad al (0343) 497-2222.';
+          errorMessage =
+            '⏱️ La consulta está tomando más tiempo del esperado. Por favor, intentá de nuevo o contactá directamente a la municipalidad al (0343) 4973454.'
         } else if (error.message === 'Respuesta vacía') {
-          errorMessage = 'No pude generar una respuesta para tu consulta. ¿Podrías reformular tu pregunta o contactar directamente al (0343) 497-2222?';
+          errorMessage =
+            '🤔 No pude generar una respuesta para tu consulta. ¿Podrías reformular tu pregunta o contactar directamente al (0343) 4973454?'
         } else {
-          errorMessage = 'Ocurrió un problema técnico. Te recomiendo contactar directamente a la municipalidad al (0343) 497-2222 para obtener la información que necesitas.';
+          errorMessage =
+            '⚠️ Ocurrió un problema técnico. Te recomiendo contactar directamente a la municipalidad al (0343) 4973454 para obtener la información que necesitas.'
         }
       } else {
-        errorMessage = 'Ocurrió un error inesperado. Por favor, inténtalo nuevamente.';
+        errorMessage = '❌ Ocurrió un error inesperado. Por favor, intentá nuevamente.'
       }
-      
+
       // Eliminar mensaje de procesamiento y mostrar error
-      this.setState((prevState: any) => {
-        const messages = [...prevState.messages];
-        if (messages.length > 0 && messages[messages.length - 1].message?.includes('buscando')) {
-          messages.pop(); // Eliminar mensaje de procesamiento
+      this.setState((prevState) => {
+        const messages = [...prevState.messages]
+        const lastMessage = messages[messages.length - 1] as ChatMessage | undefined
+        if (messages.length > 0 && lastMessage?.message?.includes('buscando')) {
+          messages.pop() // Eliminar mensaje de procesamiento
         }
         return {
-          ...prevState, 
-          messages: [...messages, this.createChatBotMessage(errorMessage)]
-        };
-      });
-      
+          ...prevState,
+          messages: [...messages, this.createChatBotMessage(errorMessage)],
+        }
+      })
+
       // Mostrar opciones alternativas después del error
       setTimeout(() => {
-        this._showSuggestions();
-      }, 1500);
-      
+        this._showSuggestions()
+      }, 1500)
     } finally {
-      this._hideTypingIndicator();
+      this._hideTypingIndicator()
     }
   }
   handleLinkToPage(pageName: string, pageUrl: string) {
     this._createLinkedMessage(
       `Entendido. Puedes hacer clic aquí para ir a ${pageName}:`,
       `Ir a ${pageName}`,
-      pageUrl
-    );
+      pageUrl,
+    )
   }
 
   // --- New Trámite Handlers ---
   handleActividadesDeportivas() {
-    this._createLinkedMessage('Información sobre Actividades Deportivas:', 'Ver Actividades Deportivas', '/tramites/actividades-deportivas');
+    this._createLinkedMessage(
+      'Información sobre Actividades Deportivas:',
+      'Ver Actividades Deportivas',
+      '/tramites/actividades-deportivas',
+    )
   }
   handleAreaMujer() {
-    this._createLinkedMessage('Información sobre el Área Mujer:', 'Ver Área Mujer', '/tramites/area-mujer');
+    this._createLinkedMessage(
+      'Información sobre el Área Mujer:',
+      'Ver Área Mujer',
+      '/tramites/area-mujer',
+    )
   }
   handleCatastro() {
-    this._createLinkedMessage('Información sobre Catastro:', 'Ver Catastro', '/tramites/catastro');
+    this._createLinkedMessage('Información sobre Catastro:', 'Ver Catastro', '/tramites/catastro')
   }
   handleCav() {
-    this._createLinkedMessage('Información sobre CAV (Centro de Atención al Vecino):', 'Ver CAV', '/tramites/cav');
+    this._createLinkedMessage(
+      'Información sobre CAV (Centro de Atención al Vecino):',
+      'Ver CAV',
+      '/tramites/cav',
+    )
   }
   handleCicBarrioSanPedro() {
-    this._createLinkedMessage('Información sobre CIC Barrio San Pedro:', 'Ver CIC Barrio San Pedro', '/tramites/cic-barrio-san-pedro');
+    this._createLinkedMessage(
+      'Información sobre CIC Barrio San Pedro:',
+      'Ver CIC Barrio San Pedro',
+      '/tramites/cic-barrio-san-pedro',
+    )
   }
   handleHabilitaciones() {
-    this._createLinkedMessage('Información general sobre Habilitaciones:', 'Ver Habilitaciones', '/tramites/habilitaciones');
+    this._createLinkedMessage(
+      'Información general sobre Habilitaciones:',
+      'Ver Habilitaciones',
+      '/tramites/habilitaciones',
+    )
   }
   handleLicencia() {
-    this._createLinkedMessage('Información general sobre Licencias de Conducir:', 'Ver Licencias', '/tramites/licencia');
+    this._createLinkedMessage(
+      'Información general sobre Licencias de Conducir:',
+      'Ver Licencias',
+      '/tramites/licencia',
+    )
   }
   handleLicenciaOriginal() {
-    this._createLinkedMessage('Información sobre Licencia de Conducir Original:', 'Ver Licencia Original', '/tramites/licencia/original');
+    this._createLinkedMessage(
+      'Información sobre Licencia de Conducir Original:',
+      'Ver Licencia Original',
+      '/tramites/licencia/original',
+    )
   }
   handleLicenciaRenovacion() {
-    this._createLinkedMessage('Información sobre Renovación de Licencia:', 'Ver Renovación', '/tramites/licencia/renovacion');
+    this._createLinkedMessage(
+      'Información sobre Renovación de Licencia:',
+      'Ver Renovación',
+      '/tramites/licencia/renovacion',
+    )
   }
   handleLicenciaAmpliacion() {
-    this._createLinkedMessage('Información sobre Ampliación de Licencia:', 'Ver Ampliación', '/tramites/licencia/ampliacion');
+    this._createLinkedMessage(
+      'Información sobre Ampliación de Licencia:',
+      'Ver Ampliación',
+      '/tramites/licencia/ampliacion',
+    )
   }
   handleRentas() {
-    this._createLinkedMessage('Información sobre Rentas e Impuestos Municipales:', 'Ver Rentas', '/tramites/rentas');
+    this._createLinkedMessage(
+      'Información sobre Rentas e Impuestos Municipales:',
+      'Ver Rentas',
+      '/tramites/rentas',
+    )
   }
   handleObrasPrivadas() {
-    this._createLinkedMessage('Información sobre Obras Privadas:', 'Ver Obras Privadas', '/tramites/obras-privadas');
+    this._createLinkedMessage(
+      'Información sobre Obras Privadas:',
+      'Ver Obras Privadas',
+      '/tramites/obras-privadas',
+    )
   }
   handleObrasInscripcionMunicipal() {
-    this._createLinkedMessage('Información sobre Inscripción Municipal:', 'Ver Inscripción', '/tramites/obras-privadas/inscripcion');
+    this._createLinkedMessage(
+      'Información sobre Inscripción Municipal:',
+      'Ver Inscripción',
+      '/tramites/obras-privadas/inscripcion',
+    )
   }
   handleObrasFinalDeObra() {
-    this._createLinkedMessage('Información sobre Final de Obra:', 'Ver Final de Obra', '/tramites/obras-privadas/final');
+    this._createLinkedMessage(
+      'Información sobre Final de Obra:',
+      'Ver Final de Obra',
+      '/tramites/obras-privadas/final',
+    )
   }
   handleObrasPresentacionProyecto() {
-    this._createLinkedMessage('Información sobre Presentación de Proyecto:', 'Ver Presentación', '/tramites/obras-privadas/presentacion');
+    this._createLinkedMessage(
+      'Información sobre Presentación de Proyecto:',
+      'Ver Presentación',
+      '/tramites/obras-privadas/presentacion',
+    )
   }
   handleObrasRelevamiento() {
-    this._createLinkedMessage('Información sobre Relevamiento:', 'Ver Relevamiento', '/tramites/obras-privadas/relevamiento');
+    this._createLinkedMessage(
+      'Información sobre Relevamiento:',
+      'Ver Relevamiento',
+      '/tramites/obras-privadas/relevamiento',
+    )
   }
   handleMesaDeEntrada() {
-    this._createLinkedMessage('Información sobre Mesa de Entrada:', 'Ver Mesa de Entrada', '/tramites/mesa-de-entrada');
+    this._createLinkedMessage(
+      'Información sobre Mesa de Entrada:',
+      'Ver Mesa de Entrada',
+      '/tramites/mesa-de-entrada',
+    )
   }
   handlePuntoDigitalBiblioteca() {
-    this._createLinkedMessage('Información sobre Punto Digital y Biblioteca:', 'Ver Punto Digital', '/tramites/punto-digital-biblioteca');
+    this._createLinkedMessage(
+      'Información sobre Punto Digital y Biblioteca:',
+      'Ver Punto Digital',
+      '/tramites/punto-digital-biblioteca',
+    )
   }
   handleTalleresCulturales() {
-    this._createLinkedMessage('Información sobre Talleres Culturales:', 'Ver Talleres', '/tramites/talleres-culturales');
+    this._createLinkedMessage(
+      'Información sobre Talleres Culturales:',
+      'Ver Talleres',
+      '/tramites/talleres-culturales',
+    )
   }
   handleProduccionEmpleo() {
-    this._createLinkedMessage('Información sobre Producción y Empleo:', 'Ver Producción y Empleo', '/tramites/produccion-empleo');
+    this._createLinkedMessage(
+      'Información sobre Producción y Empleo:',
+      'Ver Producción y Empleo',
+      '/tramites/produccion-empleo',
+    )
   }
   handleTerceraEdadDiscapacidad() {
-    this._createLinkedMessage('Información sobre Tercera Edad y Discapacidad:', 'Ver Tercera Edad', '/tramites/tercera-edad-discapacidad');
+    this._createLinkedMessage(
+      'Información sobre Tercera Edad y Discapacidad:',
+      'Ver Tercera Edad',
+      '/tramites/tercera-edad-discapacidad',
+    )
   }
 
   // Updated handleTramiteIntro
   handleTramiteIntro() {
-    const messageText = "Puedo ayudarte con información sobre varios trámites y servicios. ¿Cuál te interesa?";
+    const messageText =
+      'Puedo ayudarte con información sobre varios trámites y servicios. ¿Cuál te interesa?'
     const botMessage = this.createChatBotMessage(messageText, {
       widget: 'tramiteOptions', // This widget will display the options
-    });
-    this._updateChatbotState(botMessage);
+    })
+    this._updateChatbotState(botMessage)
 
     const options = [
       // Grouping some for brevity, direct access via keywords is still possible
@@ -298,20 +656,20 @@ class ActionProvider implements IActionProvider {
       { text: 'Talleres Culturales', handler: () => this.handleTalleresCulturales(), id: 9 },
       { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 10 },
       { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 11 },
-    ];
+    ]
 
     this.setState((prevState: any) => ({
       ...prevState,
       tramiteOptions: options,
-    }));
+    }))
   }
-  
+
   // Nuevos métodos para manejar consultas generales y búsqueda de información
   handleGeneralInquiry() {
     const message = this.createChatBotMessage(
-      "¿Sobre qué tema te gustaría consultar? Puedes preguntarme sobre servicios municipales, trámites, horarios de atención, o cualquier otra información relacionada con la Municipalidad de San Benito."
-    );
-    this._updateChatbotState(message);
+      '¿Sobre qué tema te gustaría consultar? Puedes preguntarme sobre servicios municipales, trámites, horarios de atención, o cualquier otra información relacionada con la Municipalidad de San Benito.',
+    )
+    this._updateChatbotState(message)
   }
 
   // Método para buscar información en la web municipal
@@ -319,37 +677,37 @@ class ActionProvider implements IActionProvider {
     // Aquí podríamos implementar una búsqueda más avanzada en el futuro
     const message = this.createChatBotMessage(
       `Estoy buscando información sobre "${query}" en nuestro sitio web...`,
-    );
-    this._updateChatbotState(message);
-    
+    )
+    this._updateChatbotState(message)
+
     // Simulamos una búsqueda y mostramos resultados después de un breve retraso
     setTimeout(() => {
-      this.handleUnknown(query);
-    }, 1000);
+      this.handleUnknown(query)
+    }, 1000)
   }
 
   // Método para manejar horarios de atención
   handleHorarios() {
     const message = this.createChatBotMessage(
-      "Los horarios de atención de la Municipalidad de San Benito son:\n\n" +
-      "📍 Edificio Municipal: Lunes a Viernes de 7:00 a 13:00 hs\n" +
-      "📍 Rentas: Lunes a Viernes de 7:00 a 13:00 hs\n" +
-      "📍 Obras Privadas: Lunes a Viernes de 7:00 a 12:00 hs\n" +
-      "📍 Punto Digital: Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs"
-    );
-    this._updateChatbotState(message);
+      'Los horarios de atención de la Municipalidad de San Benito son:\n\n' +
+        '📍 Edificio Municipal: Lunes a Viernes de 7:00 a 13:00 hs\n' +
+        '📍 Rentas: Lunes a Viernes de 7:00 a 13:00 hs\n' +
+        '📍 Obras Privadas: Lunes a Viernes de 7:00 a 12:00 hs\n' +
+        '📍 Punto Digital: Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs',
+    )
+    this._updateChatbotState(message)
   }
-  
+
   // Método para mostrar el estado de Gemma 2B
   handleShowOllamaStatus() {
     const message = this.createChatBotMessage(
-      "Aquí puedes ver el estado actual del modelo de IA Gemma 2B:",
+      'Aquí puedes ver el estado actual del modelo de IA Gemma 2B:',
       {
-        widget: "ollamaStatus",
-      }
-    );
-    this._updateChatbotState(message);
+        widget: 'ollamaStatus',
+      },
+    )
+    this._updateChatbotState(message)
   }
 }
 
-export default ActionProvider;
+export default ActionProvider

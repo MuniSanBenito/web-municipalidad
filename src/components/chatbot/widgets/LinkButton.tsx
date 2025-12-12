@@ -1,41 +1,76 @@
 // src/components/chatbot/widgets/LinkButton.tsx
-import React from 'react';
+import React from 'react'
 
 interface LinkButtonProps {
   payload: {
-    label: string;
-    url: string;
-  };
+    label: string
+    url: string
+  }
 }
 
 const LinkButton: React.FC<LinkButtonProps> = ({ payload }) => {
   return (
     <a
       href={payload.url}
-      target="_blank" // Open in new tab for external/page links
+      target="_blank"
       rel="noopener noreferrer"
-      // Using DaisyUI/Tailwind classes. Assumes Tailwind is processed for these class names.
-      className="btn btn-sm btn-info text-white my-2 mx-1 normal-case transition-all hover:scale-105 hover:brightness-110"
-      // Fallback inline styles if classes don't apply perfectly or for minor tweaks
+      className="link-button"
       style={{
         textDecoration: 'none',
-        display: 'inline-block',
-        borderRadius: '20px',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '10px',
+        borderRadius: '25px',
         fontSize: '0.9rem',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-        background: 'linear-gradient(135deg, #2d6a84, #1e4e63)',
-        padding: '0.5rem 1rem',
+        fontWeight: '600',
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+        boxShadow: '0 4px 15px rgba(7, 102, 51, 0.2)',
+        background: 'linear-gradient(135deg, #076633 0%, #054d26 100%)',
+        padding: '12px 20px',
+        color: '#ffffff',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        margin: '8px 4px',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)'
+        e.currentTarget.style.boxShadow = '0 8px 25px rgba(7, 102, 51, 0.35)'
+        e.currentTarget.style.background = 'linear-gradient(135deg, #b6c544 0%, #9ab038 100%)'
+        e.currentTarget.style.color = '#076633'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0) scale(1)'
+        e.currentTarget.style.boxShadow = '0 4px 15px rgba(7, 102, 51, 0.2)'
+        e.currentTarget.style.background = 'linear-gradient(135deg, #076633 0%, #054d26 100%)'
+        e.currentTarget.style.color = '#ffffff'
       }}
     >
-      <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
-          <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
-        </svg>
-        {payload.label}
-      </span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        style={{ flexShrink: 0 }}
+      >
+        <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 10.5H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z" />
+        <path d="M9 5.5a3 3 0 0 0-2.83 4h1.098A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z" />
+      </svg>
+      <span>{payload.label}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        style={{ flexShrink: 0, opacity: 0.8 }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+        />
+      </svg>
     </a>
-  );
-};
+  )
+}
 
-export default LinkButton;
+export default LinkButton
