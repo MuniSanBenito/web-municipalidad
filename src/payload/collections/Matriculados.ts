@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdminCollectionAccess, isPublicAccess } from '../access/collection'
+import { isObrasPrivadasOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 
 export const Matriculados: CollectionConfig = {
   slug: 'matriculados',
@@ -8,10 +8,10 @@ export const Matriculados: CollectionConfig = {
     plural: 'Matriculados',
   },
   access: {
-    create: isAdminCollectionAccess,
+    create: isObrasPrivadasOrAdminCollectionAccess,
     read: isPublicAccess,
-    update: isAdminCollectionAccess,
-    delete: isAdminCollectionAccess,
+    update: isObrasPrivadasOrAdminCollectionAccess,
+    delete: isObrasPrivadasOrAdminCollectionAccess,
   },
   admin: {
     useAsTitle: 'nombreCompleto',
@@ -24,36 +24,43 @@ export const Matriculados: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      label: "DNI",
     },
     {
       name: 'nombreCompleto',
       type: 'text',
       required: true,
+      label: 'Nombre Completo',
     },
     {
       name: 'matricula',
       type: 'text',
       required: true,
+      label: 'Matrícula',
     },
     {
       name: 'direccion',
       type: 'text',
       required: true,
+      label: 'Dirección',
     },
     {
       name: 'telefono',
       type: 'text',
       required: true,
+      label: 'Teléfono',
     },
     {
       name: 'email',
       type: 'email',
       required: true,
+      label: 'Email',
     },
     {
       name: 'profesion',
       type: 'text',
       required: true,
+      label: 'Profesión',
     },
     {
       name: 'habilitado',

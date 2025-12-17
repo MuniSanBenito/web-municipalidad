@@ -100,12 +100,12 @@ export default function PageObrasPrivadas() {
                   <p>
                     <strong>WhatsApp:</strong>{' '}
                     <a
-                      href="https://wa.me/5493434171733"
+                      href="https://wa.me/5493434681033"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link font-bold underline"
                     >
-                      343-4171-733
+                      3434681033
                     </a>{' '}
                     (SOLO MENSAJES)
                   </p>
