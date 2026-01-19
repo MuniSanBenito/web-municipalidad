@@ -11,7 +11,7 @@ import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/ge
 
 // NOTA: Sin NEXT_PUBLIC_ para mantenerla oculta en el servidor
 const API_KEY = process.env.GEMINI_API_KEY || ''
-const MODEL_NAME = 'gemini-1.5-flash' // Modelo estable y rápido
+const MODEL_NAME = 'gemini-1.5-flash' // Modelo actual y rápido
 const DEBUG_MODE = process.env.NODE_ENV === 'development'
 
 // Prompt del sistema con información oficial de la municipalidad

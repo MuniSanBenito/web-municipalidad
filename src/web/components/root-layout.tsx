@@ -3,23 +3,23 @@ import type { Ciudadano } from '@/payload-types'
 import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
-import { IconMenu2, IconMessageChatbot, IconUser, IconX } from '@tabler/icons-react'
+import { IconMenu2, IconUser, IconX } from '@tabler/icons-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
+import { useEffect, useMemo, useState } from 'react'; // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
 import { LogoutButton } from './logout-button'
 
 // Import Chatbot related components
 import ActionProvider from '@/components/chatbot/ActionProvider'
-import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
+import '@/components/chatbot/chatbot-styles.css'; // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
 import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css' // Default styling
+import 'react-chatbot-kit/build/main.css'; // Default styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -191,8 +191,10 @@ export function RootLayout({ children, ciudadano }: Props) {
               height: '68px',
               borderRadius: '50%',
               border: '3px solid #076633',
-              background: 'linear-gradient(135deg, #b6c544 0%, #9ab038 100%)',
-              color: '#076633',
+              background: showChatbot
+                ? 'linear-gradient(135deg, #b6c544 0%, #9ab038 100%)'
+                : 'transparent',
+              padding: showChatbot ? '0' : '0',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -204,6 +206,7 @@ export function RootLayout({ children, ciudadano }: Props) {
               marginLeft: 'auto',
               position: 'relative',
               animation: showChatbot ? 'none' : 'pulse 2.5s ease-in-out infinite',
+              overflow: 'hidden',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1) translateY(-3px)'
@@ -218,25 +221,18 @@ export function RootLayout({ children, ciudadano }: Props) {
             aria-label={showChatbot ? 'Cerrar chat' : 'Abrir chat con Beni'}
           >
             {showChatbot ? (
-              <IconX size={28} strokeWidth={2.5} />
+              <IconX size={28} strokeWidth={2.5} style={{ color: '#076633' }} />
             ) : (
-              <>
-                <IconMessageChatbot size={30} strokeWidth={2} />
-                {/* Indicador de disponibilidad */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '4px',
-                    right: '4px',
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                    border: '2px solid #ffffff',
-                    boxShadow: '0 2px 8px rgba(34, 197, 94, 0.6)',
-                  }}
-                />
-              </>
+              <img
+                src="/beni-gaucho.png"
+                alt="Beni - Abrir chat"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '50%',
+                }}
+              />
             )}
           </button>
         </div>

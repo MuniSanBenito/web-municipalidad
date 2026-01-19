@@ -201,33 +201,43 @@
 }
 
 .react-chatbot-kit-chat-bot-message {
-  background: linear-gradient(135deg, var(--chatbot-primary) 0%, #065a2c 100%) !important;
-  color: var(--chatbot-white) !important;
-  border-radius: 20px 20px 20px 4px !important;
-  padding: 16px 20px !important;
-  max-width: 85% !important;
-  line-height: 1.6 !important;
-  font-size: 0.95rem !important;
+  background: #f8f9fa !important;
+  color: #1f2937 !important;
+  border-radius: 16px 16px 16px 4px !important;
+  padding: 14px 18px !important;
+  max-width: 95% !important;
+  line-height: 1.7 !important;
+  font-size: 0.9rem !important;
   font-weight: 400 !important;
-  box-shadow:
-    0 4px 15px rgba(7, 102, 51, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
   position: relative !important;
   margin-left: 0 !important;
-  border: none !important;
+  border: 1px solid #e5e7eb !important;
+  /* Fix overflow */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: pre-wrap !important;
+  overflow-x: hidden !important;
+}
+
+/* Styling for links inside bot messages */
+.react-chatbot-kit-chat-bot-message a {
+  color: #076633 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid #b6c544 !important;
+  transition: all 0.2s ease !important;
+  word-break: break-all !important;
+}
+
+.react-chatbot-kit-chat-bot-message a:hover {
+  color: #054d26 !important;
+  border-bottom-color: #076633 !important;
 }
 
 .react-chatbot-kit-chat-bot-message::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -8px;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  border-right-color: var(--chatbot-primary);
-  border-bottom-color: var(--chatbot-primary);
-  border-radius: 0 0 0 10px;
+  display: none;
 }
 
 /* ============================================
@@ -241,17 +251,15 @@
 }
 
 .react-chatbot-kit-user-chat-message {
-  background: linear-gradient(135deg, var(--chatbot-accent) 0%, #5bb8d3 100%) !important;
-  color: #1e3a5f !important;
-  border-radius: 20px 20px 4px 20px !important;
-  padding: 16px 20px !important;
-  max-width: 85% !important;
+  background: #076633 !important;
+  color: #ffffff !important;
+  border-radius: 16px 16px 4px 16px !important;
+  padding: 14px 18px !important;
+  max-width: 90% !important;
   line-height: 1.6 !important;
   font-size: 0.95rem !important;
   font-weight: 500 !important;
-  box-shadow:
-    0 4px 15px rgba(123, 203, 226, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(7, 102, 51, 0.15) !important;
   margin-right: 0 !important;
   border: none !important;
 }
@@ -354,26 +362,18 @@
 }
 
 /* ============================================
-   Bot Avatar
+   Bot Avatar - Use Beni Image
    ============================================ */
 .react-chatbot-kit-chat-bot-avatar {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, var(--chatbot-secondary) 0%, #9ab038 100%) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: var(--chatbot-primary) !important;
-  font-weight: 700 !important;
-  font-size: 1.1rem !important;
-  margin-right: 12px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background-image: url('/beni-gaucho.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  margin-right: 10px !important;
   flex-shrink: 0 !important;
-  box-shadow:
-    0 4px 12px rgba(182, 197, 68, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-  border: 2px solid var(--chatbot-primary) !important;
-  animation: float 3s ease-in-out infinite;
+  border: 2px solid #b6c544 !important;
 }
 
 .react-chatbot-kit-chat-bot-avatar-container {
@@ -381,9 +381,9 @@
   align-items: flex-end !important;
 }
 
+/* Hide the letter, we use the image */
 .react-chatbot-kit-chat-bot-avatar-letter {
-  font-family: 'Inter', sans-serif !important;
-  font-weight: 800 !important;
+  display: none !important;
 }
 
 /* ============================================
@@ -699,36 +699,270 @@
   }
 
   .chatbot-container {
-    background: #111827;
-    box-shadow:
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(182, 197, 68, 0.2);
+    background: #1f2937;
+  }
+
+  .react-chatbot-kit-chat-inner-container {
+    background: #1f2937 !important;
   }
 
   .react-chatbot-kit-chat-message-container {
-    background: linear-gradient(180deg, #111827 0%, #0f172a 100%) !important;
+    background: #1f2937 !important;
+  }
+
+  /* Bot messages in dark mode */
+  .react-chatbot-kit-chat-bot-message {
+    background: #374151 !important;
+    color: #ffffff !important;
+    border-color: #4b5563 !important;
+  }
+
+  /* User messages in dark mode */
+  .react-chatbot-kit-user-chat-message {
+    background: #076633 !important;
+    color: #ffffff !important;
   }
 
   .react-chatbot-kit-chat-input-container {
     background: #1f2937 !important;
-    border-top-color: rgba(182, 197, 68, 0.3) !important;
+    border-top-color: #374151 !important;
   }
 
   .react-chatbot-kit-chat-input {
     background: #374151 !important;
-    color: var(--chatbot-white) !important;
-    border-color: rgba(123, 203, 226, 0.5) !important;
+    color: #ffffff !important;
+    border-color: #4b5563 !important;
+  }
+
+  .react-chatbot-kit-chat-input::placeholder {
+    color: #9ca3af !important;
   }
 
   .react-chatbot-kit-chat-input:focus {
     background: #4b5563 !important;
-    border-color: var(--chatbot-secondary) !important;
+    border-color: #b6c544 !important;
   }
 
   .smart-suggestions-container {
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
-    border-color: rgba(123, 203, 226, 0.3) !important;
+    background: #374151 !important;
+    border-color: #4b5563 !important;
   }
+
+  .tramite-options-container {
+    background: #374151 !important;
+    border-color: #4b5563 !important;
+  }
+}
+
+/* Dark mode with .dark class (Tailwind/DaisyUI convention) */
+/* Support both .dark class and data-theme="dark" attribute */
+.dark .chatbot-container,
+html.dark .chatbot-container,
+[data-theme="dark"] .chatbot-container,
+html[data-theme="dark"] .chatbot-container {
+  background: #1f2937 !important;
+}
+
+.dark .react-chatbot-kit-chat-inner-container,
+html.dark .react-chatbot-kit-chat-inner-container,
+[data-theme="dark"] .react-chatbot-kit-chat-inner-container,
+html[data-theme="dark"] .react-chatbot-kit-chat-inner-container {
+  background: #1f2937 !important;
+}
+
+.dark .react-chatbot-kit-chat-container,
+html.dark .react-chatbot-kit-chat-container,
+[data-theme="dark"] .react-chatbot-kit-chat-container,
+html[data-theme="dark"] .react-chatbot-kit-chat-container {
+  background: #1f2937 !important;
+}
+
+.dark .react-chatbot-kit-chat-message-container,
+html.dark .react-chatbot-kit-chat-message-container,
+[data-theme="dark"] .react-chatbot-kit-chat-message-container,
+html[data-theme="dark"] .react-chatbot-kit-chat-message-container {
+  background: #1f2937 !important;
+}
+
+.dark .react-chatbot-kit-chat-bot-message,
+html.dark .react-chatbot-kit-chat-bot-message,
+[data-theme="dark"] .react-chatbot-kit-chat-bot-message,
+html[data-theme="dark"] .react-chatbot-kit-chat-bot-message {
+  background: #374151 !important;
+  color: #ffffff !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .react-chatbot-kit-user-chat-message,
+html.dark .react-chatbot-kit-user-chat-message,
+[data-theme="dark"] .react-chatbot-kit-user-chat-message,
+html[data-theme="dark"] .react-chatbot-kit-user-chat-message {
+  background: #076633 !important;
+  color: #ffffff !important;
+}
+
+.dark .react-chatbot-kit-chat-input-container,
+html.dark .react-chatbot-kit-chat-input-container,
+[data-theme="dark"] .react-chatbot-kit-chat-input-container,
+html[data-theme="dark"] .react-chatbot-kit-chat-input-container {
+  background: #1f2937 !important;
+  border-top-color: #374151 !important;
+}
+
+.dark .react-chatbot-kit-chat-input,
+html.dark .react-chatbot-kit-chat-input,
+[data-theme="dark"] .react-chatbot-kit-chat-input,
+html[data-theme="dark"] .react-chatbot-kit-chat-input {
+  background: #374151 !important;
+  color: #ffffff !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .react-chatbot-kit-chat-input::placeholder,
+html.dark .react-chatbot-kit-chat-input::placeholder,
+[data-theme="dark"] .react-chatbot-kit-chat-input::placeholder,
+html[data-theme="dark"] .react-chatbot-kit-chat-input::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark .react-chatbot-kit-chat-btn-send,
+html.dark .react-chatbot-kit-chat-btn-send,
+[data-theme="dark"] .react-chatbot-kit-chat-btn-send,
+html[data-theme="dark"] .react-chatbot-kit-chat-btn-send {
+  background: #076633 !important;
+}
+
+.dark .smart-suggestions-container,
+html.dark .smart-suggestions-container,
+[data-theme="dark"] .smart-suggestions-container,
+html[data-theme="dark"] .smart-suggestions-container {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .tramite-options-container,
+html.dark .tramite-options-container,
+[data-theme="dark"] .tramite-options-container,
+html[data-theme="dark"] .tramite-options-container {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+/* ============================================
+   Light Mode Explicit Styles
+   ============================================ */
+/* Force light mode styles when data-theme="light" or .light class is present */
+/* This ensures light mode works correctly regardless of OS preference */
+
+.light .chatbot-container,
+html.light .chatbot-container,
+[data-theme="light"] .chatbot-container,
+html[data-theme="light"] .chatbot-container {
+  background: #ffffff !important;
+}
+
+.light .react-chatbot-kit-chat-inner-container,
+html.light .react-chatbot-kit-chat-inner-container,
+[data-theme="light"] .react-chatbot-kit-chat-inner-container,
+html[data-theme="light"] .react-chatbot-kit-chat-inner-container {
+  background-color: #ffffff !important;
+}
+
+.light .react-chatbot-kit-chat-container,
+html.light .react-chatbot-kit-chat-container,
+[data-theme="light"] .react-chatbot-kit-chat-container,
+html[data-theme="light"] .react-chatbot-kit-chat-container {
+  background-color: #ffffff !important;
+}
+
+.light .react-chatbot-kit-chat-message-container,
+html.light .react-chatbot-kit-chat-message-container,
+[data-theme="light"] .react-chatbot-kit-chat-message-container,
+html[data-theme="light"] .react-chatbot-kit-chat-message-container {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+.light .react-chatbot-kit-chat-bot-message,
+html.light .react-chatbot-kit-chat-bot-message,
+[data-theme="light"] .react-chatbot-kit-chat-bot-message,
+html[data-theme="light"] .react-chatbot-kit-chat-bot-message {
+  background: #f8f9fa !important;
+  color: #1f2937 !important;
+  border-color: #e5e7eb !important;
+}
+
+.light .react-chatbot-kit-user-chat-message,
+html.light .react-chatbot-kit-user-chat-message,
+[data-theme="light"] .react-chatbot-kit-user-chat-message,
+html[data-theme="light"] .react-chatbot-kit-user-chat-message {
+  background: #076633 !important;
+  color: #ffffff !important;
+}
+
+.light .react-chatbot-kit-chat-input-container,
+html.light .react-chatbot-kit-chat-input-container,
+[data-theme="light"] .react-chatbot-kit-chat-input-container,
+html[data-theme="light"] .react-chatbot-kit-chat-input-container {
+  background: #ffffff !important;
+  border-top-color: rgba(182, 197, 68, 0.3) !important;
+}
+
+.light .react-chatbot-kit-chat-input,
+html.light .react-chatbot-kit-chat-input,
+[data-theme="light"] .react-chatbot-kit-chat-input,
+html[data-theme="light"] .react-chatbot-kit-chat-input {
+  background: #f8fafc !important;
+  color: #374151 !important;
+  border-color: #e5e7eb !important;
+}
+
+.light .react-chatbot-kit-chat-input::placeholder,
+html.light .react-chatbot-kit-chat-input::placeholder,
+[data-theme="light"] .react-chatbot-kit-chat-input::placeholder,
+html[data-theme="light"] .react-chatbot-kit-chat-input::placeholder {
+  color: #6b7280 !important;
+}
+
+.light .react-chatbot-kit-chat-input:focus,
+html.light .react-chatbot-kit-chat-input:focus,
+[data-theme="light"] .react-chatbot-kit-chat-input:focus,
+html[data-theme="light"] .react-chatbot-kit-chat-input:focus {
+  background: #ffffff !important;
+  border-color: #076633 !important;
+}
+
+.light .smart-suggestions-container,
+html.light .smart-suggestions-container,
+[data-theme="light"] .smart-suggestions-container,
+html[data-theme="light"] .smart-suggestions-container {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  border-color: #7bcbe2 !important;
+}
+
+.light .tramite-options-container,
+html.light .tramite-options-container,
+[data-theme="light"] .tramite-options-container,
+html[data-theme="light"] .tramite-options-container {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+}
+
+.light .option-button,
+html.light .option-button,
+[data-theme="light"] .option-button,
+html[data-theme="light"] .option-button {
+  background: #ffffff !important;
+  color: #076633 !important;
+  border-color: #b6c544 !important;
+}
+
+.light .quick-reply-chip,
+html.light .quick-reply-chip,
+[data-theme="light"] .quick-reply-chip,
+html[data-theme="light"] .quick-reply-chip {
+  background: rgba(182, 197, 68, 0.1) !important;
+  color: #076633 !important;
+  border-color: #b6c544 !important;
 }
 
 /* ============================================

@@ -17,6 +17,7 @@ export interface ServiceInfo {
   requisitos?: string[]
   enlaces?: { texto: string; url: string }[]
   informacionAdicional?: string[]
+  url?: string // URL de la página con información detallada
 }
 
 // ===========================================
@@ -43,6 +44,7 @@ export const RENTAS: ServiceInfo = {
   email: 'rentas@munisanbenito.gov.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   ubicacion: 'Edificio Municipal - Blvd. Basalvibaso 1094, San Benito',
+  url: '/tramites/rentas',
   enlaces: [
     {
       texto: 'Sistema de Gestión Tributaria',
@@ -64,6 +66,7 @@ export const LICENCIA_CONDUCIR: ServiceInfo = {
   descripcion: 'Trámite para obtener la licencia de conducir original, renovación o ampliación',
   whatsapp: '3436127014',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  url: '/tramites/licencia',
   requisitos: [
     'Constancia del grupo sanguíneo',
     'DNI y fotocopia del mismo',
@@ -94,6 +97,7 @@ export const OBRAS_PRIVADAS: ServiceInfo = {
   email: 'obrasprivadas@munisanbenito.gov.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   ubicacion: 'Edificio Municipal',
+  url: '/tramites/obras-privadas',
   requisitos: [
     'Título de propiedad o boleto de compra-venta certificado',
     'Plano de mensura visado por la Dirección de Catastro',
@@ -118,6 +122,7 @@ export const HABILITACIONES: ServiceInfo = {
   email: 'habilitaciones@munisanbenito.gov.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   ubicacion: 'Edificio Municipal - Basavilbaso 1094, San Benito, Entre Ríos',
+  url: '/tramites/habilitaciones',
   requisitos: [
     'DNI y CUIT/CUIL',
     'Título de propiedad o contrato de alquiler',
@@ -138,6 +143,7 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
   descripcion: 'Talleres municipales deportivos y recreativos gratuitos para todas las edades',
   whatsapp: '5493434682745',
   horario: 'Horarios variados según actividad',
+  url: '/tramites/actividades-deportivas',
   enlaces: [
     {
       texto: 'Inscripción Online',
@@ -180,6 +186,7 @@ export const CAV: ServiceInfo = {
     'Recepción y gestión de reclamos ciudadanos, atención personalizada presencial y por WhatsApp',
   whatsapp: '3436127013',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs (presencial y WhatsApp)',
+  url: '/tramites/cav',
   informacionAdicional: [
     'Canales de atención: WhatsApp y presencial',
     'Se encarga de recibir y gestionar reclamos para mejorar la calidad de vida en la comunidad',
@@ -209,6 +216,7 @@ export const PUNTO_DIGITAL: ServiceInfo = {
   descripcion: 'Acceso a computadoras, internet y biblioteca municipal',
   whatsapp: '3434508085',
   horario: 'Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs',
+  url: '/tramites/punto-digital-biblioteca',
 }
 
 export const TALLERES_CULTURALES: ServiceInfo = {
@@ -566,7 +574,7 @@ export function buscarServicioPorKeyword(query: string): ServiceInfo | null {
 }
 
 /**
- * Formatea la información de un servicio como texto optimizado
+ * Formatea la información de un servicio de forma CONCISA con link a página
  */
 export function formatearServicio(servicio: ServiceInfo): string {
   // Determinar emoji según el servicio
@@ -586,57 +594,29 @@ export function formatearServicio(servicio: ServiceInfo): string {
 
   const emoji = emojis[servicio.nombre] || '📋'
 
-  let texto = `${emoji} **${servicio.nombre}**\n\n`
-  texto += `${servicio.descripcion}\n\n`
+  // Descripción corta (máximo 100 caracteres)
+  const descripcionCorta = servicio.descripcion.length > 100 
+    ? servicio.descripcion.substring(0, 100) + '...'
+    : servicio.descripcion
 
-  // Sección de contacto compacta
-  const contactos: string[] = []
-  if (servicio.whatsapp) contactos.push(`📱 WhatsApp: ${servicio.whatsapp}`)
-  if (servicio.telefono) contactos.push(`📞 Tel: ${servicio.telefono}`)
-  if (servicio.email) contactos.push(`📧 ${servicio.email}`)
+  let texto = `${emoji} **${servicio.nombre}**\n${descripcionCorta}\n\n`
 
-  if (contactos.length > 0) {
-    texto += contactos.join('\n') + '\n'
+  // Contacto rápido (solo lo esencial)
+  if (servicio.whatsapp) {
+    texto += `📱 WhatsApp: ${servicio.whatsapp}\n`
+  } else if (servicio.telefono) {
+    texto += `📞 Tel: ${servicio.telefono}\n`
   }
 
   if (servicio.horario) {
     texto += `🕒 ${servicio.horario}\n`
   }
 
-  if (servicio.ubicacion) {
-    texto += `📍 ${servicio.ubicacion}\n`
-  }
-
-  // Requisitos formateados
-  if (servicio.requisitos && servicio.requisitos.length > 0) {
-    texto += `\n**📝 Requisitos:**\n`
-    servicio.requisitos.slice(0, 6).forEach((req, i) => {
-      texto += `${i + 1}. ${req}\n`
-    })
-    if (servicio.requisitos.length > 6) {
-      texto += `_(y ${servicio.requisitos.length - 6} requisitos más...)_\n`
-    }
-  }
-
-  // Información adicional resumida
-  if (servicio.informacionAdicional && servicio.informacionAdicional.length > 0) {
-    const infoRelevante = servicio.informacionAdicional
-      .filter((info) => info.trim().length > 0)
-      .slice(0, 3)
-    if (infoRelevante.length > 0) {
-      texto += `\n**💡 Info adicional:**\n`
-      infoRelevante.forEach((info) => {
-        texto += `${info}\n`
-      })
-    }
-  }
-
-  // Enlaces útiles
-  if (servicio.enlaces && servicio.enlaces.length > 0) {
-    texto += `\n**🔗 Enlaces:**\n`
-    servicio.enlaces.forEach((enlace) => {
-      texto += `• [${enlace.texto}](${enlace.url})\n`
-    })
+  // Link a la página con información completa
+  if (servicio.url) {
+    texto += `\n👉 **[Ver información completa](${servicio.url})**`
+  } else if (servicio.enlaces && servicio.enlaces.length > 0) {
+    texto += `\n🔗 [${servicio.enlaces[0].texto}](${servicio.enlaces[0].url})`
   }
 
   return texto.trim()
