@@ -1,17 +1,16 @@
 'use server'
 
-import type { Content } from '@google/generative-ai'
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 
 /**
  * Server Action para integrar Google Gemini API de forma segura
  * La API Key se mantiene oculta en el servidor, nunca expuesta al cliente
- * Implementa memoria de conversación con startChat()
+ * Migrado a @google/genai (nuevo SDK oficial - Enero 2026)
  */
 
 // NOTA: Sin NEXT_PUBLIC_ para mantenerla oculta en el servidor
 const API_KEY = process.env.GEMINI_API_KEY || ''
-const MODEL_NAME = 'gemini-1.5-flash' // Modelo actual y rápido
+const MODEL_NAME = 'gemini-2.0-flash' // Modelo estable disponible
 const DEBUG_MODE = process.env.NODE_ENV === 'development'
 
 // Prompt del sistema con información oficial de la municipalidad
@@ -108,6 +107,17 @@ export interface ChatResponse {
   error?: string
 }
 
+// Inicializar cliente de Gemini (nuevo SDK)
+let genAI: GoogleGenAI | null = null
+
+function getGenAIClient(): GoogleGenAI | null {
+  if (!API_KEY) return null
+  if (!genAI) {
+    genAI = new GoogleGenAI({ apiKey: API_KEY })
+  }
+  return genAI
+}
+
 /**
  * Verifica si la API de Gemini está configurada
  */
@@ -117,7 +127,7 @@ export async function isGeminiServerConfigured(): Promise<boolean> {
 
 /**
  * Función principal del Server Action para chatear con Beni
- * Usa startChat() para mantener el historial de conversación (memoria)
+ * Usa el nuevo SDK @google/genai
  *
  * @param history - Historial de mensajes previos de la conversación
  * @param newMessage - Nuevo mensaje del usuario
@@ -155,65 +165,48 @@ export async function chatWithBeni(
     }
 
     // Inicializar cliente de Gemini
-    const genAI = new GoogleGenerativeAI(API_KEY)
+    const client = getGenAIClient()
+    if (!client) {
+      throw new Error('No se pudo inicializar el cliente de Gemini')
+    }
 
-    // Configurar el modelo con systemInstruction nativo
-    const model = genAI.getGenerativeModel({
+    // Construir el historial de conversación como contexto
+    let conversationContext = ''
+    if (history.length > 0) {
+      conversationContext =
+        'Historial de conversación:\n' +
+        history.map((msg) => `${msg.role === 'user' ? 'Usuario' : 'Beni'}: ${msg.parts}`).join('\n') +
+        '\n\n'
+    }
+
+    // Preparar el prompt completo
+    const fullPrompt = `${SYSTEM_INSTRUCTION}
+
+${conversationContext}Usuario: ${newMessage}
+
+Responde como Beni:`
+
+    // Generar respuesta con el nuevo SDK (sintaxis oficial)
+    const response = await client.models.generateContent({
       model: MODEL_NAME,
-      systemInstruction: SYSTEM_INSTRUCTION,
-      generationConfig: {
-        temperature: 0.3, // Respuestas más consistentes y precisas
-        topP: 0.8,
-        topK: 20,
-        maxOutputTokens: 500, // Respuestas concisas
-      },
-      safetySettings: [
-        {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        },
-      ],
+      contents: fullPrompt,
     })
 
-    // Convertir historial al formato de Gemini
-    const formattedHistory: Content[] = history.map((msg) => ({
-      role: msg.role,
-      parts: [{ text: msg.parts }],
-    }))
-
-    // Iniciar chat con historial previo (MEMORIA DE CONVERSACIÓN)
-    const chat = model.startChat({
-      history: formattedHistory,
-    })
-
-    // Enviar el nuevo mensaje
-    const result = await chat.sendMessage(newMessage)
-    const response = result.response.text()
+    // Extraer respuesta del nuevo formato
+    const responseText = response.text || ''
 
     if (DEBUG_MODE) {
-      console.log('✅ Respuesta de Gemini generada:', response.substring(0, 100) + '...')
+      console.log('✅ Respuesta de Gemini generada:', responseText.substring(0, 100) + '...')
     }
 
     // Validar que la respuesta no esté vacía
-    if (!response || response.trim().length === 0) {
+    if (!responseText || responseText.trim().length === 0) {
       throw new Error('Gemini devolvió una respuesta vacía')
     }
 
     return {
       success: true,
-      response: response.trim(),
+      response: responseText.trim(),
     }
   } catch (error) {
     console.error('❌ Error en chatWithBeni:', error)
@@ -259,15 +252,21 @@ export async function checkGeminiHealth(): Promise<{
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(API_KEY)
-    const model = genAI.getGenerativeModel({ model: MODEL_NAME })
+    const client = getGenAIClient()
+    if (!client) {
+      throw new Error('No se pudo inicializar el cliente')
+    }
 
-    // Prueba simple
-    const result = await model.generateContent('Respondé solo con "OK"')
-    const response = result.response.text()
+    // Prueba simple con el nuevo SDK (sintaxis oficial)
+    const response = await client.models.generateContent({
+      model: MODEL_NAME,
+      contents: 'Respondé solo con "OK"',
+    })
+
+    const responseText = response.text || ''
 
     return {
-      available: response.length > 0,
+      available: responseText.length > 0,
       model: MODEL_NAME,
     }
   } catch (error) {
