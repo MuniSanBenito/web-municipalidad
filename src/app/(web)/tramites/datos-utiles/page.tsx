@@ -11,6 +11,7 @@ import {
   IconHeadset,
   IconHeart,
   IconHome,
+  IconMail,
   IconMapPin,
   IconPhone,
   IconPhoneCall,
@@ -78,6 +79,7 @@ const dependenciasMunicipales = [
     telefono: '343-4973454',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
+    email: 'municipalidad@sanbenito.gob.ar',
   },
   {
     area: 'Centro de Atención al Vecino (CAV)',
@@ -86,6 +88,7 @@ const dependenciasMunicipales = [
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
     whatsapp: '543436127013',
+    email: 'cav@sanbenito.gob.ar',
   },
   {
     area: 'Área de niñez, adolescencia y Acción Social',
@@ -116,6 +119,7 @@ const dependenciasMunicipales = [
     telefono: '3436127015',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
+    email: 'rentas@sanbenito.gob.ar',
   },
   {
     area: 'Habilitaciones Comerciales',
@@ -179,7 +183,7 @@ const otrosServicios = [
     telefono: '(0343) 496-XXXX',
     horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
   },
-    {
+  {
     nombre: 'Centro de Salud CIC',
     telefono: '(0343) 496-XXXX',
     horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
@@ -200,7 +204,7 @@ export default function PageDatosUtiles() {
   return (
     <main className="container mx-auto px-4 py-6">
       {/* Header */}
-      <section className="hero bg-gradient-to-r from-primary to-secondary mb-8 rounded-lg p-6 text-center text-white shadow-lg md:p-10">
+      <section className="hero from-primary to-secondary mb-8 rounded-lg bg-gradient-to-r p-6 text-center text-white shadow-lg md:p-10">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
             <IconPhoneCall className="mx-auto mb-4" size={60} stroke={1.5} />
@@ -249,7 +253,7 @@ export default function PageDatosUtiles() {
           <h2 className="text-2xl font-bold md:text-3xl">Dependencias Municipales</h2>
         </div>
 
-        <div className="bg-base-100 overflow-hidden rounded-xl shadow-lg">
+        <div className="bg-base-100 hidden overflow-hidden rounded-xl shadow-lg md:block">
           <div className="overflow-x-auto">
             <table className="table w-full">
               <thead className="bg-primary text-white">
@@ -270,22 +274,34 @@ export default function PageDatosUtiles() {
                       </div>
                     </td>
                     <td>
-                      <a
-                        href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
-                        className="text-primary font-semibold hover:underline"
-                      >
-                        {dep.telefono}
-                      </a>
-                      {dep.whatsapp && (
+                      <div className="flex flex-wrap items-center gap-2">
                         <a
-                          href={`https://wa.me/${dep.whatsapp}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-success btn-xs ml-2"
+                          href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
+                          className="text-primary font-semibold hover:underline"
                         >
-                          WhatsApp
+                          {dep.telefono}
                         </a>
-                      )}
+                        {dep.whatsapp && (
+                          <a
+                            href={`https://wa.me/${dep.whatsapp}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-success btn-xs"
+                          >
+                            WhatsApp
+                          </a>
+                        )}
+                        {dep.email && (
+                          <a
+                            href={`mailto:${dep.email}`}
+                            className="btn btn-info btn-xs"
+                            title={dep.email}
+                          >
+                            <IconMail size={14} />
+                            Email
+                          </a>
+                        )}
+                      </div>
                     </td>
                     <td className="hidden md:table-cell">
                       <div className="flex items-center gap-2">
@@ -307,7 +323,7 @@ export default function PageDatosUtiles() {
         </div>
 
         {/* Vista móvil de dependencias */}
-        <div className="mt-4 space-y-3 md:hidden">
+        <div className="space-y-3 md:hidden">
           {dependenciasMunicipales.map((dep, index) => (
             <div key={index} className="card bg-base-100 p-4 shadow">
               <div className="flex items-start gap-3">
@@ -323,16 +339,27 @@ export default function PageDatosUtiles() {
                   <p className="text-base-content/70 mt-1 flex items-center gap-1 text-sm">
                     <IconClock size={14} /> {dep.horario}
                   </p>
-                  {dep.whatsapp && (
-                    <a
-                      href={`https://wa.me/${dep.whatsapp}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-success btn-xs mt-2"
-                    >
-                      WhatsApp
-                    </a>
-                  )}
+                  <p className="text-base-content/70 mt-1 flex items-center gap-1 text-sm">
+                    <IconMapPin size={14} /> {dep.direccion}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {dep.whatsapp && (
+                      <a
+                        href={`https://wa.me/${dep.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-success btn-xs"
+                      >
+                        WhatsApp
+                      </a>
+                    )}
+                    {dep.email && (
+                      <a href={`mailto:${dep.email}`} className="btn btn-info btn-xs">
+                        <IconMail size={14} />
+                        {dep.email}
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
