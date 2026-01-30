@@ -1,9 +1,9 @@
 import { generateMetadata as generateSEOMetadata } from '@/web/lib/metadata'
 import {
+  IconBook,
   IconBriefcase,
   IconBuilding,
   IconBuildingBank,
-  IconBuildingCommunity,
   IconCertificate,
   IconClock,
   IconGavel,
@@ -17,7 +17,7 @@ import {
   IconPhoneCall,
   IconReceipt,
   IconShieldCheck,
-  IconWheelchair,
+  IconWheelchair
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -79,7 +79,7 @@ const dependenciasMunicipales = [
     telefono: '343-4973454',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
-    email: 'municipalidad@sanbenito.gob.ar',
+    email: 'presidencia@munisanbenito.gov.ar',
   },
   {
     area: 'Centro de Atención al Vecino (CAV)',
@@ -88,7 +88,6 @@ const dependenciasMunicipales = [
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
     whatsapp: '543436127013',
-    email: 'cav@sanbenito.gob.ar',
   },
   {
     area: 'Área de niñez, adolescencia y Acción Social',
@@ -103,6 +102,13 @@ const dependenciasMunicipales = [
     telefono: '0343-4973821',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: '25 de Mayo 944',
+  },
+    {
+    area: 'Asesoria Legal y Tecnica',
+    icon: IconBriefcase,
+    horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+    direccion: 'Basavilbaso 1094',
+    email: 'asesorialegalytecnica@sanbenito.gob.ar',
   },
   {
     area: 'Honorable concejo deliberante',
@@ -119,7 +125,7 @@ const dependenciasMunicipales = [
     telefono: '3436127015',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1094',
-    email: 'rentas@sanbenito.gob.ar',
+    email: 'rentas@munisanbenito.gov.ar',
   },
   {
     area: 'Habilitaciones Comerciales',
@@ -144,6 +150,7 @@ const dependenciasMunicipales = [
     whatsapp: '543433027297',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1093',
+    email: 'adultosmayoresydiscapacidadsb@gmail.com',
   },
   {
     area: 'Obras privadas',
@@ -154,12 +161,12 @@ const dependenciasMunicipales = [
     direccion: 'Basavilbaso 1094',
   },
   {
-    area: 'CIC Barrio San Pedro',
-    icon: IconBuildingCommunity,
+    area: 'Biblioteca - Punto digital',
+    icon: IconBook,
     telefono: '3434508085',
     whatsapp: '543434508085',
-    horario: 'Lunes a Viernes de 8:00 a 13:00 hs',
-    direccion: 'Garay y Nogoyá',
+    horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
+    direccion: 'Friuli 1051',
   },
   {
     area: 'Oficina de Produccion y Empleo',
@@ -275,12 +282,18 @@ export default function PageDatosUtiles() {
                     </td>
                     <td>
                       <div className="flex flex-wrap items-center gap-2">
-                        <a
-                          href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
-                          className="text-primary font-semibold hover:underline"
-                        >
-                          {dep.telefono}
-                        </a>
+                        {dep.telefono ? (
+                          <a
+                            href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
+                            className="text-primary font-semibold hover:underline"
+                          >
+                            {dep.telefono}
+                          </a>
+                        ) : (
+                          <span className="text-base-content/50 text-sm italic">
+                            
+                          </span>
+                        )}
                         {dep.whatsapp && (
                           <a
                             href={`https://wa.me/${dep.whatsapp}`}
@@ -330,12 +343,18 @@ export default function PageDatosUtiles() {
                 <dep.icon className="text-primary mt-1" size={24} />
                 <div className="flex-1">
                   <h3 className="font-bold">{dep.area}</h3>
-                  <a
-                    href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
-                    className="text-primary font-semibold"
-                  >
-                    {dep.telefono}
-                  </a>
+                  {dep.telefono ? (
+                    <a
+                      href={`tel:${dep.telefono.replace(/[^0-9+]/g, '')}`}
+                      className="text-primary font-semibold"
+                    >
+                      {dep.telefono}
+                    </a>
+                  ) : (
+                    <span className="text-base-content/50 text-sm italic">
+                      -
+                    </span>
+                  )}
                   <p className="text-base-content/70 mt-1 flex items-center gap-1 text-sm">
                     <IconClock size={14} /> {dep.horario}
                   </p>
