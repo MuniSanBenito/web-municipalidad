@@ -63,13 +63,13 @@ export function Footer() {
             <li className="flex items-center gap-2">
               <IconPhone size={18} />
               <a href="https://wa.me/543436127013" className="hover:text-primary">
-                3436127013
+               CAV: 3436127013
               </a>
             </li>
             <li className="flex items-center gap-2">
               <IconMail size={18} />
-              <a href="mailto:modernizacion@sanbenito.gob.ar" className="hover:text-primary">
-                modernizacion@sanbenito.gob.ar
+              <a href="mailto:presidencia@munisanbenito.gov.ar" className="hover:text-primary">
+                presidencia@munisanbenito.gov.ar
               </a>
             </li>
             <li>

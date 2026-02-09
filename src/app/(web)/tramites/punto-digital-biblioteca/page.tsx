@@ -1,8 +1,8 @@
 import {
   IconAlertTriangle,
   IconBook,
-  IconBrandWhatsapp,
   IconBrain,
+  IconBrandWhatsapp,
   IconCode,
   IconDeviceLaptop,
   IconLanguage,
@@ -177,7 +177,7 @@ export default function PagePuntoDigitalBiblioteca() {
             <p className="text-base-content">Comunícate directamente con nosotros.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493435180121"
+                href="https://wa.me/5493434508085"
                 className="btn btn-success gap-2 text-success-content"
                 target="_blank"
                 rel="noopener noreferrer"

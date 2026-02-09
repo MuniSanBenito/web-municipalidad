@@ -16,7 +16,8 @@ import {
   IconHomeEdit,
   IconLicense,
   IconMasksTheater,
-  IconUserCircle,
+  IconPhoneCall,
+  IconUserCircle
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -40,6 +41,12 @@ export const metadata: Metadata = generateSEOMetadata({
 
 // Definición de las secciones de trámites con sus iconos y enlaces
 const tramites = [
+  {
+    title: 'Telefonos Útiles',
+    icon: IconPhoneCall,
+    link: '/tramites/datos-utiles',
+    description: 'Teléfonos de emergencia, dependencias municipales y horarios de atención',
+  },
   {
     title: 'Licencia de Conducir',
     icon: IconLicense,
