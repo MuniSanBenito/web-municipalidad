@@ -3,19 +3,20 @@
 /**
  * Sistema de validación de contenido para evitar alucinaciones del chatbot
  * Asegura que solo se proporcione información verificada de la municipalidad
+ * Última actualización: Febrero 2026
  */
 
-// Lista de información oficial verificada (actualizada 2025)
+// Lista de información oficial verificada (actualizada Febrero 2026)
 const VERIFIED_INFORMATION = {
   // Información de contacto oficial
   contacto: {
-    telefono_principal: '(0343) 4973454',
-    email: 'Modernizacion@sanbenito.gob.ar',
-    direccion: 'Blvd. Basalvibaso 1094, San Benito, Entre Ríos, Argentina',
+    telefono_principal: '343-4973454',
+    email: 'presidencia@munisanbenito.gov.ar',
+    direccion: 'Basavilbaso 1094, San Benito, Entre Ríos, Argentina',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   },
 
-  // WhatsApp por área
+  // WhatsApp por área (actualizado Febrero 2026)
   whatsapp: {
     rentas: '3436127015',
     licencias: '3436127014',
@@ -23,13 +24,20 @@ const VERIFIED_INFORMATION = {
     cav: '3436127013',
     deportes: '5493434682745',
     punto_digital: '3434508085',
+    obras_privadas: '3434681033',
+    area_mujer: '3435204239',
+    tercera_edad: '3433027297',
+    produccion_empleo: '3434470379',
+    concejo: '3434700140',
   },
 
   // Emails por área
   emails: {
     rentas: 'rentas@munisanbenito.gov.ar',
-    obras_privadas: 'obrasprivadas@munisanbenito.gov.ar',
+    obras_privadas: 'opriv.sanbenito@gmail.com',
     habilitaciones: 'habilitaciones@munisanbenito.gov.ar',
+    tercera_edad: 'adultosmayoresydiscapacidadsb@gmail.com',
+    asesoria_legal: 'asesorialegalytecnica@sanbenito.gob.ar',
   },
 
   // Trámites con requisitos exactos
@@ -51,6 +59,7 @@ const VERIFIED_INFORMATION = {
         'Título de propiedad o boleto compra-venta certificado',
         'Plano de mensura visado por Catastro',
         'Libre deuda municipal',
+        'Certificado de factibilidad de servicios',
         'Planos firmados por profesional habilitado',
       ],
     },
@@ -79,6 +88,7 @@ const VERIFIED_INFORMATION = {
     curso_vial: 'http://curso.seguridadvial.gob.ar/',
     cenat: 'https://boletadepago.seguridadvial.gob.ar/',
     deportes_inscripcion: 'https://forms.gle/6v12MovAy6AeCxTJ9',
+    emprendedores: 'https://forms.gle/2nQfHh6LixSHKrR5A',
   },
 }
 

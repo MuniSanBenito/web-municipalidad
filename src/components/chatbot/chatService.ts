@@ -1,11 +1,12 @@
-// src/components/chatbot/geminiService.ts
+// src/components/chatbot/chatService.ts
 /**
- * Cliente para el servicio de Gemini
- * Llama a la API Route /api/gemini para mantener la API Key segura en el servidor
+ * Cliente para el servicio de Chat (Groq + Llama 3.3)
+ * Llama a la API Route /api/chat para mantener la API Key segura en el servidor
  */
 
-const DEBUG_MODE = true
-const API_ENDPOINT = '/api/gemini'
+// Debug mode basado en entorno
+const DEBUG_MODE = process.env.NODE_ENV === 'development'
+const API_ENDPOINT = '/api/chat'
 
 // Cache con expiración para verificar disponibilidad
 let isConfiguredCache: { value: boolean; timestamp: number } | null = null
@@ -21,12 +22,13 @@ function isCacheValid(cache: { value: boolean; timestamp: number } | null): bool
 }
 
 /**
- * Verifica el estado del servicio Gemini
+ * Verifica el estado del servicio de Chat
  */
-async function checkGeminiStatus(): Promise<{
+async function checkChatStatus(): Promise<{
   configured: boolean
   available: boolean
   model: string
+  provider: string
   error?: string
 }> {
   try {
@@ -41,50 +43,54 @@ async function checkGeminiStatus(): Promise<{
 
     return await response.json()
   } catch (error) {
-    console.error('Error verificando Gemini:', error)
+    console.error('Error verificando servicio de chat:', error)
     return {
       configured: false,
       available: false,
-      model: 'gemini-1.5-flash',
+      model: 'llama-3.3-70b-versatile',
+      provider: 'groq',
       error: error instanceof Error ? error.message : 'Error de conexión',
     }
   }
 }
 
 /**
- * Verifica si Gemini está configurado (API key presente en servidor)
+ * Verifica si el servicio de chat está configurado (API key presente en servidor)
  */
-export async function isGeminiConfigured(): Promise<boolean> {
+export async function isChatConfigured(): Promise<boolean> {
   if (isCacheValid(isConfiguredCache)) {
     return isConfiguredCache!.value
   }
 
   try {
-    const status = await checkGeminiStatus()
+    const status = await checkChatStatus()
     isConfiguredCache = { value: status.configured, timestamp: Date.now() }
     if (DEBUG_MODE) {
-      console.log(`🔧 Gemini configurado: ${status.configured}`)
+      console.log(`🔧 Chat configurado: ${status.configured} (${status.provider})`)
     }
     return status.configured
   } catch (error) {
-    console.error('Error verificando configuración de Gemini:', error)
+    console.error('Error verificando configuración de chat:', error)
     return false
   }
 }
 
 /**
- * Genera una respuesta usando Google Gemini API
+ * Genera una respuesta usando el servicio de Chat (Groq/Llama)
  */
-export async function generateGeminiResponse(userQuery: string): Promise<string> {
+export async function generateChatResponse(
+  userQuery: string,
+  history?: Array<{ role: string; content: string }>
+): Promise<string> {
   try {
     if (DEBUG_MODE) {
-      console.log('🤖 Generando respuesta con Gemini...')
+      console.log('🤖 Generando respuesta con Llama 3.3...')
     }
 
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: userQuery }),
+      body: JSON.stringify({ query: userQuery, history }),
     })
 
     if (!response.ok) {
@@ -98,39 +104,39 @@ export async function generateGeminiResponse(userQuery: string): Promise<string>
     }
 
     if (DEBUG_MODE) {
-      console.log('✅ Respuesta de Gemini generada:', data.response.substring(0, 100) + '...')
+      console.log('✅ Respuesta de Llama generada:', data.response.substring(0, 100) + '...')
     }
 
     return data.response
   } catch (error) {
-    console.error('❌ Error al generar respuesta con Gemini:', error)
+    console.error('❌ Error al generar respuesta:', error)
     throw error
   }
 }
 
 /**
- * Verifica si el servicio de Gemini está disponible
+ * Verifica si el servicio de chat está disponible
  */
-export async function isGeminiAvailable(): Promise<boolean> {
+export async function isChatAvailable(): Promise<boolean> {
   if (isCacheValid(isAvailableCache)) {
     return isAvailableCache!.value
   }
 
   try {
-    const status = await checkGeminiStatus()
+    const status = await checkChatStatus()
     isAvailableCache = { value: status.available, timestamp: Date.now() }
 
     if (DEBUG_MODE) {
       if (status.available) {
-        console.log(`✅ Gemini está disponible (modelo: ${status.model})`)
+        console.log(`✅ Chat disponible (${status.provider}: ${status.model})`)
       } else {
-        console.log(`⚠️ Gemini no está disponible: ${status.error}`)
+        console.log(`⚠️ Chat no disponible: ${status.error}`)
       }
     }
 
     return status.available
   } catch (error) {
-    console.error('❌ Error verificando disponibilidad de Gemini:', error)
+    console.error('❌ Error verificando disponibilidad de chat:', error)
     isAvailableCache = { value: false, timestamp: Date.now() }
     return false
   }
@@ -139,16 +145,18 @@ export async function isGeminiAvailable(): Promise<boolean> {
 /**
  * Obtiene información sobre el estado del servicio
  */
-export async function getGeminiStatus(): Promise<{
+export async function getChatStatus(): Promise<{
   configured: boolean
   modelName: string
+  provider: string
   available: boolean
 }> {
-  const status = await checkGeminiStatus()
+  const status = await checkChatStatus()
 
   return {
     configured: status.configured,
     modelName: status.model,
+    provider: status.provider,
     available: status.available,
   }
 }
@@ -156,10 +164,17 @@ export async function getGeminiStatus(): Promise<{
 /**
  * Resetea el cache de estado
  */
-export function resetGeminiCache(): void {
+export function resetChatCache(): void {
   isConfiguredCache = null
   isAvailableCache = null
   if (DEBUG_MODE) {
-    console.log('🔄 Cache de Gemini reseteado')
+    console.log('🔄 Cache de chat reseteado')
   }
 }
+
+// Aliases para compatibilidad con código existente (temporal)
+export const isGeminiConfigured = isChatConfigured
+export const isGeminiAvailable = isChatAvailable
+export const generateGeminiResponse = generateChatResponse
+export const getGeminiStatus = getChatStatus
+export const resetGeminiCache = resetChatCache

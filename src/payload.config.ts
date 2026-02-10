@@ -12,6 +12,7 @@ import { Archivos } from './payload/collections/Archivos'
 import { ArchivosObras } from './payload/collections/ArchivosObras'
 import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
+import { ChatbotQueries } from './payload/collections/ChatbotQueries'
 import { Ciudadanos } from './payload/collections/Ciudadanos'
 import { ComerciosHabilitados } from './payload/collections/ComerciosHabilitados'
 import { Concursos } from './payload/collections/Concursos'
@@ -162,6 +163,8 @@ export default buildConfig({
     Matriculados,
     RubrosComercios,
     ComerciosHabilitados,
+    // Analytics
+    ChatbotQueries,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),

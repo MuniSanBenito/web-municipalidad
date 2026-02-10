@@ -295,8 +295,10 @@ export const STORAGE_KEYS = {
   RATE_LIMIT: 'chatbot_rate_limit',
 } as const
 
+// Límites ajustados para Gemini Free Tier (Febrero 2026)
+// Free tier: 15 RPM, 1,500 RPD para gemini-2.0-flash
 export const DEFAULT_RATE_LIMIT: RateLimitConfig = {
-  maxRequests: 20, // máximo 20 requests
+  maxRequests: 12, // máximo 12 requests por minuto (conservador vs 15 RPM del free tier)
   windowMs: 60 * 1000, // por minuto
-  minInterval: 1000, // mínimo 1 segundo entre requests
+  minInterval: 2000, // mínimo 2 segundos entre requests para evitar bursts
 } as const

@@ -3,7 +3,7 @@
 /**
  * Base de conocimiento mejorada con información REAL extraída de las páginas del sitio
  * Esta información está sincronizada con el contenido actual de las páginas TSX
- * Última actualización: Octubre 2025
+ * Última actualización: Febrero 2026
  */
 
 export interface ServiceInfo {
@@ -24,13 +24,24 @@ export interface ServiceInfo {
 // INFORMACIÓN DE CONTACTO GENERAL
 // ===========================================
 export const CONTACTO_GENERAL = {
-  direccion: 'Blvd. Basalvibaso 1094, San Benito, Entre Ríos, Argentina',
-  telefonoPrincipal: '(0343) 4973454',
-  emailPrincipal: 'Modernizacion@sanbenito.gob.ar',
+  direccion: 'Basavilbaso 1094, San Benito, Entre Ríos, Argentina',
+  telefonoPrincipal: '343-4973454',
+  emailPrincipal: 'presidencia@munisanbenito.gov.ar',
   horarioGeneral: 'Lunes a Viernes de 7:00 a 13:00 hs',
   intendente: 'Ariel Voeffray',
   poblacion: '17,000 habitantes aproximadamente',
 }
+
+// ===========================================
+// NÚMEROS DE EMERGENCIA
+// ===========================================
+export const EMERGENCIAS = [
+  { nombre: 'Policía y Bomberos', telefono: '911', disponibilidad: '24 horas' },
+  { nombre: 'Emergencias Médicas', telefono: '107', disponibilidad: '24 horas' },
+  { nombre: 'Defensa Civil', telefono: '103', disponibilidad: '24 horas' },
+  { nombre: 'Violencia de Género', telefono: '144', disponibilidad: '24 horas' },
+  { nombre: 'Ayuda al Niño', telefono: '102', disponibilidad: '24 horas' },
+]
 
 // ===========================================
 // RENTAS - INFORMACIÓN COMPLETA
@@ -40,10 +51,10 @@ export const RENTAS: ServiceInfo = {
   descripcion:
     'La Dirección de Rentas se encarga de la recaudación de tasas y contribuciones municipales, brindando a los contribuyentes herramientas para facilitar el cumplimiento de sus obligaciones tributarias.',
   whatsapp: '3436127015',
-  telefono: '(0343) 4973454',
+  telefono: '343-4973454',
   email: 'rentas@munisanbenito.gov.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  ubicacion: 'Edificio Municipal - Blvd. Basalvibaso 1094, San Benito',
+  ubicacion: 'Edificio Municipal - Basavilbaso 1094, San Benito',
   url: '/tramites/rentas',
   enlaces: [
     {
@@ -63,7 +74,8 @@ export const RENTAS: ServiceInfo = {
 // ===========================================
 export const LICENCIA_CONDUCIR: ServiceInfo = {
   nombre: 'Licencia Nacional de Conducir',
-  descripcion: 'Trámite para obtener la licencia de conducir original, renovación o ampliación',
+  descripcion:
+    'La Licencia Nacional de Conducir es un documento único que la autoridad competente otorga a un ciudadano para habilitarlo legalmente a conducir un vehículo.',
   whatsapp: '3436127014',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   url: '/tramites/licencia',
@@ -74,15 +86,16 @@ export const LICENCIA_CONDUCIR: ServiceInfo = {
     'Certificado Nacional de Antecedentes de Tránsito (CENAT) - Descarga: https://boletadepago.seguridadvial.gob.ar/',
     'Examen psicofísico obligatorio (turnos al iniciar trámite)',
     'Curso de Educación Vial - Acceso: http://curso.seguridadvial.gob.ar/',
-    'Curso presencial: Lunes 8:00-10:00 hs (autos) y 10:00-12:00 hs (motos)',
-    'Menores de 18 años: Autorización representante legal en Juzgado de Paz (25 de mayo 960, San Benito) con fotocopia de libreta de familia o partida de nacimiento',
-    'Para jóvenes 16-21 años: Curso MPL adicional - https://mpl.seguridadvial.gob.ar/',
+    'Menores de 18 años: Autorización representante legal en Juzgado de Paz (25 de mayo 960, San Benito)',
     'Tasa municipal (se emite el día del turno en área de Rentas)',
-    'Es requisito obligatorio saber leer para solicitar clases A y B',
+    'Saber leer para clases A y B; saber leer y escribir para clases C, D y E',
   ],
   informacionAdicional: [
+    'Trámites disponibles: Licencia Original, Renovación, Ampliación, Licencia Profesional Interjurisdiccional',
+    'Ubicación de pruebas prácticas: Parque Lineal San Benito (Calle Brasil)',
     'La tasa municipal se abona el mismo día del trámite',
     'El certificado CENAT debe descargarse y pagarse según centros de pago establecidos',
+    'Cambio de jurisdicción: licencia caduca a los 90 días de producido el cambio no denunciado',
   ],
 }
 
@@ -93,10 +106,10 @@ export const OBRAS_PRIVADAS: ServiceInfo = {
   nombre: 'Obras Privadas',
   descripcion:
     'La Dirección de Obras Privadas regula y controla las construcciones dentro del municipio, garantizando el cumplimiento de las normativas vigentes y el desarrollo urbano ordenado.',
-  telefono: '(0343) 4973454',
-  email: 'obrasprivadas@munisanbenito.gov.ar',
-  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  ubicacion: 'Edificio Municipal',
+  whatsapp: '3434681033',
+  email: 'opriv.sanbenito@gmail.com',
+  horario: 'Lunes a Viernes de 7:30 a 12:30 hs',
+  ubicacion: 'Edificio Municipal - Basavilbaso 1094',
   url: '/tramites/obras-privadas',
   requisitos: [
     'Título de propiedad o boleto de compra-venta certificado',
@@ -106,8 +119,10 @@ export const OBRAS_PRIVADAS: ServiceInfo = {
     'Planos firmados por profesional habilitado',
   ],
   informacionAdicional: [
-    'Trámites disponibles: Inscripción Municipal de Profesional, Presentación de Proyecto, Presentación de Relevamiento, Presentación de Final de Obra',
+    'Directora: Ing. Sara Carina Zapata',
+    'Trámites disponibles: Inscripción Municipal de Profesional, Presentación de Proyecto, Presentación de Relevamiento, Presentación de Finalización de Obra',
     'Normativa aplicable: Código de Edificación Municipal, Ordenanza de Uso del Suelo, Reglamentaciones sobre retiros y factores de ocupación, Normativas de seguridad e higiene',
+    'WhatsApp solo para mensajes (no llamadas)',
   ],
 }
 
@@ -130,7 +145,7 @@ export const HABILITACIONES: ServiceInfo = {
     'Habilitación de Bomberos (si corresponde)',
   ],
   informacionAdicional: [
-    'Tipos de habilitaciones: Comercios minoristas, Servicios profesionales, Gastronomía, Industrias',
+    'Tipos de habilitaciones: Comercios Minoristas, Servicios Profesionales, Gastronomía, Industrias',
     'La documentación debe presentarse en el Área de Habilitaciones Comerciales',
   ],
 }
@@ -140,7 +155,8 @@ export const HABILITACIONES: ServiceInfo = {
 // ===========================================
 export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
   nombre: 'Actividades Deportivas Municipales',
-  descripcion: 'Talleres municipales deportivos y recreativos gratuitos para todas las edades',
+  descripcion:
+    'Talleres municipales deportivos y recreativos gratuitos para todas las edades',
   whatsapp: '5493434682745',
   horario: 'Horarios variados según actividad',
   url: '/tramites/actividades-deportivas',
@@ -156,10 +172,10 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
   ],
   informacionAdicional: [
     'ACTIVIDADES DISPONIBLES:',
-    '• Golf Croquet Municipal: +55 años, Lunes 9:00 hs (Guillermina Clausich, Ariadna Vince)',
-    '• Actividades Recreativas en Agua: +55 años, Martes y Jueves 10:00 hs (Guillermina Clausich, Solange Valin)',
-    '• Iniciación Deportiva: 3-7 años, Lunes y Miércoles 10:15 hs (Guillermina Clausich, Solange Valin)',
-    '• Escuela de Beach Voley: +12 años, Lunes, Miércoles y Viernes 14:30 hs (Magalí Meier, Alejandro Monzón)',
+    '• Golf Croquet Municipal: +55 años, Lunes 9:00 hs (Prof. Guillermina Clausich, Ariadna Vince)',
+    '• Actividades Recreativas en Agua: +55 años, Martes y Jueves 10:00 hs (Prof. Guillermina Clausich, Solange Valin)',
+    '• Iniciación Deportiva: 3-7 años, Lunes y Miércoles 10:15 hs (Prof. Guillermina Clausich, Solange Valin)',
+    '• Escuela de Beach Voley: +12 años, Lunes, Miércoles y Viernes 14:30 hs (Prof. Magalí Meier, Alejandro Monzón)',
     '',
     'PUNTOS DEPORTIVOS:',
     '• Parque Vieytes',
@@ -173,7 +189,7 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
     '• Barrio San Sebastián (Gob. Quirós y Tibiletti)',
     '• Barrio Portal del Sol',
     '',
-    'IMPORTANTE: Es obligatorio presentar la ficha médica completa para participar',
+    'IMPORTANTE: Es obligatorio presentar la ficha médica completa para participar. La inscripción está abierta todo el año.',
   ],
 }
 
@@ -183,14 +199,143 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
 export const CAV: ServiceInfo = {
   nombre: 'Centro de Atención Al Vecino (CAV)',
   descripcion:
-    'Recepción y gestión de reclamos ciudadanos, atención personalizada presencial y por WhatsApp',
+    'Recepción y gestión de reclamos ciudadanos, atención personalizada presencial y por WhatsApp para mejorar la calidad de vida en la comunidad',
   whatsapp: '3436127013',
+  telefono: '343-6127013',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs (presencial y WhatsApp)',
+  ubicacion: 'Basavilbaso 1094',
   url: '/tramites/cav',
   informacionAdicional: [
     'Canales de atención: WhatsApp y presencial',
     'Se encarga de recibir y gestionar reclamos para mejorar la calidad de vida en la comunidad',
   ],
+}
+
+// ===========================================
+// PUNTO DIGITAL Y BIBLIOTECA
+// ===========================================
+export const PUNTO_DIGITAL: ServiceInfo = {
+  nombre: 'Punto Digital y Biblioteca Municipal "Santiago Tórtul"',
+  descripcion:
+    'Espacio cultural y educativo que ofrece acceso a computadoras, internet, biblioteca y talleres educativos gratuitos',
+  whatsapp: '3434508085',
+  telefono: '3434508085',
+  horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
+  ubicacion: 'Friuli 1051',
+  url: '/tramites/punto-digital-biblioteca',
+  informacionAdicional: [
+    'TALLERES DE IDIOMAS:',
+    '• Inglés Inicial (7 a 9 años, 10 a 14 años, +15 años)',
+    '• Portugués Inicial (7 a 10 años, 11 a 14 años, +15 años)',
+    '',
+    'TALLERES DE TECNOLOGÍA:',
+    '• Programación Web Full Stack',
+    '• Computación para Adultos (+40 años)',
+    '• Robótica para Niños (8 a 11 años)',
+    '',
+    'TALLERES DE BIENESTAR:',
+    '• Envejecientemente Activ@',
+    '• Yoga en el Vieytes',
+    '',
+    'REQUISITOS: Cupos limitados. Requisito tener domicilio en San Benito.',
+  ],
+}
+
+// ===========================================
+// ÁREA DE LA MUJER Y GÉNERO
+// ===========================================
+export const AREA_MUJER: ServiceInfo = {
+  nombre: 'Área Mujer y Género',
+  descripcion:
+    'Espacio dedicado a trabajar para erradicar la violencia de género, brindando acompañamiento, asesoramiento legal y contención psicológica',
+  whatsapp: '3435204239',
+  telefono: '3435204239',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'NIDO - Buenos Aires y Misiones',
+  url: '/tramites/area-mujer',
+  informacionAdicional: [
+    'Creada el 11 de julio de 2018 bajo Ordenanza N° 510-16',
+    'Equipo de trabajo:',
+    '• Coordinadora: Aumassanne Ma. Camila',
+    '• Trabajadora Social: Navoni Jesica',
+    '• Psicóloga (equipo técnico): Tamborini Brenda',
+    '• Equipo técnico: Vicentin Silvana',
+    '• Psicóloga (tratamiento individual): Yoris María Laura',
+    '• Abogada (asesoramiento legal): Duro Rivas Valeria',
+    '• Administrativa: Beber Claudia',
+    '• Promotora de derechos: Romero Celestina',
+  ],
+}
+
+// ===========================================
+// PRODUCCIÓN Y EMPLEO
+// ===========================================
+export const PRODUCCION_EMPLEO: ServiceInfo = {
+  nombre: 'Área de Producción y Empleo',
+  descripcion:
+    'Espacio de apoyo a emprendedores locales y fomento del desarrollo productivo de San Benito',
+  whatsapp: '3434470379',
+  telefono: '3434470379',
+  horario: 'Lunes a Viernes de 8:00 a 13:00 hs',
+  ubicacion: 'NIDO - Buenos Aires y Misiones',
+  url: '/tramites/produccion-empleo',
+  enlaces: [
+    {
+      texto: 'Reempadronamiento de Emprendedores',
+      url: 'https://forms.gle/2nQfHh6LixSHKrR5A',
+    },
+  ],
+  informacionAdicional: [
+    'Registro de emprendedores para acceso a programas, capacitaciones y beneficios',
+  ],
+}
+
+// ===========================================
+// TERCERA EDAD Y DISCAPACIDAD
+// ===========================================
+export const TERCERA_EDAD: ServiceInfo = {
+  nombre: 'Tercera Edad y Discapacidad',
+  descripcion: 'Atención y servicios para adultos mayores y personas con discapacidad',
+  whatsapp: '3433027297',
+  telefono: '3433027297',
+  email: 'adultosmayoresydiscapacidadsb@gmail.com',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Basavilbaso 1093',
+  url: '/tramites/tercera-edad-discapacidad',
+}
+
+// ===========================================
+// ÁREA NIÑEZ Y ACCIÓN SOCIAL
+// ===========================================
+export const NINEZ_ACCION_SOCIAL: ServiceInfo = {
+  nombre: 'Área de Niñez, Adolescencia y Acción Social',
+  descripcion: 'Atención y servicios para niños, adolescentes y acción social',
+  telefono: '0343-4973644',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Basavilbaso 1093',
+}
+
+// ===========================================
+// JUZGADO DE FALTAS
+// ===========================================
+export const JUZGADO_FALTAS: ServiceInfo = {
+  nombre: 'Juzgado de Faltas/Tránsito, Transporte e Inspección General',
+  descripcion: 'Atención de faltas, tránsito, transporte e inspección general',
+  telefono: '0343-4973821',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: '25 de Mayo 944',
+}
+
+// ===========================================
+// HONORABLE CONCEJO DELIBERANTE
+// ===========================================
+export const CONCEJO_DELIBERANTE: ServiceInfo = {
+  nombre: 'Honorable Concejo Deliberante',
+  descripcion: 'Órgano legislativo municipal',
+  whatsapp: '3434700140',
+  telefono: '3434700140',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Av. Friuli y Rivadavia',
 }
 
 // ===========================================
@@ -206,31 +351,17 @@ export const CATASTRO: ServiceInfo = {
 export const MESA_ENTRADA: ServiceInfo = {
   nombre: 'Mesa de Entrada',
   descripcion: 'Recepción de trámites generales',
-  telefono: '(0343) 4973454',
+  telefono: '343-4973454',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   ubicacion: 'Edificio Municipal',
-}
-
-export const PUNTO_DIGITAL: ServiceInfo = {
-  nombre: 'Punto Digital y Biblioteca',
-  descripcion: 'Acceso a computadoras, internet y biblioteca municipal',
-  whatsapp: '3434508085',
-  horario: 'Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs',
-  url: '/tramites/punto-digital-biblioteca',
 }
 
 export const TALLERES_CULTURALES: ServiceInfo = {
   nombre: 'Talleres Culturales',
   descripcion: 'Talleres gratuitos de arte y cultura para la comunidad',
-  telefono: '(0343) 4973454',
+  telefono: '343-4973454',
   horario: 'Horarios variados según taller',
-}
-
-export const AREA_MUJER: ServiceInfo = {
-  nombre: 'Área de la Mujer',
-  descripcion: 'Asesoramiento y apoyo para mujeres',
-  telefono: '(0343) 4973454',
-  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  url: '/tramites/talleres-culturales',
 }
 
 // ===========================================
@@ -249,8 +380,21 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   catastro: CATASTRO,
   'mesa-entrada': MESA_ENTRADA,
   'punto-digital': PUNTO_DIGITAL,
+  biblioteca: PUNTO_DIGITAL,
   'talleres-culturales': TALLERES_CULTURALES,
   'area-mujer': AREA_MUJER,
+  mujer: AREA_MUJER,
+  genero: AREA_MUJER,
+  'produccion-empleo': PRODUCCION_EMPLEO,
+  empleo: PRODUCCION_EMPLEO,
+  emprendedores: PRODUCCION_EMPLEO,
+  'tercera-edad': TERCERA_EDAD,
+  discapacidad: TERCERA_EDAD,
+  ninez: NINEZ_ACCION_SOCIAL,
+  'accion-social': NINEZ_ACCION_SOCIAL,
+  'juzgado-faltas': JUZGADO_FALTAS,
+  transito: JUZGADO_FALTAS,
+  concejo: CONCEJO_DELIBERANTE,
 }
 
 // ===========================================
@@ -281,14 +425,10 @@ const SINONIMOS: { [key: string]: string[] } = {
     'contribución',
     'factura',
     'boleta',
-    // Variantes regionales argentinas
-    'guita',
-    'morfi', // coloquial para deuda
-    'afip',
-    'monotributo',
     'inmobiliario',
-    'ABL',
     'patente',
+    'higiene',
+    'profilaxis',
   ],
   licencia: [
     'licencia',
@@ -308,17 +448,16 @@ const SINONIMOS: { [key: string]: string[] } = {
     'cenat',
     'psicofisico',
     'psicofísico',
-    // Variantes regionales argentinas
-    'birro', // coloquial para auto
-    'movil',
     'coche',
     'camioneta',
     'camion',
     'camión',
-    'colectivo',
-    'combi',
-    'bici',
-    'bicicleta',
+    'renovacion',
+    'renovación',
+    'original',
+    'ampliacion',
+    'ampliación',
+    'profesional',
   ],
   obras: [
     'obra',
@@ -339,6 +478,9 @@ const SINONIMOS: { [key: string]: string[] } = {
     'permiso de obra',
     'arquitecto',
     'ingeniero',
+    'relevamiento',
+    'final de obra',
+    'proyecto',
   ],
   habilitaciones: [
     'habilitacion',
@@ -361,19 +503,11 @@ const SINONIMOS: { [key: string]: string[] } = {
     'gastronomia',
     'gastronomía',
     'industria',
-    // Variantes regionales argentinas
-    'boliche', // bar/negocio
     'pyme',
-    'microemprendimiento',
     'tienda',
     'despensa',
-    'maxikiosco',
-    'verduleria',
-    'carniceria',
-    'panaderia',
     'farmacia',
     'peluqueria',
-    'taller mecanico',
   ],
   deportes: [
     'deporte',
@@ -424,9 +558,6 @@ const SINONIMOS: { [key: string]: string[] } = {
     'limpieza',
     'calle rota',
     'vereda',
-    // Variantes regionales argentinas
-    'quilombo', // problema coloquial
-    'bardear',
     'pozo',
     'inundacion',
     'inundación',
@@ -437,9 +568,6 @@ const SINONIMOS: { [key: string]: string[] } = {
     'cloacas',
     'desague',
     'zanja',
-    'perro suelto',
-    'ruido',
-    'molestia',
   ],
   'punto-digital': [
     'punto digital',
@@ -454,6 +582,19 @@ const SINONIMOS: { [key: string]: string[] } = {
     'escanear',
     'libro',
     'libros',
+    'santiago tortul',
+    'ingles',
+    'inglés',
+    'portugues',
+    'portugués',
+    'programacion',
+    'programación',
+    'robotica',
+    'robótica',
+    'yoga',
+    'taller',
+    'curso',
+    'cursos',
   ],
   catastro: ['catastro', 'terreno', 'lote', 'parcela', 'mensura', 'subdivision', 'subdivisión'],
   'area-mujer': [
@@ -464,12 +605,34 @@ const SINONIMOS: { [key: string]: string[] } = {
     'violencia',
     'asistencia mujer',
     'ayuda mujer',
+    'violencia de genero',
+    'violencia de género',
+    '144',
+  ],
+  'produccion-empleo': [
+    'empleo',
+    'trabajo',
+    'emprendedor',
+    'emprendedores',
+    'produccion',
+    'producción',
+    'pyme',
+    'microemprendimiento',
+    'reempadronamiento',
+  ],
+  'tercera-edad': [
+    'tercera edad',
+    'adultos mayores',
+    'jubilados',
+    'discapacidad',
+    'discapacitados',
+    'abuelos',
+    'pension',
+    'pensión',
   ],
   'talleres-culturales': [
     'cultura',
     'cultural',
-    'taller',
-    'talleres',
     'arte',
     'artístico',
     'artistico',
@@ -585,9 +748,11 @@ export function formatearServicio(servicio: ServiceInfo): string {
     'Habilitaciones Comerciales': '🏪',
     'Actividades Deportivas Municipales': '⚽',
     'Centro de Atención Al Vecino (CAV)': '📋',
-    'Punto Digital y Biblioteca': '📚',
+    'Punto Digital y Biblioteca Municipal "Santiago Tórtul"': '📚',
     'Talleres Culturales': '🎨',
-    'Área de la Mujer': '💜',
+    'Área Mujer y Género': '💜',
+    'Área de Producción y Empleo': '💼',
+    'Tercera Edad y Discapacidad': '🧓',
     Catastro: '🗺️',
     'Mesa de Entrada': '📝',
   }
@@ -595,9 +760,10 @@ export function formatearServicio(servicio: ServiceInfo): string {
   const emoji = emojis[servicio.nombre] || '📋'
 
   // Descripción corta (máximo 100 caracteres)
-  const descripcionCorta = servicio.descripcion.length > 100 
-    ? servicio.descripcion.substring(0, 100) + '...'
-    : servicio.descripcion
+  const descripcionCorta =
+    servicio.descripcion.length > 100
+      ? servicio.descripcion.substring(0, 100) + '...'
+      : servicio.descripcion
 
   let texto = `${emoji} **${servicio.nombre}**\n${descripcionCorta}\n\n`
 
@@ -610,6 +776,10 @@ export function formatearServicio(servicio: ServiceInfo): string {
 
   if (servicio.horario) {
     texto += `🕒 ${servicio.horario}\n`
+  }
+
+  if (servicio.ubicacion) {
+    texto += `📍 ${servicio.ubicacion}\n`
   }
 
   // Link a la página con información completa

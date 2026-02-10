@@ -11,13 +11,13 @@
  * - DEBUG_MODE según entorno
  */
 
+import { generateGeminiResponse, isGeminiAvailable, isGeminiConfigured } from './chatService'
 import { getVerifiedInformation, sanitizeResponse, validateResponse } from './contentValidator'
 import { addAssistantMessage, addUserMessage, getContextForAI } from './conversationHistory'
-import { generateGeminiResponse, isGeminiAvailable, isGeminiConfigured } from './geminiService'
 import {
-  buscarServicioPorKeyword,
-  CONTACTO_GENERAL,
-  formatearServicio,
+    buscarServicioPorKeyword,
+    CONTACTO_GENERAL,
+    formatearServicio,
 } from './knowledgeBaseEnhanced'
 import { canMakeRequest, recordRequest } from './rateLimiter'
 import type { AIResponse, CachedResponse } from './types'
@@ -36,12 +36,61 @@ let stats = {
 // DEBUG_MODE según entorno - desactivado en producción
 const DEBUG_MODE = process.env.NODE_ENV !== 'production'
 
+// Session ID único para agrupar conversaciones
+let sessionId: string | null = null
+function getSessionId(): string {
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
+  }
+  return sessionId
+}
+
+/**
+ * Guarda la consulta y respuesta en MongoDB para analytics
+ */
+async function saveQueryToAnalytics(
+  query: string,
+  response: string,
+  provider: string,
+  responseTime: number,
+): Promise<void> {
+  // Siempre loguear intento de guardado para debug
+  console.log('📊 Intentando guardar analytics:', { query, provider, responseTime })
+  
+  try {
+    const userAgent = typeof window !== 'undefined' ? navigator.userAgent : ''
+
+    await fetch('/api/chatbot-analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query,
+        response,
+        provider,
+        sessionId: getSessionId(),
+        responseTime,
+        userAgent,
+      }),
+    })
+
+    if (DEBUG_MODE) {
+      console.log('📊 Query guardada en analytics')
+    }
+  } catch (error) {
+    if (DEBUG_MODE) {
+      console.warn('⚠️ Error guardando en analytics:', error)
+    }
+  }
+}
+
 /**
  * Función principal mejorada para obtener respuestas de IA
  * NUEVO: Gemini se usa SIEMPRE que esté disponible para dar respuestas más naturales
  * v2.0: Integra rate limiting e historial de conversación
  */
 export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse> {
+  const startTime = Date.now() // Track response time for analytics
+
   if (!query || typeof query !== 'string' || query.trim() === '') {
     return {
       response: 'Por favor, ingresa una consulta para que pueda ayudarte.',
@@ -54,6 +103,15 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
 
   // Registrar mensaje del usuario en historial
   addUserMessage(query)
+
+  // Helper para guardar analytics y retornar respuesta
+  const returnWithAnalytics = (result: AIResponse): AIResponse => {
+    if (!result.cached) {
+      const responseTime = Date.now() - startTime
+      saveQueryToAnalytics(query, result.response, result.provider, responseTime)
+    }
+    return result
+  }
 
   // 1. Verificar caché primero
   const cacheKey = normalizedQuery
@@ -74,11 +132,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
   const greetingResponse = handleGreetingsAndFarewells(normalizedQuery)
   if (greetingResponse) {
     cacheResponse(cacheKey, greetingResponse, 'knowledge-base')
-    return {
+    return returnWithAnalytics({
       response: greetingResponse,
       provider: 'knowledge-base',
       cached: false,
-    }
+    })
   }
 
   // 3. Verificar rate limiting antes de llamar a Gemini
@@ -119,11 +177,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
         cacheResponse(cacheKey, geminiResponse, 'gemini')
         // Guardar respuesta en historial
         addAssistantMessage(geminiResponse, 'gemini')
-        return {
+        return returnWithAnalytics({
           response: geminiResponse,
           provider: 'gemini',
           cached: false,
-        }
+        })
       } else {
         if (DEBUG_MODE) {
           console.warn(
@@ -136,11 +194,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
           stats.gemini++
           cacheResponse(cacheKey, sanitized, 'gemini')
           addAssistantMessage(sanitized, 'gemini')
-          return {
+          return returnWithAnalytics({
             response: sanitized,
             provider: 'gemini',
             cached: false,
-          }
+          })
         }
         // Si Gemini falla, continuar con Knowledge Base
         if (DEBUG_MODE) {
@@ -170,11 +228,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
     stats.knowledgeBase++
     cacheResponse(cacheKey, kbResponse, 'knowledge-base')
     addAssistantMessage(kbResponse, 'knowledge-base')
-    return {
+    return returnWithAnalytics({
       response: kbResponse,
       provider: 'knowledge-base',
       cached: false,
-    }
+    })
   }
 
   // 6. Fallback final: información verificada o respuesta genérica
@@ -189,11 +247,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
   cacheResponse(cacheKey, fallbackResponse, 'fallback')
   addAssistantMessage(fallbackResponse, 'fallback')
 
-  return {
+  return returnWithAnalytics({
     response: fallbackResponse,
     provider: 'fallback',
     cached: false,
-  }
+  })
 }
 
 /**
