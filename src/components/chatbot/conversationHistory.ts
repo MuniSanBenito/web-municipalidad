@@ -107,14 +107,16 @@ function saveHistory(): void {
 
 /**
  * Agrega un mensaje del usuario al historial
+ * @param content - Contenido del mensaje
+ * @param customId - ID opcional para usar en lugar del generado automáticamente
  */
-export function addUserMessage(content: string): ConversationEntry {
+export function addUserMessage(content: string, customId?: string): ConversationEntry {
   if (!currentHistory) {
     initConversationHistory()
   }
 
   const entry: ConversationEntry = {
-    id: generateEntryId(),
+    id: customId || generateEntryId(),
     role: 'user',
     content,
     timestamp: Date.now(),
@@ -128,14 +130,21 @@ export function addUserMessage(content: string): ConversationEntry {
 
 /**
  * Agrega una respuesta del asistente al historial
+ * @param content - Contenido del mensaje
+ * @param provider - Proveedor de IA que generó la respuesta
+ * @param customId - ID opcional para usar en lugar del generado automáticamente (usado para tracking de feedback)
  */
-export function addAssistantMessage(content: string, provider?: AIProvider): ConversationEntry {
+export function addAssistantMessage(
+  content: string,
+  provider?: AIProvider,
+  customId?: string,
+): ConversationEntry {
   if (!currentHistory) {
     initConversationHistory()
   }
 
   const entry: ConversationEntry = {
-    id: generateEntryId(),
+    id: customId || generateEntryId(),
     role: 'assistant',
     content,
     timestamp: Date.now(),

@@ -9,6 +9,7 @@
 import type React from 'react'
 import { fetchAIResponse } from './aiService'
 import { generateContextualSuggestions } from './aiServiceEnhanced'
+import { initConversationSync, scheduleSyncConversation } from './conversationSync'
 import { trackQuery } from './feedbackService'
 import { canMakeRequest } from './rateLimiter'
 import type {
@@ -190,6 +191,9 @@ class ActionProvider {
     this.createClientMessage = createClientMessage
     this.stateRef = stateRef
     this.addMessageToState = addMessageToState
+
+    // Inicializar sistema de sincronización de conversaciones
+    initConversationSync()
   }
 
   private _updateChatbotState(message: ChatMessage): void {
@@ -409,6 +413,9 @@ class ActionProvider {
 
       // Registrar para analytics y feedback
       trackQuery(messageId, userMessage, aiResponse, provider)
+
+      // Sincronizar conversación con la base de datos (con debounce)
+      scheduleSyncConversation()
 
       // Mostrar widget de feedback después de la respuesta
       setTimeout(() => {

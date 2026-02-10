@@ -171,6 +171,7 @@ export function trackQuery(
 
 /**
  * Registra feedback positivo o negativo para una respuesta
+ * También sincroniza con la base de datos
  */
 export function submitFeedback(
   messageId: string,
@@ -206,7 +207,29 @@ export function submitFeedback(
   recalculateSatisfaction()
   saveToStorage()
 
+  // Sincronizar feedback con la base de datos
+  syncFeedbackToAPI(messageId, rating, comment)
+
   return true
+}
+
+/**
+ * Sincroniza el feedback con la API de conversaciones
+ * Usa sincronización completa (POST) en lugar de PATCH individual,
+ * ya que los IDs del historial y del feedback se generan de forma independiente.
+ */
+async function syncFeedbackToAPI(
+  _messageId: string,
+  _rating: 'positive' | 'negative',
+  _comment?: string,
+): Promise<void> {
+  try {
+    // Sincronizar toda la conversación para que el feedback se asocie por contenido
+    const { scheduleSyncConversation } = await import('./conversationSync')
+    scheduleSyncConversation()
+  } catch (error) {
+    console.warn('Error sincronizando feedback con API:', error)
+  }
 }
 
 /**
