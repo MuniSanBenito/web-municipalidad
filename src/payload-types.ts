@@ -89,7 +89,6 @@ export interface Config {
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
-    'chatbot-queries': ChatbotQuery;
     'chatbot-conversations': ChatbotConversation;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -123,7 +122,6 @@ export interface Config {
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
-    'chatbot-queries': ChatbotQueriesSelect<false> | ChatbotQueriesSelect<true>;
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -916,63 +914,6 @@ export interface ComerciosHabilitado {
   createdAt: string;
 }
 /**
- * Historial de consultas realizadas al chatbot municipal
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chatbot-queries".
- */
-export interface ChatbotQuery {
-  id: string;
-  /**
-   * La pregunta realizada por el usuario
-   */
-  query: string;
-  /**
-   * La respuesta generada por el chatbot
-   */
-  response?: string | null;
-  /**
-   * Fuente que generó la respuesta
-   */
-  provider?: ('groq' | 'knowledge-base' | 'fallback') | null;
-  /**
-   * Feedback del usuario sobre la respuesta
-   */
-  satisfaction?: ('positive' | 'negative' | 'none') | null;
-  /**
-   * Tema detectado de la consulta
-   */
-  topic?:
-    | (
-        | 'rentas'
-        | 'licencias'
-        | 'obras'
-        | 'habilitaciones'
-        | 'deportes'
-        | 'cav'
-        | 'punto-digital'
-        | 'area-mujer'
-        | 'contacto'
-        | 'horarios'
-        | 'otro'
-      )
-    | null;
-  /**
-   * Identificador único de la sesión del usuario
-   */
-  sessionId?: string | null;
-  /**
-   * Milisegundos que tardó en responder
-   */
-  responseTime?: number | null;
-  /**
-   * Navegador/dispositivo del usuario
-   */
-  userAgent?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * Historial de conversaciones completas del chatbot municipal
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1164,10 +1105,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'comercios-habilitados';
         value: string | ComerciosHabilitado;
-      } | null)
-    | ({
-        relationTo: 'chatbot-queries';
-        value: string | ChatbotQuery;
       } | null)
     | ({
         relationTo: 'chatbot-conversations';
@@ -1765,22 +1702,6 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   direccion?: T;
   localizacion?: T;
   rubros?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "chatbot-queries_select".
- */
-export interface ChatbotQueriesSelect<T extends boolean = true> {
-  query?: T;
-  response?: T;
-  provider?: T;
-  satisfaction?: T;
-  topic?: T;
-  sessionId?: T;
-  responseTime?: T;
-  userAgent?: T;
   updatedAt?: T;
   createdAt?: T;
 }
