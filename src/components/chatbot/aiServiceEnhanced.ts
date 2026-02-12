@@ -11,13 +11,13 @@
  * - DEBUG_MODE según entorno
  */
 
-import { generateGeminiResponse, isGeminiAvailable, isGeminiConfigured } from './chatService'
+import { generateChatResponse, isChatAvailable, isChatConfigured } from './chatService'
 import { getVerifiedInformation, sanitizeResponse, validateResponse } from './contentValidator'
 import { addAssistantMessage, addUserMessage, getContextForAI } from './conversationHistory'
 import {
-    buscarServicioPorKeyword,
-    CONTACTO_GENERAL,
-    formatearServicio,
+  buscarServicioPorKeyword,
+  CONTACTO_GENERAL,
+  formatearServicio,
 } from './knowledgeBaseEnhanced'
 import { canMakeRequest, recordRequest } from './rateLimiter'
 import type { AIResponse, CachedResponse } from './types'
@@ -87,8 +87,8 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
   const rateLimitCheck = canMakeRequest()
 
   // 4. Verificar si Gemini está disponible para dar respuestas mejoradas
-  const geminiConfigured = await isGeminiConfigured()
-  const geminiAvailable = geminiConfigured ? await isGeminiAvailable() : false
+  const geminiConfigured = await isChatConfigured()
+  const geminiAvailable = geminiConfigured ? await isChatAvailable() : false
 
   if (geminiAvailable && rateLimitCheck.allowed) {
     try {
@@ -101,7 +101,7 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
       const conversationContext = getContextForAI(4)
 
       // Gemini tiene toda la información en su system prompt, así que puede responder directamente
-      const geminiResponse = await generateGeminiResponse(
+      const geminiResponse = await generateChatResponse(
         conversationContext
           ? `Contexto previo:\n${conversationContext}\n\nNueva consulta: ${query}`
           : query,

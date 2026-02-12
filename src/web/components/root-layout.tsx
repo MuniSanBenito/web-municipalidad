@@ -9,17 +9,17 @@ import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
+import { useEffect, useMemo, useState } from 'react'; // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
 import { LogoutButton } from './logout-button'
 
 // Import Chatbot related components
 import ActionProvider from '@/components/chatbot/ActionProvider'
-import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
+import '@/components/chatbot/chatbot-styles.css'; // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
 import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css' // Default styling
+import 'react-chatbot-kit/build/main.css'; // Default styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -206,7 +206,7 @@ export function RootLayout({ children, ciudadano }: Props) {
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               marginLeft: 'auto',
               position: 'relative',
-              animation: showChatbot ? 'none' : 'pulse 2.5s ease-in-out infinite',
+              animation: 'none',
               overflow: 'hidden',
             }}
             onMouseEnter={(e) => {

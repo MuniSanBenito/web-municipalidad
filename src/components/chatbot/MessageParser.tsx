@@ -1,20 +1,6 @@
 // src/components/chatbot/MessageParser.tsx
 
-// Definir la interfaz IMessageParser ya que no se exporta directamente de react-chatbot-kit
-interface IMessageParser {
-  parse(message: string): void
-}
-
-interface TramiteMatcher {
-  keywords: string[]
-  handler: () => void
-}
-
-interface PhoneNumberMatcher {
-  keywords: string[]
-  phoneNumber: string
-  description: string
-}
+import type { IMessageParser, PhoneNumberMatcher, TramiteMatcher } from './types'
 
 class MessageParser implements IMessageParser {
   actionProvider: any
@@ -79,7 +65,7 @@ class MessageParser implements IMessageParser {
       // Licencias - más específicos primero
       {
         keywords: ['licencia original', 'primera licencia', 'sacar licencia', 'obtener licencia'],
-        handler: () => this.actionProvider.handleLicenciaOriginal(),
+        handler: () => this.actionProvider.handleTramite('licenciaOriginal'),
       },
       {
         keywords: [
@@ -88,7 +74,7 @@ class MessageParser implements IMessageParser {
           'renovar licencia',
           'renovacion licencia',
         ],
-        handler: () => this.actionProvider.handleLicenciaRenovacion(),
+        handler: () => this.actionProvider.handleTramite('licenciaRenovacion'),
       },
       {
         keywords: [
@@ -97,7 +83,7 @@ class MessageParser implements IMessageParser {
           'ampliar licencia',
           'ampliar carnet',
         ],
-        handler: () => this.actionProvider.handleLicenciaAmpliacion(),
+        handler: () => this.actionProvider.handleTramite('licenciaAmpliacion'),
       },
       {
         keywords: [
@@ -107,7 +93,7 @@ class MessageParser implements IMessageParser {
           'carnet',
           'licencia',
         ],
-        handler: () => this.actionProvider.handleLicencia(),
+        handler: () => this.actionProvider.handleTramite('licencia'),
       },
 
       // Rentas e impuestos
@@ -122,7 +108,7 @@ class MessageParser implements IMessageParser {
           'tgi',
           'obras sanitarias',
         ],
-        handler: () => this.actionProvider.handleRentas(),
+        handler: () => this.actionProvider.handleTramite('rentas'),
       },
 
       // Obras privadas - más específicos primero
@@ -132,19 +118,19 @@ class MessageParser implements IMessageParser {
           'inscripción municipal profesional',
           'inscribir profesional',
         ],
-        handler: () => this.actionProvider.handleObrasInscripcionMunicipal(),
+        handler: () => this.actionProvider.handleTramite('obrasInscripcion'),
       },
       {
         keywords: ['final de obra', 'finalizar obra'],
-        handler: () => this.actionProvider.handleObrasFinalDeObra(),
+        handler: () => this.actionProvider.handleTramite('obrasFinal'),
       },
       {
         keywords: ['presentacion de proyecto', 'presentación de proyecto', 'proyecto obra'],
-        handler: () => this.actionProvider.handleObrasPresentacionProyecto(),
+        handler: () => this.actionProvider.handleTramite('obrasPresentacion'),
       },
       {
         keywords: ['relevamiento', 'relevar'],
-        handler: () => this.actionProvider.handleObrasRelevamiento(),
+        handler: () => this.actionProvider.handleTramite('obrasRelevamiento'),
       },
       {
         keywords: [
@@ -157,7 +143,7 @@ class MessageParser implements IMessageParser {
           'obra',
           'plano',
         ],
-        handler: () => this.actionProvider.handleObrasPrivadas(),
+        handler: () => this.actionProvider.handleTramite('obrasPrivadas'),
       },
 
       // Habilitaciones
@@ -172,7 +158,7 @@ class MessageParser implements IMessageParser {
           'abrir negocio',
           'abrir local',
         ],
-        handler: () => this.actionProvider.handleHabilitaciones(),
+        handler: () => this.actionProvider.handleTramite('habilitaciones'),
       },
 
       // Servicios municipales
@@ -187,15 +173,15 @@ class MessageParser implements IMessageParser {
           'natacion',
           'golf',
         ],
-        handler: () => this.actionProvider.handleActividadesDeportivas(),
+        handler: () => this.actionProvider.handleTramite('actividadesDeportivas'),
       },
       {
         keywords: ['area mujer', 'área mujer', 'mujer y genero', 'mujer y género', 'violencia'],
-        handler: () => this.actionProvider.handleAreaMujer(),
+        handler: () => this.actionProvider.handleTramite('areaMujer'),
       },
       {
         keywords: ['catastro', 'catastro municipal', 'terreno', 'lote', 'parcela'],
-        handler: () => this.actionProvider.handleCatastro(),
+        handler: () => this.actionProvider.handleTramite('catastro'),
       },
       {
         keywords: [
@@ -207,15 +193,15 @@ class MessageParser implements IMessageParser {
           'reclamo',
           'queja',
         ],
-        handler: () => this.actionProvider.handleCav(),
+        handler: () => this.actionProvider.handleTramite('cav'),
       },
       {
         keywords: ['cic barrio san pedro', 'cic san pedro', 'centro integrador'],
-        handler: () => this.actionProvider.handleCicBarrioSanPedro(),
+        handler: () => this.actionProvider.handleTramite('cicBarrioSanPedro'),
       },
       {
         keywords: ['mesa de entrada', 'tramites generales', 'trámites generales'],
-        handler: () => this.actionProvider.handleMesaDeEntrada(),
+        handler: () => this.actionProvider.handleTramite('mesaDeEntrada'),
       },
       {
         keywords: [
@@ -225,7 +211,7 @@ class MessageParser implements IMessageParser {
           'computadora',
           'internet',
         ],
-        handler: () => this.actionProvider.handlePuntoDigitalBiblioteca(),
+        handler: () => this.actionProvider.handleTramite('puntoDigital'),
       },
       {
         keywords: [
@@ -237,7 +223,7 @@ class MessageParser implements IMessageParser {
           'pintura',
           'musica',
         ],
-        handler: () => this.actionProvider.handleTalleresCulturales(),
+        handler: () => this.actionProvider.handleTramite('talleresCulturales'),
       },
       {
         keywords: [
@@ -247,11 +233,11 @@ class MessageParser implements IMessageParser {
           'trabajo',
           'buscar trabajo',
         ],
-        handler: () => this.actionProvider.handleProduccionEmpleo(),
+        handler: () => this.actionProvider.handleTramite('produccionEmpleo'),
       },
       {
         keywords: ['tercera edad', 'discapacidad', 'adultos mayores', 'jubilados'],
-        handler: () => this.actionProvider.handleTerceraEdadDiscapacidad(),
+        handler: () => this.actionProvider.handleTramite('terceraEdad'),
       },
     ]
   }
@@ -262,15 +248,13 @@ class MessageParser implements IMessageParser {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
 
-    // Verificar si es una consulta sobre el modelo de IA o Gemma 2B
+    // Verificar si es una consulta general sobre IA
     if (
-      lowerCaseMessage.includes('gemma') ||
       lowerCaseMessage.includes('modelo de ia') ||
       lowerCaseMessage.includes('modelo ia') ||
-      lowerCaseMessage.includes('inteligencia artificial') ||
-      lowerCaseMessage.includes('ollama')
+      lowerCaseMessage.includes('inteligencia artificial')
     ) {
-      this.actionProvider.handleShowOllamaStatus()
+      this.actionProvider.handleUnknown(message)
       return
     }
 

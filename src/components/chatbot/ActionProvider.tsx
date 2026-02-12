@@ -7,8 +7,7 @@
  */
 
 import type React from 'react'
-import { fetchAIResponse } from './aiService'
-import { generateContextualSuggestions } from './aiServiceEnhanced'
+import { fetchEnhancedAIResponse, generateContextualSuggestions } from './aiServiceEnhanced'
 import { initConversationSync, scheduleSyncConversation } from './conversationSync'
 import { trackQuery } from './feedbackService'
 import { canMakeRequest } from './rateLimiter'
@@ -383,11 +382,13 @@ class ActionProvider {
         setTimeout(() => reject(new Error('Timeout')), 15000),
       )
 
-      const aiPromise = fetchAIResponse(userMessage)
-      const { response: aiResponse, usedGemma } = (await Promise.race([
+      const aiPromise = fetchEnhancedAIResponse(userMessage)
+      const aiResult = (await Promise.race([
         aiPromise,
         timeoutPromise,
-      ])) as { response: string; usedGemma: boolean }
+      ])) as { response: string; provider: AIProvider; cached: boolean }
+
+      const aiResponse = aiResult.response
 
       // Validar que la respuesta no esté vacía
       if (!aiResponse || aiResponse.trim().length === 0) {
@@ -399,7 +400,7 @@ class ActionProvider {
 
       // Generar ID para tracking de feedback
       const messageId = this._generateMessageId()
-      const provider: AIProvider = usedGemma ? 'gemini' : 'knowledge-base'
+      const provider: AIProvider = aiResult.provider
 
       // Reemplazar mensaje de procesamiento con la respuesta real
       this.setState((prevState) => {
@@ -426,20 +427,6 @@ class ActionProvider {
         })
         this._updateChatbotState(feedbackWidget)
       }, 800)
-
-      // Si se usó Gemma 2B, mostrar indicador discreto
-      if (usedGemma) {
-        setTimeout(() => {
-          const gemmaIndicator = this.createChatBotMessage(
-            '🤖 Respuesta generada por IA - Gemma 2B',
-            {
-              widget: 'ollamaStatus',
-              delay: 500,
-            },
-          )
-          this._updateChatbotState(gemmaIndicator)
-        }, 800)
-      }
 
       // Siempre mostrar sugerencias contextuales después de responder
       setTimeout(() => {
@@ -495,150 +482,7 @@ class ActionProvider {
     )
   }
 
-  // --- New Trámite Handlers ---
-  handleActividadesDeportivas() {
-    this._createLinkedMessage(
-      'Información sobre Actividades Deportivas:',
-      'Ver Actividades Deportivas',
-      '/tramites/actividades-deportivas',
-    )
-  }
-  handleAreaMujer() {
-    this._createLinkedMessage(
-      'Información sobre el Área Mujer:',
-      'Ver Área Mujer',
-      '/tramites/area-mujer',
-    )
-  }
-  handleCatastro() {
-    this._createLinkedMessage('Información sobre Catastro:', 'Ver Catastro', '/tramites/catastro')
-  }
-  handleCav() {
-    this._createLinkedMessage(
-      'Información sobre CAV (Centro de Atención al Vecino):',
-      'Ver CAV',
-      '/tramites/cav',
-    )
-  }
-  handleCicBarrioSanPedro() {
-    this._createLinkedMessage(
-      'Información sobre CIC Barrio San Pedro:',
-      'Ver CIC Barrio San Pedro',
-      '/tramites/cic-barrio-san-pedro',
-    )
-  }
-  handleHabilitaciones() {
-    this._createLinkedMessage(
-      'Información general sobre Habilitaciones:',
-      'Ver Habilitaciones',
-      '/tramites/habilitaciones',
-    )
-  }
-  handleLicencia() {
-    this._createLinkedMessage(
-      'Información general sobre Licencias de Conducir:',
-      'Ver Licencias',
-      '/tramites/licencia',
-    )
-  }
-  handleLicenciaOriginal() {
-    this._createLinkedMessage(
-      'Información sobre Licencia de Conducir Original:',
-      'Ver Licencia Original',
-      '/tramites/licencia/original',
-    )
-  }
-  handleLicenciaRenovacion() {
-    this._createLinkedMessage(
-      'Información sobre Renovación de Licencia:',
-      'Ver Renovación',
-      '/tramites/licencia/renovacion',
-    )
-  }
-  handleLicenciaAmpliacion() {
-    this._createLinkedMessage(
-      'Información sobre Ampliación de Licencia:',
-      'Ver Ampliación',
-      '/tramites/licencia/ampliacion',
-    )
-  }
-  handleRentas() {
-    this._createLinkedMessage(
-      'Información sobre Rentas e Impuestos Municipales:',
-      'Ver Rentas',
-      '/tramites/rentas',
-    )
-  }
-  handleObrasPrivadas() {
-    this._createLinkedMessage(
-      'Información sobre Obras Privadas:',
-      'Ver Obras Privadas',
-      '/tramites/obras-privadas',
-    )
-  }
-  handleObrasInscripcionMunicipal() {
-    this._createLinkedMessage(
-      'Información sobre Inscripción Municipal:',
-      'Ver Inscripción',
-      '/tramites/obras-privadas/inscripcion',
-    )
-  }
-  handleObrasFinalDeObra() {
-    this._createLinkedMessage(
-      'Información sobre Final de Obra:',
-      'Ver Final de Obra',
-      '/tramites/obras-privadas/final',
-    )
-  }
-  handleObrasPresentacionProyecto() {
-    this._createLinkedMessage(
-      'Información sobre Presentación de Proyecto:',
-      'Ver Presentación',
-      '/tramites/obras-privadas/presentacion',
-    )
-  }
-  handleObrasRelevamiento() {
-    this._createLinkedMessage(
-      'Información sobre Relevamiento:',
-      'Ver Relevamiento',
-      '/tramites/obras-privadas/relevamiento',
-    )
-  }
-  handleMesaDeEntrada() {
-    this._createLinkedMessage(
-      'Información sobre Mesa de Entrada:',
-      'Ver Mesa de Entrada',
-      '/tramites/mesa-de-entrada',
-    )
-  }
-  handlePuntoDigitalBiblioteca() {
-    this._createLinkedMessage(
-      'Información sobre Punto Digital y Biblioteca:',
-      'Ver Punto Digital',
-      '/tramites/punto-digital-biblioteca',
-    )
-  }
-  handleTalleresCulturales() {
-    this._createLinkedMessage(
-      'Información sobre Talleres Culturales:',
-      'Ver Talleres',
-      '/tramites/talleres-culturales',
-    )
-  }
-  handleProduccionEmpleo() {
-    this._createLinkedMessage(
-      'Información sobre Producción y Empleo:',
-      'Ver Producción y Empleo',
-      '/tramites/produccion-empleo',
-    )
-  }
-  handleTerceraEdadDiscapacidad() {
-    this._createLinkedMessage(
-      'Información sobre Tercera Edad y Discapacidad:',
-      'Ver Tercera Edad',
-      '/tramites/tercera-edad-discapacidad',
-    )
-  }
+
 
   // Updated handleTramiteIntro
   handleTramiteIntro() {
@@ -650,17 +494,15 @@ class ActionProvider {
     this._updateChatbotState(botMessage)
 
     const options = [
-      // Grouping some for brevity, direct access via keywords is still possible
-      { text: 'Licencias de Conducir', handler: () => this.handleLicencia(), id: 1 },
-      { text: 'Obras Privadas', handler: () => this.handleObrasPrivadas(), id: 2 },
-      { text: 'Habilitaciones', handler: () => this.handleHabilitaciones(), id: 3 },
-      { text: 'Rentas', handler: () => this.handleRentas(), id: 4 },
-      { text: 'Catastro', handler: () => this.handleCatastro(), id: 5 },
-      { text: 'Mesa de Entrada', handler: () => this.handleMesaDeEntrada(), id: 6 },
-      // Adding a few more direct common ones
-      { text: 'Actividades Deportivas', handler: () => this.handleActividadesDeportivas(), id: 7 },
-      { text: 'Área Mujer', handler: () => this.handleAreaMujer(), id: 8 },
-      { text: 'Talleres Culturales', handler: () => this.handleTalleresCulturales(), id: 9 },
+      { text: 'Licencias de Conducir', handler: () => this.handleTramite('licencia'), id: 1 },
+      { text: 'Obras Privadas', handler: () => this.handleTramite('obrasPrivadas'), id: 2 },
+      { text: 'Habilitaciones', handler: () => this.handleTramite('habilitaciones'), id: 3 },
+      { text: 'Rentas', handler: () => this.handleTramite('rentas'), id: 4 },
+      { text: 'Catastro', handler: () => this.handleTramite('catastro'), id: 5 },
+      { text: 'Mesa de Entrada', handler: () => this.handleTramite('mesaDeEntrada'), id: 6 },
+      { text: 'Actividades Deportivas', handler: () => this.handleTramite('actividadesDeportivas'), id: 7 },
+      { text: 'Área Mujer', handler: () => this.handleTramite('areaMujer'), id: 8 },
+      { text: 'Talleres Culturales', handler: () => this.handleTramite('talleresCulturales'), id: 9 },
       { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 10 },
       { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 11 },
     ]
@@ -705,16 +547,7 @@ class ActionProvider {
     this._updateChatbotState(message)
   }
 
-  // Método para mostrar el estado de Gemma 2B
-  handleShowOllamaStatus() {
-    const message = this.createChatBotMessage(
-      'Aquí puedes ver el estado actual del modelo de IA Gemma 2B:',
-      {
-        widget: 'ollamaStatus',
-      },
-    )
-    this._updateChatbotState(message)
-  }
+
 }
 
 export default ActionProvider

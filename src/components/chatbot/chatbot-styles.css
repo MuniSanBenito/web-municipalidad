@@ -503,7 +503,6 @@
     0 0 0 0 rgba(182, 197, 68, 0.4);
   transition: var(--chatbot-transition);
   z-index: 9998;
-  animation: pulse 2s infinite;
 }
 
 .chat-toggle-button:hover {

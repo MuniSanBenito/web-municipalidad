@@ -171,10 +171,3 @@ export function resetChatCache(): void {
     console.log('🔄 Cache de chat reseteado')
   }
 }
-
-// Aliases para compatibilidad con código existente (temporal)
-export const isGeminiConfigured = isChatConfigured
-export const isGeminiAvailable = isChatAvailable
-export const generateGeminiResponse = generateChatResponse
-export const getGeminiStatus = getChatStatus
-export const resetGeminiCache = resetChatCache
