@@ -89,6 +89,8 @@ export interface Config {
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
+    'chatbot-conversations': ChatbotConversation;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -120,6 +122,8 @@ export interface Config {
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -127,6 +131,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
   };
@@ -397,7 +402,7 @@ export interface Noticia {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -704,7 +709,7 @@ export interface Habilitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -748,7 +753,7 @@ export interface Licitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -792,7 +797,7 @@ export interface Concurso {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -836,7 +841,7 @@ export interface BalancesMensuale {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -907,6 +912,108 @@ export interface ComerciosHabilitado {
   rubros?: (string | RubrosComercio)[] | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Historial de conversaciones completas del chatbot municipal
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chatbot-conversations".
+ */
+export interface ChatbotConversation {
+  id: string;
+  /**
+   * Identificador único de la sesión del usuario
+   */
+  sessionId: string;
+  /**
+   * Historial completo de mensajes de la conversación
+   */
+  messages?:
+    | {
+        id: string;
+        role: 'user' | 'assistant';
+        content: string;
+        timestamp: number;
+        provider?: ('knowledge-base' | 'gemini' | 'fallback') | null;
+        topic?:
+          | (
+              | 'rentas'
+              | 'licencias'
+              | 'obras'
+              | 'habilitaciones'
+              | 'deportes'
+              | 'cav'
+              | 'punto-digital'
+              | 'area-mujer'
+              | 'contacto'
+              | 'horarios'
+              | 'otro'
+            )
+          | null;
+        feedback?: {
+          rating?: ('positive' | 'negative') | null;
+          comment?: string | null;
+          submittedAt?: number | null;
+        };
+      }[]
+    | null;
+  /**
+   * Número total de mensajes en la conversación
+   */
+  messageCount?: number | null;
+  /**
+   * Tema más frecuente de la conversación
+   */
+  mainTopic?:
+    | (
+        | 'rentas'
+        | 'licencias'
+        | 'obras'
+        | 'habilitaciones'
+        | 'deportes'
+        | 'cav'
+        | 'punto-digital'
+        | 'area-mujer'
+        | 'contacto'
+        | 'horarios'
+        | 'otro'
+      )
+    | null;
+  /**
+   * Resumen de satisfacción basado en los feedbacks
+   */
+  satisfaction?: ('positive' | 'mixed' | 'negative' | 'none') | null;
+  /**
+   * Timestamp de inicio de la conversación
+   */
+  startedAt?: number | null;
+  /**
+   * Timestamp de última actividad
+   */
+  lastUpdated?: number | null;
+  /**
+   * Navegador/dispositivo del usuario
+   */
+  userAgent?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -998,6 +1105,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'comercios-habilitados';
         value: string | ComerciosHabilitado;
+      } | null)
+    | ({
+        relationTo: 'chatbot-conversations';
+        value: string | ChatbotConversation;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1593,6 +1704,46 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   rubros?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chatbot-conversations_select".
+ */
+export interface ChatbotConversationsSelect<T extends boolean = true> {
+  sessionId?: T;
+  messages?:
+    | T
+    | {
+        id?: T;
+        role?: T;
+        content?: T;
+        timestamp?: T;
+        provider?: T;
+        topic?: T;
+        feedback?:
+          | T
+          | {
+              rating?: T;
+              comment?: T;
+              submittedAt?: T;
+            };
+      };
+  messageCount?: T;
+  mainTopic?: T;
+  satisfaction?: T;
+  startedAt?: T;
+  lastUpdated?: T;
+  userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
