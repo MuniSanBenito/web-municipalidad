@@ -3,6 +3,7 @@ import type { Evento } from '@/types/evento'
 import { EventCalendar } from '@/web/components/ui/EventCalendar'
 import { generateMetadata as generateSEOMetadata, generateStructuredData } from '@/web/lib/metadata'
 import { basePayload } from '@/web/lib/payload'
+import type { IconProps } from '@tabler/icons-react'
 import {
   IconBrandWhatsapp,
   IconBuilding,
@@ -11,9 +12,7 @@ import {
   IconHomeEdit,
   IconLicense,
   IconMail,
-  IconUserCircle,
-  type Icon,
-  type IconProps,
+  IconUserCircle
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -23,7 +22,7 @@ import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 
 const TRAMITES: {
   title: string
-  icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>
+  icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>
   link: string
 }[] = [
   {
