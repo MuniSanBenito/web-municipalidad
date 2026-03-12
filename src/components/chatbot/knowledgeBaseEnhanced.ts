@@ -43,6 +43,36 @@ export const EMERGENCIAS = [
   { nombre: 'Ayuda al Niño', telefono: '102', disponibilidad: '24 horas' },
 ]
 
+export const EMERGENCIAS_INFO: ServiceInfo = {
+  nombre: 'Números Útiles y de Emergencia',
+  descripcion:
+    'Líneas directas gratuitas de asistencia y emergencias, activas las 24 horas.',
+  telefono: '911',
+  informacionAdicional: [
+    '• Policía y Bomberos: 911 (24 horas)',
+    '• Emergencias Médicas: 107 (24 horas)',
+    '• Defensa Civil: 103 (24 horas)',
+    '• Violencia de Género: 144 (24 horas)',
+    '• Ayuda al Niño: 102 (24 horas)',
+  ],
+}
+
+// ===========================================
+// INFORMACIÓN DE CONTACTO GENERAL COMO SERVICIO
+// ===========================================
+export const CONTACTO_GENERAL_INFO: ServiceInfo = {
+  nombre: 'Contacto Municipalidad y Autoridades',
+  descripcion: 'Información general de contacto de la Municipalidad de San Benito.',
+  telefono: '343-4973454',
+  email: 'presidencia@munisanbenito.gov.ar',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Basavilbaso 1094, San Benito',
+  informacionAdicional: [
+    '• Intendente: Ariel Voeffray',
+    '• Población: 17,000 habitantes aproximadamente',
+  ],
+}
+
 // ===========================================
 // RENTAS - INFORMACIÓN COMPLETA
 // ===========================================
@@ -395,6 +425,14 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   'juzgado-faltas': JUZGADO_FALTAS,
   transito: JUZGADO_FALTAS,
   concejo: CONCEJO_DELIBERANTE,
+  emergencias: EMERGENCIAS_INFO,
+  emergencia: EMERGENCIAS_INFO,
+  'numeros-utiles': EMERGENCIAS_INFO,
+  policia: EMERGENCIAS_INFO,
+  bomberos: EMERGENCIAS_INFO,
+  ambulancia: EMERGENCIAS_INFO,
+  contacto: CONTACTO_GENERAL_INFO,
+  'contacto-general': CONTACTO_GENERAL_INFO,
 }
 
 // ===========================================
@@ -642,6 +680,39 @@ const SINONIMOS: { [key: string]: string[] } = {
     'teatro',
     'danza',
     'baile',
+  ],
+  emergencia: [
+    'emergencia',
+    'emergencias',
+    'telefono emergencia',
+    'urgencia',
+    'urgencias',
+    'policia',
+    'policía',
+    'bombero',
+    'bomberos',
+    'ambulancia',
+    'hospital',
+    'salita',
+    'numero util',
+    'numeros utiles',
+    'número útil',
+    'números útiles',
+    'telefonos utiles',
+    'teléfonos útiles',
+    '911',
+    '107',
+    'defensa civil',
+    '103',
+  ],
+  contacto: [
+    'contacto',
+    'contactar',
+    'comunicar',
+    'con quien hablo',
+    'llamar municipalidad',
+    'telefono municipalidad',
+    'intendente',
   ],
 }
 

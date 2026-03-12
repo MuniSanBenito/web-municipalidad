@@ -81,6 +81,7 @@ const config: Config = {
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
+          flexShrink: 0,
         }}
       >
         {/* Avatar de Beni */}
