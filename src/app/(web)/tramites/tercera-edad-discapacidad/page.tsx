@@ -62,10 +62,7 @@ export default function PageTerceraEdadDiscapacidad() {
                 <h3 className="text-primary text-lg font-semibold">Ubicación</h3>
                 <div className="text-base-content mt-2 flex items-center">
                   <IconMapPin size={20} className="text-primary mr-2" />
-                  <p>
-                    Edificio de la Dirección de Desarrollo Social y Comunitario (acción social),
-                    ubicado en calle Bvad. Basavilbaso N° 1030.
-                  </p>
+                  <p>Edificio NIDO, ubicado en calle Buenos Aires y Misiones</p>
                 </div>
               </div>
             </div>
@@ -75,13 +72,21 @@ export default function PageTerceraEdadDiscapacidad() {
                 <h3 className="text-primary text-lg font-semibold">Contacto</h3>
                 <div className="text-base-content mt-2 flex items-center">
                   <IconPhone size={20} className="text-primary mr-2" />
-                  <a href="https://wa.me/+543433027297" className="hover:text-primary transition-colors duration-300" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://wa.me/+543433027297"
+                    className="hover:text-primary transition-colors duration-300"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Teléfono: 343-3027297
                   </a>
                 </div>
                 <div className="text-base-content mt-2 flex items-center">
                   <IconMail size={20} className="text-primary mr-2" />
-                  <a href="mailto:adultosmayoresydiscapacidadsb@gmail.com" className="hover:text-primary transition-colors duration-300">
+                  <a
+                    href="mailto:adultosmayoresydiscapacidadsb@gmail.com"
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     Mail: adultosmayoresydiscapacidadsb@gmail.com
                   </a>
                 </div>
