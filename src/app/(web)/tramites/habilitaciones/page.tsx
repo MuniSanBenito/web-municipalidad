@@ -28,6 +28,26 @@ export default async function TramitesLicenciaPage() {
       </section>
 
       <section className="mt-8 space-y-6">
+        <Link
+          href="/tramites/habilitaciones/comercios-habilitados"
+          className="bg-primary text-primary-content hover:bg-primary/90 group flex items-center justify-between rounded-lg p-6 shadow-md transition-all duration-300 hover:shadow-lg"
+        >
+          <div className="flex items-center gap-4">
+            <div className="bg-primary-content/20 rounded-xl p-3 transition-transform duration-300 group-hover:scale-110">
+              <IconBuildingStore size={32} stroke={1.5} />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold md:text-2xl">Consulta de Comercios Habilitados</h2>
+              <p className="text-primary-content/80 mt-1 text-sm">
+                Verificá si un local comercial tiene habilitación vigente en San Benito
+              </p>
+            </div>
+          </div>
+          <span className="text-primary-content/70 hidden text-sm font-medium md:block">
+            Ver registro →
+          </span>
+        </Link>
+
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
           <h2 className="mb-6 text-2xl font-semibold md:text-3xl">Tipos de Habilitaciones</h2>
 

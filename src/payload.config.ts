@@ -8,6 +8,7 @@ import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { ActividadesComercios } from './payload/collections/ActividadesComercios'
 import { Archivos } from './payload/collections/Archivos'
 import { ArchivosObras } from './payload/collections/ArchivosObras'
 import { Avatares } from './payload/collections/Avatares'
@@ -161,6 +162,7 @@ export default buildConfig({
     Ciudadanos,
     Matriculados,
     RubrosComercios,
+    ActividadesComercios,
     ComerciosHabilitados,
   ],
   globals: [Autoridades],

@@ -88,7 +88,9 @@ export interface Config {
     ciudadanos: Ciudadano;
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
+    'actividades-comercios': ActividadesComercio;
     'comercios-habilitados': ComerciosHabilitado;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -119,7 +121,9 @@ export interface Config {
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
+    'actividades-comercios': ActividadesComerciosSelect<false> | ActividadesComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -127,6 +131,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
   };
@@ -397,7 +402,7 @@ export interface Noticia {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -704,7 +709,7 @@ export interface Habilitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -748,7 +753,7 @@ export interface Licitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -792,7 +797,7 @@ export interface Concurso {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -836,7 +841,7 @@ export interface BalancesMensuale {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -889,24 +894,66 @@ export interface RubrosComercio {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actividades-comercios".
+ */
+export interface ActividadesComercio {
+  id: string;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comercios-habilitados".
  */
 export interface ComerciosHabilitado {
   id: string;
   nombre: string;
-  cuit: string;
   razonSocial: string;
+  cuit: string;
+  fechaAlta: string;
+  /**
+   * Completar solo si la habilitación fue dada de baja.
+   */
+  fechaBaja?: string | null;
   direccion: string;
   /**
-   * Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.
+   * Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.
    *
    * @minItems 2
    * @maxItems 2
    */
-  localizacion: [number, number];
-  rubros?: (string | RubrosComercio)[] | null;
+  localizacion?: [number, number] | null;
+  rubro: string | RubrosComercio;
+  actividades?: (string | ActividadesComercio)[] | null;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -994,6 +1041,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'rubros-comercios';
         value: string | RubrosComercio;
+      } | null)
+    | ({
+        relationTo: 'actividades-comercios';
+        value: string | ActividadesComercio;
       } | null)
     | ({
         relationTo: 'comercios-habilitados';
@@ -1582,17 +1633,38 @@ export interface RubrosComerciosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actividades-comercios_select".
+ */
+export interface ActividadesComerciosSelect<T extends boolean = true> {
+  nombre?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comercios-habilitados_select".
  */
 export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   nombre?: T;
-  cuit?: T;
   razonSocial?: T;
+  cuit?: T;
+  fechaAlta?: T;
+  fechaBaja?: T;
   direccion?: T;
   localizacion?: T;
-  rubros?: T;
+  rubro?: T;
+  actividades?: T;
+  created_by?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

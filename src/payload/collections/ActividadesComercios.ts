@@ -2,11 +2,11 @@ import type { CollectionConfig } from 'payload'
 import { isHabilitacionesOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
-export const RubrosComercios: CollectionConfig = {
-  slug: 'rubros-comercios',
+export const ActividadesComercios: CollectionConfig = {
+  slug: 'actividades-comercios',
   labels: {
-    singular: 'Rubro de Comercio',
-    plural: 'Rubros de Comercios',
+    singular: 'Actividad de Comercio',
+    plural: 'Actividades de Comercios',
   },
   access: {
     create: isHabilitacionesOrAdminCollectionAccess,
@@ -22,7 +22,7 @@ export const RubrosComercios: CollectionConfig = {
     {
       name: 'nombre',
       type: 'text',
-      label: 'Nombre del Rubro',
+      label: 'Nombre de la Actividad',
       required: true,
       unique: true,
     },
