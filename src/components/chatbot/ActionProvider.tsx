@@ -164,6 +164,12 @@ const TRAMITES_CONFIG: Record<string, TramiteConfig> = {
     url: '/tramites/tercera-edad-discapacidad',
     etiquetaBoton: 'Ver Tercera Edad',
   },
+  emergencias: {
+    nombre: 'Números Útiles y de Emergencia',
+    descripcion: 'Aquí tienes los números de emergencia y contactos útiles rápidos:',
+    url: '', // Se deja vacío ya que la IA contestará con la info de forma directa
+    etiquetaBoton: '',
+  },
 }
 
 /**
@@ -494,17 +500,18 @@ class ActionProvider {
     this._updateChatbotState(botMessage)
 
     const options = [
-      { text: 'Licencias de Conducir', handler: () => this.handleTramite('licencia'), id: 1 },
-      { text: 'Obras Privadas', handler: () => this.handleTramite('obrasPrivadas'), id: 2 },
-      { text: 'Habilitaciones', handler: () => this.handleTramite('habilitaciones'), id: 3 },
-      { text: 'Rentas', handler: () => this.handleTramite('rentas'), id: 4 },
-      { text: 'Catastro', handler: () => this.handleTramite('catastro'), id: 5 },
-      { text: 'Mesa de Entrada', handler: () => this.handleTramite('mesaDeEntrada'), id: 6 },
-      { text: 'Actividades Deportivas', handler: () => this.handleTramite('actividadesDeportivas'), id: 7 },
-      { text: 'Área Mujer', handler: () => this.handleTramite('areaMujer'), id: 8 },
-      { text: 'Talleres Culturales', handler: () => this.handleTramite('talleresCulturales'), id: 9 },
-      { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 10 },
-      { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 11 },
+      { text: 'Números Útiles', handler: () => this.handleTramite('emergencias'), id: 1 },
+      { text: 'Licencias de Conducir', handler: () => this.handleTramite('licencia'), id: 2 },
+      { text: 'Obras Privadas', handler: () => this.handleTramite('obrasPrivadas'), id: 3 },
+      { text: 'Habilitaciones', handler: () => this.handleTramite('habilitaciones'), id: 4 },
+      { text: 'Rentas', handler: () => this.handleTramite('rentas'), id: 5 },
+      { text: 'Catastro', handler: () => this.handleTramite('catastro'), id: 6 },
+      { text: 'Mesa de Entrada', handler: () => this.handleTramite('mesaDeEntrada'), id: 7 },
+      { text: 'Actividades Deportivas', handler: () => this.handleTramite('actividadesDeportivas'), id: 8 },
+      { text: 'Área Mujer', handler: () => this.handleTramite('areaMujer'), id: 9 },
+      { text: 'Talleres Culturales', handler: () => this.handleTramite('talleresCulturales'), id: 10 },
+      { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 11 },
+      { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 12 },
     ]
 
     this.setState((prevState: any) => ({
