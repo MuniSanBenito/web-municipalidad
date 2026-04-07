@@ -45,8 +45,7 @@ export const EMERGENCIAS = [
 
 export const EMERGENCIAS_INFO: ServiceInfo = {
   nombre: 'Números Útiles y de Emergencia',
-  descripcion:
-    'Líneas directas gratuitas de asistencia y emergencias, activas las 24 horas.',
+  descripcion: 'Líneas directas gratuitas de asistencia y emergencias, activas las 24 horas.',
   telefono: '911',
   informacionAdicional: [
     '• Policía y Bomberos: 911 (24 horas)',
@@ -186,8 +185,8 @@ export const HABILITACIONES: ServiceInfo = {
 export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
   nombre: 'Actividades Deportivas Municipales',
   descripcion:
-    'Talleres municipales deportivos y recreativos gratuitos para todas las edades',
-  whatsapp: '5493434682745',
+    'Talleres municipales deportivos y recreativos gratuitos para todas las edades. ¡Sumate a la nueva temporada! Todas las actividades son gratuitas.',
+  whatsapp: '5493434658210',
   horario: 'Horarios variados según actividad',
   url: '/tramites/actividades-deportivas',
   enlaces: [
@@ -202,10 +201,14 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
   ],
   informacionAdicional: [
     'ACTIVIDADES DISPONIBLES:',
-    '• Golf Croquet Municipal: +55 años, Lunes 9:00 hs (Prof. Guillermina Clausich, Ariadna Vince)',
-    '• Actividades Recreativas en Agua: +55 años, Martes y Jueves 10:00 hs (Prof. Guillermina Clausich, Solange Valin)',
-    '• Iniciación Deportiva: 3-7 años, Lunes y Miércoles 10:15 hs (Prof. Guillermina Clausich, Solange Valin)',
-    '• Escuela de Beach Voley: +12 años, Lunes, Miércoles y Viernes 14:30 hs (Prof. Magalí Meier, Alejandro Monzón)',
+    '• Golf Croquet Municipal: +55 años, Lunes y Miércoles 9:00 hs (Prof. Guillermina Clausich, Marcelo Monzon) — Parque Vieytes',
+    '• Escuela de Básquet y Voley: a partir de 6 años, Lunes, Miércoles y Viernes 17:30 hs (Prof. Santiago Farias) — Plaza Barrio San Pedro',
+    '• Escuela de Beach Voley: +12 años, Lunes, Miércoles y Viernes 14:30 hs (Prof. Milagros Schumacher, Alejandro Monzón) — Parque Vieytes',
+    '• Zumba: todas las edades, ver formulario para horarios (Prof. Vanina Bernasconi) — Parque Vieytes y CIC Barrio San Pedro',
+    '• Iniciación al Atletismo: todas las edades, Lunes, Martes, Miércoles y Jueves 17:30 hs (Prof. Alejandro Monzon) — Parque Vieytes',
+    '• Running: todas las edades, Lunes y Miércoles 20:15 hs (Prof. Gillermo Galeano) — Parque Vieytes',
+    '',
+    'REDES SOCIALES: Instagram @deportesanbenito',
     '',
     'PUNTOS DEPORTIVOS:',
     '• Parque Vieytes',
@@ -303,11 +306,11 @@ export const AREA_MUJER: ServiceInfo = {
 export const PRODUCCION_EMPLEO: ServiceInfo = {
   nombre: 'Área de Producción y Empleo',
   descripcion:
-    'Espacio de apoyo a emprendedores locales y fomento del desarrollo productivo de San Benito',
-  whatsapp: '3434470379',
-  telefono: '3434470379',
+    'Espacio de apoyo a emprendedores locales y fomento del desarrollo productivo de San Benito. Apoyamos a quienes quieren emprender o tienen un negocio en marcha.',
+  whatsapp: '3434657917',
+  telefono: '3434657917',
   horario: 'Lunes a Viernes de 8:00 a 13:00 hs',
-  ubicacion: 'NIDO - Buenos Aires y Misiones',
+  ubicacion: 'NIDO - Buenos Aires y Misiones, San Benito',
   url: '/tramites/produccion-empleo',
   enlaces: [
     {
@@ -316,7 +319,16 @@ export const PRODUCCION_EMPLEO: ServiceInfo = {
     },
   ],
   informacionAdicional: [
-    'Registro de emprendedores para acceso a programas, capacitaciones y beneficios',
+    'SERVICIOS DISPONIBLES:',
+    '• Reempadronamiento de Emprendedores: actualizá tus datos para acceder a programas, capacitaciones y beneficios',
+    '• Asesoramiento a emprendedores y PyMEs locales',
+    '• Acceso a programas de apoyo productivo municipal',
+    '',
+    'CÓMO ACCEDER AL REGISTRO:',
+    '• Completar el formulario online de reempadronamiento',
+    '• Tener domicilio o actividad en San Benito',
+    '',
+    'Para consultas y asesoramiento, acercarse al edificio NIDO (Buenos Aires y Misiones)',
   ],
 }
 

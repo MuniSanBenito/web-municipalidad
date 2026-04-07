@@ -36,8 +36,6 @@ let stats = {
 // DEBUG_MODE según entorno - desactivado en producción
 const DEBUG_MODE = process.env.NODE_ENV !== 'production'
 
-
-
 /**
  * Función principal mejorada para obtener respuestas de IA
  * NUEVO: Gemini se usa SIEMPRE que esté disponible para dar respuestas más naturales
@@ -271,9 +269,14 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
       `• 🚗 Licencias: 3436127014\n` +
       `• 🏪 Habilitaciones: 3434537319\n` +
       `• 📋 CAV (Reclamos): 3436127013\n` +
-      `• ⚽ Deportes: 5493434682745\n` +
-      `• 📚 Punto Digital: 3434508085\n\n` +
-      `📧 Email: ${CONTACTO_GENERAL.emailPrincipal}`
+      `• ⚽ Deportes: 5493434658210\n` +
+      `• 💼 Producción y Empleo: 3434657917\n` +
+      `• 📚 Punto Digital/Biblioteca: 3434508085\n` +
+      `• 💜 Área Mujer y Género: 3435204239\n` +
+      `• 🧓 Tercera Edad y Discapacidad: 3433027297\n` +
+      `• �️ Catastro: 4973454\n` +
+      `• 🏛️ Concejo Deliberante: 3434700140\n\n` +
+      `� Email: ${CONTACTO_GENERAL.emailPrincipal}`
     )
   }
 
@@ -285,9 +288,15 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
       `• 🚗 **Licencia de Conducir** - Original y renovación (WhatsApp: 3436127014)\n` +
       `• 🏗️ **Obras Privadas** - Permisos de construcción (Tel: ${CONTACTO_GENERAL.telefonoPrincipal})\n` +
       `• 🏪 **Habilitaciones** - Comercios y locales (WhatsApp: 3434537319)\n` +
-      `• ⚽ **Actividades Deportivas** - Talleres gratuitos (WhatsApp: 5493434682745)\n` +
-      `• 📋 **CAV** - Centro Atención Vecino/Reclamos (WhatsApp: 3436127013)\n` +
-      `• 📚 **Punto Digital** - Internet y biblioteca (WhatsApp: 3434508085)\n\n` +
+      `• ⚽ **Actividades Deportivas** - Talleres gratuitos (WhatsApp: 5493434658210)\n` +
+      `• 📋 **CAV** - Reclamos vecinos (WhatsApp: 3436127013)\n` +
+      `• 📚 **Punto Digital/Biblioteca** - Talleres y SUBE 24hs (WhatsApp: 3434508085)\n` +
+      `• 🏢 **NIDO** - Talleres culturales y emprendimientos (Buenos Aires y Misiones)\n` +
+      `• 🏘️ **CIC Barrio San Pedro** - Talleres comunitarios (WhatsApp: 3434508085)\n` +
+      `• 💜 **Área Mujer y Género** (WhatsApp: 3435204239)\n` +
+      `• 🧓 **Tercera Edad y Discapacidad** (WhatsApp: 3433027297)\n` +
+      `• 🗺️ **Catastro** - Trámites catastrales (Tel: 4973454)\n` +
+      `• 🌐 **Mesa de Entrada** - Inicio de trámites administrativos\n\n` +
       `¿Sobre cuál necesitas más información?`
     )
   }
@@ -316,7 +325,7 @@ function handleGreetingsAndFarewells(query: string): string | null {
       else if (hora >= 12 && hora < 19) saludo = '¡Buenas tardes!'
       else saludo = '¡Buenas noches!'
 
-      return `${saludo} Soy Beni, tu asistente virtual de la Municipalidad de San Benito. 🏛️\n\n¿En qué puedo ayudarte hoy?\n\nPuedo informarte sobre:\n• 💰 Rentas y pagos\n• 🚗 Licencias de conducir\n• 🏗️ Obras privadas\n• 🏪 Habilitaciones comerciales\n• ⚽ Actividades deportivas\n• 📋 Reclamos (CAV)`
+      return `${saludo} Soy Beni, tu asistente virtual de la Municipalidad de San Benito. 🏛️\n\n¿En qué puedo ayudarte hoy?\n\nPuedo informarte sobre:\n• 💰 Rentas y pagos de tasas\n• 🚗 Licencias de conducir\n• 🏗️ Obras privadas y catastro\n• 🏪 Habilitaciones comerciales\n• ⚽ Actividades deportivas gratuitas\n• 📋 Reclamos (CAV)\n• 🏢 NIDO, CIC y talleres culturales\n• 💼 Producción y Empleo\n• 🚌 Transporte y SUBE\n• Y mucho más...`
     }
   }
 
@@ -373,11 +382,12 @@ function generateSmartFallback(query: string): string {
       mensaje: 'área de Habilitaciones',
       emoji: '🏪',
     },
-    'deporte|futbol|voley|natacion|gimnasia|fitness|beach|actividad fisica': {
-      contacto: 'WhatsApp 5493434682745',
-      mensaje: 'área de Deportes',
-      emoji: '⚽',
-    },
+    'deporte|futbol|voley|natacion|gimnasia|fitness|beach|actividad fisica|running|atletismo|zumba|basket':
+      {
+        contacto: 'WhatsApp 5493434658210',
+        mensaje: 'área de Deportes',
+        emoji: '⚽',
+      },
     'reclamo|queja|vecino|denuncia|problema|bache|luz|basura|vereda': {
       contacto: 'WhatsApp 3436127013',
       mensaje: 'Centro de Atención al Vecino (CAV)',
@@ -394,9 +404,61 @@ function generateSmartFallback(query: string): string {
       emoji: '🎨',
     },
     'mujer|genero|violencia': {
-      contacto: `${CONTACTO_GENERAL.telefonoPrincipal}`,
-      mensaje: 'Área de la Mujer',
+      contacto: 'WhatsApp 3435204239',
+      mensaje: 'Área de la Mujer y Género',
       emoji: '💜',
+    },
+    'empleo|trabajo|emprendedor|emprendimiento|produccion|produccion y empleo|pyme|microemprendimiento':
+      {
+        contacto: 'WhatsApp 3434657917 | Ubicación: NIDO (Buenos Aires y Misiones)',
+        mensaje: 'Área de Producción y Empleo',
+        emoji: '💼',
+      },
+    'tercera edad|adultos mayores|jubilados|discapacidad|abuelos': {
+      contacto: 'WhatsApp 3433027297',
+      mensaje: 'Área de Tercera Edad y Discapacidad',
+      emoji: '🧓',
+    },
+    'catastro|escritura|titulo|plancheta|numeracion|mensura|domicilio catastral': {
+      contacto: 'Tel 4973454 | Email: catastro@munisanbenito.gov.ar',
+      mensaje: 'Catastro Municipal',
+      emoji: '🗺️',
+    },
+    'nido|taller cultural|guitarra|folclore|danzas|tango|banda|apoyo escolar|emprendedores|sum|salon':
+      {
+        contacto: 'NIDO - Buenos Aires y Misiones | Horario: L-V 7:00-13:00 y 15:00-19:00 hs',
+        mensaje: 'NIDO (Núcleo de Innovación y Desarrollo)',
+        emoji: '🏢',
+      },
+    'cic|barrio san pedro|telar|computacion niños': {
+      contacto: 'WhatsApp 3434508085 | Garay y Nogoyá, Barrio San Pedro',
+      mensaje: 'CIC Barrio San Pedro',
+      emoji: '🏘️',
+    },
+    'mesa de entrada|presentar tramite|nota de solicitud|inicio tramite': {
+      contacto: 'Edificio Municipal - Basavilbaso 1094 | Horario: L-V 7:00-13:00 hs',
+      mensaje: 'Mesa de Entrada',
+      emoji: '🌐',
+    },
+    'colectivo|transporte|sube|omnibus|linea|parada': {
+      contacto: 'SUBE 24hs: Biblioteca Municipal Santiago Tórtul (Friuli 1051)',
+      mensaje: 'información de Transporte Público',
+      emoji: '🚌',
+    },
+    'niñez|niños|menores|accion social|infancia|adolescencia': {
+      contacto: 'Tel 0343-4973644 | Basavilbaso 1093',
+      mensaje: 'Área de Niñez, Adolescencia y Acción Social',
+      emoji: '👶',
+    },
+    'juzgado|faltas|multa|infraccion|transito|inspeccion': {
+      contacto: 'Tel 0343-4973821 | 25 de Mayo 944',
+      mensaje: 'Juzgado de Faltas y Tránsito',
+      emoji: '⚖️',
+    },
+    'concejo|deliberante|ordenanza|concejal': {
+      contacto: 'WhatsApp 3434700140 | Av. Friuli y Rivadavia',
+      mensaje: 'Honorable Concejo Deliberante',
+      emoji: '🏛️',
     },
   }
 
