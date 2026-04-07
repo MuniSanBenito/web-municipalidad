@@ -50,13 +50,25 @@ class MessageParser implements IMessageParser {
       },
       {
         keywords: ['deportes', 'actividades deportivas', 'voley', 'futbol', 'gimnasia'],
-        phoneNumber: 'WhatsApp 5493434682745',
+        phoneNumber: 'WhatsApp 5493434658210',
         description: 'Área de Deportes',
       },
       {
         keywords: ['cav', 'reclamo', 'queja', 'vecino', 'bache', 'alumbrado'],
         phoneNumber: 'WhatsApp 3436127013',
         description: 'Centro de Atención al Vecino (CAV)',
+      },
+      {
+        keywords: [
+          'produccion y empleo',
+          'producción y empleo',
+          'empleo',
+          'emprendedor',
+          'emprendedores',
+          'trabajo',
+        ],
+        phoneNumber: 'WhatsApp 3434657917',
+        description: 'Área de Producción y Empleo',
       },
     ]
 

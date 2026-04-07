@@ -1,4 +1,5 @@
 import { basePayload } from '@/web/lib/payload'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 import { notFound } from 'next/navigation'
 
 type Props = {
@@ -44,85 +45,7 @@ export default async function PageHabilitaciones({ params }: Props) {
           <h2 className="mb-6 text-2xl font-semibold">Requisitos y Documentación</h2>
 
           {habilitacion.contenido && (
-            <div className="prose max-w-none">
-              <div>
-                {habilitacion.contenido.root.children.map((node: any, index: number) => {
-                  switch (node.type) {
-                    case 'heading': {
-                      // Usamos un bloque de código para limitar el alcance de las variables
-                      let headingLevel = 2
-                      if (typeof node.tag === 'number' && node.tag >= 1 && node.tag <= 6) {
-                        headingLevel = node.tag
-                      }
-                      // Definimos explícitamente los tipos de encabezado posibles
-                      type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-                      const HeadingTag = `h${headingLevel}` as HeadingType
-                      return (
-                        <HeadingTag
-                          key={index}
-                          className={`mt-4 mb-2 ${node.format === 'center' ? 'text-center' : ''}`}
-                        >
-                          {Array.isArray(node.children)
-                            ? node.children.map((child: any) => child.text).join('')
-                            : null}
-                        </HeadingTag>
-                      )
-                    }
-                    case 'paragraph':
-                      return (
-                        <p
-                          key={index}
-                          className={`mb-4 ${node.format === 'center' ? 'text-center' : ''}`}
-                        >
-                          {Array.isArray(node.children)
-                            ? node.children.map((child: any) => {
-                                if (child.bold)
-                                  return (
-                                    <strong key={`${index}-${child.text}`}>{child.text}</strong>
-                                  )
-                                if (child.italic)
-                                  return <em key={`${index}-${child.text}`}>{child.text}</em>
-                                return child.text
-                              })
-                            : null}
-                        </p>
-                      )
-
-                    case 'list':
-                      return (
-                        <ul key={index} className="mb-4 list-disc pl-6">
-                          {Array.isArray(node.children)
-                            ? node.children.map((item: any, itemIndex: number) => (
-                                <li key={`${index}-${itemIndex}`}>
-                                  {Array.isArray(item.children)
-                                    ? item.children.map((child: any) => {
-                                        if (child.bold)
-                                          return (
-                                            <strong key={`${index}-${itemIndex}-${child.text}`}>
-                                              {child.text}
-                                            </strong>
-                                          )
-                                        if (child.italic)
-                                          return (
-                                            <em key={`${index}-${itemIndex}-${child.text}`}>
-                                              {child.text}
-                                            </em>
-                                          )
-                                        return child.text
-                                      })
-                                    : null}
-                                </li>
-                              ))
-                            : null}
-                        </ul>
-                      )
-
-                    default:
-                      return null
-                  }
-                })}
-              </div>
-            </div>
+            <RichText data={habilitacion.contenido} className="prose max-w-none" />
           )}
 
           {/* Mostrar adjuntos si existen */}

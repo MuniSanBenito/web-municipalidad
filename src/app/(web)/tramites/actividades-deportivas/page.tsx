@@ -1,14 +1,17 @@
 import {
   IconAlertTriangle,
-  IconBallFootball,
+  IconBallBasketball,
   IconBallVolleyball,
+  IconBrandInstagram,
   IconBrandWhatsapp,
   IconCalendar,
   IconDownload,
   IconExternalLink,
   IconGolf,
   IconLocation,
-  IconSwimming,
+  IconMusic,
+  IconRun,
+  IconTrophy,
   IconUsers,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
@@ -22,29 +25,58 @@ const actividades = [
     title: 'Golf Croquet Municipal',
     icon: IconGolf,
     age: 'A partir de 55 años',
-    schedule: 'Lunes - 9:00 hs.',
-    coaches: 'Guillermina Clausich - Ariadna Vince',
+    schedule: 'Lunes y miércoles - 9:00 hs.',
+    coaches: 'Guillermina Clausich - Marcelo Monzon',
+    location: 'Parque Vieytes',
   },
+  // {
+  //   title: 'Actividades Recreativas en Agua',
+  //   icon: IconSwimming,
+  //   age: 'A partir de 55 años',
+  //   schedule: 'Martes y Jueves - 10:00 hs.',
+  //   coaches: 'Guillermina Clausich y Solange Valin',
+  //   location: 'Pileta Municipal',
+  // },
   {
-    title: 'Actividades Recreativas en Agua',
-    icon: IconSwimming,
-    age: 'A partir de 55 años',
-    schedule: 'Martes y Jueves - 10:00 hs.',
-    coaches: 'Guillermina Clausich y Solange Valin',
-  },
-  {
-    title: 'Iniciación Deportiva',
-    icon: IconBallFootball,
-    age: 'De 3 a 7 años',
-    schedule: 'Lunes y Miércoles - 10:15 hs.',
-    coaches: 'Guillermina Clausich y Solange Valin',
+    title: 'Escuela de Basquet y voley',
+    icon: IconBallBasketball,
+    age: 'a partir de 6 años',
+    schedule: 'Lunes, Miercoles y Viernes 17:30 hs',
+    coaches: 'Santiago Farias',
+    location: 'Plaza Barrio San Pedro',
   },
   {
     title: 'Escuela de Beach Voley',
     icon: IconBallVolleyball,
     age: 'De 12 años en adelante',
     schedule: 'Lunes, Miércoles y Viernes - 14:30 hs.',
-    coaches: 'Magalí Meier y Alejandro Monzón',
+    coaches: 'Milagros Schumacher y Alejandro Monzón',
+    location: 'Parque Vieytes',
+  },
+  {
+    title: 'Zumba',
+    icon: IconMusic,
+    age: 'Para todas las edades',
+    schedule: 'Ver en Formulario horarios disponibles',
+    coaches: 'Vanina Bernasconi',
+    location: 'Parque Vieytes y CIC barrio san pedro',
+  },
+
+  {
+    title: 'Iniciacion al Atletismo',
+    icon: IconTrophy,
+    age: 'Para todas las edades',
+    schedule: 'Lunes, Martes, Miercoles y Jueves - 17:30 hs.',
+    coaches: 'Alejandro Monzon',
+    location: 'Parque Vieytes',
+  },
+  {
+    title: 'Running',
+    icon: IconRun,
+    age: 'Para todas las edades',
+    schedule: 'Lunes y Miercoles 20:15 hs',
+    coaches: 'Gillermo Galeano',
+    location: 'Parque Vieytes',
   },
 ]
 
@@ -92,6 +124,11 @@ export default function PageActividadesDeportivas() {
                 </h3>
                 <p className="text-base-content mt-4 font-semibold">{actividad.age}</p>
                 <div className="mt-4 space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <IconLocation size={18} className="text-secondary" />
+                    <span className="font-semibold">Lugar:</span>
+                    <span>{actividad.location || 'A definir'}</span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <IconCalendar size={18} className="text-secondary" />
                     <span className="font-semibold">Horario:</span>
@@ -146,7 +183,7 @@ export default function PageActividadesDeportivas() {
           </div>
         </div>
 
-        <div className="card bg-base-200 shadow-xl p-6">
+        <div className="card bg-base-200 p-6 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-primary">
               <IconLocation size={28} />
@@ -169,22 +206,29 @@ export default function PageActividadesDeportivas() {
           <div className="card-body items-center text-center">
             <h3 className="card-title text-primary">¿Tenés alguna consulta?</h3>
             <p className="text-base-content">Comunícate con el Área de Deportes.</p>
-            <div className="card-actions mt-2">
+            <div className="card-actions mt-2 flex flex-wrap justify-center gap-2">
               <a
-                href="https://wa.me/5493434682745"
-                className="btn btn-success gap-2 text-success-content"
+                href="https://wa.me/5493434658210"
+                className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <IconBrandWhatsapp size={22} />
                 Consultas por WhatsApp
               </a>
+              <a
+                href="https://instagram.com/deportesanbenito"
+                className="btn btn-primary gap-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandInstagram size={22} />
+                @deportesanbenito
+              </a>
             </div>
           </div>
         </div>
       </section>
-
-
     </main>
   )
 }

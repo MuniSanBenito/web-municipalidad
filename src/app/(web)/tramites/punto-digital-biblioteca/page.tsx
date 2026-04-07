@@ -46,7 +46,8 @@ const talleres = {
       link: 'https://forms.gle/KGvkQwazKGXMENmJ9',
       icon: IconBrain,
     },
-    { nombre: 'Yoga en el Vieytes', link: 'https://forms.gle/Q2s7h3t8d9J4Rk6t7', icon: IconYoga },
+    { nombre: 'Yoga en el Vieytes', link: 'https://forms.gle/RMGE7DEetwHULmzM8', icon: IconYoga },
+    { nombre: 'Yoga en CIC', link: 'https://forms.gle/5Jo9JjjJYMVxNXVP7', icon: IconYoga },
   ],
 }
 
