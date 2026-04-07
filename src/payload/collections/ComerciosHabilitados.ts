@@ -20,6 +20,56 @@ export const ComerciosHabilitados: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
     defaultColumns: ['nombre', 'razonSocial', 'rubro', 'fechaAlta', 'fechaBaja'],
   },
+  hooks: {
+    beforeChange: [
+      ({ data, operation }) => {
+        if (operation === 'create') {
+          const token = crypto.randomUUID()
+          data.tokenValidacion = token
+          data.urlValidacion = `${process.env.NEXT_PUBLIC_SERVER_URL}/validar/${token}`
+        }
+        return data
+      },
+    ],
+  },
+  endpoints: [
+    {
+      path: '/validar/:token',
+      method: 'get',
+      handler: async (req) => {
+        const token = req.routeParams?.token as string | undefined
+
+        if (!token) {
+          return Response.json({ error: 'Token requerido' }, { status: 400 })
+        }
+
+        const result = await req.payload.find({
+          collection: 'comercios-habilitados',
+          where: { tokenValidacion: { equals: token } },
+          depth: 1,
+          limit: 1,
+        })
+
+        if (result.docs.length === 0) {
+          return Response.json({ error: 'Habilitación no encontrada' }, { status: 404 })
+        }
+
+        const comercio = result.docs[0]
+        const rubroNombre =
+          comercio.rubro && typeof comercio.rubro === 'object'
+            ? (comercio.rubro as { nombre: string }).nombre
+            : null
+
+        return Response.json({
+          nombre: comercio.nombre,
+          rubro: rubroNombre,
+          direccion: comercio.direccion,
+          fechaAlta: comercio.fechaAlta ?? null,
+          fechaVencimiento: comercio.fechaBaja ?? null,
+        })
+      },
+    },
+  ],
   fields: [
     {
       name: 'nombre',
@@ -94,6 +144,26 @@ export const ComerciosHabilitados: CollectionConfig = {
       relationTo: 'actividades-comercios',
       label: 'Actividades',
       hasMany: true,
+    },
+    {
+      name: 'tokenValidacion',
+      type: 'text',
+      label: 'Token de Validación',
+      unique: true,
+      index: true,
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'urlValidacion',
+      type: 'text',
+      label: 'URL de Validación',
+      admin: {
+        readOnly: true,
+        description:
+          'URL única para verificar la habilitación. Se genera automáticamente al crear.',
+      },
     },
     CreatedBy,
   ],

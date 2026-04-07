@@ -926,6 +926,11 @@ export interface ComerciosHabilitado {
   localizacion?: [number, number] | null;
   rubro: string | RubrosComercio;
   actividades?: (string | ActividadesComercio)[] | null;
+  tokenValidacion?: string | null;
+  /**
+   * URL única para verificar la habilitación. Se genera automáticamente al crear.
+   */
+  urlValidacion?: string | null;
   created_by:
     | {
         relationTo: 'users';
@@ -1654,6 +1659,8 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   localizacion?: T;
   rubro?: T;
   actividades?: T;
+  tokenValidacion?: T;
+  urlValidacion?: T;
   created_by?: T;
   updatedAt?: T;
   createdAt?: T;
