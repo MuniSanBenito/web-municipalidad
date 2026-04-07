@@ -5,8 +5,11 @@ import {
   IconExternalLink,
   IconGuitarPick,
   IconLocation,
+  IconMan,
   IconMicrophone2,
   IconMusic,
+  IconPiano,
+  IconShoe,
   IconUsers,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
@@ -16,34 +19,66 @@ export const metadata: Metadata = {
 }
 
 const talleres = [
-  {
-    title: 'Banda de Música Municipal',
-    icon: IconMusic,
-    description:
-      'Convocatoria para niños desde 9 años y jóvenes, con o sin conocimiento musical. Espacios disponibles: flauta, clarinete, saxo, trompeta, batería y percusión.',
-    schedule: 'Miércoles de 18:00 a 20:30 hs.',
-    location: 'NIDO',
-  },
+  // Sede NIDO
   {
     title: 'Guitarra',
     icon: IconGuitarPick,
-    description: 'Convocatoria para niños desde 9 años, jóvenes y adultos, con o sin conocimientos.',
-    schedule: 'Lunes (17-19hs), Jueves (17-19:30hs), Viernes (16-18:30hs).',
-    location: 'NIDO',
+    description:
+      'Convocatoria para niños desde 9 años, jóvenes y adultos, con o sin conocimientos. La profe confirmará tu horario según tu nivel (principiante o avanzado).',
+    schedule: 'Lunes y Martes (17:00 a 19:30), Jueves (17:00 a 20:30) o Viernes (16:30 a 20:00)',
+    location: 'NIDO - Calle Buenos Aires y Misiones',
   },
   {
     title: 'Danzas Inmigrantes',
     icon: IconUsers,
     description: 'Convocatoria para niños desde 9 años, jóvenes y adultos.',
-    schedule: 'Lunes de 18:00 a 20:00 hs.',
-    location: 'NIDO',
+    schedule: 'Lunes de 18:30 a 20:00 hs.',
+    location: 'NIDO - Calle Buenos Aires y Misiones',
+  },
+  {
+    title: 'Banda de Música Municipal',
+    icon: IconMusic,
+    description:
+      'Convocatoria para niños desde 9 años y jóvenes, con o sin conocimiento musical. Espacios disponibles: flauta, clarinete, saxo, trompeta, batería y percusión.',
+    schedule: 'Miércoles de 18:00 a 20:30 y Sábados de 10:00 a 12:00 hs.',
+    location: 'NIDO - Calle Buenos Aires y Misiones',
+  },
+  {
+    title: 'Tango',
+    icon: IconMan,
+    description: 'Convocatoria para adultos mayores de 18 años.',
+    schedule: 'Sábados de 18:00 a 19:30 hs.',
+    location: 'NIDO - Calle Buenos Aires y Misiones',
+  },
+  {
+    title: 'Danzas Tradicionales',
+    icon: IconShoe,
+    description: 'Convocatoria para niños desde 9 años en adelante.',
+    schedule: 'Martes y Jueves de 17:00 a 21:00 hs.',
+    location: 'NIDO - Calle Buenos Aires y Misiones',
+  },
+  // Sede CIC
+  {
+    title: 'Teatro',
+    icon: IconUsers,
+    description: 'Convocatoria para mayores de 16 años.',
+    schedule: 'Miércoles de 18:30 a 20:00 hs.',
+    location: 'CIC - Calle Garay y Nogoya',
   },
   {
     title: 'Coro Municipal',
     icon: IconMicrophone2,
     description: 'Convocatoria para jóvenes desde 16 años y adultos.',
-    schedule: 'Miércoles de 19:30 a 21:30 hs.',
-    location: 'CIC de Barrio San Pedro',
+    schedule: 'Viernes de 19:30 a 21:30 hs.',
+    location: 'CIC - Calle Garay y Nogoya',
+  },
+  // Sede Biblioteca Municipal
+  {
+    title: 'Piano',
+    icon: IconPiano,
+    description: 'Convocatoria para niños desde 9 años en adelante.',
+    schedule: 'Martes de 16:30 a 21:30 y Viernes de 16:30 a 20:30 hs.',
+    location: 'Biblioteca Municipal - Av Friuli 1051',
   },
 ]
 
@@ -103,7 +138,7 @@ export default function PageTalleresCulturales() {
             <p className="mt-2">Asegurá tu lugar en nuestros talleres culturales.</p>
             <div className="card-actions mt-4 justify-center">
               <a
-                href="https://forms.gle/mjTTB6GRN3QiFTh77"
+                href="https://forms.gle/YMu2AjBLckmdZoF79"
                 className="btn btn-primary btn-lg gap-2 text-lg"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -133,7 +168,7 @@ export default function PageTalleresCulturales() {
             <div className="card-actions mt-2">
               <a
                 href="https://wa.me/5493434508085"
-                className="btn btn-success gap-2 text-success-content"
+                className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -144,8 +179,6 @@ export default function PageTalleresCulturales() {
           </div>
         </div>
       </section>
-
-
     </main>
   )
 }
