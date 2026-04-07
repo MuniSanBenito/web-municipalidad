@@ -19,8 +19,8 @@ export default function PageProduccionEmpleo() {
             <h1 className="text-3xl font-bold md:text-5xl">Área de Producción y Empleo</h1>
             <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full"></div>
             <p className="text-base-content mt-6 text-base leading-relaxed transition-colors duration-300 md:text-lg">
-              Te damos la bienvenida al espacio de Producción y Empleo, donde apoyamos a los emprendedores
-              locales y fomentamos el desarrollo productivo de San Benito.
+              Te damos la bienvenida al espacio de Producción y Empleo, donde apoyamos a los
+              emprendedores locales y fomentamos el desarrollo productivo de San Benito.
             </p>
           </div>
         </div>
@@ -34,8 +34,8 @@ export default function PageProduccionEmpleo() {
               Reempadronamiento de Emprendedores
             </h2>
             <p className="mt-2">
-              Si sos emprendedor de San Benito, actualizá tus datos para acceder a programas, capacitaciones
-              y beneficios.
+              Si sos emprendedor de San Benito, actualizá tus datos para acceder a programas,
+              capacitaciones y beneficios.
             </p>
             <div className="card-actions mt-4 justify-start">
               <a
@@ -51,15 +51,15 @@ export default function PageProduccionEmpleo() {
           </div>
         </div>
 
-        <div className="card bg-base-200 shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
+        <div className="card bg-base-200 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
           <div className="card-body">
             <h2 className="card-title text-primary">
               <IconLocation size={28} />
               Nuestra Oficina
             </h2>
             <p className="mt-2">
-              Para consultas y asesoramiento, te esperamos en nuestras oficinas ubicadas en el edificio del
-              NIDO de San Benito.
+              Para consultas y asesoramiento, te esperamos en nuestras oficinas ubicadas en el
+              edificio del NIDO de San Benito.
             </p>
           </div>
         </div>
@@ -72,8 +72,8 @@ export default function PageProduccionEmpleo() {
             <p className="text-base-content">Comunicate con nosotros por WhatsApp.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434470379"
-                className="btn btn-success gap-2 text-success-content"
+                href="https://wa.me/5493434657917"
+                className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
