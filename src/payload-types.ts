@@ -71,6 +71,7 @@ export interface Config {
     users: User;
     noticias: Noticia;
     imagenes: Imagen;
+    'imagenes-arboles': ImagenArbol;
     curriculums: Curriculum;
     archivos: Archivo;
     'archivos-obras': ArchivosObra;
@@ -89,6 +90,7 @@ export interface Config {
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -102,6 +104,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     imagenes: ImagenesSelect<false> | ImagenesSelect<true>;
+    'imagenes-arboles': ImagenesArbolesSelect<false> | ImagenesArbolesSelect<true>;
     curriculums: CurriculumsSelect<false> | CurriculumsSelect<true>;
     archivos: ArchivosSelect<false> | ArchivosSelect<true>;
     'archivos-obras': ArchivosObrasSelect<false> | ArchivosObrasSelect<true>;
@@ -120,6 +123,7 @@ export interface Config {
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -127,6 +131,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
+  fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
   };
@@ -397,7 +402,7 @@ export interface Noticia {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -535,6 +540,80 @@ export interface Archivo {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imagenes-arboles".
+ */
+export interface ImagenArbol {
+  id: string;
+  nombreComun: string;
+  nombreCientifico?: string | null;
+  tipoVereda: 'angosta' | 'mediana' | 'ancha';
+  descripcion?: string | null;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -704,7 +783,7 @@ export interface Habilitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -748,7 +827,7 @@ export interface Licitacione {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -792,7 +871,7 @@ export interface Concurso {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -836,7 +915,7 @@ export interface BalancesMensuale {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -910,6 +989,23 @@ export interface ComerciosHabilitado {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -926,6 +1022,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'imagenes';
         value: string | Imagen;
+      } | null)
+    | ({
+        relationTo: 'imagenes-arboles';
+        value: string | ImagenArbol;
       } | null)
     | ({
         relationTo: 'curriculums';
@@ -1172,6 +1272,93 @@ export interface ImagenesSelect<T extends boolean = true> {
               filename?: T;
             };
         xlarge?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imagenes-arboles_select".
+ */
+export interface ImagenesArbolesSelect<T extends boolean = true> {
+  nombreComun?: T;
+  nombreCientifico?: T;
+  tipoVereda?: T;
+  descripcion?: T;
+  alt?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
           | T
           | {
               url?: T;
@@ -1593,6 +1780,14 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   rubros?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

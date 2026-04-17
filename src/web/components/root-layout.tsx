@@ -28,7 +28,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
   {
     href: '/tramites',
-    label: 'Tramites',
+    label: 'Tramites y Servicios',
   },
 ] as const
 

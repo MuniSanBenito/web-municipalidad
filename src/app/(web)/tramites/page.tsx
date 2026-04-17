@@ -17,7 +17,8 @@ import {
   IconLicense,
   IconMasksTheater,
   IconPhoneCall,
-  IconUserCircle
+  IconTree,
+  IconUserCircle,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -148,6 +149,12 @@ const tramites = [
     icon: IconBuildingCommunity,
     link: '/tramites/nido',
     description: 'Núcleo de innovación y Desarrollo de Oportunidades',
+  },
+  {
+    title: 'Arbolado Urbano',
+    icon: IconTree,
+    link: '/tramites/arbolado-urbano',
+    description: 'Especies recomendadas y no permitidas para plantar en la vía pública',
   },
 ]
 

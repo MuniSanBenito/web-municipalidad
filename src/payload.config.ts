@@ -21,6 +21,7 @@ import { Eventos } from './payload/collections/Eventos'
 import { EventosTags } from './payload/collections/EventosTags'
 import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
+import { ImagenesArboles } from './payload/collections/ImagenesArboles'
 import { Intimaciones } from './payload/collections/Intimaciones'
 import { Licitaciones } from './payload/collections/Licitaciones'
 import { Matriculados } from './payload/collections/Matriculados'
@@ -39,6 +40,9 @@ const storagePlugin = s3Storage({
   collections: {
     [Imagenes.slug]: {
       prefix: 'imagenes',
+    },
+    [ImagenesArboles.slug]: {
+      prefix: 'imagenes-arboles',
     },
     [Archivos.slug]: {
       prefix: 'archivos',
@@ -144,6 +148,7 @@ export default buildConfig({
     Users,
     Noticias,
     Imagenes,
+    ImagenesArboles,
     Curriculums,
     Archivos,
     ArchivosObras,
