@@ -17,7 +17,7 @@ import {
   IconPhoneCall,
   IconReceipt,
   IconShieldCheck,
-  IconWheelchair
+  IconWheelchair,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -90,11 +90,20 @@ const dependenciasMunicipales = [
     whatsapp: '543436127013',
   },
   {
-    area: 'Área de niñez, adolescencia y Acción Social',
+    area: 'Direcion de desarollo social y comunitario',
     icon: IconHeart,
     telefono: '0343-4973644',
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: 'Basavilbaso 1093',
+    whatsapp: '5434345107410',
+  },
+  {
+    area: 'Área de niñez, adolescencia y Familia',
+    icon: IconHeart,
+    telefono: '0343-4973644',
+    horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+    direccion: 'Basavilbaso 1093',
+    whatsapp: '543434594697',
   },
   {
     area: 'Juzgado de Faltas/Transito, Transporte e Inspecion General',
@@ -103,7 +112,7 @@ const dependenciasMunicipales = [
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
     direccion: '25 de Mayo 944',
   },
-    {
+  {
     area: 'Asesoria Legal y Tecnica',
     icon: IconBriefcase,
     horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
@@ -163,8 +172,8 @@ const dependenciasMunicipales = [
   {
     area: 'Biblioteca - Punto digital',
     icon: IconBook,
-    telefono: '3434508085',
-    whatsapp: '543434508085',
+    telefono: '3434503200',
+    whatsapp: '543434503200',
     horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
     direccion: 'Friuli 1051',
   },
@@ -290,9 +299,7 @@ export default function PageDatosUtiles() {
                             {dep.telefono}
                           </a>
                         ) : (
-                          <span className="text-base-content/50 text-sm italic">
-                            
-                          </span>
+                          <span className="text-base-content/50 text-sm italic"></span>
                         )}
                         {dep.whatsapp && (
                           <a
@@ -351,9 +358,7 @@ export default function PageDatosUtiles() {
                       {dep.telefono}
                     </a>
                   ) : (
-                    <span className="text-base-content/50 text-sm italic">
-                      -
-                    </span>
+                    <span className="text-base-content/50 text-sm italic">-</span>
                   )}
                   <p className="text-base-content/70 mt-1 flex items-center gap-1 text-sm">
                     <IconClock size={14} /> {dep.horario}
