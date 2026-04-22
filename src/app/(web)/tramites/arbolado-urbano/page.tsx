@@ -24,13 +24,17 @@ type EspecieConImagen = {
   cientifico?: string
   imagen: ImagenArbol | string
   descripcion?: string
+  nativa?: boolean
+  disponibleEnViveros?: boolean
 }
 
 const especiesNoPermitidas = [
+  'Mora de papel',
+  'Acacia negra',
   'Ligustro',
+  'Ligustro disciplinado',
   'Paraíso',
   'Mora',
-  'Acacia negra',
   'Acacia blanca',
   'Arce negundo',
 ]
@@ -113,6 +117,18 @@ function SeccionVereda({
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover transition-transform duration-500 hover:scale-105 dark:brightness-90"
                 />
+                <div className="absolute top-2 right-2 flex flex-col gap-1">
+                  {especie.nativa && (
+                    <div className="badge badge-success gap-1 font-bold shadow-md">
+                      <IconLeaf size={14} /> NATIVA
+                    </div>
+                  )}
+                  {especie.disponibleEnViveros && (
+                    <div className="badge badge-info gap-1 font-bold shadow-md">
+                      <IconCheck size={14} /> EN VIVEROS
+                    </div>
+                  )}
+                </div>
               </figure>
               <div className="card-body p-4">
                 <h5 className="card-title text-lg">{especie.nombre}</h5>
@@ -149,6 +165,9 @@ async function getArbolesPorTipoVereda(
       cientifico: arbol.nombreCientifico || undefined,
       imagen: arbol as ImagenArbol,
       descripcion: arbol.descripcion || undefined,
+      nativa: (arbol as ImagenArbol & { esNativa?: boolean }).esNativa || undefined,
+      disponibleEnViveros:
+        (arbol as ImagenArbol & { disponibleEnViveros?: boolean }).disponibleEnViveros || undefined,
     }))
   } catch (error) {
     console.error(`Error al obtener árboles para vereda ${tipoVereda}:`, error)
@@ -204,7 +223,11 @@ export default async function PageArboladoUrbano() {
           altura="hasta 6 m"
           acentoClass="text-info"
           descripcion="En estos espacios se recomienda la plantación de árboles pequeños, que no superen los 6 metros de altura y tengan copas reducidas."
-          idealPara={['Zonas con cableado aéreo', 'Espacios reducidos']}
+          idealPara={[
+            'Debajo de cableado de media y alta tensión',
+            'Veredas angostas',
+            'Plazoletas y canteros pequeños',
+          ]}
           especies={especiesAngosta}
         />
 
@@ -214,7 +237,7 @@ export default async function PageArboladoUrbano() {
           altura="entre 6 y 12 m"
           acentoClass="text-primary"
           descripcion="Para estas veredas se recomiendan árboles medianos, con alturas de entre 6 y 12 metros."
-          idealPara={['Veredas más amplias', 'Plazas, parques y bulevares']}
+          idealPara={['Veredas medianas', 'Canteros centrales de bulevares', 'Plazas y paseos']}
           especies={especiesMediana}
         />
 
@@ -224,7 +247,7 @@ export default async function PageArboladoUrbano() {
           altura="más de 12 m"
           acentoClass="text-success"
           descripcion="En estos casos se pueden plantar árboles grandes, que superan los 12 metros de altura y desarrollan copas amplias. Brindan gran sombra y valor paisajístico, pero requieren suficiente espacio para su desarrollo."
-          idealPara={['Avenidas', 'Espacios verdes amplios']}
+          idealPara={['Veredas anchas', 'Parques y espacios verdes amplios', 'Avenidas']}
           especies={especiesAncha}
         />
 

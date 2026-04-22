@@ -50,6 +50,18 @@ export const ImagenesArboles: CollectionConfig = {
       required: false,
     },
     {
+      name: 'esNativa',
+      type: 'checkbox',
+      label: '¿Es especie nativa?',
+      defaultValue: false,
+    },
+    {
+      name: 'disponibleEnViveros',
+      type: 'checkbox',
+      label: '¿Disponible en viveros?',
+      defaultValue: false,
+    },
+    {
       name: 'alt',
       type: 'text',
       label: 'Texto Alternativo (ALT)',

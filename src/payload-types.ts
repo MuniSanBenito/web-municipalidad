@@ -551,6 +551,8 @@ export interface ImagenArbol {
   nombreCientifico?: string | null;
   tipoVereda: 'angosta' | 'mediana' | 'ancha';
   descripcion?: string | null;
+  esNativa?: boolean | null;
+  disponibleEnViveros?: boolean | null;
   alt: string;
   prefix?: string | null;
   updatedAt: string;
@@ -1302,6 +1304,8 @@ export interface ImagenesArbolesSelect<T extends boolean = true> {
   nombreCientifico?: T;
   tipoVereda?: T;
   descripcion?: T;
+  esNativa?: T;
+  disponibleEnViveros?: T;
   alt?: T;
   prefix?: T;
   updatedAt?: T;
