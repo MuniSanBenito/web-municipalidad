@@ -56,8 +56,10 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "sharp",
+      "@swc/core",
+      "core-js",
       "esbuild",
+      "sharp",
       "unrs-resolver"
     ]
   }
