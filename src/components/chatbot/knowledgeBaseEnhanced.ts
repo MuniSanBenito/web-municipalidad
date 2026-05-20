@@ -275,6 +275,25 @@ export const PUNTO_DIGITAL: ServiceInfo = {
 }
 
 // ===========================================
+// CIC BARRIO SAN PEDRO
+// ===========================================
+export const CIC_BARRIO_SAN_PEDRO: ServiceInfo = {
+  nombre: 'CIC Barrio San Pedro',
+  descripcion:
+    'Centro Integrador Comunitario con talleres gratuitos de computación, bienestar y telar para toda la comunidad.',
+  whatsapp: '3434503200',
+  horario: 'Según actividad',
+  ubicacion: 'Garay y Nogoyá, Barrio San Pedro',
+  url: '/tramites/cic-barrio-san-pedro',
+  informacionAdicional: [
+    'Talleres Computación: Niños y adolescentes (8-14 años), Jóvenes (15-25 años), Adultos (+25 años)',
+    'Talleres Bienestar: Envejecientemente Activ@, Yoga',
+    'Talleres Telar: Principiantes y Avanzado',
+    'Requisito: domicilio en San Benito. Cupos limitados.',
+  ],
+}
+
+// ===========================================
 // ÁREA DE LA MUJER Y GÉNERO
 // ===========================================
 export const AREA_MUJER: ServiceInfo = {
@@ -358,6 +377,29 @@ export const NINEZ_ACCION_SOCIAL: ServiceInfo = {
 }
 
 // ===========================================
+// SECCIÓN ACCIÓN SOCIAL
+// ===========================================
+export const ACCION_SOCIAL: ServiceInfo = {
+  nombre: 'Sección Acción Social',
+  descripcion:
+    'Asistencia a familias vulnerables: subsidios, traslados para discapacidad, programas alimentarios y banco ortopédico.',
+  whatsapp: '3435107410',
+  email: 'areatrabajosocialsb@gmail.com',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Basavilbaso 1030',
+  url: '/tramites/accion-social',
+  informacionAdicional: [
+    'Políticas Alimentarias: módulos alimentarios, comedores municipales, Tarjeta Social por riesgo social',
+    'Subsidios: atmosférico, cloacal, subsistencia, materiales de construcción, medicamentos, fallecimiento',
+    'Ayudas directas: pañales, colchones, frazadas y otros elementos',
+    'Traslados discapacidad: vehículo adaptado para personas con CUD. Solicitar con 24/48hs anticipación.',
+    'Banco Ortopédico: préstamo de elementos ortopédicos en comodato',
+    'Taller "El Carretel": costura, ropero comunitario, Programa Bienvenido Bebé',
+    'Coordinadora: Sieber Stella',
+  ],
+}
+
+// ===========================================
 // JUZGADO DE FALTAS
 // ===========================================
 export const JUZGADO_FALTAS: ServiceInfo = {
@@ -399,11 +441,19 @@ export const MESA_ENTRADA: ServiceInfo = {
 }
 
 export const TALLERES_CULTURALES: ServiceInfo = {
-  nombre: 'Talleres Culturales',
-  descripcion: 'Talleres gratuitos de arte y cultura para la comunidad',
-  telefono: '343-4973454',
-  horario: 'Horarios variados según taller',
+  nombre: 'Talleres Culturales Municipales',
+  descripcion:
+    'Talleres artísticos gratuitos para niños, jóvenes y adultos con domicilio en San Benito. Cupos limitados.',
+  whatsapp: '3434503200',
+  horario: 'Horarios variados según taller y sede',
   url: '/tramites/talleres-culturales',
+  enlaces: [{ texto: 'Inscripción Online', url: 'https://forms.gle/YMu2AjBLckmdZoF79' }],
+  informacionAdicional: [
+    'Sede NIDO (Buenos Aires y Misiones): Guitarra (+9 años), Danzas Inmigrantes (+9 años), Banda Municipal (+9 años), Tango (+18 años), Danzas Tradicionales (+9 años)',
+    'Sede CIC (Garay y Nogoyá): Teatro (+16 años, Mi 18:30-20hs), Coro Municipal (+16 años, V 19:30-21:30hs)',
+    'Sede Biblioteca Municipal (Friuli 1051): Piano (+9 años, Ma 16:30-21:30hs y V 16:30-20:30hs)',
+    'Requisito: domicilio en San Benito. Cupos limitados.',
+  ],
 }
 
 // ===========================================
@@ -433,7 +483,12 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   'tercera-edad': TERCERA_EDAD,
   discapacidad: TERCERA_EDAD,
   ninez: NINEZ_ACCION_SOCIAL,
-  'accion-social': NINEZ_ACCION_SOCIAL,
+  'ninez-accion-social': NINEZ_ACCION_SOCIAL,
+  'accion-social': ACCION_SOCIAL,
+  'trabajo-social': ACCION_SOCIAL,
+  subsidios: ACCION_SOCIAL,
+  cic: CIC_BARRIO_SAN_PEDRO,
+  'cic-barrio-san-pedro': CIC_BARRIO_SAN_PEDRO,
   'juzgado-faltas': JUZGADO_FALTAS,
   transito: JUZGADO_FALTAS,
   concejo: CONCEJO_DELIBERANTE,
@@ -692,6 +747,49 @@ const SINONIMOS: { [key: string]: string[] } = {
     'teatro',
     'danza',
     'baile',
+    'guitarra',
+    'tango',
+    'folclore',
+    'folklore',
+    'coro',
+    'piano',
+    'banda',
+    'danzas tipicas',
+    'danzas tradicionales',
+    'danzas inmigrantes',
+    'talleres culturales',
+    'taller cultural',
+    'inscripcion talleres',
+    'inscripción talleres',
+  ],
+  'accion-social': [
+    'accion social',
+    'acción social',
+    'trabajo social',
+    'asistencia social',
+    'subsidio',
+    'subsidios',
+    'modulo alimentario',
+    'módulo alimentario',
+    'comedor municipal',
+    'tarjeta social',
+    'traslado discapacidad',
+    'traslados discapacidad',
+    'banco ortopedico',
+    'banco ortopédico',
+    'el carretel',
+    'ropero comunitario',
+    'bienvenido bebe',
+    'bienvenido bebé',
+    'asistencia familiar',
+  ],
+  cic: [
+    'cic',
+    'centro integrador',
+    'centro integrador comunitario',
+    'cic san pedro',
+    'cic barrio san pedro',
+    'telar',
   ],
   emergencia: [
     'emergencia',
@@ -838,6 +936,9 @@ export function formatearServicio(servicio: ServiceInfo): string {
     'Tercera Edad y Discapacidad': '🧓',
     Catastro: '🗺️',
     'Mesa de Entrada': '📝',
+    'Talleres Culturales Municipales': '🎨',
+    'Sección Acción Social': '🤝',
+    'CIC Barrio San Pedro': '🏘️',
   }
 
   const emoji = emojis[servicio.nombre] || '📋'

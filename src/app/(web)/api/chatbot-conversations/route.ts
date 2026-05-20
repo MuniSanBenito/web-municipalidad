@@ -111,6 +111,19 @@ function calculateSatisfaction(messages: MessageData[]): SatisfactionType {
   return 'mixed'
 }
 
+function isWriteConflictError(error: unknown): boolean {
+  const mongoError = error as { code?: number; codeName?: string; message?: string }
+  return (
+    mongoError.code === 112 ||
+    mongoError.codeName === 'WriteConflict' ||
+    mongoError.message?.includes('Write conflict') === true
+  )
+}
+
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 /**
  * POST: Crear o actualizar una conversación completa
  */
@@ -141,65 +154,80 @@ export async function POST(request: Request) {
     const satisfaction = calculateSatisfaction(processedMessages)
     const messageCount = processedMessages.length
 
-    // Buscar conversación existente
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const existing = await (payload as any).find({
-      collection: 'chatbot-conversations',
-      where: {
-        sessionId: { equals: sessionId },
-      },
-      limit: 1,
-    })
+    // Retry con backoff exponencial para evitar WriteConflict en requests concurrentes
+    const maxRetries = 3
+    let lastError: unknown
 
-    if (existing.docs.length > 0) {
-      // Actualizar conversación existente
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const updated = await (payload as any).update({
-        collection: 'chatbot-conversations',
-        id: existing.docs[0].id,
-        data: {
-          messages: processedMessages,
-          messageCount,
-          mainTopic,
-          satisfaction,
-          lastUpdated: lastUpdated || Date.now(),
-        },
-      })
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const existing = await (payload as any).find({
+          collection: 'chatbot-conversations',
+          where: {
+            sessionId: { equals: sessionId },
+          },
+          limit: 1,
+        })
 
-      return NextResponse.json({
-        success: true,
-        id: updated.id,
-        action: 'updated',
-        messageCount,
-        mainTopic,
-        satisfaction,
-      })
-    } else {
-      // Crear nueva conversación
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const created = await (payload as any).create({
-        collection: 'chatbot-conversations',
-        data: {
-          sessionId,
-          messages: processedMessages,
-          messageCount,
-          mainTopic,
-          satisfaction,
-          startedAt: startedAt || Date.now(),
-          lastUpdated: lastUpdated || Date.now(),
-          userAgent: userAgent || '',
-        },
-      })
+        if (existing.docs.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const updated = await (payload as any).update({
+            collection: 'chatbot-conversations',
+            id: existing.docs[0].id,
+            data: {
+              messages: processedMessages,
+              messageCount,
+              mainTopic,
+              satisfaction,
+              lastUpdated: lastUpdated || Date.now(),
+            },
+          })
 
-      return NextResponse.json({
-        success: true,
-        id: created.id,
-        action: 'created',
-        messageCount,
-        mainTopic,
-        satisfaction,
-      })
+          return NextResponse.json({
+            success: true,
+            id: updated.id,
+            action: 'updated',
+            messageCount,
+            mainTopic,
+            satisfaction,
+          })
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const created = await (payload as any).create({
+            collection: 'chatbot-conversations',
+            data: {
+              sessionId,
+              messages: processedMessages,
+              messageCount,
+              mainTopic,
+              satisfaction,
+              startedAt: startedAt || Date.now(),
+              lastUpdated: lastUpdated || Date.now(),
+              userAgent: userAgent || '',
+            },
+          })
+
+          return NextResponse.json({
+            success: true,
+            id: created.id,
+            action: 'created',
+            messageCount,
+            mainTopic,
+            satisfaction,
+          })
+        }
+      } catch (err) {
+        lastError = err
+        if (isWriteConflictError(err) && attempt < maxRetries) {
+          const backoff = 100 * Math.pow(2, attempt - 1) // 100ms, 200ms, 400ms
+          await delay(backoff)
+          continue
+        }
+        throw err
+      }
     }
+
+    throw lastError
   } catch (error) {
     console.error('Error guardando conversación del chatbot:', error)
     return NextResponse.json(

@@ -65,7 +65,7 @@ INFORMACIÓN OFICIAL VERIFICADA DE LA MUNICIPALIDAD (Actualizado Abril 2026):
 - Tercera Edad y Discapacidad: 3433027297 | Email: adultosmayoresydiscapacidadsb@gmail.com | Basavilbaso 1093
 - Área de Niñez y Acción Social: Tel 0343-4973644 | Basavilbaso 1093
 - Juzgado de Faltas/Tránsito: Tel 0343-4973821 | 25 de Mayo 944
-- CIC Barrio San Pedro: WhatsApp 3434508085 | Garay y Nogoyá, Barrio San Pedro
+- CIC Barrio San Pedro: WhatsApp 3434503200 | Garay y Nogoyá, Barrio San Pedro
 
 💰 RENTAS:
 - Sistema online: http://sigem.sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx
@@ -147,13 +147,25 @@ INFORMACIÓN OFICIAL VERIFICADA DE LA MUNICIPALIDAD (Actualizado Abril 2026):
 - Ubicación: Basavilbaso 1093 | WhatsApp: 3433027297
 - Email: adultosmayoresydiscapacidadsb@gmail.com
 
+🤝 ACCIÓN SOCIAL:
+- Ubicación: Basavilbaso 1030 | WhatsApp: 3435107410 | Email: areatrabajosocialsb@gmail.com
+- Horario: L-V 7:00-13:00 hs | Coordinadora: Sieber Stella
+- Servicios: Políticas Alimentarias (módulos, comedores, Tarjeta Social), Subsidios (atmosférico, cloacal, subsistencia, materiales, medicamentos, fallecimiento), Ayudas directas (pañales, colchones, frazadas), Salud Animal (castración, vacunación)
+- Traslados discapacidad: vehículo adaptado para personas con CUD. Req: domicilio SB, DNI, turno médico, sin obra social. Solicitar con 24/48hs anticipación. También tramitan Tarjeta SUBE.
+- Banco Ortopédico: préstamo de elementos en comodato
+- Taller "El Carretel": costura, ropero comunitario, Programa Bienvenido Bebé
+
 📋 CAV (Centro Atención Vecino):
 - WhatsApp: 3436127013 | Basavilbaso 1094
 - Función: reclamos (baches, alumbrado, basura, limpieza, árboles, cloacas, etc.)
 - Atención presencial y WhatsApp: L-V 7:00-13:00 hs
 
-🎨 TALLERES CULTURALES:
-- Ver sección NIDO para talleres artísticos y culturales
+🎨 TALLERES CULTURALES MUNICIPALES:
+- WhatsApp: 3434503200 | Inscripción: https://forms.gle/YMu2AjBLckmdZoF79
+- Requisito: domicilio en San Benito. Cupos limitados.
+- Sede NIDO (Buenos Aires y Misiones): Guitarra (+9 años, L/Ma 17-19:30hs, Ju 17-20:30hs, V 16:30-20hs), Danzas Inmigrantes (+9 años, L 18:30-20hs), Banda Municipal (+9 años, Mi 18-20:30hs y Sáb 10-12hs), Tango (+18 años, Sáb 18-19:30hs), Danzas Tradicionales (+9 años, Ma-Ju 17-21hs)
+- Sede CIC (Garay y Nogoyá): Teatro (+16 años, Mi 18:30-20hs), Coro Municipal (+16 años, V 19:30-21:30hs)
+- Sede Biblioteca (Friuli 1051): Piano (+9 años, Ma 16:30-21:30hs y V 16:30-20:30hs)
 
 🗺️ CIUDAD DE SAN BENITO:
 - Fundada: 1879 por inmigrantes del Friuli (Italia/Austria), Colonia "3 de Febrero"
