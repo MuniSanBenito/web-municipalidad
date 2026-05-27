@@ -48,11 +48,13 @@ export default function PageCICBarrioSanPedro() {
       <section className="hero bg-base-200 rounded-xl p-6 text-center shadow-lg transition-all duration-300 hover:shadow-xl md:p-12">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-3xl font-bold md:text-5xl">Actividades en el CIC Barrio San Pedro</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">
+              Actividades en el CIC Barrio San Pedro
+            </h1>
             <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full"></div>
             <p className="text-base-content mt-6 text-base leading-relaxed transition-colors duration-300 md:text-lg">
-              Descubrí las actividades y talleres gratuitos que ofrecemos para toda la comunidad en el Centro
-              Integrador Comunitario.
+              Descubrí las actividades y talleres gratuitos que ofrecemos para toda la comunidad en
+              el Centro Integrador Comunitario.
             </p>
           </div>
         </div>
@@ -111,8 +113,8 @@ export default function PageCICBarrioSanPedro() {
               Sobre el CIC
             </h2>
             <p className="mt-2">
-              El Centro Integrador Comunitario (CIC) es un espacio para promover actividades culturales,
-              educativas y recreativas para todos los vecinos.
+              El Centro Integrador Comunitario (CIC) es un espacio para promover actividades
+              culturales, educativas y recreativas para todos los vecinos.
             </p>
             <div className="mt-4 flex items-center gap-2">
               <IconLocation size={20} className="text-secondary" />
@@ -128,8 +130,8 @@ export default function PageCICBarrioSanPedro() {
             <p className="text-base-content">Comunicate con nosotros por WhatsApp.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434508085"
-                className="btn btn-success gap-2 text-success-content"
+                href="https://wa.me/5493434503200"
+                className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >

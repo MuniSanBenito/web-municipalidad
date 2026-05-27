@@ -9,17 +9,18 @@ import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useMemo, useState } from 'react'; // Keep existing hooks
+import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
 import { LogoutButton } from './logout-button'
 
 // Import Chatbot related components
 import ActionProvider from '@/components/chatbot/ActionProvider'
-import '@/components/chatbot/chatbot-styles.css'; // Custom improved styling
+import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
+import { createThrottledSaver, loadUIMessages } from '@/components/chatbot/uiMessagesPersistence'
 import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css'; // Default styling
+import 'react-chatbot-kit/build/main.css' // Default styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -41,7 +42,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   },
   {
     href: '/tramites',
-    label: 'Tramites',
+    label: 'Trámites y Servicios',
   },
 ] as const
 
@@ -73,6 +74,11 @@ export function RootLayout({ children, ciudadano }: Props) {
   }, [])
 
   const toggleChatbot = () => setShowChatbot((prev) => !prev)
+
+  // Persistencia de mensajes UI del chatbot (sessionStorage, TTL 24hs)
+  // Se hidrata al primer render y se serializan los cambios con throttle.
+  const initialMessages = useMemo(() => loadUIMessages(), [])
+  const saveMessages = useMemo(() => createThrottledSaver(500), [])
 
   return (
     <>
@@ -181,6 +187,10 @@ export function RootLayout({ children, ciudadano }: Props) {
                 messageParser={MessageParser}
                 actionProvider={ActionProvider}
                 placeholderText="Escriba su mensaje aquí"
+                // Solo hidratar con historial si hay mensajes previos guardados;
+                // si no, dejamos que el config.initialMessages renderice el saludo de Beni.
+                {...(initialMessages.length > 0 ? { messageHistory: initialMessages } : {})}
+                saveMessages={saveMessages}
               />
             </div>
           )}

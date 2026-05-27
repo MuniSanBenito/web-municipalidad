@@ -73,7 +73,7 @@ export default function PageLicenciaProfesional() {
 
       {/* Digital License */}
       <section className="mt-8">
-        <div className="from-primary/10 to-secondary/10 rounded-lg bg-gradient-to-r p-6 shadow-md">
+        <div className="from-primary/10 to-secondary/10 rounded-lg bg-linear-to-r p-6 shadow-md">
           <div className="mb-4 flex items-center gap-3">
             <IconClipboardCheck className="text-primary" size={32} />
             <h3 className="text-2xl font-semibold">¿Cómo obtener tu licencia digital?</h3>

@@ -11,7 +11,12 @@
  * - DEBUG_MODE según entorno
  */
 
-import { generateChatResponse, isChatAvailable, isChatConfigured } from './chatService'
+import {
+  generateChatResponse,
+  generateChatResponseStreaming,
+  getChatStatus,
+  type StreamOptions,
+} from './chatService'
 import { getVerifiedInformation, sanitizeResponse, validateResponse } from './contentValidator'
 import { addAssistantMessage, addUserMessage, getContextForAI } from './conversationHistory'
 import {
@@ -84,11 +89,11 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
   // 3. Verificar rate limiting antes de llamar a Gemini
   const rateLimitCheck = canMakeRequest()
 
-  // 4. Verificar si Gemini está disponible para dar respuestas mejoradas
-  const geminiConfigured = await isChatConfigured()
-  const geminiAvailable = geminiConfigured ? await isChatAvailable() : false
+  // 4. Verificar si Llama está disponible (UNA sola llamada que devuelve ambos flags)
+  const chatStatus = await getChatStatus()
+  const llamaAvailable = chatStatus.configured && chatStatus.available
 
-  if (geminiAvailable && rateLimitCheck.allowed) {
+  if (llamaAvailable && rateLimitCheck.allowed) {
     try {
       if (DEBUG_MODE) {
         console.log('🤖 Gemini disponible - Generando respuesta mejorada con IA...')
@@ -197,6 +202,103 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
 }
 
 /**
+ * Versión STREAMING de fetchEnhancedAIResponse.
+ *
+ * - Si la query matchea greeting/cache/KB → devuelve inmediatamente y NO usa stream.
+ * - Si Llama está disponible y rate limit OK → usa el endpoint /api/chat/stream
+ *   y emite chunks vía onChunk a medida que llegan.
+ * - Si Llama falla → fallback a Knowledge Base (no streaming).
+ *
+ * El caller debe asumir que onChunk podría no llamarse nunca (caso non-stream).
+ * En ese caso el resultado final está en el resolve de la promesa.
+ */
+export async function fetchEnhancedAIResponseStreaming(
+  query: string,
+  onChunk?: (delta: string, accumulated: string) => void,
+): Promise<AIResponse> {
+  if (!query || typeof query !== 'string' || query.trim() === '') {
+    return {
+      response: 'Por favor, ingresa una consulta para que pueda ayudarte.',
+      provider: 'fallback',
+      cached: false,
+    }
+  }
+
+  const normalizedQuery = query.toLowerCase().trim()
+  addUserMessage(query)
+
+  // 1. Cache hit → respuesta instantánea, sin streaming
+  const cached = responseCache.get(normalizedQuery)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return {
+      response: cached.response,
+      provider: cached.provider as any,
+      cached: true,
+    }
+  }
+
+  // 2. Saludos → respuesta instantánea
+  const greeting = handleGreetingsAndFarewells(normalizedQuery)
+  if (greeting) {
+    cacheResponse(normalizedQuery, greeting, 'knowledge-base')
+    return { response: greeting, provider: 'knowledge-base', cached: false }
+  }
+
+  // 3. Rate limit + Llama disponible
+  const rateLimitCheck = canMakeRequest()
+  const chatStatus = await getChatStatus()
+  const llamaAvailable = chatStatus.configured && chatStatus.available
+
+  if (llamaAvailable && rateLimitCheck.allowed) {
+    try {
+      const conversationContext = getContextForAI(4)
+      const enrichedQuery = conversationContext
+        ? `Contexto previo:\n${conversationContext}\n\nNueva consulta: ${query}`
+        : query
+
+      const opts: StreamOptions = { onChunk }
+      const fullText = await generateChatResponseStreaming(enrichedQuery, opts)
+      recordRequest()
+
+      const validation = validateResponse(fullText, query)
+      const finalText =
+        validation.isValid || validation.confidence >= 50
+          ? fullText
+          : sanitizeResponse(fullText, query)
+
+      if (finalText && finalText.length > 30) {
+        stats.gemini++
+        cacheResponse(normalizedQuery, finalText, 'gemini')
+        addAssistantMessage(finalText, 'gemini')
+        return { response: finalText, provider: 'gemini', cached: false }
+      }
+      // si la sanitización dejó algo demasiado corto → fallback a KB
+    } catch (err) {
+      if (DEBUG_MODE) {
+        console.warn('⚠️ Streaming falló, fallback a KB:', err)
+      }
+    }
+  }
+
+  // 4. Fallback: Knowledge Base
+  const kbResponse = searchEnhancedKnowledgeBase(normalizedQuery)
+  if (kbResponse) {
+    stats.knowledgeBase++
+    cacheResponse(normalizedQuery, kbResponse, 'knowledge-base')
+    addAssistantMessage(kbResponse, 'knowledge-base')
+    return { response: kbResponse, provider: 'knowledge-base', cached: false }
+  }
+
+  // 5. Fallback final
+  const verifiedInfo = getVerifiedInformation(query)
+  const fallbackResponse = verifiedInfo || generateSmartFallback(query)
+  stats.fallback++
+  cacheResponse(normalizedQuery, fallbackResponse, 'fallback')
+  addAssistantMessage(fallbackResponse, 'fallback')
+  return { response: fallbackResponse, provider: 'fallback', cached: false }
+}
+
+/**
  * Busca en la base de conocimiento mejorada
  */
 function searchEnhancedKnowledgeBase(query: string): string | null {
@@ -274,9 +376,9 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
       `• 📚 Punto Digital/Biblioteca: 3434508085\n` +
       `• 💜 Área Mujer y Género: 3435204239\n` +
       `• 🧓 Tercera Edad y Discapacidad: 3433027297\n` +
-      `• �️ Catastro: 4973454\n` +
+      `• 🗺️ Catastro: 4973454\n` +
       `• 🏛️ Concejo Deliberante: 3434700140\n\n` +
-      `� Email: ${CONTACTO_GENERAL.emailPrincipal}`
+      `📧 Email: ${CONTACTO_GENERAL.emailPrincipal}`
     )
   }
 

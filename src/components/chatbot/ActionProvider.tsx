@@ -7,9 +7,17 @@
  */
 
 import type React from 'react'
-import { fetchEnhancedAIResponse, generateContextualSuggestions } from './aiServiceEnhanced'
+import {
+  fetchEnhancedAIResponseStreaming,
+  generateContextualSuggestions,
+} from './aiServiceEnhanced'
 import { initConversationSync, scheduleSyncConversation } from './conversationSync'
 import { trackQuery } from './feedbackService'
+import {
+  CONTACTO_GENERAL,
+  formatearContactoGeneral,
+  formatearHorariosGeneral,
+} from './knowledgeBaseEnhanced'
 import { canMakeRequest } from './rateLimiter'
 import type {
   AIProvider,
@@ -251,7 +259,7 @@ class ActionProvider {
   }
 
   /**
-   * Factory method: Crea handler para un trámite específico
+   * Factory method: Crea handler para un trámite específico.
    */
   handleTramite(tramiteKey: string): void {
     const config = TRAMITES_CONFIG[tramiteKey]
@@ -286,9 +294,8 @@ class ActionProvider {
     )
   }
   handleContactoInfo() {
-    const message = this.createChatBotMessage(
-      'Puedes contactar a la municipalidad a través de:\n\n📧 Email: Modernizacion@sanbenito.gob.ar\n📞 Teléfono principal: (0343) 497-2222\n📞 Mesa de entrada: (0343) 497-2345\n📞 Rentas: (0343) 497-2678\n📞 Obras privadas: (0343) 497-2890\n\nTambién puedes visitar nuestra página web www.sanbenito.gob.ar para más detalles.',
-    )
+    // Fuente única de verdad: knowledgeBaseEnhanced
+    const message = this.createChatBotMessage(formatearContactoGeneral())
     this._updateChatbotState(message)
   }
   // Mostrar indicador de escritura
@@ -361,61 +368,105 @@ class ActionProvider {
     const rateLimitCheck = canMakeRequest()
     if (!rateLimitCheck.allowed && rateLimitCheck.reason) {
       const rateLimitMessage = this.createChatBotMessage(
-        `⏳ ${rateLimitCheck.reason}\n\nMientras tanto, podés consultar nuestra página web o llamar al (0343) 4973454.`,
+        `⏳ ${rateLimitCheck.reason}\n\nMientras tanto, podés consultar nuestra página web o llamar al ${CONTACTO_GENERAL.telefonoPrincipal}.`,
       )
       this._updateChatbotState(rateLimitMessage)
       return
     }
 
-    // Mostrar indicador de escritura
+    // Mostrar indicador de escritura: typing flag + burbuja con widget animado.
+    // Le ponemos un ID propio para luego reemplazarla de forma segura (sin string match).
     this._showTypingIndicator()
+    const typingMessageId = `typing_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`
+    const typingPlaceholder = this.createChatBotMessage('', {
+      widget: 'typingIndicator',
+      payload: { __typingId: typingMessageId },
+    })
+    // Anotamos el id en el propio mensaje para identificarlo después
+    ;(typingPlaceholder as any).__typingId = typingMessageId
+    this._updateChatbotState(typingPlaceholder)
+
+    // Helper: remueve el placeholder (por id) si todavía está en la lista.
+    const removeTypingPlaceholder = (): void => {
+      this.setState((prevState) => ({
+        ...prevState,
+        messages: prevState.messages.filter((m: any) => (m as any).__typingId !== typingMessageId),
+      }))
+    }
 
     try {
-      // Mensaje de procesamiento más amigable
-      const processingMessages = [
-        'Buscando la mejor respuesta para vos... 🔍',
-        'Dame un momento, estoy consultando la información... 💭',
-        'Procesando tu consulta... 🤔',
-      ]
-      const randomProcessing =
-        processingMessages[Math.floor(Math.random() * processingMessages.length)]
+      // Estrategia de streaming:
+      //   - El primer chunk REEMPLAZA el placeholder de typing por una burbuja
+      //     de texto con el mismo __typingId (para poder seguir actualizándola).
+      //   - Cada chunk siguiente actualiza el `.message` de esa misma burbuja.
+      //   - Si streaming falla, fetchEnhancedAIResponseStreaming hace fallback
+      //     a la respuesta no-streaming y devuelve el texto completo igual.
+      let firstChunkArrived = false
 
-      const processingMessage = this.createChatBotMessage(randomProcessing)
-      this._updateChatbotState(processingMessage)
+      const onChunk = (_delta: string, accumulated: string) => {
+        this.setState((prevState) => {
+          const idx = prevState.messages.findIndex(
+            (m: any) => (m as any).__typingId === typingMessageId,
+          )
+          if (idx === -1) return prevState
 
-      // Obtener respuesta de la IA con timeout
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), 15000),
+          if (!firstChunkArrived) {
+            firstChunkArrived = true
+            // Reemplazar placeholder (widget) por mensaje de texto streaming
+            const newMsg: any = this.createChatBotMessage(accumulated)
+            newMsg.__typingId = typingMessageId
+            const newMessages = [...prevState.messages]
+            newMessages[idx] = newMsg
+            return { ...prevState, messages: newMessages }
+          }
+
+          // Actualización incremental: clonar el mensaje y reemplazar texto
+          const newMessages = [...prevState.messages]
+          const current: any = newMessages[idx]
+          newMessages[idx] = { ...current, message: accumulated }
+          return { ...prevState, messages: newMessages }
+        })
+      }
+
+      // Timeout global de 20s (más laxo que antes porque streaming va llegando)
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), 20000),
       )
 
-      const aiPromise = fetchEnhancedAIResponse(userMessage)
       const aiResult = (await Promise.race([
-        aiPromise,
+        fetchEnhancedAIResponseStreaming(userMessage, onChunk),
         timeoutPromise,
       ])) as { response: string; provider: AIProvider; cached: boolean }
 
       const aiResponse = aiResult.response
 
-      // Validar que la respuesta no esté vacía
       if (!aiResponse || aiResponse.trim().length === 0) {
         throw new Error('Respuesta vacía')
       }
 
-      // Guardar respuesta para contexto
       this.lastResponse = aiResponse
-
-      // Generar ID para tracking de feedback
       const messageId = this._generateMessageId()
       const provider: AIProvider = aiResult.provider
 
-      // Reemplazar mensaje de procesamiento con la respuesta real
+      // Si nunca llegaron chunks (KB / cache / fallback), inyectar la respuesta ahora
+      // reemplazando el placeholder de typing.
+      // Si llegaron chunks pero el texto final difiere por sanitización, actualizar.
       this.setState((prevState) => {
-        const messages = [...prevState.messages]
-        messages.pop() // Eliminar mensaje de procesamiento
-        return {
-          ...prevState,
-          messages: [...messages, this.createChatBotMessage(aiResponse)],
+        const idx = prevState.messages.findIndex(
+          (m: any) => (m as any).__typingId === typingMessageId,
+        )
+        if (idx === -1) {
+          return {
+            ...prevState,
+            messages: [...prevState.messages, this.createChatBotMessage(aiResponse)],
+          }
         }
+        const newMsg: any = this.createChatBotMessage(aiResponse)
+        // limpiamos el marcador para que no se confunda con futuros placeholders
+        delete newMsg.__typingId
+        const newMessages = [...prevState.messages]
+        newMessages[idx] = newMsg
+        return { ...prevState, messages: newMessages }
       })
 
       // Registrar para analytics y feedback
@@ -444,33 +495,22 @@ class ActionProvider {
       // Determinar tipo de error y mostrar mensaje apropiado
       let errorMessage = ''
 
+      const tel = CONTACTO_GENERAL.telefonoPrincipal
       if (error instanceof Error) {
         if (error.message === 'Timeout') {
-          errorMessage =
-            '⏱️ La consulta está tomando más tiempo del esperado. Por favor, intentá de nuevo o contactá directamente a la municipalidad al (0343) 4973454.'
+          errorMessage = `⏱️ La consulta está tomando más tiempo del esperado. Por favor, intentá de nuevo o contactá directamente a la municipalidad al ${tel}.`
         } else if (error.message === 'Respuesta vacía') {
-          errorMessage =
-            '🤔 No pude generar una respuesta para tu consulta. ¿Podrías reformular tu pregunta o contactar directamente al (0343) 4973454?'
+          errorMessage = `🤔 No pude generar una respuesta para tu consulta. ¿Podrías reformular tu pregunta o contactar directamente al ${tel}?`
         } else {
-          errorMessage =
-            '⚠️ Ocurrió un problema técnico. Te recomiendo contactar directamente a la municipalidad al (0343) 4973454 para obtener la información que necesitas.'
+          errorMessage = `⚠️ Ocurrió un problema técnico. Te recomiendo contactar directamente a la municipalidad al ${tel} para obtener la información que necesitas.`
         }
       } else {
         errorMessage = '❌ Ocurrió un error inesperado. Por favor, intentá nuevamente.'
       }
 
-      // Eliminar mensaje de procesamiento y mostrar error
-      this.setState((prevState) => {
-        const messages = [...prevState.messages]
-        const lastMessage = messages[messages.length - 1] as ChatMessage | undefined
-        if (messages.length > 0 && lastMessage?.message?.includes('buscando')) {
-          messages.pop() // Eliminar mensaje de procesamiento
-        }
-        return {
-          ...prevState,
-          messages: [...messages, this.createChatBotMessage(errorMessage)],
-        }
-      })
+      // Limpiar placeholder de typing y mostrar mensaje de error
+      removeTypingPlaceholder()
+      this._updateChatbotState(this.createChatBotMessage(errorMessage))
 
       // Mostrar opciones alternativas después del error
       setTimeout(() => {
@@ -487,8 +527,6 @@ class ActionProvider {
       pageUrl,
     )
   }
-
-
 
   // Updated handleTramiteIntro
   handleTramiteIntro() {
@@ -507,9 +545,17 @@ class ActionProvider {
       { text: 'Rentas', handler: () => this.handleTramite('rentas'), id: 5 },
       { text: 'Catastro', handler: () => this.handleTramite('catastro'), id: 6 },
       { text: 'Mesa de Entrada', handler: () => this.handleTramite('mesaDeEntrada'), id: 7 },
-      { text: 'Actividades Deportivas', handler: () => this.handleTramite('actividadesDeportivas'), id: 8 },
+      {
+        text: 'Actividades Deportivas',
+        handler: () => this.handleTramite('actividadesDeportivas'),
+        id: 8,
+      },
       { text: 'Área Mujer', handler: () => this.handleTramite('areaMujer'), id: 9 },
-      { text: 'Talleres Culturales', handler: () => this.handleTramite('talleresCulturales'), id: 10 },
+      {
+        text: 'Talleres Culturales',
+        handler: () => this.handleTramite('talleresCulturales'),
+        id: 10,
+      },
       { text: 'Teléfonos Importantes', handler: () => this.handleContactoInfo(), id: 11 },
       { text: 'Consulta General', handler: () => this.handleGeneralInquiry(), id: 12 },
     ]
@@ -542,19 +588,11 @@ class ActionProvider {
     }, 1000)
   }
 
-  // Método para manejar horarios de atención
+  // Método para manejar horarios de atención (lee del KB)
   handleHorarios() {
-    const message = this.createChatBotMessage(
-      'Los horarios de atención de la Municipalidad de San Benito son:\n\n' +
-        '📍 Edificio Municipal: Lunes a Viernes de 7:00 a 13:00 hs\n' +
-        '📍 Rentas: Lunes a Viernes de 7:00 a 13:00 hs\n' +
-        '📍 Obras Privadas: Lunes a Viernes de 7:00 a 12:00 hs\n' +
-        '📍 Punto Digital: Lunes a Viernes de 8:00 a 12:00 y 16:00 a 20:00 hs',
-    )
+    const message = this.createChatBotMessage(formatearHorariosGeneral())
     this._updateChatbotState(message)
   }
-
-
 }
 
 export default ActionProvider

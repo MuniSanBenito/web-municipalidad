@@ -90,7 +90,7 @@ export default function PagePuntoDigitalBiblioteca() {
                 {talleres.idiomas.map((taller, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                    className="bg-base-100 hover:bg-base-300/50 flex items-center justify-between rounded-lg p-3 transition-all duration-300 hover:shadow-md"
                   >
                     <span className="text-base-content">{taller.nombre}</span>
                     <a
@@ -118,9 +118,9 @@ export default function PagePuntoDigitalBiblioteca() {
                 {talleres.tecnologia.map((taller, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                    className="bg-base-100 hover:bg-base-300/50 flex items-center justify-between rounded-lg p-3 transition-all duration-300 hover:shadow-md"
                   >
-                    <span className="flex items-center gap-2 text-base-content">
+                    <span className="text-base-content flex items-center gap-2">
                       <taller.icon size={20} />
                       {taller.nombre}
                     </span>
@@ -149,9 +149,9 @@ export default function PagePuntoDigitalBiblioteca() {
                 {talleres.bienestar.map((taller, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between rounded-lg bg-base-100 p-3 transition-all duration-300 hover:bg-base-300/50 hover:shadow-md"
+                    className="bg-base-100 hover:bg-base-300/50 flex items-center justify-between rounded-lg p-3 transition-all duration-300 hover:shadow-md"
                   >
-                    <span className="flex items-center gap-2 text-base-content">
+                    <span className="text-base-content flex items-center gap-2">
                       <taller.icon size={20} />
                       {taller.nombre}
                     </span>
@@ -178,8 +178,8 @@ export default function PagePuntoDigitalBiblioteca() {
             <p className="text-base-content">Comunícate directamente con nosotros.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434508085"
-                className="btn btn-success gap-2 text-success-content"
+                href="https://wa.me/5493434503200"
+                className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >

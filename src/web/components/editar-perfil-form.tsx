@@ -227,8 +227,8 @@ export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
     <div className="mx-auto max-w-4xl">
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Header con gradiente y animación */}
-        <div className="from-primary/10 via-secondary/5 to-accent/10 relative overflow-hidden rounded-2xl bg-gradient-to-br p-8 shadow-xl">
-          <div className="from-primary/5 absolute inset-0 animate-pulse bg-gradient-to-r to-transparent" />
+        <div className="from-primary/10 via-secondary/5 to-accent/10 relative overflow-hidden rounded-2xl bg-linear-to-br p-8 shadow-xl">
+          <div className="from-primary/5 absolute inset-0 animate-pulse bg-linear-to-r to-transparent" />
           <div className="relative z-10">
             <div className="mb-4 flex items-center gap-4">
               <div className="bg-primary/20 rounded-full p-3 backdrop-blur-sm">
@@ -255,7 +255,7 @@ export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
         </div>
 
         {/* Sección de Información Personal */}
-        <div className="card from-base-100 to-base-200/50 border-base-300/50 border bg-gradient-to-br shadow-2xl backdrop-blur-sm">
+        <div className="card from-base-100 to-base-200/50 border-base-300/50 border bg-linear-to-br shadow-2xl backdrop-blur-sm">
           <div className="card-body p-8">
             <div className="mb-6 flex items-center gap-3">
               <div className="bg-primary/10 rounded-lg p-2">
@@ -330,7 +330,7 @@ export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
         </div>
 
         {/* Sección de Información de Contacto */}
-        <div className="card from-base-100 to-base-200/50 border-base-300/50 border bg-gradient-to-br shadow-2xl backdrop-blur-sm">
+        <div className="card from-base-100 to-base-200/50 border-base-300/50 border bg-linear-to-br shadow-2xl backdrop-blur-sm">
           <div className="card-body p-8">
             <div className="mb-6 flex items-center gap-3">
               <div className="bg-secondary/10 rounded-lg p-2">
@@ -379,7 +379,7 @@ export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
         </div>
 
         {/* Botones de Acción con diseño mejorado */}
-        <div className="card from-base-100 to-base-200/30 border-base-300/30 border bg-gradient-to-r shadow-xl">
+        <div className="card from-base-100 to-base-200/30 border-base-300/30 border bg-linear-to-r shadow-xl">
           <div className="card-body p-6">
             <div className="flex flex-col gap-4 sm:flex-row">
               <button
@@ -389,10 +389,10 @@ export function EditarPerfilForm({ ciudadano, cv }: EditarPerfilFormProps) {
                   isSubmitting
                     ? 'scale-95'
                     : 'hover:shadow-primary/30 hover:scale-105 hover:shadow-2xl'
-                } from-primary to-primary-focus relative overflow-hidden border-0 bg-gradient-to-r`}
+                } from-primary to-primary-focus relative overflow-hidden border-0 bg-linear-to-r`}
               >
                 {isSubmitting && (
-                  <div className="from-primary/50 to-primary-focus/50 absolute inset-0 animate-pulse bg-gradient-to-r" />
+                  <div className="from-primary/50 to-primary-focus/50 absolute inset-0 animate-pulse bg-linear-to-r" />
                 )}
                 <div className="relative flex items-center gap-3">
                   {isSubmitting ? (
