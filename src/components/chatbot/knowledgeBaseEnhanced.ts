@@ -975,3 +975,49 @@ export function formatearServicio(servicio: ServiceInfo): string {
 
   return texto.trim()
 }
+
+/**
+ * Devuelve un bloque de contacto general unificado, leído de los servicios oficiales.
+ * Fuente única de verdad: evita hardcodear teléfonos/emails en otros archivos.
+ */
+export function formatearContactoGeneral(): string {
+  return (
+    `📞 **Contactos de la Municipalidad de San Benito**\n\n` +
+    `**📍 Sede principal:** ${CONTACTO_GENERAL.direccion}\n` +
+    `**🕒 Horario general:** ${CONTACTO_GENERAL.horarioGeneral}\n` +
+    `**☎️ Teléfono:** ${CONTACTO_GENERAL.telefonoPrincipal}\n` +
+    `**📧 Email:** ${CONTACTO_GENERAL.emailPrincipal}\n\n` +
+    `**Contactos por área (WhatsApp):**\n` +
+    `• 💰 Rentas: ${RENTAS.whatsapp}\n` +
+    `• 🚗 Licencias de Conducir: ${LICENCIA_CONDUCIR.whatsapp}\n` +
+    `• 🏗️ Obras Privadas: ${OBRAS_PRIVADAS.whatsapp} (solo mensajes)\n` +
+    `• 🏪 Habilitaciones: ${HABILITACIONES.whatsapp}\n` +
+    `• 📋 CAV (Reclamos): ${CAV.whatsapp}\n` +
+    `• ⚽ Deportes: ${ACTIVIDADES_DEPORTIVAS.whatsapp}\n` +
+    `• 📚 Punto Digital / Biblioteca: ${PUNTO_DIGITAL.whatsapp}\n` +
+    `• 💜 Área Mujer y Género: ${AREA_MUJER.whatsapp}\n` +
+    `• 💼 Producción y Empleo: ${PRODUCCION_EMPLEO.whatsapp}\n` +
+    `• 🧓 Tercera Edad y Discapacidad: ${TERCERA_EDAD.whatsapp}\n` +
+    `• 🤝 Acción Social: ${ACCION_SOCIAL.whatsapp}\n` +
+    `• 🏘️ CIC Barrio San Pedro: ${CIC_BARRIO_SAN_PEDRO.whatsapp}\n` +
+    `• 🏛️ Concejo Deliberante: ${CONCEJO_DELIBERANTE.whatsapp}`
+  )
+}
+
+/**
+ * Devuelve los horarios de atención por área, leídos del KB.
+ */
+export function formatearHorariosGeneral(): string {
+  return (
+    `🕒 **Horarios de Atención**\n\n` +
+    `**Horario general:** ${CONTACTO_GENERAL.horarioGeneral}\n\n` +
+    `**Por área:**\n` +
+    `• 💰 Rentas: ${RENTAS.horario}\n` +
+    `• 🚗 Licencias de Conducir: ${LICENCIA_CONDUCIR.horario}\n` +
+    `• 🏗️ Obras Privadas: ${OBRAS_PRIVADAS.horario}\n` +
+    `• 🏪 Habilitaciones: ${HABILITACIONES.horario}\n` +
+    `• 📋 CAV: ${CAV.horario}\n` +
+    `• 📚 Punto Digital / Biblioteca: ${PUNTO_DIGITAL.horario}\n` +
+    `• 💼 Producción y Empleo: ${PRODUCCION_EMPLEO.horario}`
+  )
+}

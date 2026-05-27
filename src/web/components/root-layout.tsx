@@ -18,6 +18,7 @@ import ActionProvider from '@/components/chatbot/ActionProvider'
 import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
+import { createThrottledSaver, loadUIMessages } from '@/components/chatbot/uiMessagesPersistence'
 import Chatbot from 'react-chatbot-kit'
 import 'react-chatbot-kit/build/main.css' // Default styling
 
@@ -73,6 +74,11 @@ export function RootLayout({ children, ciudadano }: Props) {
   }, [])
 
   const toggleChatbot = () => setShowChatbot((prev) => !prev)
+
+  // Persistencia de mensajes UI del chatbot (sessionStorage, TTL 24hs)
+  // Se hidrata al primer render y se serializan los cambios con throttle.
+  const initialMessages = useMemo(() => loadUIMessages(), [])
+  const saveMessages = useMemo(() => createThrottledSaver(500), [])
 
   return (
     <>
@@ -181,6 +187,10 @@ export function RootLayout({ children, ciudadano }: Props) {
                 messageParser={MessageParser}
                 actionProvider={ActionProvider}
                 placeholderText="Escriba su mensaje aquí"
+                // Solo hidratar con historial si hay mensajes previos guardados;
+                // si no, dejamos que el config.initialMessages renderice el saludo de Beni.
+                {...(initialMessages.length > 0 ? { messageHistory: initialMessages } : {})}
+                saveMessages={saveMessages}
               />
             </div>
           )}

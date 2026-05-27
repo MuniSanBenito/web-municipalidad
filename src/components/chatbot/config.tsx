@@ -14,6 +14,7 @@ import GeneralOptions from './widgets/GeneralOptions'
 import LinkButton from './widgets/LinkButton'
 import SmartSuggestions from './widgets/SmartSuggestions'
 import TramiteOptions from './widgets/TramiteOptions'
+import TypingIndicator from './widgets/TypingIndicator'
 // Definimos la interfaz Config localmente para evitar problemas de importación
 interface Config {
   botName: string
@@ -286,6 +287,10 @@ const config: Config = {
     {
       widgetName: 'feedback',
       widgetFunc: (props: any) => <FeedbackWidget {...props} />,
+    },
+    {
+      widgetName: 'typingIndicator',
+      widgetFunc: () => <TypingIndicator />,
     },
   ],
   messageParser: MessageParser,

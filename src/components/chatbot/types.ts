@@ -293,7 +293,11 @@ export const STORAGE_KEYS = {
   CONVERSATION_HISTORY: 'chatbot_conversation_history',
   SESSION_ID: 'chatbot_session_id',
   RATE_LIMIT: 'chatbot_rate_limit',
+  UI_MESSAGES: 'chatbot_ui_messages',
 } as const
+
+// TTL de mensajes UI en sessionStorage (24 hs según privacy policy del bot)
+export const UI_MESSAGES_TTL = 24 * 60 * 60 * 1000
 
 // Límites ajustados para Gemini Free Tier (Febrero 2026)
 // Free tier: 15 RPM, 1,500 RPD para gemini-2.0-flash

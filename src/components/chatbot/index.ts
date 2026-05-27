@@ -15,6 +15,7 @@ export {
   clearCache,
   clearResponseCache,
   fetchEnhancedAIResponse,
+  fetchEnhancedAIResponseStreaming,
   generateContextualSuggestions,
   getAIStats,
   getProviderStats,
@@ -25,11 +26,13 @@ export {
 // Servicio de Chat (Groq + Llama 3.3)
 export {
   generateChatResponse,
+  generateChatResponseStreaming,
   getChatStatus,
   isChatAvailable,
   isChatConfigured,
   resetChatCache,
 } from './chatService'
+export type { StreamOptions } from './chatService'
 
 // Rate Limiter
 export {
@@ -103,6 +106,8 @@ export {
   SERVICIOS_COMPLETOS,
   TALLERES_CULTURALES,
   buscarServicioPorKeyword,
+  formatearContactoGeneral,
+  formatearHorariosGeneral,
   formatearServicio,
 } from './knowledgeBaseEnhanced'
 
