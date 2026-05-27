@@ -87,7 +87,7 @@ export default async function PerfilPage() {
                         className="rounded-full object-cover"
                       />
                     ) : (
-                      <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold shadow-lg">
+                      <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br text-2xl font-bold shadow-lg">
                         {ciudadano.nombre && ciudadano.apellido
                           ? `${ciudadano.nombre[0]}${ciudadano.apellido[0]}`
                           : ciudadano.nombre?.[0] || ciudadano.email[0].toUpperCase()}

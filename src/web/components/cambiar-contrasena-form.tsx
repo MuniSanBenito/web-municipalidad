@@ -325,7 +325,7 @@ export function CambiarContrasenaForm({ ciudadano }: CambiarContrasenaFormProps)
         <button
           type="submit"
           disabled={isSubmitting}
-          className="from-primary to-secondary btn bg-gradient-to-r text-white hover:scale-105"
+          className="from-primary to-secondary btn bg-linear-to-r text-white hover:scale-105"
         >
           {isSubmitting ? (
             <>
