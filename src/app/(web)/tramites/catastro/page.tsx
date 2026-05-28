@@ -64,6 +64,22 @@ export default function PageCatastro() {
         </div>
       </section>
 
+      {/* Aviso atención presencial */}
+      <section className="mt-10">
+        <div className="alert alert-warning shadow-lg">
+          <IconInfoCircle size={28} className="shrink-0" />
+          <div>
+            <h3 className="font-bold">Atención presencial obligatoria</h3>
+            <p className="text-sm">
+              Todos los trámites y la presentación de documentación se realizan{' '}
+              <strong>exclusivamente de manera presencial</strong> en las oficinas del Área de
+              Catastro Municipal. No se aceptan gestiones por correo electrónico ni por medios
+              digitales.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Trámites administrativos */}
       <section className="mt-12">
         <h2 className="text-primary mb-8 text-center text-2xl font-bold md:text-3xl">
