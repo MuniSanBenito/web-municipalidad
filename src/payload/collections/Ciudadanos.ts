@@ -3,6 +3,9 @@ import type { Access, CollectionConfig, FieldAccess } from 'payload'
 import { isGestorCiudadanoOrAdminCollectionAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
+export const PERMISOS_CIUDADANO = ['HABILITACIONES'] as const
+export type PermisoCiudadano = (typeof PERMISOS_CIUDADANO)[number]
+
 const isMyselfGestorCiudadanoOrAdmin: Access<Ciudadano> = ({ req, id }) => {
   if (req.user?.collection === 'ciudadanos') {
     return req.user.id === id
@@ -92,6 +95,23 @@ export const Ciudadanos: CollectionConfig = {
       type: 'text',
       name: 'telefono',
       label: 'Teléfono',
+    },
+    {
+      type: 'select',
+      name: 'permisos',
+      label: 'Permisos de Módulos',
+      hasMany: true,
+      options: PERMISOS_CIUDADANO.map((p) => ({ label: p, value: p })),
+      defaultValue: [],
+      admin: {
+        position: 'sidebar',
+        description: 'Módulos habilitados para este ciudadano en el portal.',
+      },
+      access: {
+        create: isGestorOrAdminFieldAccess,
+        read: () => true,
+        update: isGestorOrAdminFieldAccess,
+      },
     },
     {
       type: 'join',

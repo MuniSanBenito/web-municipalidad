@@ -90,6 +90,8 @@ export interface Config {
     'rubros-comercios': RubrosComercio;
     'actividades-comercios': ActividadesComercio;
     'comercios-habilitados': ComerciosHabilitado;
+    'solicitudes-habilitacion': SolicitudesHabilitacion;
+    'solicitudes-permiso-uso': SolicitudesPermisoUso;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -123,6 +125,8 @@ export interface Config {
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'actividades-comercios': ActividadesComerciosSelect<false> | ActividadesComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'solicitudes-habilitacion': SolicitudesHabilitacionSelect<false> | SolicitudesHabilitacionSelect<true>;
+    'solicitudes-permiso-uso': SolicitudesPermisoUsoSelect<false> | SolicitudesPermisoUsoSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -316,6 +320,10 @@ export interface Ciudadano {
   fecha_nacimiento?: string | null;
   ciudad?: string | null;
   telefono?: string | null;
+  /**
+   * Módulos habilitados para este ciudadano en el portal.
+   */
+  permisos?: 'HABILITACIONES'[] | null;
   curriculum?: {
     docs?: (string | Curriculum)[];
     hasNextPage?: boolean;
@@ -945,6 +953,86 @@ export interface ComerciosHabilitado {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solicitudes-habilitacion".
+ */
+export interface SolicitudesHabilitacion {
+  id: string;
+  estado:
+    | 'PENDIENTE'
+    | 'EN_REVISION'
+    | 'APROBADO_FASE_I'
+    | 'APROBADO_FASE_II'
+    | 'APROBADO_FASE_III'
+    | 'OBSERVADO'
+    | 'RECHAZADO';
+  /**
+   * Visible solo para el equipo municipal.
+   */
+  observacionesInternas?: string | null;
+  nombreFantasia: string;
+  razonSocial: string;
+  cuit: string;
+  direccion: string;
+  rubro: string | RubrosComercio;
+  actividades?: (string | ActividadesComercio)[] | null;
+  /**
+   * Describí brevemente qué vas a comercializar o qué servicio vas a brindar.
+   */
+  descripcionActividad?: string | null;
+  telefono: string;
+  /**
+   * Permiso de Uso, croquis del local, DNI u otros documentos requeridos.
+   */
+  adjuntos?: (string | Archivo)[] | null;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solicitudes-permiso-uso".
+ */
+export interface SolicitudesPermisoUso {
+  id: string;
+  estado: 'PENDIENTE' | 'EN_REVISION' | 'APROBADO' | 'OBSERVADO' | 'RECHAZADO';
+  /**
+   * Visible solo para el equipo de Obras Privadas.
+   */
+  observacionesInternas?: string | null;
+  /**
+   * Mensaje visible al ciudadano sobre el estado de su solicitud.
+   */
+  notaParaCiudadano?: string | null;
+  direccionLocal: string;
+  rubro: string;
+  descripcion?: string | null;
+  telefono: string;
+  /**
+   * Formulario completado y firmado (PDF o imagen).
+   */
+  formularioAdjunto: string | Archivo;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1054,6 +1142,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'comercios-habilitados';
         value: string | ComerciosHabilitado;
+      } | null)
+    | ({
+        relationTo: 'solicitudes-habilitacion';
+        value: string | SolicitudesHabilitacion;
+      } | null)
+    | ({
+        relationTo: 'solicitudes-permiso-uso';
+        value: string | SolicitudesPermisoUso;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1593,6 +1689,7 @@ export interface CiudadanosSelect<T extends boolean = true> {
   fecha_nacimiento?: T;
   ciudad?: T;
   telefono?: T;
+  permisos?: T;
   curriculum?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1661,6 +1758,43 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   actividades?: T;
   tokenValidacion?: T;
   urlValidacion?: T;
+  created_by?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solicitudes-habilitacion_select".
+ */
+export interface SolicitudesHabilitacionSelect<T extends boolean = true> {
+  estado?: T;
+  observacionesInternas?: T;
+  nombreFantasia?: T;
+  razonSocial?: T;
+  cuit?: T;
+  direccion?: T;
+  rubro?: T;
+  actividades?: T;
+  descripcionActividad?: T;
+  telefono?: T;
+  adjuntos?: T;
+  created_by?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solicitudes-permiso-uso_select".
+ */
+export interface SolicitudesPermisoUsoSelect<T extends boolean = true> {
+  estado?: T;
+  observacionesInternas?: T;
+  notaParaCiudadano?: T;
+  direccionLocal?: T;
+  rubro?: T;
+  descripcion?: T;
+  telefono?: T;
+  formularioAdjunto?: T;
   created_by?: T;
   updatedAt?: T;
   createdAt?: T;

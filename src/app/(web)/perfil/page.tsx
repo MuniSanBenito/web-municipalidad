@@ -1,8 +1,15 @@
-import type { Ciudadano } from '@/payload-types'
+import type { Ciudadano, SolicitudesPermisoUso } from '@/payload-types'
 import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
 import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
-import { IconAlertTriangle, IconBriefcase, IconSchool, IconUsers } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconArrowRight,
+  IconBriefcase,
+  IconBuildingStore,
+  IconSchool,
+  IconUsers,
+} from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 
@@ -51,6 +58,26 @@ export default async function PerfilPage() {
 
   const curriculum = curriculums.length > 0 ? curriculums[0] : null
 
+  const tienePermisoHabilitaciones =
+    Array.isArray(ciudadano.permisos) && ciudadano.permisos.includes('HABILITACIONES')
+
+  const [{ docs: solicitudesHabilitacion }, { docs: solicitudesPermisoUso }] = await Promise.all([
+    tienePermisoHabilitaciones
+      ? basePayload.find({
+          collection: 'solicitudes-habilitacion',
+          where: { 'created_by.value': { equals: ciudadano.id } },
+          limit: 10,
+          sort: '-createdAt',
+        })
+      : Promise.resolve({ docs: [] }),
+    basePayload.find({
+      collection: 'solicitudes-permiso-uso',
+      where: { 'created_by.value': { equals: ciudadano.id } },
+      limit: 10,
+      sort: '-createdAt',
+    }),
+  ])
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No especificado'
     return new Date(dateString).toLocaleDateString('es-AR', {
@@ -87,7 +114,7 @@ export default async function PerfilPage() {
                         className="rounded-full object-cover"
                       />
                     ) : (
-                      <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br text-2xl font-bold shadow-lg">
+                      <div className="from-primary to-primary-focus text-primary-content flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br text-2xl font-bold shadow-lg">
                         {ciudadano.nombre && ciudadano.apellido
                           ? `${ciudadano.nombre[0]}${ciudadano.apellido[0]}`
                           : ciudadano.nombre?.[0] || ciudadano.email[0].toUpperCase()}
@@ -173,9 +200,173 @@ export default async function PerfilPage() {
               <Link href="/perfil/curriculum" className="btn btn-accent">
                 {curriculum ? 'Editar Currículum' : 'Crear Currículum'}
               </Link>
+              {tienePermisoHabilitaciones && (
+                <Link href="/habilitaciones" className="btn btn-outline gap-2">
+                  <IconBuildingStore size={18} />
+                  Habilitaciones Comerciales
+                </Link>
+              )}
             </div>
           </div>
         </div>
+
+        {/* Sección Permiso de Uso */}
+        {solicitudesPermisoUso.length > 0 && (
+          <div className="card bg-base-100 mt-8 shadow-lg">
+            <div className="card-body">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="card-title text-primary flex items-center gap-2">
+                  <IconBuildingStore size={22} />
+                  Mis Solicitudes de Permiso de Uso
+                </h2>
+                <Link href="/habilitaciones/permiso-uso/nueva" className="btn btn-outline btn-sm">
+                  Nueva Solicitud
+                </Link>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="table-sm table">
+                  <thead>
+                    <tr>
+                      <th>Local</th>
+                      <th className="hidden sm:table-cell">Rubro</th>
+                      <th>Estado</th>
+                      <th className="hidden sm:table-cell">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(solicitudesPermisoUso as SolicitudesPermisoUso[]).map((s) => (
+                      <tr key={s.id} className="hover">
+                        <td className="font-medium">{s.direccionLocal}</td>
+                        <td className="text-base-content/70 hidden sm:table-cell">{s.rubro}</td>
+                        <td>
+                          <span
+                            className={`badge badge-sm ${
+                              s.estado === 'APROBADO'
+                                ? 'badge-success'
+                                : s.estado === 'RECHAZADO'
+                                  ? 'badge-error'
+                                  : s.estado === 'OBSERVADO'
+                                    ? 'badge-warning'
+                                    : s.estado === 'EN_REVISION'
+                                      ? 'badge-info'
+                                      : 'badge-warning'
+                            }`}
+                          >
+                            {s.estado === 'APROBADO'
+                              ? 'Aprobado'
+                              : s.estado === 'RECHAZADO'
+                                ? 'Rechazado'
+                                : s.estado === 'OBSERVADO'
+                                  ? 'Observado'
+                                  : s.estado === 'EN_REVISION'
+                                    ? 'En revisión'
+                                    : 'Pendiente'}
+                          </span>
+                        </td>
+                        <td className="text-base-content/60 hidden text-xs sm:table-cell">
+                          {new Date(s.createdAt).toLocaleDateString('es-AR')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {(solicitudesPermisoUso as SolicitudesPermisoUso[]).some(
+                (s) => s.notaParaCiudadano,
+              ) && (
+                <div className="mt-3 space-y-2">
+                  {(solicitudesPermisoUso as SolicitudesPermisoUso[])
+                    .filter((s) => s.notaParaCiudadano)
+                    .map((s) => (
+                      <div key={s.id} className="alert alert-warning py-2 text-xs">
+                        <strong>{s.direccionLocal}:</strong> {s.notaParaCiudadano}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Sección Habilitaciones */}
+        {tienePermisoHabilitaciones && (
+          <div className="card bg-base-100 mt-8 shadow-lg">
+            <div className="card-body">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="card-title text-primary flex items-center gap-2">
+                  <IconBuildingStore size={22} />
+                  Mis Solicitudes de Habilitación
+                </h2>
+                <Link href="/habilitaciones/nueva" className="btn btn-primary btn-sm">
+                  Nueva Solicitud
+                </Link>
+              </div>
+
+              {solicitudesHabilitacion.length === 0 ? (
+                <p className="text-base-content/60 text-sm">
+                  No tenés solicitudes registradas aún.{' '}
+                  <Link href="/habilitaciones/nueva" className="link link-primary">
+                    Iniciá tu primera solicitud
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="table-sm table">
+                    <thead>
+                      <tr>
+                        <th>Comercio</th>
+                        <th className="hidden sm:table-cell">Dirección</th>
+                        <th>Estado</th>
+                        <th className="hidden sm:table-cell">Fecha</th>
+                        <th />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {solicitudesHabilitacion.map((s) => (
+                        <tr key={s.id} className="hover">
+                          <td className="font-medium">{s.nombreFantasia}</td>
+                          <td className="text-base-content/70 hidden sm:table-cell">
+                            {s.direccion}
+                          </td>
+                          <td>
+                            <span
+                              className={`badge badge-sm ${
+                                s.estado === 'PENDIENTE'
+                                  ? 'badge-warning'
+                                  : s.estado === 'RECHAZADO'
+                                    ? 'badge-error'
+                                    : s.estado?.startsWith('APROBADO')
+                                      ? 'badge-success'
+                                      : s.estado === 'OBSERVADO'
+                                        ? 'badge-warning'
+                                        : 'badge-info'
+                              }`}
+                            >
+                              {s.estado?.replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                          <td className="text-base-content/60 hidden text-xs sm:table-cell">
+                            {new Date(s.createdAt).toLocaleDateString('es-AR')}
+                          </td>
+                          <td>
+                            <Link
+                              href={`/habilitaciones/solicitud/${s.id}`}
+                              className="btn btn-ghost btn-xs gap-1"
+                            >
+                              Ver
+                              <IconArrowRight size={12} />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Sección de Curriculum */}
         {curriculum && (

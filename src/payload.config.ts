@@ -28,6 +28,8 @@ import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
 import { RubrosComercios } from './payload/collections/RubrosComercios'
+import { SolicitudesHabilitacion } from './payload/collections/SolicitudesHabilitacion'
+import { SolicitudesPermisoUso } from './payload/collections/SolicitudesPermisoUso'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
@@ -84,7 +86,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: {
-      baseDir: path.resolve(dirname),
+      baseDir: path.resolve(dirname, 'src'),
     },
     components: {
       graphics: {
@@ -164,6 +166,8 @@ export default buildConfig({
     RubrosComercios,
     ActividadesComercios,
     ComerciosHabilitados,
+    SolicitudesHabilitacion,
+    SolicitudesPermisoUso,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),
