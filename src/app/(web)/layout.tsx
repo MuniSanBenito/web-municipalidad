@@ -91,6 +91,13 @@ export default async function Layout({ children }: PropsWithChildren) {
         <link rel="apple-touch-icon" href="/web-app-manifest-192x192.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
+        <Script id="sw-cleanup" strategy="afterInteractive">{`
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              regs.forEach(function(r) { r.unregister(); });
+            });
+          }
+        `}</Script>
         {process.env.NODE_ENV === 'production' ? (
           <Script
             src="https://umami.sanbenito.gob.ar/script.js"

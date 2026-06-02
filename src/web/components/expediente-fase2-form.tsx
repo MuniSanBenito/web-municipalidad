@@ -1,30 +1,33 @@
 'use client'
 
+import { submitFaseII } from '@/actions/habilitaciones'
 import type { ActividadesComercio, RubrosComercio } from '@/payload-types'
 import {
   IconAlertCircle,
-  IconBuildingStore,
   IconCheck,
   IconCircleCheck,
   IconFileDescription,
   IconLoader2,
+  IconUpload,
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-interface SolicitudHabilitacionFormProps {
+interface Props {
+  expedienteId: string
   rubros: RubrosComercio[]
   actividades: ActividadesComercio[]
 }
 
-export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabilitacionFormProps) {
+export function ExpedienteFase2Form({ expedienteId, rubros, actividades }: Props) {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, setIsPending] = useState(false)
   const [rubroSeleccionado, setRubroSeleccionado] = useState('')
   const [actividadesSeleccionadas, setActividadesSeleccionadas] = useState<string[]>([])
-  const [tienePermisoUso, setTienePermisoUso] = useState(false)
+  const [archivos, setArchivos] = useState<File[]>([])
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   function toggleActividad(id: string) {
     setActividadesSeleccionadas((prev) =>
@@ -34,130 +37,56 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setIsSubmitting(true)
+    setIsPending(true)
     setErrors({})
 
-    const formData = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const formData = new FormData(form)
 
     const newErrors: Record<string, string> = {}
-    const nombreFantasia = formData.get('nombreFantasia')?.toString().trim()
-    const razonSocial = formData.get('razonSocial')?.toString().trim()
-    const cuit = formData.get('cuit')?.toString().trim()
-    const direccion = formData.get('direccion')?.toString().trim()
-    const telefono = formData.get('telefono')?.toString().trim()
-    const descripcionActividad = formData.get('descripcionActividad')?.toString().trim()
-
-    if (!tienePermisoUso)
-      newErrors.permisoUso = 'Debés confirmar que tenés el Permiso de Uso aprobado'
-    if (!nombreFantasia) newErrors.nombreFantasia = 'Campo requerido'
-    if (!razonSocial) newErrors.razonSocial = 'Campo requerido'
-    if (!cuit) newErrors.cuit = 'Campo requerido'
-    if (!direccion) newErrors.direccion = 'Campo requerido'
-    if (!telefono) newErrors.telefono = 'Campo requerido'
+    if (!formData.get('nombreFantasia')?.toString().trim()) newErrors.nombreFantasia = 'Requerido'
+    if (!formData.get('razonSocial')?.toString().trim()) newErrors.razonSocial = 'Requerido'
+    if (!formData.get('cuit')?.toString().trim()) newErrors.cuit = 'Requerido'
+    if (!formData.get('direccion')?.toString().trim()) newErrors.direccion = 'Requerido'
+    if (!formData.get('telefono')?.toString().trim()) newErrors.telefono = 'Requerido'
     if (!rubroSeleccionado) newErrors.rubro = 'Seleccioná un rubro'
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
-      setIsSubmitting(false)
+      setIsPending(false)
       return
     }
 
+    formData.set('rubro', rubroSeleccionado)
+    actividadesSeleccionadas.forEach((id) => formData.append('actividades', id))
+    archivos.forEach((f) => formData.append('adjuntos', f))
+
+    let result: Awaited<ReturnType<typeof submitFaseII>>
     try {
-      const body: Record<string, unknown> = {
-        nombreFantasia,
-        razonSocial,
-        cuit,
-        direccion,
-        telefono,
-        rubro: rubroSeleccionado,
-        descripcionActividad: descripcionActividad || undefined,
-        actividades: actividadesSeleccionadas.length > 0 ? actividadesSeleccionadas : undefined,
-      }
-
-      const response = await fetch('/api/solicitudes-habilitacion', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        const msg = data?.errors?.[0]?.message || data?.message || 'Error al enviar la solicitud'
-        toast.error(msg)
-        setIsSubmitting(false)
-        return
-      }
-
-      toast.success(
-        '¡Solicitud enviada correctamente! El área de Habilitaciones se contactará pronto.',
-      )
-      router.push('/habilitaciones')
-    } catch {
-      toast.error('Error de red. Intentá nuevamente.')
-      setIsSubmitting(false)
+      result = await submitFaseII(expedienteId, formData)
+    } catch (e) {
+      toast.error('Ocurrió un error inesperado. Intentá nuevamente.')
+      setIsPending(false)
+      return
     }
+
+    if (result.error) {
+      toast.error(result.error)
+      setIsPending(false)
+      return
+    }
+
+    toast.success('¡Paso 2 enviado! El área de Habilitaciones revisará tu solicitud.')
+    setIsPending(false)
+    router.push('/habilitaciones')
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Confirmación Permiso de Uso */}
-      <div
-        className={`card border-2 shadow-lg ${
-          errors.permisoUso
-            ? 'border-error bg-error/5'
-            : tienePermisoUso
-              ? 'border-success bg-success/5'
-              : 'border-warning bg-warning/5'
-        }`}
-      >
-        <div className="card-body p-5">
-          <div className="flex items-start gap-3">
-            <IconAlertCircle
-              size={22}
-              className={`mt-0.5 shrink-0 ${
-                errors.permisoUso ? 'text-error' : tienePermisoUso ? 'text-success' : 'text-warning'
-              }`}
-            />
-            <div className="flex-1">
-              <p className="mb-1 text-sm font-semibold">Requisito previo obligatorio</p>
-              <p className="text-base-content/70 mb-3 text-sm">
-                Esta solicitud corresponde al <strong>Paso 2</strong> del circuito. Para
-                presentarla, debés haber obtenido previamente el{' '}
-                <strong>Permiso de Uso aprobado</strong> por Obras Privadas.
-              </p>
-              <label className="flex cursor-pointer items-start gap-2">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-success mt-0.5"
-                  checked={tienePermisoUso}
-                  onChange={(e) => {
-                    setTienePermisoUso(e.target.checked)
-                    if (e.target.checked)
-                      setErrors((prev) => {
-                        const { permisoUso: _, ...rest } = prev
-                        return rest
-                      })
-                  }}
-                />
-                <span className="text-sm font-medium">
-                  Confirmo que cuento con el Permiso de Uso aprobado por Obras Privadas
-                </span>
-              </label>
-              {errors.permisoUso && <p className="text-error mt-2 text-xs">{errors.permisoUso}</p>}
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Datos del comercio */}
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
-          <h2 className="card-title text-primary mb-4 flex items-center gap-2">
-            <IconBuildingStore size={22} />
-            Datos del Comercio
-          </h2>
+          <h3 className="card-title text-primary mb-4 text-base">Datos del comercio</h3>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="form-control">
@@ -182,7 +111,7 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">
-                  Razón Social / Nombre del Titular <span className="text-error">*</span>
+                  Razón Social / Titular <span className="text-error">*</span>
                 </span>
               </label>
               <input
@@ -261,7 +190,7 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
       {/* Rubro y actividades */}
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
-          <h2 className="card-title text-primary mb-4">Rubro y Actividades</h2>
+          <h3 className="card-title text-primary mb-4 text-base">Rubro y Actividades</h3>
 
           <div className="form-control mb-4">
             <label className="label">
@@ -289,7 +218,7 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
           </div>
 
           {actividades.length > 0 && (
-            <div className="form-control">
+            <div className="form-control mb-4">
               <label className="label">
                 <span className="label-text font-medium">Actividades (opcional)</span>
               </label>
@@ -314,7 +243,7 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
             </div>
           )}
 
-          <div className="form-control mt-4">
+          <div className="form-control">
             <label className="label">
               <span className="label-text font-medium">Descripción de la actividad (opcional)</span>
             </label>
@@ -328,37 +257,96 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
         </div>
       </div>
 
-      {/* Documentación física a presentar */}
-      <div className="card bg-base-200 shadow">
-        <div className="card-body p-5">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
-            <IconFileDescription size={18} className="text-primary" />
-            Documentación física a presentar en el área
-          </h3>
-          <p className="text-base-content/60 mb-3 text-xs">
-            Luego de enviar esta solicitud digital, presentá los siguientes documentos en el área de
-            Habilitaciones:
+      {/* Documentación a adjuntar */}
+      <div className="card bg-base-100 shadow-lg">
+        <div className="card-body">
+          <h3 className="card-title text-primary mb-2 text-base">Documentación adjunta</h3>
+          <p className="text-base-content/70 mb-4 text-sm">
+            Adjuntá los documentos requeridos. Podés seleccionar múltiples archivos.
           </p>
-          <ul className="space-y-1.5">
-            {[
-              'Formulario de solicitud inicial impreso (Formulario 1 INICIO)',
-              'Permiso de Uso aprobado por Obras Privadas',
-              'Libre Deuda del inmueble (Rentas Municipal)',
-              'Sellado de Carpeta Técnica (consultar monto vigente)',
-              'Fotocopia DNI y CUIT / constancia ARCA',
-              'Fotocopia Boleta de Tasa Inmobiliaria (Provincial y Municipal)',
-              '2 cuadernos tapa dura ~42 hojas (Libro de Quejas + Libro de Habilitaciones)',
-            ].map((doc) => (
-              <li key={doc} className="flex items-start gap-2 text-xs">
-                <IconCircleCheck size={14} className="text-success mt-0.5 shrink-0" />
-                <span>{doc}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="divider my-2" />
-          <p className="text-base-content/60 text-xs">
-            Según el rubro pueden requerirse documentos adicionales (libreta sanitaria, informe
-            técnico, certificado de buena conducta, etc.). Consultá con el área ante cualquier duda.
+
+          <div className="bg-base-200 mb-4 rounded-lg p-4">
+            <p className="mb-2 text-xs font-semibold tracking-wide uppercase">
+              Documentos obligatorios
+            </p>
+            <ul className="space-y-1">
+              {[
+                'Permiso de Uso aprobado por Obras Privadas',
+                'Libre Deuda del inmueble (Rentas Municipal)',
+                'Fotocopia DNI y CUIT / constancia ARCA',
+                'Fotocopia Boleta de Tasa Inmobiliaria (Provincial y Municipal)',
+              ].map((doc) => (
+                <li key={doc} className="flex items-center gap-2 text-xs">
+                  <IconCircleCheck size={13} className="text-success shrink-0" />
+                  {doc}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div
+            className={`rounded-box cursor-pointer border-2 border-dashed p-6 text-center transition-colors ${
+              archivos.length > 0
+                ? 'border-success bg-success/5'
+                : 'border-base-300 hover:border-primary/50'
+            }`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                const files = Array.from(e.target.files ?? [])
+                setArchivos((prev) => [...prev, ...files])
+              }}
+            />
+            {archivos.length > 0 ? (
+              <div className="flex flex-col items-center gap-2">
+                <IconCheck size={32} className="text-success" />
+                <p className="text-success text-sm font-medium">
+                  {archivos.length} archivo{archivos.length > 1 ? 's' : ''} seleccionado
+                  {archivos.length > 1 ? 's' : ''}
+                </p>
+                <ul className="text-base-content/60 mt-1 space-y-0.5 text-xs">
+                  {archivos.map((f, i) => (
+                    <li key={i}>{f.name}</li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-xs mt-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    fileInputRef.current?.click()
+                  }}
+                >
+                  Agregar más archivos
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2">
+                <IconUpload size={32} className="text-base-content/30" />
+                <p className="text-base-content/60 text-sm">Click para seleccionar archivos</p>
+                <p className="text-base-content/40 text-xs">
+                  PDF, JPG o PNG • Múltiples permitidos
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="alert alert-info">
+        <IconAlertCircle size={20} className="shrink-0" />
+        <div>
+          <p className="text-sm">
+            Además de esta solicitud digital, presentá los{' '}
+            <strong>2 cuadernos tapa dura (~42 hojas)</strong> y el{' '}
+            <strong>sellado de Carpeta Técnica</strong> de forma presencial en Habilitaciones.
           </p>
         </div>
       </div>
@@ -368,8 +356,8 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
         <a href="/habilitaciones" className="btn btn-ghost">
           Cancelar
         </a>
-        <button type="submit" className="btn btn-primary gap-2" disabled={isSubmitting}>
-          {isSubmitting ? (
+        <button type="submit" className="btn btn-primary gap-2" disabled={isPending}>
+          {isPending ? (
             <>
               <IconLoader2 size={18} className="animate-spin" />
               Enviando...
@@ -377,7 +365,7 @@ export function SolicitudHabilitacionForm({ rubros, actividades }: SolicitudHabi
           ) : (
             <>
               <IconFileDescription size={18} />
-              Enviar Solicitud
+              Enviar Solicitud — Paso 2
             </>
           )}
         </button>

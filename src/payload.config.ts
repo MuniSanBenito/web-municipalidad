@@ -20,6 +20,7 @@ import { Contabilidad } from './payload/collections/Contabilidad'
 import { Curriculums } from './payload/collections/Curriculums'
 import { Eventos } from './payload/collections/Eventos'
 import { EventosTags } from './payload/collections/EventosTags'
+import { ExpedientesHabilitacion } from './payload/collections/ExpedientesHabilitacion'
 import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Intimaciones } from './payload/collections/Intimaciones'
@@ -28,8 +29,6 @@ import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
 import { RubrosComercios } from './payload/collections/RubrosComercios'
-import { SolicitudesHabilitacion } from './payload/collections/SolicitudesHabilitacion'
-import { SolicitudesPermisoUso } from './payload/collections/SolicitudesPermisoUso'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
@@ -86,7 +85,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: {
-      baseDir: path.resolve(dirname, 'src'),
+      baseDir: dirname,
     },
     components: {
       graphics: {
@@ -166,8 +165,7 @@ export default buildConfig({
     RubrosComercios,
     ActividadesComercios,
     ComerciosHabilitados,
-    SolicitudesHabilitacion,
-    SolicitudesPermisoUso,
+    ExpedientesHabilitacion,
   ],
   globals: [Autoridades],
   editor: lexicalEditor(),

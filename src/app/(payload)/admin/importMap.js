@@ -21,9 +21,9 @@ import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { LogoutButton as LogoutButton_b69d8efee05336a20193a089da8ce5b3 } from '../../../../.next/src/src/payload/components/logout-button'
-import { Icon as Icon_91c64a225659a7617d2277cca23737c9 } from '../../../../.next/src/src/payload/brand/icon'
-import { Logo as Logo_ddf2d2f79243e59a3e81e749911eee83 } from '../../../../.next/src/src/payload/brand/logo'
+import { LogoutButton as LogoutButton_b69d8efee05336a20193a089da8ce5b3 } from '../../../payload/components/logout-button'
+import { Icon as Icon_91c64a225659a7617d2277cca23737c9 } from '../../../payload/brand/icon'
+import { Logo as Logo_ddf2d2f79243e59a3e81e749911eee83 } from '../../../payload/brand/logo'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {

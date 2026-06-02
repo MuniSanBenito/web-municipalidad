@@ -90,8 +90,7 @@ export interface Config {
     'rubros-comercios': RubrosComercio;
     'actividades-comercios': ActividadesComercio;
     'comercios-habilitados': ComerciosHabilitado;
-    'solicitudes-habilitacion': SolicitudesHabilitacion;
-    'solicitudes-permiso-uso': SolicitudesPermisoUso;
+    'expedientes-habilitacion': ExpedientesHabilitacion;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -125,8 +124,7 @@ export interface Config {
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'actividades-comercios': ActividadesComerciosSelect<false> | ActividadesComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
-    'solicitudes-habilitacion': SolicitudesHabilitacionSelect<false> | SolicitudesHabilitacionSelect<true>;
-    'solicitudes-permiso-uso': SolicitudesPermisoUsoSelect<false> | SolicitudesPermisoUsoSelect<true>;
+    'expedientes-habilitacion': ExpedientesHabilitacionSelect<false> | ExpedientesHabilitacionSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -953,72 +951,93 @@ export interface ComerciosHabilitado {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solicitudes-habilitacion".
+ * via the `definition` "expedientes-habilitacion".
  */
-export interface SolicitudesHabilitacion {
+export interface ExpedientesHabilitacion {
   id: string;
-  estado:
-    | 'PENDIENTE'
-    | 'EN_REVISION'
-    | 'APROBADO_FASE_I'
-    | 'APROBADO_FASE_II'
-    | 'APROBADO_FASE_III'
-    | 'OBSERVADO'
-    | 'RECHAZADO';
   /**
-   * Visible solo para el equipo municipal.
+   * Se genera automáticamente. Editable por el equipo municipal.
    */
-  observacionesInternas?: string | null;
-  nombreFantasia: string;
-  razonSocial: string;
-  cuit: string;
-  direccion: string;
-  rubro: string | RubrosComercio;
-  actividades?: (string | ActividadesComercio)[] | null;
+  titulo?: string | null;
   /**
-   * Describí brevemente qué vas a comercializar o qué servicio vas a brindar.
+   * Gestionado por Obras Privadas.
    */
-  descripcionActividad?: string | null;
-  telefono: string;
+  faseIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
   /**
-   * Permiso de Uso, croquis del local, DNI u otros documentos requeridos.
+   * Mensaje visible al ciudadano sobre esta fase.
    */
-  adjuntos?: (string | Archivo)[] | null;
-  created_by:
-    | {
-        relationTo: 'users';
-        value: string | User;
-      }
-    | {
-        relationTo: 'ciudadanos';
-        value: string | Ciudadano;
-      };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solicitudes-permiso-uso".
- */
-export interface SolicitudesPermisoUso {
-  id: string;
-  estado: 'PENDIENTE' | 'EN_REVISION' | 'APROBADO' | 'OBSERVADO' | 'RECHAZADO';
+  faseINotaCiudadano?: string | null;
   /**
-   * Visible solo para el equipo de Obras Privadas.
+   * Solo visible para el equipo municipal.
    */
-  observacionesInternas?: string | null;
-  /**
-   * Mensaje visible al ciudadano sobre el estado de su solicitud.
-   */
-  notaParaCiudadano?: string | null;
-  direccionLocal: string;
-  rubro: string;
-  descripcion?: string | null;
-  telefono: string;
+  faseINotaInterna?: string | null;
+  faseIDireccionLocal?: string | null;
+  faseITelefono?: string | null;
+  faseIRubro?: string | null;
+  faseIDescripcion?: string | null;
   /**
    * Formulario completado y firmado (PDF o imagen).
    */
-  formularioAdjunto: string | Archivo;
+  faseIFormularioAdjunto?: (string | null) | Archivo;
+  faseIEmail?: string | null;
+  faseIDNI?: string | null;
+  faseIApellido?: string | null;
+  faseINombre?: string | null;
+  faseIBarrio?: string | null;
+  /**
+   * Título de propiedad, contrato de locación o autorización del propietario.
+   */
+  faseIDocInmueble?: (string | null) | Archivo;
+  faseIPlanoLocal?: (string | null) | Archivo;
+  /**
+   * Emitido por profesional matriculado.
+   */
+  faseICertElectrico?: (string | null) | Archivo;
+  faseIFacturaEnergia?: (string | null) | Archivo;
+  faseIPlancheta?: (string | null) | Archivo;
+  faseIDeclaracionJurada?: boolean | null;
+  /**
+   * Gestionado por Habilitaciones Comerciales.
+   */
+  faseIIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
+  /**
+   * Mensaje visible al ciudadano sobre esta fase.
+   */
+  faseIINotaCiudadano?: string | null;
+  faseIINotaInterna?: string | null;
+  faseIINombreFantasia?: string | null;
+  faseIIRazonSocial?: string | null;
+  faseIICuit?: string | null;
+  faseIITelefono?: string | null;
+  faseIIDireccion?: string | null;
+  faseIIRubro?: (string | null) | RubrosComercio;
+  faseIIActividades?: (string | ActividadesComercio)[] | null;
+  /**
+   * Describí brevemente qué vas a comercializar o qué servicio vas a brindar.
+   */
+  faseIIDescripcionActividad?: string | null;
+  /**
+   * Permiso de Uso aprobado, DNI, CUIT, Libre Deuda, Boleta de Tasa Inmobiliaria y otros documentos requeridos.
+   */
+  faseIIAdjuntos?: (string | Archivo)[] | null;
+  /**
+   * Gestionado por el área de Rentas.
+   */
+  faseIIIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
+  /**
+   * Mensaje visible al ciudadano sobre esta fase.
+   */
+  faseIIINotaCiudadano?: string | null;
+  faseIIINotaInterna?: string | null;
+  /**
+   * Documento de Libre Deuda vigente.
+   */
+  faseIIILibreDeudaAdjunto?: (string | null) | Archivo;
+  faseIIIConfirmacionDatos?: boolean | null;
+  /**
+   * Cualquier información adicional relevante para el alta fiscal.
+   */
+  faseIIIObservaciones?: string | null;
   created_by:
     | {
         relationTo: 'users';
@@ -1144,12 +1163,8 @@ export interface PayloadLockedDocument {
         value: string | ComerciosHabilitado;
       } | null)
     | ({
-        relationTo: 'solicitudes-habilitacion';
-        value: string | SolicitudesHabilitacion;
-      } | null)
-    | ({
-        relationTo: 'solicitudes-permiso-uso';
-        value: string | SolicitudesPermisoUso;
+        relationTo: 'expedientes-habilitacion';
+        value: string | ExpedientesHabilitacion;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1764,37 +1779,47 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solicitudes-habilitacion_select".
+ * via the `definition` "expedientes-habilitacion_select".
  */
-export interface SolicitudesHabilitacionSelect<T extends boolean = true> {
-  estado?: T;
-  observacionesInternas?: T;
-  nombreFantasia?: T;
-  razonSocial?: T;
-  cuit?: T;
-  direccion?: T;
-  rubro?: T;
-  actividades?: T;
-  descripcionActividad?: T;
-  telefono?: T;
-  adjuntos?: T;
-  created_by?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solicitudes-permiso-uso_select".
- */
-export interface SolicitudesPermisoUsoSelect<T extends boolean = true> {
-  estado?: T;
-  observacionesInternas?: T;
-  notaParaCiudadano?: T;
-  direccionLocal?: T;
-  rubro?: T;
-  descripcion?: T;
-  telefono?: T;
-  formularioAdjunto?: T;
+export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
+  titulo?: T;
+  faseIEstado?: T;
+  faseINotaCiudadano?: T;
+  faseINotaInterna?: T;
+  faseIDireccionLocal?: T;
+  faseITelefono?: T;
+  faseIRubro?: T;
+  faseIDescripcion?: T;
+  faseIFormularioAdjunto?: T;
+  faseIEmail?: T;
+  faseIDNI?: T;
+  faseIApellido?: T;
+  faseINombre?: T;
+  faseIBarrio?: T;
+  faseIDocInmueble?: T;
+  faseIPlanoLocal?: T;
+  faseICertElectrico?: T;
+  faseIFacturaEnergia?: T;
+  faseIPlancheta?: T;
+  faseIDeclaracionJurada?: T;
+  faseIIEstado?: T;
+  faseIINotaCiudadano?: T;
+  faseIINotaInterna?: T;
+  faseIINombreFantasia?: T;
+  faseIIRazonSocial?: T;
+  faseIICuit?: T;
+  faseIITelefono?: T;
+  faseIIDireccion?: T;
+  faseIIRubro?: T;
+  faseIIActividades?: T;
+  faseIIDescripcionActividad?: T;
+  faseIIAdjuntos?: T;
+  faseIIIEstado?: T;
+  faseIIINotaCiudadano?: T;
+  faseIIINotaInterna?: T;
+  faseIIILibreDeudaAdjunto?: T;
+  faseIIIConfirmacionDatos?: T;
+  faseIIIObservaciones?: T;
   created_by?: T;
   updatedAt?: T;
   createdAt?: T;
