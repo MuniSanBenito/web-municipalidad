@@ -13,17 +13,15 @@ import {
   IconMail,
   IconUserCircle,
   type Icon,
-  type IconProps,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import Script from 'next/script'
-import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 
 const TRAMITES: {
   title: string
-  icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>
+  icon: Icon
   link: string
 }[] = [
   {
@@ -240,7 +238,7 @@ export default async function Page() {
         <EventCalendar events={eventos} highlightToday highlightNext />
 
         {/* Portal Tributario */}
-        <section className="from-primary to-base-100 text-primary-content my-8 w-full bg-gradient-to-r">
+        <section className="from-primary to-base-100 text-primary-content my-8 w-full bg-linear-to-r">
           <div className="container mx-auto grid grid-cols-1 gap-8 px-6 py-12 md:grid-cols-2 lg:px-8">
             <div className="flex flex-col items-start justify-center text-left">
               <h3 className="text-primary-content mb-4 text-4xl font-bold">Portal Tributario</h3>
@@ -259,7 +257,7 @@ export default async function Page() {
               <div className="bg-base-100/80 flex flex-col items-center gap-5 rounded-xl p-8 shadow-lg">
                 <div className="flex items-center gap-2">
                   {/* Icono WhatsApp Tabler */}
-                  <IconBrandWhatsapp size={18} className="text-accent flex-shrink-0" stroke={1.5} />
+                  <IconBrandWhatsapp size={18} className="text-accent shrink-0" stroke={1.5} />
                   <span className="text-base-content font-medium whitespace-nowrap">
                     WhatsApp Rentas:
                   </span>
@@ -274,7 +272,7 @@ export default async function Page() {
                 </div>
                 <div className="flex items-center gap-2">
                   {/* Icono Mail Tabler */}
-                  <IconMail size={18} className="text-primary flex-shrink-0" stroke={1.5} />
+                  <IconMail size={18} className="text-primary shrink-0" stroke={1.5} />
                   <span className="text-base-content font-medium whitespace-nowrap">
                     Correo Rentas:
                   </span>
