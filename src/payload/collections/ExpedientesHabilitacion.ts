@@ -39,7 +39,10 @@ export const ExpedientesHabilitacion: CollectionConfig = {
     create: ({ req }) => Boolean(req.user),
     read: readAccess,
     update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => req.user?.rol?.includes('ADMIN') ?? false,
+    delete: ({ req }) => {
+      if (!req.user || req.user.collection === 'ciudadanos') return false
+      return req.user.rol?.includes('ADMIN') ?? false
+    },
   },
   admin: {
     useAsTitle: 'titulo',
