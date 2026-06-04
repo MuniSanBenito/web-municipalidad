@@ -379,6 +379,11 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               ],
             },
             {
+              name: 'faseIIEmail',
+              type: 'text',
+              label: 'Correo electrónico de contacto',
+            },
+            {
               name: 'faseIIDescripcionActividad',
               type: 'textarea',
               label: 'Descripción de la actividad comercial',
@@ -386,6 +391,69 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                 description:
                   'Describí brevemente qué vas a comercializar o qué servicio vas a brindar.',
               },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'faseIISuperficieAfectada',
+                  type: 'number',
+                  label: 'Superficie afectada (m²)',
+                  admin: { width: '33%' },
+                },
+                {
+                  name: 'faseIICantidadEmpleados',
+                  type: 'number',
+                  label: 'Cantidad de empleados',
+                  admin: { width: '33%' },
+                },
+                {
+                  name: 'faseIIHorarioFuncionamiento',
+                  type: 'text',
+                  label: 'Horario de funcionamiento',
+                  admin: { width: '34%' },
+                },
+              ],
+            },
+            {
+              name: 'faseIIManipulacionAlimentos',
+              type: 'checkbox',
+              label: 'Requiere manipulación/elaboración de alimentos',
+            },
+            {
+              name: 'faseIIHigieneSeguridad',
+              type: 'checkbox',
+              label: 'Requiere Informe de Higiene y Seguridad (>100 m² o permanencia de personas)',
+            },
+            {
+              name: 'faseIISeguroRC',
+              type: 'checkbox',
+              label: 'Requiere Seguro de Responsabilidad Civil',
+            },
+            {
+              name: 'faseIIBuenaConducta',
+              type: 'checkbox',
+              label: 'Requiere Certificado de Buena Conducta',
+            },
+            {
+              name: 'faseIITituloProfesional',
+              type: 'checkbox',
+              label: 'Requiere título profesional habilitante',
+            },
+            {
+              name: 'faseIIPlanoEvacuacion',
+              type: 'checkbox',
+              label: 'Requiere Plano de Evacuación (>50 m²)',
+            },
+            {
+              name: 'faseIIResiduosPeligrosos',
+              type: 'checkbox',
+              label: 'Genera residuos peligrosos',
+            },
+            {
+              name: 'faseIIDeclaracionJurada',
+              type: 'checkbox',
+              label: 'Declaración jurada aceptada por el ciudadano',
             },
             {
               name: 'faseIIAdjuntos',

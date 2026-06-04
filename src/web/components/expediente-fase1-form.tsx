@@ -1,6 +1,6 @@
 'use client'
 
-import { submitFaseI } from '@/actions/habilitaciones'
+import { submitFaseI, updateFaseI } from '@/actions/habilitaciones'
 import {
   IconAlertCircle,
   IconBrandWhatsapp,
@@ -92,18 +92,40 @@ function FileZone({ fileRef, file, error, onFileChange }: FileZoneProps) {
   )
 }
 
-export function ExpedienteFase1Form() {
+interface Props {
+  expedienteId?: string
+  isEdit?: boolean
+  emailDefault?: string
+  apellidoDefault?: string
+  nombreDefault?: string
+  dniDefault?: string
+  telefonoDefault?: string
+  domicilioDefault?: string
+  barrioDefault?: string
+}
+
+export function ExpedienteFase1Form({
+  expedienteId,
+  isEdit = false,
+  emailDefault = '',
+  apellidoDefault = '',
+  nombreDefault = '',
+  dniDefault = '',
+  telefonoDefault = '',
+  domicilioDefault = '',
+  barrioDefault = '',
+}: Props) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const [email, setEmail] = useState('')
-  const [apellido, setApellido] = useState('')
-  const [nombre, setNombre] = useState('')
-  const [dni, setDni] = useState('')
-  const [telefono, setTelefono] = useState('')
-  const [domicilio, setDomicilio] = useState('')
-  const [barrio, setBarrio] = useState('')
+  const [email, setEmail] = useState(emailDefault)
+  const [apellido, setApellido] = useState(apellidoDefault)
+  const [nombre, setNombre] = useState(nombreDefault)
+  const [dni, setDni] = useState(dniDefault)
+  const [telefono, setTelefono] = useState(telefonoDefault)
+  const [domicilio, setDomicilio] = useState(domicilioDefault)
+  const [barrio, setBarrio] = useState(barrioDefault)
 
   const [archivos, setArchivos] = useState<Record<FileKey, File | null>>({
     formulario: null,
@@ -142,7 +164,7 @@ export function ExpedienteFase1Form() {
     const newErrors: Record<string, string> = {}
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       newErrors.email = 'Ingresá un correo electrónico válido'
-    if (!archivos.formulario)
+    if (!isEdit && !archivos.formulario)
       newErrors.formulario = 'Debés adjuntar el formulario completado y firmado'
     if (!apellido.trim()) newErrors.apellido = 'Requerido'
     if (!nombre.trim()) newErrors.nombre = 'Requerido'
@@ -150,11 +172,11 @@ export function ExpedienteFase1Form() {
     if (!telefono.trim()) newErrors.telefono = 'Requerido'
     if (!domicilio.trim()) newErrors.domicilio = 'Requerido'
     if (!barrio) newErrors.barrio = 'Seleccioná un barrio'
-    if (!archivos.docInmueble) newErrors.docInmueble = 'Requerido'
-    if (!archivos.planoLocal) newErrors.planoLocal = 'Requerido'
-    if (!archivos.certElectrico) newErrors.certElectrico = 'Requerido'
-    if (!archivos.facturaEnergia) newErrors.facturaEnergia = 'Requerido'
-    if (!archivos.plancheta) newErrors.plancheta = 'Requerido'
+    if (!isEdit && !archivos.docInmueble) newErrors.docInmueble = 'Requerido'
+    if (!isEdit && !archivos.planoLocal) newErrors.planoLocal = 'Requerido'
+    if (!isEdit && !archivos.certElectrico) newErrors.certElectrico = 'Requerido'
+    if (!isEdit && !archivos.facturaEnergia) newErrors.facturaEnergia = 'Requerido'
+    if (!isEdit && !archivos.plancheta) newErrors.plancheta = 'Requerido'
     if (!declaracion) newErrors.declaracion = 'Debés aceptar los términos de la declaración jurada'
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -177,9 +199,9 @@ export function ExpedienteFase1Form() {
     if (archivos.facturaEnergia) fd.append('facturaEnergia', archivos.facturaEnergia)
     if (archivos.plancheta) fd.append('plancheta', archivos.plancheta)
 
-    let result: Awaited<ReturnType<typeof submitFaseI>>
+    let result: { error?: string }
     try {
-      result = await submitFaseI(fd)
+      result = isEdit && expedienteId ? await updateFaseI(expedienteId, fd) : await submitFaseI(fd)
     } catch {
       toast.error('Ocurrió un error inesperado. Intentá nuevamente.')
       setIsPending(false)
@@ -192,13 +214,36 @@ export function ExpedienteFase1Form() {
       return
     }
 
-    toast.success('¡Solicitud de Permiso de Uso enviada! Obras Privadas revisará tu formulario.')
+    toast.success(
+      isEdit
+        ? '¡Solicitud actualizada correctamente!'
+        : '¡Solicitud de Permiso de Uso enviada! Obras Privadas revisará tu formulario.',
+    )
     setIsPending(false)
     router.push('/habilitaciones')
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {isEdit && (
+        <div className="alert alert-info">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          <span className="text-sm">
+            Estás editando tu solicitud. Los archivos ya cargados se mantienen — solo adjuntá nuevos
+            si querés reemplazarlos.
+          </span>
+        </div>
+      )}
       {/* Introducción */}
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">

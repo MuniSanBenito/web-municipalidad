@@ -1012,10 +1012,22 @@ export interface ExpedientesHabilitacion {
   faseIIDireccion?: string | null;
   faseIIRubro?: (string | null) | RubrosComercio;
   faseIIActividades?: (string | ActividadesComercio)[] | null;
+  faseIIEmail?: string | null;
   /**
    * Describí brevemente qué vas a comercializar o qué servicio vas a brindar.
    */
   faseIIDescripcionActividad?: string | null;
+  faseIISuperficieAfectada?: number | null;
+  faseIICantidadEmpleados?: number | null;
+  faseIIHorarioFuncionamiento?: string | null;
+  faseIIManipulacionAlimentos?: boolean | null;
+  faseIIHigieneSeguridad?: boolean | null;
+  faseIISeguroRC?: boolean | null;
+  faseIIBuenaConducta?: boolean | null;
+  faseIITituloProfesional?: boolean | null;
+  faseIIPlanoEvacuacion?: boolean | null;
+  faseIIResiduosPeligrosos?: boolean | null;
+  faseIIDeclaracionJurada?: boolean | null;
   /**
    * Permiso de Uso aprobado, DNI, CUIT, Libre Deuda, Boleta de Tasa Inmobiliaria y otros documentos requeridos.
    */
@@ -1812,7 +1824,19 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIIDireccion?: T;
   faseIIRubro?: T;
   faseIIActividades?: T;
+  faseIIEmail?: T;
   faseIIDescripcionActividad?: T;
+  faseIISuperficieAfectada?: T;
+  faseIICantidadEmpleados?: T;
+  faseIIHorarioFuncionamiento?: T;
+  faseIIManipulacionAlimentos?: T;
+  faseIIHigieneSeguridad?: T;
+  faseIISeguroRC?: T;
+  faseIIBuenaConducta?: T;
+  faseIITituloProfesional?: T;
+  faseIIPlanoEvacuacion?: T;
+  faseIIResiduosPeligrosos?: T;
+  faseIIDeclaracionJurada?: T;
   faseIIAdjuntos?: T;
   faseIIIEstado?: T;
   faseIIINotaCiudadano?: T;

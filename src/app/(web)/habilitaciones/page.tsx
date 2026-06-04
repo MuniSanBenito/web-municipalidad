@@ -167,11 +167,18 @@ export default async function HabilitacionesPage() {
 
   const todoAprobado = f1Estado === 'APROBADO' && f2Estado === 'APROBADO' && f3Estado === 'APROBADO'
 
-  // CTA por paso
-  const ctaFase1 = !exp ? { href: '/habilitaciones/fase/1', label: 'Iniciar Paso 1' } : null
+  // CTA por paso — editable mientras no esté APROBADO
+  const ctaFase1 = !exp
+    ? { href: '/habilitaciones/fase/1', label: 'Iniciar Paso 1' }
+    : f1Estado === 'INICIADO' || f1Estado === 'PENDIENTE'
+      ? { href: '/habilitaciones/fase/1', label: 'Editar Paso 1' }
+      : null
   const ctaFase2 =
-    !fase2Bloqueada && !f2Estado
-      ? { href: '/habilitaciones/fase/2', label: 'Completar Paso 2' }
+    !fase2Bloqueada && f2Estado !== 'APROBADO'
+      ? {
+          href: '/habilitaciones/fase/2',
+          label: f2Estado ? 'Editar Paso 2' : 'Completar Paso 2',
+        }
       : null
   const ctaFase3 =
     !fase3Bloqueada && !f3Estado

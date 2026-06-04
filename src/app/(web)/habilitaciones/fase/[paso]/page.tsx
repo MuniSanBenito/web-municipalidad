@@ -3,12 +3,7 @@ import { ExpedienteFase1Form } from '@/web/components/expediente-fase1-form'
 import { ExpedienteFase2Form } from '@/web/components/expediente-fase2-form'
 import { ExpedienteFase3Form } from '@/web/components/expediente-fase3-form'
 import { basePayload } from '@/web/lib/payload'
-import {
-  IconArrowLeft,
-  IconBuildingStore,
-  IconCircleCheck,
-  IconLock,
-} from '@tabler/icons-react'
+import { IconArrowLeft, IconBuildingStore, IconCircleCheck } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -43,15 +38,17 @@ export default async function HabilitacionFasePage({ params }: Props) {
   const expediente = docs[0] as any | null
 
   // Validaciones de acceso por paso
-  if (pasoNum === 1 && expediente?.faseIEstado) {
-    // Ya envió el paso 1 — no puede re-enviarlo
-    redirect('/habilitaciones')
+  if (pasoNum === 1) {
+    // Solo bloquear si ya fue APROBADO — INICIADO y PENDIENTE siguen siendo editables
+    if (expediente?.faseIEstado === 'APROBADO') redirect('/habilitaciones')
   }
 
   if (pasoNum === 2) {
     if (!expediente) redirect('/habilitaciones')
+    // Requiere Fase I aprobada para poder empezar Fase II
     if (expediente.faseIEstado !== 'APROBADO') redirect('/habilitaciones')
-    if (expediente.faseIIEstado) redirect('/habilitaciones')
+    // Solo bloquear si Fase II ya fue APROBADO
+    if (expediente.faseIIEstado === 'APROBADO') redirect('/habilitaciones')
   }
 
   if (pasoNum === 3) {
@@ -62,20 +59,27 @@ export default async function HabilitacionFasePage({ params }: Props) {
     if (expediente.faseIIIEstado) redirect('/habilitaciones')
   }
 
-  // Datos para el formulario
-  const [{ docs: rubros }, { docs: actividades }] = await Promise.all([
+  const { docs: rubros } =
     pasoNum === 2
-      ? basePayload.find({ collection: 'rubros-comercios', limit: 200, sort: 'nombre' })
-      : Promise.resolve({ docs: [] }),
-    pasoNum === 2
-      ? basePayload.find({ collection: 'actividades-comercios', limit: 200, sort: 'nombre' })
-      : Promise.resolve({ docs: [] }),
-  ])
+      ? await basePayload.find({ collection: 'rubros-comercios', limit: 200, sort: 'nombre' })
+      : { docs: [] }
 
   const pasoMeta = [
-    { titulo: 'Permiso de Uso', subtitulo: 'Verificación de aptitud edilicia — Obras Privadas', paso: 1 },
-    { titulo: 'Habilitación Comercial', subtitulo: 'Presentación de requisitos — Habilitaciones y Bromatología', paso: 2 },
-    { titulo: 'Alta Fiscal', subtitulo: 'Emisión del Certificado de Habilitación — Rentas', paso: 3 },
+    {
+      titulo: 'Permiso de Uso',
+      subtitulo: 'Verificación de aptitud edilicia — Obras Privadas',
+      paso: 1,
+    },
+    {
+      titulo: 'Habilitación Comercial',
+      subtitulo: 'Presentación de requisitos — Habilitaciones y Bromatología',
+      paso: 2,
+    },
+    {
+      titulo: 'Alta Fiscal',
+      subtitulo: 'Emisión del Certificado de Habilitación — Rentas',
+      paso: 3,
+    },
   ]
   const meta = pasoMeta[pasoNum - 1]
 
@@ -122,26 +126,49 @@ export default async function HabilitacionFasePage({ params }: Props) {
                 {n < pasoNum ? <IconCircleCheck size={16} /> : n}
               </div>
               {n < 3 && (
-                <div
-                  className={`h-0.5 flex-1 ${n < pasoNum ? 'bg-success' : 'bg-base-300'}`}
-                />
+                <div className={`h-0.5 flex-1 ${n < pasoNum ? 'bg-success' : 'bg-base-300'}`} />
               )}
             </div>
           ))}
         </div>
 
         {/* Formulario según paso */}
-        {pasoNum === 1 && <ExpedienteFase1Form />}
+        {pasoNum === 1 && (
+          <ExpedienteFase1Form
+            expedienteId={expediente?.id}
+            isEdit={!!expediente?.faseIEstado}
+            emailDefault={expediente?.faseIEmail ?? undefined}
+            apellidoDefault={expediente?.faseIApellido ?? undefined}
+            nombreDefault={expediente?.faseINombre ?? undefined}
+            dniDefault={expediente?.faseIDNI ?? undefined}
+            telefonoDefault={expediente?.faseITelefono ?? undefined}
+            domicilioDefault={expediente?.faseIDireccionLocal ?? undefined}
+            barrioDefault={expediente?.faseIBarrio ?? undefined}
+          />
+        )}
         {pasoNum === 2 && expediente && (
           <ExpedienteFase2Form
             expedienteId={expediente.id}
             rubros={rubros as any}
-            actividades={actividades as any}
+            isEdit={!!expediente.faseIIEstado}
+            nroPermisoUso={expediente.faseINumeroPermisoUso ?? undefined}
+            apellidoNombre={
+              [expediente.faseIApellido, expediente.faseINombre].filter(Boolean).join(', ') ||
+              undefined
+            }
+            emailDefault={expediente.faseIIEmail ?? expediente.faseIEmail ?? undefined}
+            telefonoDefault={expediente.faseIITelefono ?? expediente.faseITelefono ?? undefined}
+            cuitDefault={expediente.faseIICuit ?? undefined}
+            nombreFantasiaDefault={expediente.faseIINombreFantasia ?? undefined}
+            razonSocialDefault={expediente.faseIIRazonSocial ?? undefined}
+            rubroDefault={expediente.faseIIRubro ?? undefined}
+            descripcionDefault={expediente.faseIIDescripcionActividad ?? undefined}
+            superficieDefault={expediente.faseIISuperficieAfectada ?? undefined}
+            empleadosDefault={expediente.faseIICantidadEmpleados ?? undefined}
+            horarioDefault={expediente.faseIIHorarioFuncionamiento ?? undefined}
           />
         )}
-        {pasoNum === 3 && expediente && (
-          <ExpedienteFase3Form expedienteId={expediente.id} />
-        )}
+        {pasoNum === 3 && expediente && <ExpedienteFase3Form expedienteId={expediente.id} />}
       </div>
     </main>
   )
