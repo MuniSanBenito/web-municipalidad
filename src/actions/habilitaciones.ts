@@ -89,21 +89,14 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
     }
   }
 
-  const [
-    formularioId,
-    docInmuebleId,
-    planoLocalId,
-    certElectricoId,
-    facturaEnergiaId,
-    planchetaId,
-  ] = await Promise.all([
-    uploadArchivoLocal(formularioFile, ciudadano),
-    uploadArchivoLocal(docInmuebleFile, ciudadano),
-    uploadArchivoLocal(planoLocalFile, ciudadano),
-    uploadArchivoLocal(certElectricoFile, ciudadano),
-    uploadArchivoLocal(facturaEnergiaFile, ciudadano),
-    uploadArchivoLocal(planchetaFile, ciudadano),
-  ])
+  // Subir secuencialmente: en paralelo, las transacciones de MongoDB chocan
+  // entre sí y devuelven WriteConflict (code 112), perdiéndose archivos.
+  const formularioId = await uploadArchivoLocal(formularioFile, ciudadano)
+  const docInmuebleId = await uploadArchivoLocal(docInmuebleFile, ciudadano)
+  const planoLocalId = await uploadArchivoLocal(planoLocalFile, ciudadano)
+  const certElectricoId = await uploadArchivoLocal(certElectricoFile, ciudadano)
+  const facturaEnergiaId = await uploadArchivoLocal(facturaEnergiaFile, ciudadano)
+  const planchetaId = await uploadArchivoLocal(planchetaFile, ciudadano)
 
   if (
     !formularioId ||
@@ -177,21 +170,13 @@ export async function updateFaseI(
   const uploadIfNew = (f: File | null) =>
     f && f.size > 0 ? uploadArchivoLocal(f, ciudadano) : Promise.resolve(null)
 
-  const [
-    formularioId,
-    docInmuebleId,
-    planoLocalId,
-    certElectricoId,
-    facturaEnergiaId,
-    planchetaId,
-  ] = await Promise.all([
-    uploadIfNew(formularioFile),
-    uploadIfNew(docInmuebleFile),
-    uploadIfNew(planoLocalFile),
-    uploadIfNew(certElectricoFile),
-    uploadIfNew(facturaEnergiaFile),
-    uploadIfNew(planchetaFile),
-  ])
+  // Secuencial: en paralelo las transacciones de MongoDB chocan (WriteConflict, code 112).
+  const formularioId = await uploadIfNew(formularioFile)
+  const docInmuebleId = await uploadIfNew(docInmuebleFile)
+  const planoLocalId = await uploadIfNew(planoLocalFile)
+  const certElectricoId = await uploadIfNew(certElectricoFile)
+  const facturaEnergiaId = await uploadIfNew(facturaEnergiaFile)
+  const planchetaId = await uploadIfNew(planchetaFile)
 
   const data: Record<string, unknown> = {
     faseIEmail: email,
