@@ -1,208 +1,202 @@
-'use client'
-
-import { submitFaseIII } from '@/actions/habilitaciones'
 import {
-  IconAlertCircle,
-  IconCheck,
-  IconCircleCheck,
-  IconFileText,
-  IconLoader2,
-  IconUpload,
+    IconCalendar,
+    IconCircleCheck,
+    IconClock,
+    IconExternalLink,
+    IconFileText,
+    IconMedal,
 } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
-import { toast } from 'sonner'
 
-interface Props {
-  expedienteId: string
+interface ComercioData {
+  nombre: string
+  razonSocial: string
+  cuit: string
+  fechaAlta?: string | null
+  fechaBaja?: string | null
+  direccion: string
+  urlValidacion?: string | null
+  rubro?: { nombre: string } | string | null
 }
 
-export function ExpedienteFase3Form({ expedienteId }: Props) {
-  const router = useRouter()
-  const [isPending, setIsPending] = useState(false)
-  const [confirmado, setConfirmado] = useState(false)
-  const [libreDeuda, setLibreDeuda] = useState<File | null>(null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const fileInputRef = useRef<HTMLInputElement>(null)
+interface Props {
+  faseIIIEstado?: string | null
+  notaCiudadano?: string | null
+  comercio?: ComercioData | null
+}
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setIsPending(true)
-    setErrors({})
+function formatDate(dateStr: string | null | undefined) {
+  if (!dateStr) return null
+  return new Date(dateStr).toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+}
 
-    const newErrors: Record<string, string> = {}
-    if (!confirmado) newErrors.confirmacion = 'Debés confirmar que los datos son correctos'
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      setIsPending(false)
-      return
-    }
-
-    const formData = new FormData(e.currentTarget)
-    if (libreDeuda) formData.append('libreDeuda', libreDeuda)
-
-    let result: Awaited<ReturnType<typeof submitFaseIII>>
-    try {
-      result = await submitFaseIII(expedienteId, formData)
-    } catch (e) {
-      toast.error('Ocurrió un error inesperado. Intentá nuevamente.')
-      setIsPending(false)
-      return
-    }
-
-    if (result.error) {
-      toast.error(result.error)
-      setIsPending(false)
-      return
-    }
-
-    toast.success('¡Paso 3 enviado! Rentas procesará el Alta Fiscal a la brevedad.')
-    setIsPending(false)
-    router.push('/habilitaciones')
-  }
+export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: Props) {
+  const isAprobado = faseIIIEstado === 'APROBADO'
+  const rubroNombre =
+    comercio?.rubro && typeof comercio.rubro === 'object'
+      ? (comercio.rubro as { nombre: string }).nombre
+      : null
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Resumen del proceso */}
-      <div className="card border-success/30 bg-success/5 border-2 shadow">
-        <div className="card-body p-5">
-          <h3 className="text-success mb-2 font-semibold">¡Estás en el último paso!</h3>
-          <p className="text-base-content/70 text-sm">
-            Con las Fases I y II aprobadas, Rentas procederá a confeccionar el{' '}
-            <strong>Alta Comercial</strong>, obtener la firma del Secretario de Gobierno y emitir el{' '}
-            <strong>Certificado de Habilitación</strong>.
-          </p>
-          <ul className="mt-3 space-y-1">
-            {[
-              'Alta Comercial confeccionada por Rentas',
-              'Firma de resolución por el Secretario de Gobierno',
-              'Emisión del Certificado de Habilitación',
-              'Capacitación para declaraciones juradas y Tasa Comercial mensual',
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-2 text-xs">
-                <IconCircleCheck size={13} className="text-success shrink-0" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Libre Deuda */}
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
-          <h3 className="card-title text-primary mb-2 text-base">
-            Libre Deuda del inmueble (opcional)
-          </h3>
-          <p className="text-base-content/70 mb-4 text-sm">
-            Si ya contás con el documento de Libre Deuda vigente de Rentas Municipal, podés
-            adjuntarlo aquí. De lo contrario, Rentas lo verificará internamente.
-          </p>
-
-          <div
-            className={`rounded-box cursor-pointer border-2 border-dashed p-5 text-center transition-colors ${
-              libreDeuda ? 'border-success bg-success/5' : 'border-base-300 hover:border-primary/50'
-            }`}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              className="hidden"
-              onChange={(e) => setLibreDeuda(e.target.files?.[0] ?? null)}
-            />
-            {libreDeuda ? (
-              <div className="flex flex-col items-center gap-2">
-                <IconCheck size={28} className="text-success" />
-                <p className="text-success text-sm font-medium">{libreDeuda.name}</p>
-                <p className="text-base-content/50 text-xs">
-                  {(libreDeuda.size / 1024 / 1024).toFixed(2)} MB — Click para cambiar
+    <div className="space-y-6">
+      {/* Estado principal */}
+      {isAprobado && comercio ? (
+        <div className="card border-success/30 bg-success/5 border-2 shadow">
+          <div className="card-body p-5">
+            <div className="flex items-center gap-3">
+              <IconCircleCheck size={32} className="text-success shrink-0" />
+              <div>
+                <h3 className="text-success text-lg font-bold">¡Habilitación otorgada!</h3>
+                <p className="text-base-content/70 text-sm">
+                  Tu comercio fue habilitado por la Municipalidad de San Benito.
                 </p>
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2">
-                <IconUpload size={28} className="text-base-content/30" />
-                <p className="text-base-content/60 text-sm">Adjuntar Libre Deuda (opcional)</p>
-                <p className="text-base-content/40 text-xs">PDF, JPG o PNG</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Observaciones */}
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
-          <h3 className="card-title text-primary mb-4 text-base">Observaciones adicionales</h3>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-medium">Información adicional (opcional)</span>
-            </label>
-            <textarea
-              name="observaciones"
-              rows={3}
-              placeholder="Cualquier información adicional que quieras comunicar a Rentas..."
-              className="textarea textarea-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Confirmación de datos */}
-      <div
-        className={`card border-2 shadow-lg ${
-          errors.confirmacion
-            ? 'border-error bg-error/5'
-            : confirmado
-              ? 'border-success bg-success/5'
-              : 'border-warning bg-warning/5'
-        }`}
-      >
-        <div className="card-body p-5">
-          <div className="flex items-start gap-3">
-            <IconAlertCircle
-              size={22}
-              className={`mt-0.5 shrink-0 ${
-                errors.confirmacion ? 'text-error' : confirmado ? 'text-success' : 'text-warning'
-              }`}
-            />
-            <div className="flex-1">
-              <p className="mb-1 text-sm font-semibold">Declaración jurada</p>
-              <p className="text-base-content/70 mb-3 text-sm">
-                Al enviar este formulario, declarás que toda la información y documentación
-                presentada en las 3 fases del trámite es <strong>verídica y completa</strong>.
-              </p>
-              <label className="flex cursor-pointer items-start gap-2">
-                <input
-                  type="checkbox"
-                  name="confirmacion"
-                  className="checkbox checkbox-success mt-0.5"
-                  checked={confirmado}
-                  onChange={(e) => {
-                    setConfirmado(e.target.checked)
-                    if (e.target.checked)
-                      setErrors((prev) => {
-                        const { confirmacion: _, ...rest } = prev
-                        return rest
-                      })
-                  }}
-                />
-                <span className="text-sm font-medium">
-                  Confirmo que los datos declarados son correctos y verídicos{' '}
-                  <span className="text-error">*</span>
-                </span>
-              </label>
-              {errors.confirmacion && (
-                <p className="text-error mt-2 text-xs">{errors.confirmacion}</p>
-              )}
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="card border-info/30 bg-info/5 border-2 shadow">
+          <div className="card-body p-5">
+            <div className="flex items-center gap-3">
+              <IconClock size={28} className="text-info shrink-0" />
+              <div>
+                <h3 className="font-bold">Alta Fiscal en proceso</h3>
+                <p className="text-base-content/70 text-sm">
+                  El equipo de Rentas está procesando tu Alta Fiscal y emitirá el Certificado de
+                  Habilitación. Te notificaremos por correo cuando esté disponible.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Info contacto Rentas */}
+      {/* Nota del admin al ciudadano */}
+      {notaCiudadano && (
+        <div className="alert alert-info">
+          <IconFileText size={16} className="shrink-0" />
+          <p className="text-sm">{notaCiudadano}</p>
+        </div>
+      )}
+
+      {/* Habilitación digital — solo cuando APROBADO y hay comercio vinculado */}
+      {isAprobado && comercio && (
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            <div className="mb-4 flex items-center gap-2">
+              <IconMedal size={22} className="text-primary" />
+              <h3 className="card-title text-base">Habilitación Digital</h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+              <div>
+                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                  Nombre de Fantasía
+                </p>
+                <p className="font-semibold">{comercio.nombre}</p>
+              </div>
+              <div>
+                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                  Razón Social
+                </p>
+                <p className="font-semibold">{comercio.razonSocial}</p>
+              </div>
+              <div>
+                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                  CUIT / CUIL
+                </p>
+                <p className="font-semibold">{comercio.cuit}</p>
+              </div>
+              {rubroNombre && (
+                <div>
+                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                    Rubro
+                  </p>
+                  <p className="font-semibold">{rubroNombre}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                  Dirección
+                </p>
+                <p className="font-semibold">{comercio.direccion}</p>
+              </div>
+              {comercio.fechaAlta && (
+                <div>
+                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                    Fecha de Alta
+                  </p>
+                  <p className="flex items-center gap-1 font-semibold">
+                    <IconCalendar size={14} className="text-base-content/40" />
+                    {formatDate(comercio.fechaAlta)}
+                  </p>
+                </div>
+              )}
+              {comercio.fechaBaja && (
+                <div>
+                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
+                    Vigente hasta
+                  </p>
+                  <p className="flex items-center gap-1 font-semibold">
+                    <IconCalendar size={14} className="text-base-content/40" />
+                    {formatDate(comercio.fechaBaja)}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {comercio.urlValidacion && (
+              <>
+                <div className="divider my-3" />
+                <div>
+                  <p className="text-base-content/50 mb-2 text-xs font-medium tracking-wide uppercase">
+                    Verificación de habilitación
+                  </p>
+                  <a
+                    href={comercio.urlValidacion}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-outline btn-primary btn-sm gap-2"
+                  >
+                    <IconExternalLink size={14} />
+                    Ver certificado público
+                  </a>
+                  <p className="text-base-content/40 mt-2 text-xs">
+                    Este enlace puede compartirse para verificar la validez de tu habilitación.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Qué sucede — visible mientras esperan */}
+      {!isAprobado && (
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            <h3 className="card-title text-primary mb-3 text-base">¿Qué sucede en este paso?</h3>
+            <ul className="space-y-2">
+              {[
+                'Alta Comercial confeccionada por Rentas',
+                'Firma de resolución por el Secretario de Gobierno',
+                'Emisión del Certificado de Habilitación',
+                'Capacitación para declaraciones juradas y Tasa Comercial mensual',
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-sm">
+                  <IconCircleCheck size={14} className="text-success shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Contacto Rentas */}
       <div className="alert">
         <IconFileText size={20} className="shrink-0" />
         <div className="text-sm">
@@ -219,25 +213,11 @@ export function ExpedienteFase3Form({ expedienteId }: Props) {
         </div>
       </div>
 
-      {/* Botones */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <div className="flex justify-start">
         <a href="/habilitaciones" className="btn btn-ghost">
-          Cancelar
+          Volver a mi trámite
         </a>
-        <button type="submit" className="btn btn-success gap-2" disabled={isPending}>
-          {isPending ? (
-            <>
-              <IconLoader2 size={18} className="animate-spin" />
-              Enviando...
-            </>
-          ) : (
-            <>
-              <IconCircleCheck size={18} />
-              Enviar Solicitud — Paso 3
-            </>
-          )}
-        </button>
       </div>
-    </form>
+    </div>
   )
 }

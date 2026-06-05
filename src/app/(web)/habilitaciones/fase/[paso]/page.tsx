@@ -32,7 +32,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     sort: '-createdAt',
-    depth: 0,
+    depth: pasoNum === 3 ? 1 : 0,
   })
 
   const expediente = docs[0] as any | null
@@ -56,7 +56,6 @@ export default async function HabilitacionFasePage({ params }: Props) {
     if (expediente.faseIEstado !== 'APROBADO' || expediente.faseIIEstado !== 'APROBADO') {
       redirect('/habilitaciones')
     }
-    if (expediente.faseIIIEstado) redirect('/habilitaciones')
   }
 
   const { docs: rubros } =
@@ -168,7 +167,18 @@ export default async function HabilitacionFasePage({ params }: Props) {
             horarioDefault={expediente.faseIIHorarioFuncionamiento ?? undefined}
           />
         )}
-        {pasoNum === 3 && expediente && <ExpedienteFase3Form expedienteId={expediente.id} />}
+        {pasoNum === 3 && expediente && (
+          <ExpedienteFase3Form
+            faseIIIEstado={expediente.faseIIIEstado ?? null}
+            notaCiudadano={expediente.faseIIINotaCiudadano ?? null}
+            comercio={
+              typeof expediente.faseIIIComercioHabilitado === 'object' &&
+              expediente.faseIIIComercioHabilitado !== null
+                ? expediente.faseIIIComercioHabilitado
+                : null
+            }
+          />
+        )}
       </div>
     </main>
   )

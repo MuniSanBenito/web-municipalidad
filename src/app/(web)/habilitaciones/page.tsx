@@ -1,14 +1,14 @@
 import type { Ciudadano } from '@/payload-types'
 import { basePayload } from '@/web/lib/payload'
 import {
-  IconArrowRight,
-  IconBuildingStore,
-  IconCircleCheck,
-  IconFileDescription,
-  IconInfoCircle,
-  IconLock,
-  IconMail,
-  IconPhone,
+    IconArrowRight,
+    IconBuildingStore,
+    IconCircleCheck,
+    IconFileDescription,
+    IconInfoCircle,
+    IconLock,
+    IconMail,
+    IconPhone,
 } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -101,7 +101,7 @@ function PasoCard({
           </div>
         )}
 
-        {ctaHref && !bloqueado && !completado && (
+        {ctaHref && !bloqueado && (
           <Link href={ctaHref} className="btn btn-primary btn-sm mt-4 gap-1 self-start">
             {ctaLabel ?? 'Completar'}
             <IconArrowRight size={14} />
@@ -180,10 +180,12 @@ export default async function HabilitacionesPage() {
           label: f2Estado ? 'Editar Paso 2' : 'Completar Paso 2',
         }
       : null
-  const ctaFase3 =
-    !fase3Bloqueada && !f3Estado
-      ? { href: '/habilitaciones/fase/3', label: 'Completar Paso 3' }
-      : null
+  const ctaFase3 = !fase3Bloqueada
+    ? {
+        href: '/habilitaciones/fase/3',
+        label: f3Estado === 'APROBADO' ? 'Ver Habilitación' : 'Ver estado',
+      }
+    : null
 
   return (
     <main className="bg-base-100 min-h-screen">

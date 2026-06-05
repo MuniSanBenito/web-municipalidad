@@ -94,10 +94,6 @@ export const ExpedientesHabilitacion: CollectionConfig = {
         if (!originalDoc?.faseIIEstado && (data.faseIINombreFantasia || data.faseIIRazonSocial)) {
           data.faseIIEstado = 'INICIADO'
         }
-        if (!originalDoc?.faseIIIEstado && data.faseIIIConfirmacionDatos) {
-          data.faseIIIEstado = 'INICIADO'
-        }
-
         return data
       },
     ],
@@ -510,25 +506,18 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               },
             },
             {
-              name: 'faseIIILibreDeudaAdjunto',
-              type: 'upload',
-              label: 'Libre Deuda del inmueble (Rentas Municipal)',
-              relationTo: 'archivos',
-              admin: {
-                description: 'Documento de Libre Deuda vigente.',
+              name: 'faseIIIComercioHabilitado',
+              type: 'relationship',
+              label: 'Comercio Habilitado',
+              relationTo: 'comercios-habilitados',
+              hasMany: false,
+              access: {
+                update: isNotCiudadano,
+                create: isNotCiudadano,
               },
-            },
-            {
-              name: 'faseIIIConfirmacionDatos',
-              type: 'checkbox',
-              label: 'Confirmo que los datos declarados son correctos y verídicos',
-            },
-            {
-              name: 'faseIIIObservaciones',
-              type: 'textarea',
-              label: 'Observaciones adicionales',
               admin: {
-                description: 'Cualquier información adicional relevante para el alta fiscal.',
+                description:
+                  'Vinculá el registro de Comercio Habilitado generado por Rentas. El ciudadano podrá ver su habilitación digital desde su portal.',
               },
             },
           ],

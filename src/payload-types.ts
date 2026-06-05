@@ -1042,14 +1042,9 @@ export interface ExpedientesHabilitacion {
   faseIIINotaCiudadano?: string | null;
   faseIIINotaInterna?: string | null;
   /**
-   * Documento de Libre Deuda vigente.
+   * Vinculá el registro de Comercio Habilitado generado por Rentas. El ciudadano podrá ver su habilitación digital desde su portal.
    */
-  faseIIILibreDeudaAdjunto?: (string | null) | Archivo;
-  faseIIIConfirmacionDatos?: boolean | null;
-  /**
-   * Cualquier información adicional relevante para el alta fiscal.
-   */
-  faseIIIObservaciones?: string | null;
+  faseIIIComercioHabilitado?: (string | null) | ComerciosHabilitado;
   created_by:
     | {
         relationTo: 'users';
@@ -1841,9 +1836,7 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIIIEstado?: T;
   faseIIINotaCiudadano?: T;
   faseIIINotaInterna?: T;
-  faseIIILibreDeudaAdjunto?: T;
-  faseIIIConfirmacionDatos?: T;
-  faseIIIObservaciones?: T;
+  faseIIIComercioHabilitado?: T;
   created_by?: T;
   updatedAt?: T;
   createdAt?: T;
