@@ -2,14 +2,15 @@
 
 import { submitFaseI, updateFaseI } from '@/actions/habilitaciones'
 import {
-  IconAlertCircle,
-  IconBrandWhatsapp,
-  IconCheck,
-  IconDownload,
-  IconLoader2,
-  IconMail,
-  IconSend,
-  IconUpload,
+    IconAlertCircle,
+    IconBrandWhatsapp,
+    IconCheck,
+    IconDownload,
+    IconFile,
+    IconLoader2,
+    IconMail,
+    IconSend,
+    IconUpload
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -47,23 +48,45 @@ type FileKey =
   | 'facturaEnergia'
   | 'plancheta'
 
+type ArchivoExistente = { url?: string | null; filename?: string | null } | null
+
+function ExistingFileLink({ existing }: { existing: ArchivoExistente }) {
+  if (!existing?.url) return null
+  return (
+    <a
+      href={existing.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="text-primary mt-1 inline-flex items-center gap-1 text-xs hover:underline"
+    >
+      <IconFile size={13} />
+      <span className="max-w-[220px] truncate">{existing.filename ?? 'Ver archivo cargado'}</span>
+    </a>
+  )
+}
+
 interface FileZoneProps {
   fileRef: React.RefObject<HTMLInputElement | null>
   file: File | null
   error?: string
+  existing?: ArchivoExistente
   onFileChange: (file: File | null) => void
 }
 
-function FileZone({ fileRef, file, error, onFileChange }: FileZoneProps) {
+function FileZone({ fileRef, file, error, existing, onFileChange }: FileZoneProps) {
+  const hasExisting = !file && !!existing?.url
   return (
     <div>
       <div
         className={`rounded-box cursor-pointer border-2 border-dashed p-4 text-center transition-colors ${
           file
             ? 'border-success bg-success/5'
-            : error
-              ? 'border-error bg-error/5'
-              : 'border-base-300 hover:border-primary/50'
+            : hasExisting
+              ? 'border-primary/40 bg-primary/5'
+              : error
+                ? 'border-error bg-error/5'
+                : 'border-base-300 hover:border-primary/50'
         }`}
         onClick={() => fileRef.current?.click()}
       >
@@ -78,6 +101,15 @@ function FileZone({ fileRef, file, error, onFileChange }: FileZoneProps) {
           <div className="flex items-center justify-center gap-2">
             <IconCheck size={18} className="text-success shrink-0" />
             <p className="text-success max-w-[220px] truncate text-sm font-medium">{file.name}</p>
+          </div>
+        ) : hasExisting ? (
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-primary flex items-center justify-center gap-2">
+              <IconCheck size={18} className="shrink-0" />
+              <p className="text-sm font-medium">Archivo ya cargado</p>
+            </div>
+            <ExistingFileLink existing={existing} />
+            <span className="text-base-content/40 text-xs">Click para reemplazar</span>
           </div>
         ) : (
           <div className="text-base-content/50 flex items-center justify-center gap-2">
@@ -102,6 +134,7 @@ interface Props {
   telefonoDefault?: string
   domicilioDefault?: string
   barrioDefault?: string
+  archivosExistentes?: Partial<Record<FileKey, ArchivoExistente>>
 }
 
 export function ExpedienteFase1Form({
@@ -114,6 +147,7 @@ export function ExpedienteFase1Form({
   telefonoDefault = '',
   domicilioDefault = '',
   barrioDefault = '',
+  archivosExistentes = {},
 }: Props) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
@@ -359,9 +393,11 @@ export function ExpedienteFase1Form({
             className={`rounded-box cursor-pointer border-2 border-dashed p-6 text-center transition-colors ${
               archivos.formulario
                 ? 'border-success bg-success/5'
-                : errors.formulario
-                  ? 'border-error bg-error/5'
-                  : 'border-base-300 hover:border-primary/50'
+                : !archivos.formulario && archivosExistentes.formulario?.url
+                  ? 'border-primary/40 bg-primary/5'
+                  : errors.formulario
+                    ? 'border-error bg-error/5'
+                    : 'border-base-300 hover:border-primary/50'
             }`}
             onClick={() => fileRefs.formulario.current?.click()}
           >
@@ -379,6 +415,13 @@ export function ExpedienteFase1Form({
                 <p className="text-base-content/50 text-xs">
                   {(archivos.formulario.size / 1024 / 1024).toFixed(2)} MB — Click para cambiar
                 </p>
+              </div>
+            ) : archivosExistentes.formulario?.url ? (
+              <div className="flex flex-col items-center gap-1">
+                <IconCheck size={32} className="text-primary" />
+                <p className="text-primary text-sm font-medium">Archivo ya cargado</p>
+                <ExistingFileLink existing={archivosExistentes.formulario} />
+                <p className="text-base-content/40 text-xs">Click para reemplazar</p>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2">
@@ -558,6 +601,7 @@ export function ExpedienteFase1Form({
                 fileRef={fileRefs.docInmueble}
                 file={archivos.docInmueble}
                 error={errors.docInmueble}
+                existing={archivosExistentes.docInmueble}
                 onFileChange={(f) => setArchivo('docInmueble', f)}
               />
             </div>
@@ -573,6 +617,7 @@ export function ExpedienteFase1Form({
                 fileRef={fileRefs.planoLocal}
                 file={archivos.planoLocal}
                 error={errors.planoLocal}
+                existing={archivosExistentes.planoLocal}
                 onFileChange={(f) => setArchivo('planoLocal', f)}
               />
             </div>
@@ -588,6 +633,7 @@ export function ExpedienteFase1Form({
                 fileRef={fileRefs.certElectrico}
                 file={archivos.certElectrico}
                 error={errors.certElectrico}
+                existing={archivosExistentes.certElectrico}
                 onFileChange={(f) => setArchivo('certElectrico', f)}
               />
             </div>
@@ -603,6 +649,7 @@ export function ExpedienteFase1Form({
                 fileRef={fileRefs.facturaEnergia}
                 file={archivos.facturaEnergia}
                 error={errors.facturaEnergia}
+                existing={archivosExistentes.facturaEnergia}
                 onFileChange={(f) => setArchivo('facturaEnergia', f)}
               />
             </div>
@@ -618,6 +665,7 @@ export function ExpedienteFase1Form({
                 fileRef={fileRefs.plancheta}
                 file={archivos.plancheta}
                 error={errors.plancheta}
+                existing={archivosExistentes.plancheta}
                 onFileChange={(f) => setArchivo('plancheta', f)}
               />
             </div>

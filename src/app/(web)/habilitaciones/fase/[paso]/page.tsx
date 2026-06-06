@@ -32,10 +32,15 @@ export default async function HabilitacionFasePage({ params }: Props) {
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     sort: '-createdAt',
-    depth: pasoNum === 3 ? 1 : 0,
+    depth: 1,
   })
 
   const expediente = docs[0] as any | null
+
+  // Convierte una relación de archivo (resuelta con depth: 1) en metadata simple
+  // para mostrar el archivo ya cargado en el formulario al editar.
+  const fileMeta = (v: any): { url?: string | null; filename?: string | null } | null =>
+    v && typeof v === 'object' ? { url: v.url ?? null, filename: v.filename ?? null } : null
 
   // Validaciones de acceso por paso
   if (pasoNum === 1) {
@@ -143,6 +148,14 @@ export default async function HabilitacionFasePage({ params }: Props) {
             telefonoDefault={expediente?.faseITelefono ?? undefined}
             domicilioDefault={expediente?.faseIDireccionLocal ?? undefined}
             barrioDefault={expediente?.faseIBarrio ?? undefined}
+            archivosExistentes={{
+              formulario: fileMeta(expediente?.faseIFormularioAdjunto),
+              docInmueble: fileMeta(expediente?.faseIDocInmueble),
+              planoLocal: fileMeta(expediente?.faseIPlanoLocal),
+              certElectrico: fileMeta(expediente?.faseICertElectrico),
+              facturaEnergia: fileMeta(expediente?.faseIFacturaEnergia),
+              plancheta: fileMeta(expediente?.faseIPlancheta),
+            }}
           />
         )}
         {pasoNum === 2 && expediente && (
@@ -160,11 +173,22 @@ export default async function HabilitacionFasePage({ params }: Props) {
             cuitDefault={expediente.faseIICuit ?? undefined}
             nombreFantasiaDefault={expediente.faseIINombreFantasia ?? undefined}
             razonSocialDefault={expediente.faseIIRazonSocial ?? undefined}
-            rubroDefault={expediente.faseIIRubro ?? undefined}
+            rubroDefault={
+              typeof expediente.faseIIRubro === 'object' && expediente.faseIIRubro !== null
+                ? expediente.faseIIRubro.id
+                : (expediente.faseIIRubro ?? undefined)
+            }
             descripcionDefault={expediente.faseIIDescripcionActividad ?? undefined}
             superficieDefault={expediente.faseIISuperficieAfectada ?? undefined}
             empleadosDefault={expediente.faseIICantidadEmpleados ?? undefined}
             horarioDefault={expediente.faseIIHorarioFuncionamiento ?? undefined}
+            adjuntosExistentes={
+              Array.isArray(expediente.faseIIAdjuntos)
+                ? expediente.faseIIAdjuntos
+                    .filter((a: any) => a && typeof a === 'object')
+                    .map((a: any) => ({ url: a.url ?? null, filename: a.filename ?? null }))
+                : []
+            }
           />
         )}
         {pasoNum === 3 && expediente && (

@@ -253,6 +253,29 @@ export async function submitFaseII(
     }
   }
 
+  // Al editar, los archivos nuevos se SUMAN a los ya cargados en lugar de
+  // reemplazar todo el array (evita perder documentación previa).
+  let adjuntosFinales: string[] = adjuntosIds
+  if (adjuntosIds.length > 0) {
+    try {
+      const actual = await basePayload.findByID({
+        collection: 'expedientes-habilitacion' as any,
+        id: expedienteId,
+        depth: 0,
+        overrideAccess: false,
+        user: ciudadano,
+      })
+      const existentes = Array.isArray((actual as any)?.faseIIAdjuntos)
+        ? ((actual as any).faseIIAdjuntos as unknown[])
+            .map((a) => (typeof a === 'string' ? a : (a as any)?.id))
+            .filter((id): id is string => typeof id === 'string')
+        : []
+      adjuntosFinales = [...existentes, ...adjuntosIds]
+    } catch {
+      adjuntosFinales = adjuntosIds
+    }
+  }
+
   try {
     await basePayload.update({
       collection: 'expedientes-habilitacion' as any,
@@ -278,7 +301,7 @@ export async function submitFaseII(
         faseIIPlanoEvacuacion: planoEvacuacion,
         faseIIResiduosPeligrosos: residuosPeligrosos,
         faseIIDeclaracionJurada: declaracionJurada,
-        ...(adjuntosIds.length > 0 ? { faseIIAdjuntos: adjuntosIds } : {}),
+        ...(adjuntosIds.length > 0 ? { faseIIAdjuntos: adjuntosFinales } : {}),
       } as any,
     })
     return {}

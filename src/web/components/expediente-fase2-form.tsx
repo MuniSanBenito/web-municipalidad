@@ -3,12 +3,12 @@
 import { submitFaseII } from '@/actions/habilitaciones'
 import type { RubrosComercio } from '@/payload-types'
 import {
-  IconAlertTriangle,
-  IconCheck,
-  IconDownload,
-  IconFileDescription,
-  IconLoader2,
-  IconUpload,
+    IconAlertTriangle,
+    IconCheck,
+    IconDownload,
+    IconFileDescription,
+    IconLoader2,
+    IconUpload,
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -31,6 +31,7 @@ interface Props {
   empleadosDefault?: number
   horarioDefault?: string
   rubros: RubrosComercio[]
+  adjuntosExistentes?: { url?: string | null; filename?: string | null }[]
 }
 
 function FileField({
@@ -128,6 +129,7 @@ export function ExpedienteFase2Form({
   empleadosDefault,
   horarioDefault,
   rubros,
+  adjuntosExistentes = [],
 }: Props) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
@@ -464,6 +466,37 @@ export function ExpedienteFase2Form({
             <IconDownload size={16} />
             Descargar Formulario Inicial de Habilitación
           </a>
+          {adjuntosExistentes.length > 0 && (
+            <div className="border-primary/20 bg-primary/5 mb-5 rounded-lg border p-4">
+              <p className="text-primary mb-2 flex items-center gap-2 text-sm font-medium">
+                <IconCheck size={16} className="shrink-0" />
+                Documentación ya cargada
+              </p>
+              <p className="text-base-content/60 mb-3 text-xs">
+                Estos archivos se conservan. Solo adjuntá nuevos abajo si querés sumar o reemplazar
+                documentación.
+              </p>
+              <ul className="space-y-1.5">
+                {adjuntosExistentes.map((adj, i) =>
+                  adj.url ? (
+                    <li key={i}>
+                      <a
+                        href={adj.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary inline-flex items-center gap-1.5 text-xs hover:underline"
+                      >
+                        <IconFileDescription size={14} className="shrink-0" />
+                        <span className="max-w-[260px] truncate">
+                          {adj.filename ?? `Archivo ${i + 1}`}
+                        </span>
+                      </a>
+                    </li>
+                  ) : null,
+                )}
+              </ul>
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FileField label="Formulario Inicial de Habilitación" name="doc_formulario" required />
             <FileField label="Libre Deuda Municipal" name="doc_libre_deuda" required />
