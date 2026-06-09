@@ -16,6 +16,7 @@ import {
   IconHeartHandshake,
   IconHomeEdit,
   IconLicense,
+  IconMap,
   IconMasksTheater,
   IconPhoneCall,
   IconUserCircle,
@@ -155,6 +156,12 @@ const tramites = [
     icon: IconBuildingCommunity,
     link: '/tramites/nido',
     description: 'Núcleo de innovación y Desarrollo de Oportunidades',
+  },
+  {
+    title: 'Turismo',
+    icon: IconMap,
+    link: '/gobierno/turismo',
+    description: 'Lugares históricos y culturales para visitar en San Benito',
   },
 ]
 

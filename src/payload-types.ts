@@ -89,7 +89,10 @@ export interface Config {
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
+<<<<<<< HEAD
     'chatbot-conversations': ChatbotConversation;
+=======
+>>>>>>> origin/main
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -122,7 +125,10 @@ export interface Config {
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+<<<<<<< HEAD
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
+=======
+>>>>>>> origin/main
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1017,6 +1023,23 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: string;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -1707,6 +1730,7 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+<<<<<<< HEAD
  * via the `definition` "chatbot-conversations_select".
  */
 export interface ChatbotConversationsSelect<T extends boolean = true> {
@@ -1739,6 +1763,8 @@ export interface ChatbotConversationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+=======
+>>>>>>> origin/main
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
