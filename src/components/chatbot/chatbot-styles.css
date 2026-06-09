@@ -1283,6 +1283,30 @@ html[data-theme='light'] .quick-reply-chip {
     background: #374151;
     color: #9ca3af;
   }
+
+  .feedback-comment-box {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .feedback-comment-label {
+    color: #fca5a5;
+  }
+
+  .feedback-comment-textarea {
+    background: #1f2937 !important;
+    color: #f3f4f6 !important;
+    border-color: #4b5563 !important;
+  }
+
+  .feedback-comment-textarea::placeholder {
+    color: #9ca3af !important;
+  }
+
+  .feedback-comment-skip {
+    border-color: #6b7280;
+    color: #d1d5db;
+  }
 }
 
 /* Dark mode with .dark class */
@@ -1334,4 +1358,96 @@ html.dark .chatbot-hint,
 [data-theme='dark'] .chatbot-hint {
   background: #374151 !important;
   color: #9ca3af !important;
+}
+
+/* ============================================
+   Feedback comment dialog
+   ============================================ */
+
+.feedback-comment-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 12px;
+  background: #fef2f2;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+}
+
+.feedback-comment-label {
+  font-size: 0.85rem;
+  color: #991b1b;
+  font-weight: 500;
+}
+
+.feedback-comment-textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  font-size: 0.9rem;
+  min-height: 60px;
+  resize: vertical;
+  font-family: inherit;
+  background: #ffffff;
+  color: #374151;
+}
+
+.feedback-comment-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.feedback-comment-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.feedback-comment-skip {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.dark .feedback-comment-box,
+html.dark .feedback-comment-box,
+[data-theme='dark'] .feedback-comment-box,
+html[data-theme='dark'] .feedback-comment-box {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .feedback-comment-label,
+html.dark .feedback-comment-label,
+[data-theme='dark'] .feedback-comment-label,
+html[data-theme='dark'] .feedback-comment-label {
+  color: #fca5a5 !important;
+}
+
+.dark .feedback-comment-textarea,
+html.dark .feedback-comment-textarea,
+[data-theme='dark'] .feedback-comment-textarea,
+html[data-theme='dark'] .feedback-comment-textarea {
+  background: #1f2937 !important;
+  color: #f3f4f6 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .feedback-comment-textarea::placeholder,
+html.dark .feedback-comment-textarea::placeholder,
+[data-theme='dark'] .feedback-comment-textarea::placeholder,
+html[data-theme='dark'] .feedback-comment-textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark .feedback-comment-skip,
+html.dark .feedback-comment-skip,
+[data-theme='dark'] .feedback-comment-skip,
+html[data-theme='dark'] .feedback-comment-skip {
+  border-color: #6b7280 !important;
+  color: #d1d5db !important;
 }
