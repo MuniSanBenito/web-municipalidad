@@ -168,54 +168,18 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ payload }) => {
 
           {/* Campo de comentario para feedback negativo */}
           {showComment && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-                marginTop: '8px',
-                padding: '12px',
-                background: '#fef2f2',
-                borderRadius: '12px',
-                border: '1px solid #fecaca',
-              }}
-            >
-              <label
-                style={{
-                  fontSize: '0.85rem',
-                  color: '#991b1b',
-                  fontWeight: '500',
-                }}
-              >
+            <div className="feedback-comment-box">
+              <label className="feedback-comment-label">
                 ¿Qué podríamos mejorar? (opcional)
               </label>
               <textarea
+                className="feedback-comment-textarea"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Contanos qué información faltó o qué estuvo incorrecto..."
-                style={{
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  border: '1px solid #fecaca',
-                  fontSize: '0.9rem',
-                  minHeight: '60px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
-                }}
               />
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={handleSkipComment}
-                  style={{
-                    background: 'transparent',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    color: '#6b7280',
-                  }}
-                >
+              <div className="feedback-comment-actions">
+                <button type="button" onClick={handleSkipComment} className="feedback-comment-skip">
                   Omitir
                 </button>
                 <button
