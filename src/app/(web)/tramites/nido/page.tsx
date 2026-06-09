@@ -112,7 +112,7 @@ export default function PageNido() {
                 <div className="mt-4 space-y-2">
                   {taller.horarios.map((horario, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <IconClock size={18} className="text-primary mt-0.5 flex-shrink-0" />
+                      <IconClock size={18} className="text-primary mt-0.5 shrink-0" />
                       <span className="text-base-content text-sm">{horario}</span>
                     </div>
                   ))}
@@ -125,7 +125,7 @@ export default function PageNido() {
 
       {/* Escuela de Emprendedores */}
       <section className="mt-12">
-        <div className="card from-primary/10 to-secondary/10 bg-gradient-to-br shadow-xl">
+        <div className="card from-primary/10 to-secondary/10 bg-linear-to-br shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl md:text-3xl">
               <IconPresentationAnalytics size={32} className="text-primary" />
@@ -152,11 +152,11 @@ export default function PageNido() {
             </h3>
             <div className="mt-4 space-y-3">
               <div className="flex items-start gap-2">
-                <IconCalendar size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconCalendar size={20} className="text-secondary mt-0.5 shrink-0" />
                 <span className="text-base-content">Lunes a Viernes</span>
               </div>
               <div className="flex items-start gap-2">
-                <IconClock size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconClock size={20} className="text-secondary mt-0.5 shrink-0" />
                 <div>
                   <p className="text-base-content">Mañana: 7 a 13 hs</p>
                   <p className="text-base-content">Tarde: 15 a 19 hs</p>
@@ -181,19 +181,19 @@ export default function PageNido() {
             </h3>
             <ul className="mt-4 space-y-3">
               <li className="flex items-start gap-2">
-                <IconBuildingStore size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconBuildingStore size={20} className="text-secondary mt-0.5 shrink-0" />
                 <span className="text-base-content">Organización y cronogramas de Ferias</span>
               </li>
               <li className="flex items-start gap-2">
-                <IconUsers size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconUsers size={20} className="text-secondary mt-0.5 shrink-0" />
                 <span className="text-base-content">Atención a Feriantes Emprendedores</span>
               </li>
               <li className="flex items-start gap-2">
-                <IconInfoCircle size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconInfoCircle size={20} className="text-secondary mt-0.5 shrink-0" />
                 <span className="text-base-content">Información General</span>
               </li>
               <li className="flex items-start gap-2">
-                <IconSchool size={20} className="text-secondary mt-0.5 flex-shrink-0" />
+                <IconSchool size={20} className="text-secondary mt-0.5 shrink-0" />
                 <div className="text-base-content text-sm">
                   Inscripciones a las Actividades Deportivas, Colonias de Vacaciones, Jardines
                   Municipales

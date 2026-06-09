@@ -109,7 +109,7 @@ export default async function EventoPage({ params }: Props) {
       year: 'numeric',
     })
     return (
-      <main className="from-base-100 to-base-200 min-h-screen bg-gradient-to-br">
+      <main className="from-base-100 to-base-200 min-h-screen bg-linear-to-br">
         {/* Banner principal mejorado */}
         <div className="relative h-80 max-h-96 w-full overflow-hidden shadow-2xl md:rounded-b-3xl">
           <img
@@ -120,7 +120,7 @@ export default async function EventoPage({ params }: Props) {
             alt={evento.nombre}
             className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105 dark:brightness-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute right-0 bottom-0 left-0 p-6">
             <div>
               <h1 className="mb-2 text-4xl leading-tight font-extrabold text-white drop-shadow-2xl md:text-6xl">
@@ -186,7 +186,7 @@ export default async function EventoPage({ params }: Props) {
               {/* Información clave */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Fecha */}
-                <div className="group from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 text-primary border-primary/20 flex items-center gap-3 rounded-xl border bg-gradient-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="group from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 text-primary border-primary/20 flex items-center gap-3 rounded-xl border bg-linear-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                   <div className="bg-primary/20 group-hover:bg-primary/30 rounded-lg p-2 transition-colors">
                     <svg
                       className="h-6 w-6"
@@ -212,7 +212,7 @@ export default async function EventoPage({ params }: Props) {
 
                 {/* Ubicación */}
                 {evento.ubicacion && evento.ubicacion.nombre && (
-                  <div className="group from-secondary/10 to-secondary/5 hover:from-secondary/20 hover:to-secondary/10 text-secondary border-secondary/20 flex items-center gap-3 rounded-xl border bg-gradient-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                  <div className="group from-secondary/10 to-secondary/5 hover:from-secondary/20 hover:to-secondary/10 text-secondary border-secondary/20 flex items-center gap-3 rounded-xl border bg-linear-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div className="bg-secondary/20 group-hover:bg-secondary/30 rounded-lg p-2 transition-colors">
                       <svg
                         className="h-6 w-6"
@@ -238,7 +238,7 @@ export default async function EventoPage({ params }: Props) {
 
                 {/* Organizador */}
                 {evento.organiza && (
-                  <div className="group from-accent/10 to-accent/5 hover:from-accent/20 hover:to-accent/10 text-accent border-accent/20 flex items-center gap-3 rounded-xl border bg-gradient-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                  <div className="group from-accent/10 to-accent/5 hover:from-accent/20 hover:to-accent/10 text-accent border-accent/20 flex items-center gap-3 rounded-xl border bg-linear-to-br px-4 py-4 font-medium shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div className="bg-accent/20 group-hover:bg-accent/30 rounded-lg p-2 transition-colors">
                       <svg
                         className="h-6 w-6"
@@ -289,7 +289,6 @@ export default async function EventoPage({ params }: Props) {
                   <p className="text-base-content/80">{evento.entradas}</p>
                 </div>
               )}
-
 
               {/* Tags del evento */}
               {evento.tags && evento.tags.length > 0 && (
@@ -423,20 +422,34 @@ export default async function EventoPage({ params }: Props) {
                   </p>
                 </div>
               </div>
-              
+
               {/* Separar imágenes de otros archivos */}
               {(() => {
-                const imagenes = evento.archivos.filter(archivo => archivo.mimeType?.startsWith('image/'))
-                const otrosArchivos = evento.archivos.filter(archivo => !archivo.mimeType?.startsWith('image/'))
-                
+                const imagenes = evento.archivos.filter((archivo) =>
+                  archivo.mimeType?.startsWith('image/'),
+                )
+                const otrosArchivos = evento.archivos.filter(
+                  (archivo) => !archivo.mimeType?.startsWith('image/'),
+                )
+
                 return (
                   <div className="space-y-8">
                     {/* Galería de imágenes */}
                     {imagenes.length > 0 && (
                       <div className="bg-base-100 border-base-300 rounded-2xl border p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
-                        <h3 className="text-primary text-xl font-semibold mb-4 flex items-center gap-2">
-                          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <h3 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+                          <svg
+                            className="h-6 w-6"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
                           </svg>
                           Imágenes
                         </h3>
@@ -447,7 +460,7 @@ export default async function EventoPage({ params }: Props) {
                               href={imagen.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="group relative overflow-hidden rounded-xl border border-base-300 bg-base-50 transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
+                              className="group border-base-300 bg-base-50 hover:border-primary/30 relative overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-lg"
                             >
                               <div className="aspect-video w-full overflow-hidden">
                                 <img
@@ -456,16 +469,27 @@ export default async function EventoPage({ params }: Props) {
                                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                                 />
                               </div>
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                              <div className="absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                <p className="text-sm font-medium truncate">{imagen.filename}</p>
+                              <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                              <div className="absolute right-0 bottom-0 left-0 p-3 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                <p className="truncate text-sm font-medium">{imagen.filename}</p>
                                 <p className="text-xs text-white/80">
-                                  {(imagen.filesize / 1024).toFixed(1)} KB • {imagen.width}×{imagen.height}
+                                  {(imagen.filesize / 1024).toFixed(1)} KB • {imagen.width}×
+                                  {imagen.height}
                                 </p>
                               </div>
-                              <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              <div className="absolute top-2 right-2 rounded-full bg-black/50 p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                <svg
+                                  className="h-4 w-4 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                  />
                                 </svg>
                               </div>
                             </a>
@@ -473,31 +497,51 @@ export default async function EventoPage({ params }: Props) {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Otros archivos */}
                     {otrosArchivos.length > 0 && (
                       <div className="bg-base-100 border-base-300 rounded-2xl border p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
-                        <h3 className="text-primary text-xl font-semibold mb-4 flex items-center gap-2">
-                          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <h3 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+                          <svg
+                            className="h-6 w-6"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
                           </svg>
                           Documentos
                         </h3>
                         <div className="grid gap-3 sm:grid-cols-2">
                           {otrosArchivos.map((archivo, index) => {
                             const fileSize = (archivo.filesize / 1024).toFixed(1) + ' KB'
-                            
+
                             return (
                               <a
                                 key={archivo.id}
                                 href={archivo.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group flex items-center gap-3 rounded-xl border border-base-300 bg-base-50 p-3 transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md"
+                                className="group border-base-300 bg-base-50 hover:border-primary/30 hover:bg-primary/5 flex items-center gap-3 rounded-xl border p-3 transition-all duration-300 hover:shadow-md"
                               >
-                                <div className="bg-secondary/10 text-secondary flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg">
-                                  <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <div className="bg-secondary/10 text-secondary flex h-12 w-12 shrink-0 items-center justify-center rounded-lg">
+                                  <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
                                   </svg>
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -508,9 +552,19 @@ export default async function EventoPage({ params }: Props) {
                                     {fileSize} • {archivo.mimeType}
                                   </p>
                                 </div>
-                                <div className="flex-shrink-0">
-                                  <svg className="text-base-content/40 group-hover:text-primary h-4 w-4 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                <div className="shrink-0">
+                                  <svg
+                                    className="text-base-content/40 group-hover:text-primary h-4 w-4 transition-colors"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    />
                                   </svg>
                                 </div>
                               </a>

@@ -220,7 +220,7 @@ export default function PageDatosUtiles() {
   return (
     <main className="container mx-auto px-4 py-6">
       {/* Header */}
-      <section className="hero from-primary to-secondary mb-8 rounded-lg bg-gradient-to-r p-6 text-center text-white shadow-lg md:p-10">
+      <section className="hero from-primary to-secondary mb-8 rounded-lg bg-linear-to-r p-6 text-center text-white shadow-lg md:p-10">
         <div className="hero-content">
           <div className="mx-auto max-w-3xl">
             <IconPhoneCall className="mx-auto mb-4" size={60} stroke={1.5} />
