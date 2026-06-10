@@ -355,14 +355,26 @@ export const PRODUCCION_EMPLEO: ServiceInfo = {
 // TERCERA EDAD Y DISCAPACIDAD
 // ===========================================
 export const TERCERA_EDAD: ServiceInfo = {
-  nombre: 'Tercera Edad y Discapacidad',
-  descripcion: 'Atención y servicios para adultos mayores y personas con discapacidad',
+  nombre: 'Área de Tercera Edad y Discapacidad',
+  descripcion:
+    'Garantizamos y promovemos los derechos de personas mayores y con discapacidad, en base a la Convención Interamericana y la Convención Internacional sobre Derechos de las Personas con Discapacidad.',
   whatsapp: '3433027297',
   telefono: '3433027297',
   email: 'adultosmayoresydiscapacidadsb@gmail.com',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  ubicacion: 'Basavilbaso 1093',
+  ubicacion: 'Edificio NIDO - Buenos Aires y Misiones, San Benito',
   url: '/tramites/tercera-edad-discapacidad',
+  enlaces: [
+    {
+      texto: 'Formulario de Relevamiento de Personas con Discapacidad',
+      url: 'https://docs.google.com/forms/d/e/1FAIpQLScmAJA6BYQWP403mdjR8p6Xb6pb5gnSVlwSnp7kL0duXh8XwA/viewform',
+    },
+  ],
+  informacionAdicional: [
+    'Equipo: Zampieri Ana María (Psicopedagoga - Coordinadora), Petrosino Natalia (Lic. en Terapia Ocupacional), Romero Melisa (Pasante Lic. Trabajo Social)',
+    'Disponible formulario online de relevamiento para personas con discapacidad',
+    'Video en Lengua de Señas Argentina (LSA) próximamente disponible',
+  ],
 }
 
 // ===========================================
@@ -426,18 +438,46 @@ export const CONCEJO_DELIBERANTE: ServiceInfo = {
 // OTROS SERVICIOS
 // ===========================================
 export const CATASTRO: ServiceInfo = {
-  nombre: 'Catastro',
-  descripcion: 'Servicio de catastro municipal',
+  nombre: 'Catastro Municipal',
+  descripcion:
+    'El área de Catastro mantiene actualizado el registro de propiedades, realiza mediciones y valuaciones, y gestiona la información territorial del municipio.',
+  telefono: '343-4973454',
+  email: 'catastro@munisanbenito.gov.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  ubicacion: 'Edificio Municipal',
+  ubicacion: 'Edificio Municipal - Basavilbaso 1094',
+  url: '/tramites/catastro',
+  requisitos: [
+    'Inscripción de Títulos: escritura original + formulario firmado y sellado por escribano, dinero para sellados',
+    'Cambio de domicilio postal: formulario firmado por titular + fotocopia DNI',
+    'Plancheta catastral: titular cargado en base catastral (si no, presentar escritura/boleto + DNI), abonar sellado',
+    'Cálculo de numeración oficial: lote con declaración de superficie edificada o mejoras de construcción',
+    'Cambio de datos catastrales: boleto de compra-venta, cesión de derechos o escritura con sellados y actas correspondientes',
+  ],
+  informacionAdicional: [
+    '⚠️ ATENCIÓN PRESENCIAL OBLIGATORIA: todos los trámites se realizan exclusivamente de manera presencial. No se aceptan gestiones por correo ni medios digitales.',
+    'Servicios: Consulta Catastral, Medición y Relevamiento, Certificados Catastrales',
+    'Verificar montos de sellados actualizados el día del trámite',
+    'Contacto alternativo: CAV 3436127013',
+  ],
 }
 
 export const MESA_ENTRADA: ServiceInfo = {
   nombre: 'Mesa de Entrada',
-  descripcion: 'Recepción de trámites generales',
+  descripcion:
+    'Punto inicial para la presentación de todo tipo de trámites administrativos en la Municipalidad. Aquí puede iniciar sus gestiones de forma ordenada y segura.',
   telefono: '343-4973454',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  ubicacion: 'Edificio Municipal',
+  ubicacion: 'Edificio Municipal - Basavilbaso 1094',
+  url: '/tramites/mesa-de-entrada',
+  requisitos: [
+    'Nota de solicitud dirigida a la autoridad correspondiente',
+    'Fotocopia del DNI del solicitante',
+  ],
+  informacionAdicional: [
+    'La nota debe incluir: nombre y apellido completos, domicilio real y legal (dentro de San Benito), firma del presentante, correo electrónico y teléfono de contacto',
+    'Para profesionales: incluir número de matrícula individual en la nota',
+    'Asegurarse de cumplir todos los requisitos para evitar demoras',
+  ],
 }
 
 export const TALLERES_CULTURALES: ServiceInfo = {
@@ -453,6 +493,63 @@ export const TALLERES_CULTURALES: ServiceInfo = {
     'Sede CIC (Garay y Nogoyá): Teatro (+16 años, Mi 18:30-20hs), Coro Municipal (+16 años, V 19:30-21:30hs)',
     'Sede Biblioteca Municipal (Friuli 1051): Piano (+9 años, Ma 16:30-21:30hs y V 16:30-20:30hs)',
     'Requisito: domicilio en San Benito. Cupos limitados.',
+  ],
+}
+
+// ===========================================
+// NIDO - NÚCLEO DE INNOVACIÓN Y DESARROLLO
+// ===========================================
+export const NIDO: ServiceInfo = {
+  nombre: 'NIDO - Núcleo de Innovación y Desarrollo de Oportunidades',
+  descripcion:
+    'Espacio comunitario que promueve la inclusión social y el desarrollo de las personas a través de capacitaciones, talleres, emprendimientos y empleo.',
+  horario: 'Lunes a Viernes: Mañana 7:00 a 13:00 hs | Tarde 15:00 a 19:00 hs',
+  ubicacion: 'Buenos Aires y Misiones, San Benito',
+  url: '/tramites/nido',
+  informacionAdicional: [
+    'Coordinador: Jorge Buffa',
+    '',
+    'TALLERES DISPONIBLES:',
+    '• Apoyo Escolar Primario: Matutino L/Mi/J 9-10:15hs | Vespertino L/Mi/V 17-18:15hs (con derivación escolar)',
+    '• Taller de Guitarra: L/J/V 16:45 a 19:15 hs',
+    '• Taller de Folclore: Ma/J 18 a 20:30 hs',
+    '• Taller de Danzas Típicas: Lunes 18 a 20 hs',
+    '• Vení a Bailar (Salud Mental en Movimiento - Min. Salud ER): Lunes 16 a 17 hs',
+    '• Banda de Música Municipal: Miércoles 18 a 20:40 hs',
+    '• Taller de Tango: Sábados 16 a 18 hs',
+    '',
+    'ESCUELA DE EMPRENDEDORES: capacitaciones para crear y gestionar proyectos locales.',
+    '',
+    'PRODUCCIÓN Y EMPLEO: Ferias emprendedoras, atención a feriantes, inscripción actividades deportivas y jardines municipales.',
+    '',
+    'SUM (Salón de Usos Múltiples): capacidad 80 personas + proyector. Disponible para instituciones locales (previa disponibilidad).',
+    '',
+    'Los cupos para los talleres se consultan en los días y horarios que funcionan.',
+  ],
+}
+
+// ===========================================
+// ASESORÍA LEGAL Y TÉCNICA
+// ===========================================
+export const ASESORIA_LEGAL: ServiceInfo = {
+  nombre: 'Asesoría Legal y Técnica',
+  descripcion:
+    'Asesoramiento jurídico y técnico de la Municipalidad de San Benito para consultas legales y trámites administrativos.',
+  email: 'asesorialegalytecnica@sanbenito.gob.ar',
+  horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  ubicacion: 'Edificio Municipal - Basavilbaso 1094',
+}
+
+// ===========================================
+// SERVICIOS EXTERNOS ÚTILES
+// ===========================================
+export const SERVICIOS_EXTERNOS: ServiceInfo = {
+  nombre: 'Servicios Externos Útiles',
+  descripcion: 'Servicios de utilidad pública de San Benito no dependientes del municipio.',
+  informacionAdicional: [
+    '⚡ ENERSA (Electricidad / corte de luz): 0800-777-0080 (24 horas)',
+    '💧 Cooperativa de Agua San Benito: 0800-888-7278 (L-V 7:00 a 14:00 hs)',
+    '🚓 Comisaría San Benito: emergencias llamar al 911',
   ],
 }
 
@@ -500,6 +597,13 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   ambulancia: EMERGENCIAS_INFO,
   contacto: CONTACTO_GENERAL_INFO,
   'contacto-general': CONTACTO_GENERAL_INFO,
+  nido: NIDO,
+  'nucleo-innovacion': NIDO,
+  'asesoria-legal': ASESORIA_LEGAL,
+  asesoria: ASESORIA_LEGAL,
+  'servicios-externos': SERVICIOS_EXTERNOS,
+  enersa: SERVICIOS_EXTERNOS,
+  agua: SERVICIOS_EXTERNOS,
 }
 
 // ===========================================
@@ -701,7 +805,28 @@ const SINONIMOS: { [key: string]: string[] } = {
     'curso',
     'cursos',
   ],
-  catastro: ['catastro', 'terreno', 'lote', 'parcela', 'mensura', 'subdivision', 'subdivisión'],
+  catastro: [
+    'catastro',
+    'terreno',
+    'lote',
+    'parcela',
+    'mensura',
+    'subdivision',
+    'subdivisión',
+    'escritura',
+    'titulo propiedad',
+    'título propiedad',
+    'plancheta catastral',
+    'plancheta',
+    'inscripcion de titulos',
+    'inscripción de títulos',
+    'numeracion oficial',
+    'numeración oficial',
+    'cambio de datos catastrales',
+    'cambio de domicilio postal',
+    'certificado catastral',
+    'certificados catastrales',
+  ],
   'area-mujer': [
     'mujer',
     'mujeres',
@@ -790,6 +915,45 @@ const SINONIMOS: { [key: string]: string[] } = {
     'cic san pedro',
     'cic barrio san pedro',
     'telar',
+  ],
+  'mesa-entrada': [
+    'mesa de entrada',
+    'presentar tramite',
+    'presentar trámite',
+    'iniciar tramite',
+    'iniciar trámite',
+    'nota de solicitud',
+    'nota solicitud',
+    'tramite administrativo',
+    'trámite administrativo',
+    'gestionar tramite',
+    'gestionar trámite',
+    'ingresar expediente',
+    'mesa entrada',
+  ],
+  nido: [
+    'nido',
+    'nucleo innovacion',
+    'núcleo innovación',
+    'escuela emprendedores',
+    'sum municipalidad',
+    'salon usos multiples',
+    'salón usos múltiples',
+    'apoyo escolar',
+    'banda municipal',
+    'buenos aires y misiones',
+    'talleres nido',
+  ],
+  'asesoria-legal': [
+    'asesoria legal',
+    'asesoría legal',
+    'asesoramiento legal',
+    'asesor legal',
+    'asesoría jurídica',
+    'asesoria juridica',
+    'consulta legal',
+    'consulta juridica',
+    'consulta jurídica',
   ],
   emergencia: [
     'emergencia',
@@ -933,12 +1097,14 @@ export function formatearServicio(servicio: ServiceInfo): string {
     'Talleres Culturales': '🎨',
     'Área Mujer y Género': '💜',
     'Área de Producción y Empleo': '💼',
-    'Tercera Edad y Discapacidad': '🧓',
-    Catastro: '🗺️',
+    'Área de Tercera Edad y Discapacidad': '🧓',
+    'Catastro Municipal': '🗺️',
     'Mesa de Entrada': '📝',
     'Talleres Culturales Municipales': '🎨',
     'Sección Acción Social': '🤝',
     'CIC Barrio San Pedro': '🏘️',
+    'NIDO - Núcleo de Innovación y Desarrollo de Oportunidades': '🏠',
+    'Asesoría Legal y Técnica': '⚖️',
   }
 
   const emoji = emojis[servicio.nombre] || '📋'
@@ -1000,7 +1166,8 @@ export function formatearContactoGeneral(): string {
     `• 🧓 Tercera Edad y Discapacidad: ${TERCERA_EDAD.whatsapp}\n` +
     `• 🤝 Acción Social: ${ACCION_SOCIAL.whatsapp}\n` +
     `• 🏘️ CIC Barrio San Pedro: ${CIC_BARRIO_SAN_PEDRO.whatsapp}\n` +
-    `• 🏛️ Concejo Deliberante: ${CONCEJO_DELIBERANTE.whatsapp}`
+    `• 🏛️ Concejo Deliberante: ${CONCEJO_DELIBERANTE.whatsapp}\n` +
+    `• 🏠 NIDO (Talleres / Emprendedores): Buenos Aires y Misiones\n`
   )
 }
 
@@ -1018,6 +1185,7 @@ export function formatearHorariosGeneral(): string {
     `• 🏪 Habilitaciones: ${HABILITACIONES.horario}\n` +
     `• 📋 CAV: ${CAV.horario}\n` +
     `• 📚 Punto Digital / Biblioteca: ${PUNTO_DIGITAL.horario}\n` +
-    `• 💼 Producción y Empleo: ${PRODUCCION_EMPLEO.horario}`
+    `• 💼 Producción y Empleo: ${PRODUCCION_EMPLEO.horario}\n` +
+    `• 🏠 NIDO: ${NIDO.horario}`
   )
 }
