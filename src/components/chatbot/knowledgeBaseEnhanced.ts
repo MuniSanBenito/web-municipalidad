@@ -29,7 +29,7 @@ export const CONTACTO_GENERAL = {
   emailPrincipal: 'presidencia@munisanbenito.gov.ar',
   horarioGeneral: 'Lunes a Viernes de 7:00 a 13:00 hs',
   intendente: 'Ariel Voeffray',
-  poblacion: '17,000 habitantes aproximadamente',
+  poblacion: '~25.000 habitantes aproximadamente',
 }
 
 // ===========================================
@@ -68,7 +68,8 @@ export const CONTACTO_GENERAL_INFO: ServiceInfo = {
   ubicacion: 'Basavilbaso 1094, San Benito',
   informacionAdicional: [
     '• Intendente: Ariel Voeffray',
-    '• Población: 17,000 habitantes aproximadamente',
+    '• Población: ~25.000 habitantes aproximadamente',
+    '• Fundada en 1879. A 12 km del centro de Paraná (capital de Entre Ríos).',
   ],
 }
 
@@ -497,6 +498,32 @@ export const TALLERES_CULTURALES: ServiceInfo = {
 }
 
 // ===========================================
+// TURISMO
+// ===========================================
+export const TURISMO: ServiceInfo = {
+  nombre: 'Turismo en San Benito',
+  descripcion:
+    'Descubrí una ciudad con casi 150 años de historia, tradición inmigrante y lugares únicos para conocer.',
+  url: '/gobierno/turismo',
+  informacionAdicional: [
+    'San Benito fue fundada en 1879 por colonos europeos. A 12 km de Paraná, acceso por Ruta Provincial 11.',
+    '',
+    'PUNTOS DE INTERÉS:',
+    '• Iglesia San Benito Abad (1888): Patrimonio histórico. Construida en menos de 4 meses.',
+    '• Parque Vieytes: Corazón verde de la ciudad. Senderos, juegos y áreas verdes.',
+    '• Cementerio Parroquial: Visitas guiadas con historia de familias inmigrantes fundadoras.',
+    '• Batalla del Saucesito: Sitio histórico relevante de la región entrerriana.',
+    '• Batalla de Las Tunas: Otro sitio histórico destacado de la región.',
+    '',
+    'ORÍGENES INMIGRANTES: Friuli (Italia), Eslovenia, Austria.',
+    '',
+    'EVENTOS DESTACADOS:',
+    '• Fiesta Patronal San Benito Abad: 21 de marzo. Misas, procesiones y actividades culturales.',
+    '• Fiesta del Gaucho: Jinetes, payadores, doma y música folklórica.',
+  ],
+}
+
+// ===========================================
 // NIDO - NÚCLEO DE INNOVACIÓN Y DESARROLLO
 // ===========================================
 export const NIDO: ServiceInfo = {
@@ -597,6 +624,8 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   ambulancia: EMERGENCIAS_INFO,
   contacto: CONTACTO_GENERAL_INFO,
   'contacto-general': CONTACTO_GENERAL_INFO,
+  turismo: TURISMO,
+  'gobierno-turismo': TURISMO,
   nido: NIDO,
   'nucleo-innovacion': NIDO,
   'asesoria-legal': ASESORIA_LEGAL,
@@ -944,6 +973,31 @@ const SINONIMOS: { [key: string]: string[] } = {
     'buenos aires y misiones',
     'talleres nido',
   ],
+  turismo: [
+    'turismo',
+    'turistico',
+    'turístico',
+    'iglesia san benito',
+    'iglesia',
+    'parque vieytes',
+    'cementerio',
+    'batalla saucesito',
+    'batalla tunas',
+    'historia san benito',
+    'patrimonio',
+    'inmigrantes',
+    'friulanos',
+    'fiesta patronal',
+    'fiesta del gaucho',
+    'gaucho',
+    'lugares turisticos',
+    'lugares turísticos',
+    'visitar san benito',
+    'que ver en san benito',
+    'que hacer en san benito',
+    'colonia brugo',
+    'ruta 11',
+  ],
   'asesoria-legal': [
     'asesoria legal',
     'asesoría legal',
@@ -1105,6 +1159,7 @@ export function formatearServicio(servicio: ServiceInfo): string {
     'CIC Barrio San Pedro': '🏘️',
     'NIDO - Núcleo de Innovación y Desarrollo de Oportunidades': '🏠',
     'Asesoría Legal y Técnica': '⚖️',
+    'Turismo en San Benito': '🏛️',
   }
 
   const emoji = emojis[servicio.nombre] || '📋'
