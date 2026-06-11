@@ -4,23 +4,24 @@ import { ThemeToggle } from '@/web/components/theme-toggle'
 import { AccessibilityControls } from '@/web/components/ui/AccessibilityControls'
 import { Footer } from '@/web/components/ui/Footer'
 import { IconMenu2, IconUser, IconX } from '@tabler/icons-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoLight from 'public/images/logo-header-claro.webp'
 import LogoDark from 'public/images/logo-header-oscuro.webp'
 import type { PropsWithChildren } from 'react'
-import { useEffect, useMemo, useState } from 'react' // Keep existing hooks
+import { useEffect, useMemo, useState } from 'react'; // Keep existing hooks
 import { twJoin } from 'tailwind-merge'
 import { LogoutButton } from './logout-button'
 
 // Import Chatbot related components
 import ActionProvider from '@/components/chatbot/ActionProvider'
-import '@/components/chatbot/chatbot-styles.css' // Custom improved styling
+import '@/components/chatbot/chatbot-styles.css'; // Custom improved styling
 import chatbotConfig from '@/components/chatbot/config'
 import MessageParser from '@/components/chatbot/MessageParser'
 import { createThrottledSaver, loadUIMessages } from '@/components/chatbot/uiMessagesPersistence'
 import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css' // Default styling
+import 'react-chatbot-kit/build/main.css'; // Default styling
 
 // Styles for react-chatbot-kit to blend better (can be moved to a CSS file)
 // We'll add a custom class to the chatbot container for specific overrides if needed.
@@ -234,9 +235,12 @@ export function RootLayout({ children, ciudadano }: Props) {
             {showChatbot ? (
               <IconX size={28} strokeWidth={2.5} style={{ color: '#076633' }} />
             ) : (
-              <img
-                src="/beni-gaucho.png"
+              <Image
+                src="/beni-gaucho.webp"
                 alt="Beni - Abrir chat"
+                width={68}
+                height={68}
+                priority
                 style={{
                   width: '100%',
                   height: '100%',
