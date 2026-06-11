@@ -5,6 +5,7 @@
  * v2.0: Widget de feedback agregado
  */
 
+import Image from 'next/image'
 import { createChatBotMessage } from 'react-chatbot-kit'
 import ActionProvider from './ActionProvider'
 import MessageParser from './MessageParser'
@@ -35,7 +36,7 @@ const config: Config = {
   botName: botName,
   initialMessages: [
     createChatBotMessage(
-      '¡Hola! Soy Beni, el asistente virtual de la Municipalidad de San Benito 🤖\n\n¿En qué puedo ayudarte hoy?',
+      '¡Hola! Soy Benito, el asistente virtual de la Municipalidad de San Benito 🤖\n\n¿En qué puedo ayudarte hoy?',
       {
         widget: 'smartSuggestions',
         delay: 300,
@@ -60,9 +61,11 @@ const config: Config = {
           border: '2px solid #b6c544',
         }}
       >
-        <img
-          src="/beni-gaucho.png"
+        <Image
+          src="/beni-gaucho.webp"
           alt="Beni"
+          width={36}
+          height={36}
           style={{
             width: '100%',
             height: '100%',
@@ -96,9 +99,11 @@ const config: Config = {
             border: '2px solid #b6c544',
           }}
         >
-          <img
-            src="/beni-gaucho.png"
+          <Image
+            src="/beni-gaucho.webp"
             alt="Beni"
+            width={48}
+            height={48}
             style={{
               width: '100%',
               height: '100%',
@@ -271,9 +276,11 @@ const config: Config = {
               border: '2px solid #b6c544',
             }}
           >
-            <img
-              src="/beni-gaucho.png"
+            <Image
+              src="/beni-gaucho.webp"
               alt="Beni"
+              width={40}
+              height={40}
               style={{
                 width: '100%',
                 height: '100%',
