@@ -15,10 +15,10 @@ export const API_KEY = process.env.GROQ_API_KEY || process.env.IA_API_KEY || ''
 
 // Modelos en orden de preferencia (fallback ante rate limit o error)
 export const MODELS = [
-  'openai/gpt-oss-120b',
   'llama-3.3-70b-versatile', // Principal: 30 RPM, 1K RPD, 12K TPM
   'meta-llama/llama-4-scout-17b-16e-instruct', // Backup 1: 30 RPM, 1K RPD, 30K TPM
   'llama-3.1-8b-instant', // Backup 2: 30 RPM, 14.4K RPD — más ligero
+  'openai/gpt-oss-120b',
 ]
 export const MODEL_NAME = MODELS[0]
 
