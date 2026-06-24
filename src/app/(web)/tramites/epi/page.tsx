@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Área de Primera Infancia - San Benito',
+  title: 'Espacio de Primera Infancia - San Benito',
   description:
     'Espacios de Primera Infancia de la Municipalidad de San Benito. Jardines maternales con atención integral para bebés y niños en edad inicial.',
 }
@@ -76,7 +76,7 @@ export default function PageEPI() {
           <div className="flex shrink-0 justify-center">
             <Image
               src="/images/epi/portada-epi.jpeg"
-              alt="Área de Primera Infancia - San Benito"
+              alt="Espacio de Primera Infancia - San Benito"
               width={260}
               height={260}
               className="rounded-xl object-contain drop-shadow-md"
@@ -84,7 +84,7 @@ export default function PageEPI() {
             />
           </div>
           <div className="max-w-xl text-center md:text-left">
-            <h1 className="text-3xl font-bold md:text-5xl">Área de Primera Infancia</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">Espacio de Primera Infancia</h1>
             <div className="bg-primary mx-auto mt-4 h-1 w-24 rounded-full md:mx-0"></div>
             <p className="text-base-content mt-6 text-lg leading-relaxed">
               Los Espacios de Primera Infancia de la Municipalidad de San Benito brindan
