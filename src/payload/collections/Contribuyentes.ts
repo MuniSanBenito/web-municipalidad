@@ -203,8 +203,8 @@ export const Contribuyentes: CollectionConfig = {
   },
   access: {
     read: isAdminOrWithKey,
-    create: isAdminCollectionAccess,
-    update: isAdminCollectionAccess,
+    create: isAdminOrWithKey,
+    update: isAdminOrWithKey,
     delete: isAdminCollectionAccess,
   },
   fields: contribuyenteFields,

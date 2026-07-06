@@ -165,9 +165,9 @@ Contabilidad
 - D: admin y hacienda
 
 Contribuyentes
-- C: admin
+- C: admin o API key (EXTERNAL_API_KEY)
 - R: admin o API key (EXTERNAL_API_KEY)
-- U: admin
+- U: admin o API key (EXTERNAL_API_KEY)
 - D: admin
 
 Curriculums (idem a avatares)
