@@ -77,6 +77,7 @@ export interface Config {
     avatares: Avatar;
     memorias: Memoria;
     contabilidad: Contabilidad;
+    contribuyentes: Contribuyente;
     intimaciones: Intimacione;
     ubicaciones: Ubicacione;
     eventos: Evento;
@@ -110,6 +111,7 @@ export interface Config {
     avatares: AvataresSelect<false> | AvataresSelect<true>;
     memorias: MemoriasSelect<false> | MemoriasSelect<true>;
     contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
+    contribuyentes: ContribuyentesSelect<false> | ContribuyentesSelect<true>;
     intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
     ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
     eventos: EventosSelect<false> | EventosSelect<true>;
@@ -607,6 +609,44 @@ export interface Contabilidad {
   createdAt: string;
 }
 /**
+ * Datos de contribuyentes importados del sistema legacy de Rentas
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contribuyentes".
+ */
+export interface Contribuyente {
+  id: string;
+  numero_contribuyente: number;
+  nombre?: string | null;
+  domicilio?: string | null;
+  codigo_postal?: number | null;
+  tipo_documento?: number | null;
+  numero_documento?: string | null;
+  categoria?: number | null;
+  cuit?: string | null;
+  habilitado_web?: boolean | null;
+  clave_web?: string | null;
+  email?: string | null;
+  dcc?: number | null;
+  domicilio_altura?: string | null;
+  domicilio_calle_secundaria?: string | null;
+  domicilio_torre?: string | null;
+  domicilio_piso?: string | null;
+  domicilio_depto?: string | null;
+  sexo?: number | null;
+  nacionalidad?: string | null;
+  cba?: number | null;
+  cbu?: string | null;
+  fecha_alta?: string | null;
+  fecha_nacimiento?: string | null;
+  email_secundario?: string | null;
+  telefono_web?: string | null;
+  telefono_secundario?: string | null;
+  dfi?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "intimaciones".
  */
@@ -1059,6 +1099,10 @@ export interface PayloadLockedDocument {
         value: string | Contabilidad;
       } | null)
     | ({
+        relationTo: 'contribuyentes';
+        value: string | Contribuyente;
+      } | null)
+    | ({
         relationTo: 'intimaciones';
         value: string | Intimacione;
       } | null)
@@ -1505,6 +1549,41 @@ export interface ContabilidadSelect<T extends boolean = true> {
   archivo?: T;
   nombre?: T;
   fecha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contribuyentes_select".
+ */
+export interface ContribuyentesSelect<T extends boolean = true> {
+  numero_contribuyente?: T;
+  nombre?: T;
+  domicilio?: T;
+  codigo_postal?: T;
+  tipo_documento?: T;
+  numero_documento?: T;
+  categoria?: T;
+  cuit?: T;
+  habilitado_web?: T;
+  clave_web?: T;
+  email?: T;
+  dcc?: T;
+  domicilio_altura?: T;
+  domicilio_calle_secundaria?: T;
+  domicilio_torre?: T;
+  domicilio_piso?: T;
+  domicilio_depto?: T;
+  sexo?: T;
+  nacionalidad?: T;
+  cba?: T;
+  cbu?: T;
+  fecha_alta?: T;
+  fecha_nacimiento?: T;
+  email_secundario?: T;
+  telefono_web?: T;
+  telefono_secundario?: T;
+  dfi?: T;
   updatedAt?: T;
   createdAt?: T;
 }

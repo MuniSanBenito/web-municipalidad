@@ -164,6 +164,12 @@ Contabilidad
 - U: admin y hacienda
 - D: admin y hacienda
 
+Contribuyentes
+- C: nadie
+- R: admin
+- U: nadie
+- D: nadie
+
 Curriculums (idem a avatares)
 - C: ciudadano o mas
 - R: admin o a si mismo (createdBy)
