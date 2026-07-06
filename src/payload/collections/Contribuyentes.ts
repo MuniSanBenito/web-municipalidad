@@ -1,6 +1,8 @@
+import type { User } from '@/payload-types'
 import { isAdminCollectionAccess } from '@/payload/access/collection'
-import type { CollectionConfig, Field } from 'payload'
+import type { Access, CollectionConfig, Field } from 'payload'
 import { HIDE_API_URL } from '../config'
+import { ROL_ADMIN_VALUE } from '../constants/roles'
 
 const readOnlyField = { readOnly: true } as const
 
@@ -173,6 +175,18 @@ const contribuyenteFields: Field[] = [
   },
 ]
 
+const isAdminOrWithKey: Access<User> = ({ req }) => {
+  if (req.user?.collection === 'users' && req?.user?.rol?.includes(ROL_ADMIN_VALUE)) {
+    return true
+  }
+
+  if (req?.headers?.get('token') === process.env.EXTERNAL_API_KEY) {
+    return true
+  }
+
+  return false
+}
+
 export const Contribuyentes: CollectionConfig = {
   slug: 'contribuyentes',
   labels: {
@@ -188,10 +202,10 @@ export const Contribuyentes: CollectionConfig = {
     description: 'Datos de contribuyentes importados del sistema legacy de Rentas',
   },
   access: {
-    read: isAdminCollectionAccess,
-    create: () => false,
-    update: () => false,
-    delete: () => false,
+    read: isAdminOrWithKey,
+    create: isAdminCollectionAccess,
+    update: isAdminCollectionAccess,
+    delete: isAdminCollectionAccess,
   },
   fields: contribuyenteFields,
 }

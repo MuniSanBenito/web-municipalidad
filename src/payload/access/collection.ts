@@ -165,10 +165,10 @@ Contabilidad
 - D: admin y hacienda
 
 Contribuyentes
-- C: nadie
-- R: admin
-- U: nadie
-- D: nadie
+- C: admin
+- R: admin o API key (EXTERNAL_API_KEY)
+- U: admin
+- D: admin
 
 Curriculums (idem a avatares)
 - C: ciudadano o mas
