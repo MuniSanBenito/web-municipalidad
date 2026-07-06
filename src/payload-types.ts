@@ -90,6 +90,12 @@ export interface Config {
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
     'chatbot-conversations': ChatbotConversation;
+    campanas: Campana;
+    deportes: Deporte;
+    arboles: Arbole;
+    'opciones-presupuesto': OpcionesPresupuesto;
+    'elementos-plaza': ElementosPlaza;
+    'resultados-campana': ResultadosCampana;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -123,6 +129,12 @@ export interface Config {
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
+    campanas: CampanasSelect<false> | CampanasSelect<true>;
+    deportes: DeportesSelect<false> | DeportesSelect<true>;
+    arboles: ArbolesSelect<false> | ArbolesSelect<true>;
+    'opciones-presupuesto': OpcionesPresupuestoSelect<false> | OpcionesPresupuestoSelect<true>;
+    'elementos-plaza': ElementosPlazaSelect<false> | ElementosPlazaSelect<true>;
+    'resultados-campana': ResultadosCampanaSelect<false> | ResultadosCampanaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1000,6 +1012,127 @@ export interface ChatbotConversation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas".
+ */
+export interface Campana {
+  id: string;
+  nombre: string;
+  slug: string;
+  descripcion: string;
+  barrio: string;
+  /**
+   * Color en formato hex, ej: #10b981
+   */
+  colorPrincipal: string;
+  imagen?: (string | null) | Imagen;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: 'borrador' | 'activa' | 'finalizada';
+  deportesActivo?: boolean | null;
+  arbolesActivo?: boolean | null;
+  plazaActivo?: boolean | null;
+  presupuestoActivo?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes".
+ */
+export interface Deporte {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa al deporte, ej: ⚽
+   */
+  emoji: string;
+  /**
+   * Nombre del ícono de Tabler Icons, ej: ball-football
+   */
+  icono?: string | null;
+  /**
+   * Orden de aparición (menor = primero)
+   */
+  orden?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles".
+ */
+export interface Arbole {
+  id: string;
+  nombre: string;
+  caracteristicas: string;
+  /**
+   * Emoji que representa al árbol, ej: 🌳
+   */
+  emoji: string;
+  imagen?: (string | null) | Imagen;
+  orden?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto".
+ */
+export interface OpcionesPresupuesto {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa la opción, ej: 🛣️
+   */
+  emoji: string;
+  icono?: string | null;
+  descripcion?: string | null;
+  orden?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza".
+ */
+export interface ElementosPlaza {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa el elemento, ej: 🛝
+   */
+  emoji: string;
+  /**
+   * Ancho en unidades de grilla del canvas
+   */
+  ancho: number;
+  /**
+   * Alto en unidades de grilla del canvas
+   */
+  alto: number;
+  orden?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana".
+ */
+export interface ResultadosCampana {
+  id: string;
+  campana: string | Campana;
+  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto';
+  /**
+   * ID o nombre de la opción seleccionada
+   */
+  opcionId: string;
+  opcionNombre: string;
+  votos: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1109,6 +1242,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'chatbot-conversations';
         value: string | ChatbotConversation;
+      } | null)
+    | ({
+        relationTo: 'campanas';
+        value: string | Campana;
+      } | null)
+    | ({
+        relationTo: 'deportes';
+        value: string | Deporte;
+      } | null)
+    | ({
+        relationTo: 'arboles';
+        value: string | Arbole;
+      } | null)
+    | ({
+        relationTo: 'opciones-presupuesto';
+        value: string | OpcionesPresupuesto;
+      } | null)
+    | ({
+        relationTo: 'elementos-plaza';
+        value: string | ElementosPlaza;
+      } | null)
+    | ({
+        relationTo: 'resultados-campana';
+        value: string | ResultadosCampana;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1734,6 +1891,91 @@ export interface ChatbotConversationsSelect<T extends boolean = true> {
   startedAt?: T;
   lastUpdated?: T;
   userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas_select".
+ */
+export interface CampanasSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  descripcion?: T;
+  barrio?: T;
+  colorPrincipal?: T;
+  imagen?: T;
+  fechaInicio?: T;
+  fechaFin?: T;
+  estado?: T;
+  deportesActivo?: T;
+  arbolesActivo?: T;
+  plazaActivo?: T;
+  presupuestoActivo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes_select".
+ */
+export interface DeportesSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  orden?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles_select".
+ */
+export interface ArbolesSelect<T extends boolean = true> {
+  nombre?: T;
+  caracteristicas?: T;
+  emoji?: T;
+  imagen?: T;
+  orden?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto_select".
+ */
+export interface OpcionesPresupuestoSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  descripcion?: T;
+  orden?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza_select".
+ */
+export interface ElementosPlazaSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  ancho?: T;
+  alto?: T;
+  orden?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana_select".
+ */
+export interface ResultadosCampanaSelect<T extends boolean = true> {
+  campana?: T;
+  actividad?: T;
+  opcionId?: T;
+  opcionNombre?: T;
+  votos?: T;
   updatedAt?: T;
   createdAt?: T;
 }
