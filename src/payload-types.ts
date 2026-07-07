@@ -619,7 +619,7 @@ export interface Contribuyente {
   /**
    * Identificador único del contribuyente en el sistema legacy de Rentas (num_cont). Clave de deduplicación en la importación.
    */
-  numero_contribuyente: number;
+  numero_contribuyente?: number | null;
   /**
    * Nombre o razón social del contribuyente (nom_cont).
    */

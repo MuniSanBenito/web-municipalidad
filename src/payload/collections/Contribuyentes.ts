@@ -11,9 +11,7 @@ const contribuyenteFields: Field[] = [
     name: 'numero_contribuyente',
     type: 'number',
     label: 'Nº Contribuyente',
-    required: true,
-    unique: true,
-    index: true,
+    required: false,
     admin: {
       ...readOnlyField,
       description:
