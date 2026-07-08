@@ -22,11 +22,27 @@ export const ComerciosHabilitados: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      ({ data, operation }) => {
+      async ({ data, operation, req }) => {
         if (operation === 'create') {
           const token = crypto.randomUUID()
           data.tokenValidacion = token
           data.urlValidacion = `${process.env.NEXT_PUBLIC_SERVER_URL}/validar/${token}`
+
+          // Generar número de habilitación secuencial: HB-{año}-{correlativo}
+          const year = new Date().getFullYear()
+          const { totalDocs } = await req.payload.find({
+            collection: 'comercios-habilitados',
+            where: {
+              and: [
+                { numeroHabilitacion: { exists: true } },
+                { numeroHabilitacion: { contains: `HB-${year}-` } },
+              ],
+            },
+            limit: 0,
+            depth: 0,
+          })
+          const correlativo = String((totalDocs ?? 0) + 1).padStart(4, '0')
+          data.numeroHabilitacion = `HB-${year}-${correlativo}`
         }
         return data
       },
@@ -54,7 +70,7 @@ export const ComerciosHabilitados: CollectionConfig = {
           return Response.json({ error: 'Habilitación no encontrada' }, { status: 404 })
         }
 
-        const comercio = result.docs[0]
+        const comercio = result.docs[0] as any
         const rubroNombre =
           comercio.rubro && typeof comercio.rubro === 'object'
             ? (comercio.rubro as { nombre: string }).nombre
@@ -62,6 +78,9 @@ export const ComerciosHabilitados: CollectionConfig = {
 
         return Response.json({
           nombre: comercio.nombre,
+          razonSocial: comercio.razonSocial,
+          cuit: comercio.cuit,
+          numeroHabilitacion: comercio.numeroHabilitacion ?? comercio.id,
           rubro: rubroNombre,
           direccion: comercio.direccion,
           fechaAlta: comercio.fechaAlta ?? null,
@@ -144,6 +163,18 @@ export const ComerciosHabilitados: CollectionConfig = {
       relationTo: 'actividades-comercios',
       label: 'Actividades',
       hasMany: true,
+    },
+    {
+      name: 'numeroHabilitacion',
+      type: 'text',
+      label: 'Número de Habilitación',
+      unique: true,
+      index: true,
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        description: 'Se genera automáticamente al crear. Formato: HB-{año}-{correlativo}.',
+      },
     },
     {
       name: 'tokenValidacion',

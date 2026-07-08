@@ -1,5 +1,6 @@
+import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
 import { basePayload } from '@/web/lib/payload'
-import { IconBuildingStore, IconCalendar, IconHash, IconMapPin, IconTag } from '@tabler/icons-react'
+import { IconBuildingStore, IconCalendar, IconCertificate, IconHash, IconMapPin, IconTag } from '@tabler/icons-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -184,11 +185,40 @@ export default async function DetalleComercioPage({ params }: Props) {
               <IconMapPin size={16} stroke={1.5} />
               Ver ubicación en Google Maps
             </a>
+
+            {comercio.urlValidacion && (
+              <a
+                href={comercio.urlValidacion}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-sm mt-2 w-full gap-2"
+              >
+                <IconCertificate size={16} stroke={1.5} />
+                Ver certificado de habilitación
+              </a>
+            )}
           </dl>
         </div>
       </section>
 
-      <div className="mt-6 text-center">
+      {/* Certificado de Habilitación embebido */}
+      <section className="mt-6">
+        <h2 className="mb-4 text-xl font-semibold">Certificado de Habilitación</h2>
+        <CertificadoHabilitacion
+          nombre={comercio.nombre}
+          razonSocial={comercio.razonSocial}
+          cuit={comercio.cuit}
+          direccion={comercio.direccion}
+          fechaAlta={comercio.fechaAlta ?? null}
+          fechaBaja={comercio.fechaBaja ?? null}
+          urlValidacion={(comercio as any).urlValidacion ?? null}
+          numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}
+          rubroNombre={rubroNombre}
+          showActions
+        />
+      </section>
+
+      <div className="no-print mt-6 text-center">
         <p className="text-base-content/50 text-xs">
           Registro Municipal de Habilitaciones Comerciales · Municipalidad de San Benito ·{' '}
           <span className="font-mono">{comercio.id}</span>

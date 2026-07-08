@@ -97,6 +97,70 @@ export const ExpedientesHabilitacion: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [
+      async ({ doc, previousDoc, req, operation }) => {
+        if (operation !== 'update') return doc
+
+        const nuevoEstado = (doc as any).faseIIIEstado
+        const estadoAnterior = (previousDoc as any)?.faseIIIEstado
+
+        // Solo disparar cuando cambia a APROBADO
+        if (nuevoEstado !== 'APROBADO' || estadoAnterior === 'APROBADO') return doc
+
+        // Si ya hay comercio vinculado, no duplicar
+        if ((doc as any).faseIIIComercioHabilitado) return doc
+
+        const nombre = (doc as any).faseIINombreFantasia
+        const razonSocial = (doc as any).faseIIRazonSocial
+        const cuit = (doc as any).faseIICuit
+        const direccion = (doc as any).faseIIDireccion
+
+        // Validar campos required
+        if (!nombre || !razonSocial || !cuit || !direccion) {
+          req.payload.logger.warn(
+            `[ExpedientesHabilitacion] No se pudo crear Comercio Habilitado para expediente ${doc.id}: faltan campos required de Fase II (nombre, razonSocial, cuit o direccion)`,
+          )
+          return doc
+        }
+
+        const rubro = (doc as any).faseIIRubro
+        const actividades = (doc as any).faseIIActividades
+
+        try {
+          const nuevoComercio = await req.payload.create({
+            collection: 'comercios-habilitados',
+            draft: false,
+            data: {
+              nombre,
+              razonSocial,
+              cuit,
+              direccion,
+              rubro: rubro ?? undefined,
+              actividades: actividades ?? undefined,
+              fechaAlta: new Date().toISOString(),
+            } as any,
+          })
+
+          await req.payload.update({
+            collection: 'expedientes-habilitacion',
+            id: doc.id,
+            data: {
+              faseIIIComercioHabilitado: nuevoComercio.id,
+            },
+          })
+
+          req.payload.logger.info(
+            `[ExpedientesHabilitacion] Comercio Habilitado ${nuevoComercio.id} creado y vinculado al expediente ${doc.id}`,
+          )
+        } catch (error) {
+          req.payload.logger.error(
+            `[ExpedientesHabilitacion] Error al crear Comercio Habilitado para expediente ${doc.id}: ${error}`,
+          )
+        }
+
+        return doc
+      },
+    ],
   },
   fields: [
     {
@@ -251,7 +315,8 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               label: 'Certificado de instalaciones eléctricas',
               relationTo: 'archivos',
               admin: {
-                description: 'Emitido por profesional matriculado.',
+                description:
+                  'Emitido por profesional matriculado. Requisito alternativo: se debe adjuntar este certificado O la factura de energía eléctrica (al menos uno).',
               },
             },
             {
@@ -259,6 +324,10 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Factura de energía eléctrica',
               relationTo: 'archivos',
+              admin: {
+                description:
+                  'Copia de una factura reciente. Requisito alternativo: se debe adjuntar esta factura O el certificado de instalaciones eléctricas (al menos uno).',
+              },
             },
             {
               name: 'faseIPlancheta',

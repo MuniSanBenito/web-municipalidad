@@ -1,13 +1,12 @@
+import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
 import {
-    IconCalendar,
-    IconCircleCheck,
-    IconClock,
-    IconExternalLink,
-    IconFileText,
-    IconMedal,
+  IconCircleCheck,
+  IconClock,
+  IconFileText,
 } from '@tabler/icons-react'
 
 interface ComercioData {
+  id: string
   nombre: string
   razonSocial: string
   cuit: string
@@ -24,14 +23,6 @@ interface Props {
   comercio?: ComercioData | null
 }
 
-function formatDate(dateStr: string | null | undefined) {
-  if (!dateStr) return null
-  return new Date(dateStr).toLocaleDateString('es-AR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
 
 export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: Props) {
   const isAprobado = faseIIIEstado === 'APROBADO'
@@ -44,7 +35,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
     <div className="space-y-6">
       {/* Estado principal */}
       {isAprobado && comercio ? (
-        <div className="card border-success/30 bg-success/5 border-2 shadow">
+        <div className="no-print card border-success/30 bg-success/5 border-2 shadow">
           <div className="card-body p-5">
             <div className="flex items-center gap-3">
               <IconCircleCheck size={32} className="text-success shrink-0" />
@@ -58,7 +49,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
           </div>
         </div>
       ) : (
-        <div className="card border-info/30 bg-info/5 border-2 shadow">
+        <div className="no-print card border-info/30 bg-info/5 border-2 shadow">
           <div className="card-body p-5">
             <div className="flex items-center gap-3">
               <IconClock size={28} className="text-info shrink-0" />
@@ -76,107 +67,31 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
 
       {/* Nota del admin al ciudadano */}
       {notaCiudadano && (
-        <div className="alert alert-info">
+        <div className="no-print alert alert-info">
           <IconFileText size={16} className="shrink-0" />
           <p className="text-sm">{notaCiudadano}</p>
         </div>
       )}
 
-      {/* Habilitación digital — solo cuando APROBADO y hay comercio vinculado */}
+      {/* Certificado oficial — solo cuando APROBADO y hay comercio vinculado */}
       {isAprobado && comercio && (
-        <div className="card bg-base-100 shadow-lg">
-          <div className="card-body">
-            <div className="mb-4 flex items-center gap-2">
-              <IconMedal size={22} className="text-primary" />
-              <h3 className="card-title text-base">Habilitación Digital</h3>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-              <div>
-                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                  Nombre de Fantasía
-                </p>
-                <p className="font-semibold">{comercio.nombre}</p>
-              </div>
-              <div>
-                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                  Razón Social
-                </p>
-                <p className="font-semibold">{comercio.razonSocial}</p>
-              </div>
-              <div>
-                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                  CUIT / CUIL
-                </p>
-                <p className="font-semibold">{comercio.cuit}</p>
-              </div>
-              {rubroNombre && (
-                <div>
-                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                    Rubro
-                  </p>
-                  <p className="font-semibold">{rubroNombre}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                  Dirección
-                </p>
-                <p className="font-semibold">{comercio.direccion}</p>
-              </div>
-              {comercio.fechaAlta && (
-                <div>
-                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                    Fecha de Alta
-                  </p>
-                  <p className="flex items-center gap-1 font-semibold">
-                    <IconCalendar size={14} className="text-base-content/40" />
-                    {formatDate(comercio.fechaAlta)}
-                  </p>
-                </div>
-              )}
-              {comercio.fechaBaja && (
-                <div>
-                  <p className="text-base-content/50 mb-0.5 text-xs font-medium tracking-wide uppercase">
-                    Vigente hasta
-                  </p>
-                  <p className="flex items-center gap-1 font-semibold">
-                    <IconCalendar size={14} className="text-base-content/40" />
-                    {formatDate(comercio.fechaBaja)}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {comercio.urlValidacion && (
-              <>
-                <div className="divider my-3" />
-                <div>
-                  <p className="text-base-content/50 mb-2 text-xs font-medium tracking-wide uppercase">
-                    Verificación de habilitación
-                  </p>
-                  <a
-                    href={comercio.urlValidacion}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline btn-primary btn-sm gap-2"
-                  >
-                    <IconExternalLink size={14} />
-                    Ver certificado público
-                  </a>
-                  <p className="text-base-content/40 mt-2 text-xs">
-                    Este enlace puede compartirse para verificar la validez de tu habilitación.
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        <CertificadoHabilitacion
+          nombre={comercio.nombre}
+          razonSocial={comercio.razonSocial}
+          cuit={comercio.cuit}
+          direccion={comercio.direccion}
+          fechaAlta={comercio.fechaAlta}
+          fechaBaja={comercio.fechaBaja}
+          urlValidacion={comercio.urlValidacion}
+          numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}
+          rubroNombre={rubroNombre}
+          showActions
+        />
       )}
 
       {/* Qué sucede — visible mientras esperan */}
       {!isAprobado && (
-        <div className="card bg-base-100 shadow-lg">
+        <div className="no-print card bg-base-100 shadow-lg">
           <div className="card-body">
             <h3 className="card-title text-primary mb-3 text-base">¿Qué sucede en este paso?</h3>
             <ul className="space-y-2">
@@ -197,7 +112,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
       )}
 
       {/* Contacto Rentas */}
-      <div className="alert">
+      <div className="no-print alert">
         <IconFileText size={20} className="shrink-0" />
         <div className="text-sm">
           <p>
@@ -213,7 +128,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
         </div>
       </div>
 
-      <div className="flex justify-start">
+      <div className="no-print flex justify-start">
         <a href="/habilitaciones" className="btn btn-ghost">
           Volver a mi trámite
         </a>

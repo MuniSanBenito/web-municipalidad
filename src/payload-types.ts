@@ -932,6 +932,10 @@ export interface ComerciosHabilitado {
   localizacion?: [number, number] | null;
   rubro: string | RubrosComercio;
   actividades?: (string | ActividadesComercio)[] | null;
+  /**
+   * Se genera automáticamente al crear. Formato: HB-{año}-{correlativo}.
+   */
+  numeroHabilitacion?: string | null;
   tokenValidacion?: string | null;
   /**
    * URL única para verificar la habilitación. Se genera automáticamente al crear.
@@ -990,9 +994,12 @@ export interface ExpedientesHabilitacion {
   faseIDocInmueble?: (string | null) | Archivo;
   faseIPlanoLocal?: (string | null) | Archivo;
   /**
-   * Emitido por profesional matriculado.
+   * Emitido por profesional matriculado. Requisito alternativo: se debe adjuntar este certificado O la factura de energía eléctrica (al menos uno).
    */
   faseICertElectrico?: (string | null) | Archivo;
+  /**
+   * Copia de una factura reciente. Requisito alternativo: se debe adjuntar esta factura O el certificado de instalaciones eléctricas (al menos uno).
+   */
   faseIFacturaEnergia?: (string | null) | Archivo;
   faseIPlancheta?: (string | null) | Archivo;
   faseIDeclaracionJurada?: boolean | null;
@@ -1778,6 +1785,7 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   localizacion?: T;
   rubro?: T;
   actividades?: T;
+  numeroHabilitacion?: T;
   tokenValidacion?: T;
   urlValidacion?: T;
   created_by?: T;

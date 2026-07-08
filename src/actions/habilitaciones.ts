@@ -68,11 +68,15 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
   if (
     !docInmuebleFile?.size ||
     !planoLocalFile?.size ||
-    !certElectricoFile?.size ||
-    !facturaEnergiaFile?.size ||
     !planchetaFile?.size
   ) {
     return { error: 'Debés adjuntar toda la documentación obligatoria.' }
+  }
+  if (!certElectricoFile?.size && !facturaEnergiaFile?.size) {
+    return {
+      error:
+        'Debés adjuntar el certificado de instalaciones eléctricas o la factura de energía eléctrica (al menos uno).',
+    }
   }
 
   // Evitar expedientes duplicados: si ya existe uno del ciudadano, no crear otro.
@@ -94,18 +98,15 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
   const formularioId = await uploadArchivoLocal(formularioFile, ciudadano)
   const docInmuebleId = await uploadArchivoLocal(docInmuebleFile, ciudadano)
   const planoLocalId = await uploadArchivoLocal(planoLocalFile, ciudadano)
-  const certElectricoId = await uploadArchivoLocal(certElectricoFile, ciudadano)
-  const facturaEnergiaId = await uploadArchivoLocal(facturaEnergiaFile, ciudadano)
+  const certElectricoId = certElectricoFile?.size
+    ? await uploadArchivoLocal(certElectricoFile, ciudadano)
+    : null
+  const facturaEnergiaId = facturaEnergiaFile?.size
+    ? await uploadArchivoLocal(facturaEnergiaFile, ciudadano)
+    : null
   const planchetaId = await uploadArchivoLocal(planchetaFile, ciudadano)
 
-  if (
-    !formularioId ||
-    !docInmuebleId ||
-    !planoLocalId ||
-    !certElectricoId ||
-    !facturaEnergiaId ||
-    !planchetaId
-  ) {
+  if (!formularioId || !docInmuebleId || !planoLocalId || !planchetaId) {
     return { error: 'Error al subir uno o más archivos. Intentá nuevamente.' }
   }
 
@@ -126,8 +127,8 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
         faseIFormularioAdjunto: formularioId,
         faseIDocInmueble: docInmuebleId,
         faseIPlanoLocal: planoLocalId,
-        faseICertElectrico: certElectricoId,
-        faseIFacturaEnergia: facturaEnergiaId,
+        ...(certElectricoId ? { faseICertElectrico: certElectricoId } : {}),
+        ...(facturaEnergiaId ? { faseIFacturaEnergia: facturaEnergiaId } : {}),
         faseIPlancheta: planchetaId,
       } as any,
     })

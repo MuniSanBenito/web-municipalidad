@@ -2,15 +2,15 @@
 
 import { submitFaseI, updateFaseI } from '@/actions/habilitaciones'
 import {
-    IconAlertCircle,
-    IconBrandWhatsapp,
-    IconCheck,
-    IconDownload,
-    IconFile,
-    IconLoader2,
-    IconMail,
-    IconSend,
-    IconUpload
+  IconAlertCircle,
+  IconBrandWhatsapp,
+  IconCheck,
+  IconDownload,
+  IconFile,
+  IconLoader2,
+  IconMail,
+  IconSend,
+  IconUpload
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -189,7 +189,11 @@ export function ExpedienteFase1Form({
 
   function setArchivo(key: FileKey, file: File | null) {
     setArchivos((prev) => ({ ...prev, [key]: file }))
-    if (file) clearError(key)
+    if (file) {
+      clearError(key)
+      if (key === 'certElectrico') clearError('facturaEnergia')
+      if (key === 'facturaEnergia') clearError('certElectrico')
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -208,8 +212,10 @@ export function ExpedienteFase1Form({
     if (!barrio) newErrors.barrio = 'Seleccioná un barrio'
     if (!isEdit && !archivos.docInmueble) newErrors.docInmueble = 'Requerido'
     if (!isEdit && !archivos.planoLocal) newErrors.planoLocal = 'Requerido'
-    if (!isEdit && !archivos.certElectrico) newErrors.certElectrico = 'Requerido'
-    if (!isEdit && !archivos.facturaEnergia) newErrors.facturaEnergia = 'Requerido'
+    if (!isEdit && !archivos.certElectrico && !archivos.facturaEnergia) {
+      newErrors.certElectrico = 'Adjuntá al menos uno de los dos'
+      newErrors.facturaEnergia = 'Adjuntá al menos uno de los dos'
+    }
     if (!isEdit && !archivos.plancheta) newErrors.plancheta = 'Requerido'
     if (!declaracion) newErrors.declaracion = 'Debés aceptar los términos de la declaración jurada'
     if (Object.keys(newErrors).length > 0) {
@@ -624,39 +630,44 @@ export function ExpedienteFase1Form({
 
             <div>
               <p className="mb-1 text-sm font-medium">
-                3. Certificado de instalaciones eléctricas <span className="text-error">*</span>
+                3. Certificado de instalaciones eléctricas o factura de energía eléctrica{' '}
+                <span className="text-error">*</span>
               </p>
               <p className="text-base-content/60 mb-2 text-xs">
-                Emitido por profesional matriculado.
+                Adjuntar al menos uno de los dos: certificado emitido por profesional matriculado
+                o copia de una factura de energía reciente.
               </p>
-              <FileZone
-                fileRef={fileRefs.certElectrico}
-                file={archivos.certElectrico}
-                error={errors.certElectrico}
-                existing={archivosExistentes.certElectrico}
-                onFileChange={(f) => setArchivo('certElectrico', f)}
-              />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="text-base-content/70 mb-1 text-xs font-medium">
+                    Certificado eléctrico
+                  </p>
+                  <FileZone
+                    fileRef={fileRefs.certElectrico}
+                    file={archivos.certElectrico}
+                    error={errors.certElectrico}
+                    existing={archivosExistentes.certElectrico}
+                    onFileChange={(f) => setArchivo('certElectrico', f)}
+                  />
+                </div>
+                <div>
+                  <p className="text-base-content/70 mb-1 text-xs font-medium">
+                    Factura de energía
+                  </p>
+                  <FileZone
+                    fileRef={fileRefs.facturaEnergia}
+                    file={archivos.facturaEnergia}
+                    error={errors.facturaEnergia}
+                    existing={archivosExistentes.facturaEnergia}
+                    onFileChange={(f) => setArchivo('facturaEnergia', f)}
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
               <p className="mb-1 text-sm font-medium">
-                4. Factura de energía eléctrica <span className="text-error">*</span>
-              </p>
-              <p className="text-base-content/60 mb-2 text-xs">
-                Adjuntar copia de una factura reciente.
-              </p>
-              <FileZone
-                fileRef={fileRefs.facturaEnergia}
-                file={archivos.facturaEnergia}
-                error={errors.facturaEnergia}
-                existing={archivosExistentes.facturaEnergia}
-                onFileChange={(f) => setArchivo('facturaEnergia', f)}
-              />
-            </div>
-
-            <div>
-              <p className="mb-1 text-sm font-medium">
-                5. Plancheta catastral <span className="text-error">*</span>
+                4. Plancheta catastral <span className="text-error">*</span>
               </p>
               <p className="text-base-content/60 mb-2 text-xs">
                 Adjuntar plancheta catastral del inmueble.
