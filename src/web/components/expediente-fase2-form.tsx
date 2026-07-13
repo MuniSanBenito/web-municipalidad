@@ -2,13 +2,14 @@
 
 import { submitFaseII } from '@/actions/habilitaciones'
 import type { RubrosComercio } from '@/payload-types'
+import { RubroCombobox } from '@/web/components/rubro-combobox'
 import {
-    IconAlertTriangle,
-    IconCheck,
-    IconDownload,
-    IconFileDescription,
-    IconLoader2,
-    IconUpload,
+  IconAlertTriangle,
+  IconCheck,
+  IconDownload,
+  IconFileDescription,
+  IconLoader2,
+  IconUpload,
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -378,18 +379,12 @@ export function ExpedienteFase2Form({
                   Rubro Principal <span className="text-error">*</span>
                 </span>
               </label>
-              <select
-                className={`select select-bordered w-full ${errors.rubro ? 'select-error' : ''}`}
+              <RubroCombobox
+                rubros={rubros}
                 value={rubro}
-                onChange={(e) => setRubro(e.target.value)}
-              >
-                <option value="">— Seleccioná un rubro —</option>
-                {rubros.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.nombre}
-                  </option>
-                ))}
-              </select>
+                onChange={setRubro}
+                error={!!errors.rubro}
+              />
               {errors.rubro && (
                 <label className="label">
                   <span className="label-text-alt text-error">{errors.rubro}</span>

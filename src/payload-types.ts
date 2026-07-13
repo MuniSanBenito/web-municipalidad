@@ -894,7 +894,19 @@ export interface Matriculado {
  */
 export interface RubrosComercio {
   id: string;
+  /**
+   * Código del nomenclador de actividades económicas (ej: 471110)
+   */
+  codigo: string;
   nombre: string;
+  /**
+   * Categoría principal del nomenclador (ej: Comercio al por mayor y al por menor)
+   */
+  categoria: string;
+  /**
+   * Subcategoría dentro de la categoría (ej: Venta al por menor de productos alimenticios)
+   */
+  subcategoria: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -966,7 +978,11 @@ export interface ExpedientesHabilitacion {
   /**
    * Gestionado por Obras Privadas.
    */
-  faseIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
+  faseIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
+  /**
+   * Número de referencia del Permiso de Uso emitido por Obras Privadas. Se carga al aprobar la Fase I.
+   */
+  faseINumeroPermisoUso?: string | null;
   /**
    * Mensaje visible al ciudadano sobre esta fase.
    */
@@ -1006,7 +1022,7 @@ export interface ExpedientesHabilitacion {
   /**
    * Gestionado por Habilitaciones Comerciales.
    */
-  faseIIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
+  faseIIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
   /**
    * Mensaje visible al ciudadano sobre esta fase.
    */
@@ -1042,7 +1058,7 @@ export interface ExpedientesHabilitacion {
   /**
    * Gestionado por el área de Rentas.
    */
-  faseIIIEstado?: ('INICIADO' | 'PENDIENTE' | 'APROBADO') | null;
+  faseIIIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
   /**
    * Mensaje visible al ciudadano sobre esta fase.
    */
@@ -1758,7 +1774,10 @@ export interface MatriculadosSelect<T extends boolean = true> {
  * via the `definition` "rubros-comercios_select".
  */
 export interface RubrosComerciosSelect<T extends boolean = true> {
+  codigo?: T;
   nombre?: T;
+  categoria?: T;
+  subcategoria?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1799,6 +1818,7 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
 export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   titulo?: T;
   faseIEstado?: T;
+  faseINumeroPermisoUso?: T;
   faseINotaCiudadano?: T;
   faseINotaInterna?: T;
   faseIDireccionLocal?: T;

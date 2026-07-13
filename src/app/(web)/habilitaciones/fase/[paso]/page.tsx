@@ -44,16 +44,18 @@ export default async function HabilitacionFasePage({ params }: Props) {
 
   // Validaciones de acceso por paso
   if (pasoNum === 1) {
-    // Solo bloquear si ya fue APROBADO — INICIADO y PENDIENTE siguen siendo editables
-    if (expediente?.faseIEstado === 'APROBADO') redirect('/habilitaciones')
+    // Bloquear si ya fue APROBADO o tiene VISITA_PROGRAMADA — el ciudadano ya no debe editar
+    if (expediente?.faseIEstado === 'APROBADO' || expediente?.faseIEstado === 'VISITA_PROGRAMADA')
+      redirect('/habilitaciones')
   }
 
   if (pasoNum === 2) {
     if (!expediente) redirect('/habilitaciones')
     // Requiere Fase I aprobada para poder empezar Fase II
     if (expediente.faseIEstado !== 'APROBADO') redirect('/habilitaciones')
-    // Solo bloquear si Fase II ya fue APROBADO
-    if (expediente.faseIIEstado === 'APROBADO') redirect('/habilitaciones')
+    // Bloquear si Fase II ya fue APROBADO o tiene VISITA_PROGRAMADA
+    if (expediente.faseIIEstado === 'APROBADO' || expediente.faseIIEstado === 'VISITA_PROGRAMADA')
+      redirect('/habilitaciones')
   }
 
   if (pasoNum === 3) {
@@ -65,7 +67,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
 
   const { docs: rubros } =
     pasoNum === 2
-      ? await basePayload.find({ collection: 'rubros-comercios', limit: 200, sort: 'nombre' })
+      ? await basePayload.find({ collection: 'rubros-comercios', limit: 0, sort: 'categoria' })
       : { docs: [] }
 
   const pasoMeta = [

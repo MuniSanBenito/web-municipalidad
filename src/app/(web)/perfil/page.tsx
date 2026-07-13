@@ -3,13 +3,14 @@ import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
 import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
 import {
-  IconAlertTriangle,
-  IconArrowRight,
-  IconBriefcase,
-  IconBuildingStore,
-  IconCircleCheck,
-  IconSchool,
-  IconUsers,
+    IconAlertTriangle,
+    IconArrowRight,
+    IconBriefcase,
+    IconBuildingStore,
+    IconCalendarCheck,
+    IconCircleCheck,
+    IconSchool,
+    IconUsers,
 } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -229,21 +230,26 @@ export default async function PerfilPage() {
                       className={`badge badge-sm gap-1 ${
                         fase.estado === 'APROBADO'
                           ? 'badge-success'
-                          : fase.estado === 'PENDIENTE'
-                            ? 'badge-info'
-                            : fase.estado === 'INICIADO'
-                              ? 'badge-warning'
-                              : 'badge-ghost'
+                          : fase.estado === 'VISITA_PROGRAMADA'
+                            ? 'badge-accent'
+                            : fase.estado === 'PENDIENTE'
+                              ? 'badge-info'
+                              : fase.estado === 'INICIADO'
+                                ? 'badge-warning'
+                                : 'badge-ghost'
                       }`}
                     >
                       {fase.estado === 'APROBADO' && <IconCircleCheck size={12} />}
+                      {fase.estado === 'VISITA_PROGRAMADA' && <IconCalendarCheck size={12} />}
                       {fase.estado === 'APROBADO'
                         ? 'Aprobado'
-                        : fase.estado === 'PENDIENTE'
-                          ? 'Pendiente'
-                          : fase.estado === 'INICIADO'
-                            ? 'En revisión'
-                            : 'Sin iniciar'}
+                        : fase.estado === 'VISITA_PROGRAMADA'
+                          ? 'Visita programada'
+                          : fase.estado === 'PENDIENTE'
+                            ? 'Pendiente'
+                            : fase.estado === 'INICIADO'
+                              ? 'En revisión'
+                              : 'Sin iniciar'}
                     </span>
                   </div>
                 ))}

@@ -2,11 +2,14 @@ import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import { HIDE_API_URL } from '../config'
 
-export const ESTADOS_FASE_HABILITACION = ['INICIADO', 'PENDIENTE', 'APROBADO'] as const
+export const ESTADOS_FASE_HABILITACION = ['INICIADO', 'PENDIENTE', 'VISITA_PROGRAMADA', 'APROBADO'] as const
 export type EstadoFaseHabilitacion = (typeof ESTADOS_FASE_HABILITACION)[number]
 
 const FASE_OPTIONS = ESTADOS_FASE_HABILITACION.map((e) => ({
-  label: e.charAt(0) + e.slice(1).toLowerCase(),
+  label: e
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/^\w/, (c) => c.toUpperCase()),
   value: e,
 }))
 
@@ -193,6 +196,17 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   admin: {
                     width: '50%',
                     description: 'Gestionado por Obras Privadas.',
+                  },
+                },
+                {
+                  name: 'faseINumeroPermisoUso',
+                  type: 'text',
+                  label: 'N° de Permiso de Uso',
+                  access: { update: isNotCiudadano },
+                  admin: {
+                    width: '50%',
+                    description:
+                      'Número de referencia del Permiso de Uso emitido por Obras Privadas. Se carga al aprobar la Fase I.',
                   },
                 },
               ],

@@ -3,6 +3,7 @@ import { basePayload } from '@/web/lib/payload'
 import {
     IconArrowRight,
     IconBuildingStore,
+    IconCalendarCheck,
     IconCircleCheck,
     IconFileDescription,
     IconInfoCircle,
@@ -13,7 +14,7 @@ import {
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 
-type EstadoFase = 'INICIADO' | 'PENDIENTE' | 'APROBADO' | null | undefined
+type EstadoFase = 'INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO' | null | undefined
 
 function EstadoBadge({ estado }: { estado: EstadoFase }) {
   if (!estado) {
@@ -24,6 +25,13 @@ function EstadoBadge({ estado }: { estado: EstadoFase }) {
   }
   if (estado === 'PENDIENTE') {
     return <span className="badge badge-info">Pendiente — siendo procesado</span>
+  }
+  if (estado === 'VISITA_PROGRAMADA') {
+    return (
+      <span className="badge badge-accent gap-1">
+        <IconCalendarCheck size={12} /> Visita programada
+      </span>
+    )
   }
   if (estado === 'APROBADO') {
     return (
@@ -62,7 +70,7 @@ function PasoCard({
     ? 'border-success bg-success/5'
     : bloqueado
       ? 'border-base-300 bg-base-200/50 opacity-60'
-      : estado === 'INICIADO' || estado === 'PENDIENTE'
+      : estado === 'INICIADO' || estado === 'PENDIENTE' || estado === 'VISITA_PROGRAMADA'
         ? 'border-warning bg-warning/5'
         : 'border-primary bg-primary/5'
 
