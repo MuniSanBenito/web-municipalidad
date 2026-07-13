@@ -38,11 +38,10 @@ export function GameShell({ data }: GameShellProps) {
   const handleFinish = useCallback(async () => {
     const payload = getPayload()
     const result = await submitResults(payload)
-    if (result.success) {
-      window.location.href = `/participacion/${campaign.slug}/resultados`
-    } else {
-      window.location.href = '/participacion'
+    if (!result.success) {
+      console.warn('[participacion] submitResults falló:', result.error)
     }
+    window.location.href = `/participacion/${campaign.slug}/resultados`
   }, [getPayload, campaign.slug])
 
   const handleSportSelect = useCallback(

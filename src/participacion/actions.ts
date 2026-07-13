@@ -36,6 +36,7 @@ export async function submitResults(payload: AnalyticsPayload) {
           and: [{ 'campana.id': { equals: campanaId } }, { sessionId: { equals: sessionId } }],
         },
         limit: 1,
+        overrideAccess: true,
       })
       if (previous.docs.length > 0) {
         return { success: false, error: 'Ya participaste en esta campaña' }
@@ -58,6 +59,7 @@ export async function submitResults(payload: AnalyticsPayload) {
           ],
         },
         limit: 1,
+        overrideAccess: true,
       })
 
       if (existing.docs.length > 0) {
@@ -65,6 +67,7 @@ export async function submitResults(payload: AnalyticsPayload) {
         await payloadInstance.update({
           collection: 'resultados-campana',
           id: doc.id,
+          overrideAccess: true,
           data: {
             votos: (doc.votos ?? 0) + entry.votos,
             opcionNombre: entry.opcionNombre,
@@ -75,6 +78,7 @@ export async function submitResults(payload: AnalyticsPayload) {
       } else {
         await payloadInstance.create({
           collection: 'resultados-campana',
+          overrideAccess: true,
           data: {
             campana: campanaId,
             sessionId,
@@ -114,6 +118,7 @@ export async function getCampaignResults(campaignSlug: string) {
       limit: 1000,
       sort: '-votos',
       depth: 0,
+      overrideAccess: true,
     })
 
     return {
