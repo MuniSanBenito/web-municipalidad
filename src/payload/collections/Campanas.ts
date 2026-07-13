@@ -131,5 +131,29 @@ export const Campanas: CollectionConfig = {
       label: 'Actividad: Presupuesto',
       defaultValue: true,
     },
+    {
+      type: 'select',
+      name: 'publico',
+      label: 'Público objetivo',
+      required: true,
+      defaultValue: 'mixto',
+      options: [
+        { label: 'Niños', value: 'niños' },
+        { label: 'Adultos', value: 'adultos' },
+        { label: 'Mixto', value: 'mixto' },
+      ],
+    },
+    {
+      type: 'checkbox',
+      name: 'sessionUnica',
+      label: 'Permitir solo un envío por sesión',
+      defaultValue: true,
+    },
+    {
+      type: 'checkbox',
+      name: 'resultadosPublicos',
+      label: 'Resultados públicos',
+      defaultValue: true,
+    },
   ],
 }

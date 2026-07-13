@@ -1,4 +1,4 @@
-import { ExperienceClient } from '@/participacion/components/experience-client'
+import { GameShell } from '@/participacion/components/game-shell'
 import type { CampaignData } from '@/participacion/types'
 import config from '@/payload.config'
 import { getPayload } from 'payload'
@@ -88,14 +88,17 @@ async function seedDemo() {
       arbolesActivo: true,
       plazaActivo: true,
       presupuestoActivo: true,
+      publico: 'mixto',
+      sessionUnica: true,
+      resultadosPublicos: true,
     },
   })
 
   const [sports, trees, budget, plaza] = await Promise.all([
-    Promise.all(SEED_SPORTS.map((s) => payload.create({ collection: 'deportes', data: s }))),
-    Promise.all(SEED_TREES.map((t) => payload.create({ collection: 'arboles', data: t }))),
-    Promise.all(SEED_BUDGET.map((b) => payload.create({ collection: 'opciones-presupuesto', data: b }))),
-    Promise.all(SEED_PLAZA.map((p) => payload.create({ collection: 'elementos-plaza', data: p }))),
+    Promise.all(SEED_SPORTS.map((s) => payload.create({ collection: 'deportes', data: { ...s, campana: campaign.id } }))),
+    Promise.all(SEED_TREES.map((t) => payload.create({ collection: 'arboles', data: { ...t, campana: campaign.id } }))),
+    Promise.all(SEED_BUDGET.map((b) => payload.create({ collection: 'opciones-presupuesto', data: { ...b, campana: campaign.id } }))),
+    Promise.all(SEED_PLAZA.map((p) => payload.create({ collection: 'elementos-plaza', data: { ...p, campana: campaign.id } }))),
   ])
 
   return { campaign, sports, trees, budgetOptions: budget, plazaElements: plaza }
@@ -103,5 +106,5 @@ async function seedDemo() {
 
 export default async function DemoPage() {
   const data = await seedDemo()
-  return <ExperienceClient data={data as CampaignData} />
+  return <GameShell data={data as CampaignData} />
 }

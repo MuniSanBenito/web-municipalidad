@@ -53,5 +53,15 @@ export const Deportes: CollectionConfig = {
         description: 'Orden de aparición (menor = primero)',
       },
     },
+    {
+      type: 'relationship',
+      name: 'campana',
+      label: 'Campaña',
+      relationTo: 'campanas',
+      required: false,
+      admin: {
+        description: 'Si se deja vacío, la opción estará disponible para todas las campañas',
+      },
+    },
   ],
 }

@@ -61,5 +61,15 @@ export const ElementosPlaza: CollectionConfig = {
       label: 'Orden',
       required: false,
     },
+    {
+      type: 'relationship',
+      name: 'campana',
+      label: 'Campaña',
+      relationTo: 'campanas',
+      required: false,
+      admin: {
+        description: 'Si se deja vacío, la opción estará disponible para todas las campañas',
+      },
+    },
   ],
 }

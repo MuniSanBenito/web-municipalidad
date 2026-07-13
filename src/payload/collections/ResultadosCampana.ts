@@ -29,6 +29,15 @@ export const ResultadosCampana: CollectionConfig = {
       required: true,
     },
     {
+      type: 'text',
+      name: 'sessionId',
+      label: 'ID de sesión',
+      required: true,
+      admin: {
+        description: 'Identificador único de la sesión de juego',
+      },
+    },
+    {
       type: 'select',
       name: 'actividad',
       label: 'Actividad',
@@ -38,6 +47,18 @@ export const ResultadosCampana: CollectionConfig = {
         { label: 'Árboles', value: 'arboles' },
         { label: 'Plaza', value: 'plaza' },
         { label: 'Presupuesto', value: 'presupuesto' },
+        { label: 'Quiz', value: 'quiz' },
+        { label: 'Caza del tesoro', value: 'caza-tesoro' },
+      ],
+    },
+    {
+      type: 'select',
+      name: 'edad',
+      label: 'Rango etario del participante',
+      required: false,
+      options: [
+        { label: 'Niño/a', value: 'niño' },
+        { label: 'Adulto', value: 'adulto' },
       ],
     },
     {
@@ -61,6 +82,15 @@ export const ResultadosCampana: CollectionConfig = {
       label: 'Votos',
       required: true,
       defaultValue: 0,
+    },
+    {
+      type: 'json',
+      name: 'metadata',
+      label: 'Metadata',
+      required: false,
+      admin: {
+        description: 'Datos adicionales del resultado (posición, respuesta, etc.)',
+      },
     },
   ],
 }

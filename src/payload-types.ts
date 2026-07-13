@@ -1032,6 +1032,9 @@ export interface Campana {
   arbolesActivo?: boolean | null;
   plazaActivo?: boolean | null;
   presupuestoActivo?: boolean | null;
+  publico: 'niños' | 'adultos' | 'mixto';
+  sessionUnica?: boolean | null;
+  resultadosPublicos?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1054,6 +1057,10 @@ export interface Deporte {
    * Orden de aparición (menor = primero)
    */
   orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
   updatedAt: string;
   createdAt: string;
 }
@@ -1071,6 +1078,10 @@ export interface Arbole {
   emoji: string;
   imagen?: (string | null) | Imagen;
   orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
   updatedAt: string;
   createdAt: string;
 }
@@ -1088,6 +1099,10 @@ export interface OpcionesPresupuesto {
   icono?: string | null;
   descripcion?: string | null;
   orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
   updatedAt: string;
   createdAt: string;
 }
@@ -1111,6 +1126,10 @@ export interface ElementosPlaza {
    */
   alto: number;
   orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
   updatedAt: string;
   createdAt: string;
 }
@@ -1121,13 +1140,30 @@ export interface ElementosPlaza {
 export interface ResultadosCampana {
   id: string;
   campana: string | Campana;
-  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto';
+  /**
+   * Identificador único de la sesión de juego
+   */
+  sessionId: string;
+  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro';
+  edad?: ('niño' | 'adulto') | null;
   /**
    * ID o nombre de la opción seleccionada
    */
   opcionId: string;
   opcionNombre: string;
   votos: number;
+  /**
+   * Datos adicionales del resultado (posición, respuesta, etc.)
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1912,6 +1948,9 @@ export interface CampanasSelect<T extends boolean = true> {
   arbolesActivo?: T;
   plazaActivo?: T;
   presupuestoActivo?: T;
+  publico?: T;
+  sessionUnica?: T;
+  resultadosPublicos?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1924,6 +1963,7 @@ export interface DeportesSelect<T extends boolean = true> {
   emoji?: T;
   icono?: T;
   orden?: T;
+  campana?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1937,6 +1977,7 @@ export interface ArbolesSelect<T extends boolean = true> {
   emoji?: T;
   imagen?: T;
   orden?: T;
+  campana?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1950,6 +1991,7 @@ export interface OpcionesPresupuestoSelect<T extends boolean = true> {
   icono?: T;
   descripcion?: T;
   orden?: T;
+  campana?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1963,6 +2005,7 @@ export interface ElementosPlazaSelect<T extends boolean = true> {
   ancho?: T;
   alto?: T;
   orden?: T;
+  campana?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1972,10 +2015,13 @@ export interface ElementosPlazaSelect<T extends boolean = true> {
  */
 export interface ResultadosCampanaSelect<T extends boolean = true> {
   campana?: T;
+  sessionId?: T;
   actividad?: T;
+  edad?: T;
   opcionId?: T;
   opcionNombre?: T;
   votos?: T;
+  metadata?: T;
   updatedAt?: T;
   createdAt?: T;
 }

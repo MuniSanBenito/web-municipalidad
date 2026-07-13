@@ -8,15 +8,14 @@ export type PlazaElement = ElementosPlaza
 
 export type StepId =
   | 'welcome'
-  | 'preview'
   | 'sports'
   | 'trees'
   | 'plaza'
   | 'budget'
   | 'celebration'
 
-export type ActivityId = 'deportes' | 'arboles' | 'plaza' | 'presupuesto'
-export type AnalyticsActivity = 'deportes' | 'arboles' | 'plaza' | 'presupuesto'
+export type ActivityId = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro'
+export type AnalyticsActivity = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro'
 
 export interface CampaignData {
   campaign: Campaign
@@ -47,9 +46,12 @@ export interface AnalyticsEntry {
   opcionId: string
   opcionNombre: string
   votos: number
+  metadata?: Record<string, unknown> | null
 }
 
 export interface AnalyticsPayload {
   campaignSlug: string
+  sessionId: string
+  edad: string | null
   entries: AnalyticsEntry[]
 }

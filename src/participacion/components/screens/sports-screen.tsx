@@ -11,7 +11,7 @@ interface SportsScreenProps {
   onSelect: (sport: Sport) => void
 }
 
-export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenProps) {
+export function SportsScreen({ sports, onSelect }: SportsScreenProps) {
   const [selected, setSelected] = useState<string | null>(null)
 
   function handleSelect(sport: Sport) {
@@ -51,12 +51,9 @@ export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenP
               whileTap={!isDisabled ? { scale: 0.95 } : undefined}
               onClick={() => handleSelect(sport)}
               disabled={isDisabled}
-              className="relative flex flex-col items-center gap-2 rounded-2xl border-2 p-3 shadow-sm transition-all sm:p-4"
-              style={{
-                borderColor: isSelected ? colorPrincipal : 'transparent',
-                backgroundColor: isSelected ? `${colorPrincipal}15` : isDisabled ? 'rgba(0,0,0,0.02)' : 'white',
-                opacity: isDisabled ? 0.4 : 1,
-              }}
+              className={`relative flex flex-col items-center gap-2 rounded-2xl border-2 p-3 shadow-sm transition-all sm:p-4 ${
+                isSelected ? 'border-primary bg-primary/10' : 'border-transparent bg-base-100'
+              } ${isDisabled ? 'opacity-40' : 'hover:shadow-md'}`}
             >
               <span className="text-3xl sm:text-4xl">{sport.emoji}</span>
               <span className="text-center text-xs font-medium text-base-content sm:text-sm">
@@ -69,8 +66,7 @@ export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenP
                     variants={checkmarkPop}
                     initial="hidden"
                     animate="visible"
-                    className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full text-white shadow-lg"
-                    style={{ backgroundColor: colorPrincipal }}
+                    className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow-lg"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 6L9 17l-5-5" />

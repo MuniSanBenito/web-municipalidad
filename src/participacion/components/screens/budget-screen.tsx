@@ -15,7 +15,6 @@ interface BudgetScreenProps {
 export function BudgetScreen({
   options,
   totalFichas = 10,
-  colorPrincipal,
   onAllocate,
 }: BudgetScreenProps) {
   const [allocations, setAllocations] = useState<Record<string, number>>({})
@@ -63,8 +62,7 @@ export function BudgetScreen({
             initial={{ scale: 1.3 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 12 }}
-            className="text-2xl font-extrabold"
-            style={{ color: remaining === 0 ? '#9ca3af' : colorPrincipal }}
+            className={`text-2xl font-extrabold ${remaining === 0 ? 'text-base-content/30' : 'text-primary'}`}
           >
             {remaining}
           </motion.span>
@@ -81,8 +79,7 @@ export function BudgetScreen({
             <motion.div
               key={option.id}
               variants={staggerItem}
-              className="flex flex-col items-center gap-2 rounded-2xl border-2 border-base-200 bg-base-100 p-3 shadow-sm"
-              style={{ opacity: isDisabled ? 0.4 : 1 }}
+              className={`flex flex-col items-center gap-2 rounded-2xl border-2 border-base-200 bg-base-100 p-3 shadow-sm ${isDisabled ? 'opacity-40' : ''}`}
             >
               <span className="text-3xl sm:text-4xl">{option.emoji}</span>
               <span className="text-center text-xs font-bold text-base-content sm:text-sm">
@@ -94,7 +91,7 @@ export function BudgetScreen({
                   whileTap={{ scale: 0.85 }}
                   onClick={() => handleAllocate(option, -1)}
                   disabled={count === 0}
-                  className="btn btn-circle btn-sm border-0 bg-base-200 text-base-content"
+                  className="btn btn-circle btn-sm border-0 bg-base-200 text-base-content hover:bg-base-300"
                   aria-label="Restar ficha"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
@@ -107,8 +104,7 @@ export function BudgetScreen({
                   initial={{ scale: 1.4 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 12 }}
-                  className="min-w-[2ch] text-center text-lg font-extrabold"
-                  style={{ color: count > 0 ? colorPrincipal : '#d1d5db' }}
+                  className={`min-w-[2ch] text-center text-lg font-extrabold ${count > 0 ? 'text-secondary' : 'text-base-content/20'}`}
                 >
                   {count}
                 </motion.span>
@@ -117,8 +113,7 @@ export function BudgetScreen({
                   whileTap={{ scale: 0.85 }}
                   onClick={() => handleAllocate(option, 1)}
                   disabled={isDisabled}
-                  className="btn btn-circle btn-sm border-0 text-white"
-                  style={{ backgroundColor: colorPrincipal }}
+                  className="btn btn-circle btn-sm border-0 bg-primary text-primary-content"
                   aria-label="Sumar ficha"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">

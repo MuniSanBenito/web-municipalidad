@@ -1,4 +1,6 @@
+import { getGameMetadata } from '@/participacion/engine/game-registry'
 import config from '@/payload.config'
+import { IconChartBar, IconRefresh } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const SPORT_COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ef4444', '#06b6d4', '#f97316', '#84cc16', '#ec4899']
+const WARM_COLORS = ['#5A7A3E', '#D98A4E', '#F4B840', '#7AC2D4', '#6D5D52', '#A9C4A6', '#C85A54', '#B8A27A', '#9CAE6A']
 
 const BUDGET_EMOJIS: Record<string, string> = {
   Calles: '🛣️', Veredas: '🚶', Iluminación: '💡', Seguridad: '🚨',
@@ -48,24 +50,26 @@ export default async function EstadisticasPage() {
   const tieneData = todos.length > 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pb-16">
+    <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200 pb-16">
       <div className="mx-auto max-w-2xl px-4 pt-8">
 
         <div className="mb-8 text-center">
-          <span className="text-4xl">📊</span>
-          <h1 className="mt-2 text-2xl font-extrabold text-base-content sm:text-3xl">
+          <div className="mb-3 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/10 text-secondary">
+            <IconChartBar size={36} strokeWidth={1.5} />
+          </div>
+          <h1 className="text-2xl font-bold text-base-content sm:text-3xl">
             Resultados en vivo
           </h1>
           <p className="mt-1 text-sm text-base-content/50">para todos</p>
         </div>
 
         {!tieneData && (
-          <div className="mb-8 rounded-3xl border-2 border-dashed border-green-200 bg-white p-10 text-center shadow-sm">
+          <div className="mb-8 rounded-2xl border-2 border-dashed border-primary/20 bg-base-100 p-10 text-center shadow-sm">
             <p className="text-lg font-semibold text-base-content/60">Todavía no hay resultados</p>
             <p className="mt-2 text-sm text-base-content/40">
               Completá la experiencia en{' '}
-              <a href="/participacion/demo" className="font-bold text-green-600 underline">
-                /participacion/demo
+              <a href="/participacion" className="font-bold text-primary underline">
+                /participacion
               </a>{' '}
               para generar datos.
             </p>
@@ -75,14 +79,14 @@ export default async function EstadisticasPage() {
         {tieneData && (
           <>
             <div className="mb-8 grid grid-cols-2 gap-3">
-              <div className="flex flex-col items-center rounded-3xl bg-white p-5 shadow-md">
-                <span className="text-3xl font-extrabold text-green-500">{vecinos}</span>
+              <div className="flex flex-col items-center rounded-2xl bg-base-100 p-5 shadow-sm">
+                <span className="text-3xl font-extrabold text-primary">{vecinos}</span>
                 <span className="mt-1 text-center text-xs font-semibold text-base-content/60">
                   Vecinos participaron
                 </span>
               </div>
-              <div className="flex flex-col items-center rounded-3xl bg-white p-5 shadow-md">
-                <span className="text-3xl font-extrabold text-blue-500">{actividadesConDatos}</span>
+              <div className="flex flex-col items-center rounded-2xl bg-base-100 p-5 shadow-sm">
+                <span className="text-3xl font-extrabold text-secondary">{actividadesConDatos}</span>
                 <span className="mt-1 text-center text-xs font-semibold text-base-content/60">
                   Actividades respondidas
                 </span>
@@ -90,14 +94,14 @@ export default async function EstadisticasPage() {
             </div>
 
             {deportes.length > 0 && (
-              <div className="mb-6 rounded-3xl bg-white p-6 shadow-md">
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-extrabold text-base-content">
-                  <span className="text-2xl">⚽</span> Deportes más votados
+              <div className="mb-6 rounded-2xl bg-base-100 p-6 shadow-sm">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-base-content">
+                  <span className="text-secondary">{getGameMetadata('deportes').icon}</span> Deportes más votados
                 </h2>
                 <div className="space-y-3">
                   {deportes.map((r, i) => {
                     const pct = totalDeportes > 0 ? Math.round(((r.votos ?? 0) / totalDeportes) * 100) : 0
-                    const color = SPORT_COLORS[i % SPORT_COLORS.length]
+                    const color = WARM_COLORS[i % WARM_COLORS.length]
                     return (
                       <div key={r.id} className="flex items-center gap-3">
                         <span className="w-28 shrink-0 truncate text-sm font-semibold text-base-content">
@@ -120,22 +124,22 @@ export default async function EstadisticasPage() {
             )}
 
             {arboles.length > 0 && (
-              <div className="mb-6 rounded-3xl bg-white p-6 shadow-md">
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-extrabold text-base-content">
-                  <span className="text-2xl">🌳</span> Árboles favoritos
+              <div className="mb-6 rounded-2xl bg-base-100 p-6 shadow-sm">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-base-content">
+                  <span className="text-secondary">{getGameMetadata('arboles').icon}</span> Árboles favoritos
                 </h2>
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                   {arboles.slice(0, 8).map((r) => {
                     const pct = totalArboles > 0 ? Math.round(((r.votos ?? 0) / totalArboles) * 100) : 0
                     return (
-                      <div key={r.id} className="flex flex-col items-center gap-2 rounded-2xl bg-green-50 p-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-3xl shadow-sm">
-                          🌳
+                      <div key={r.id} className="flex flex-col items-center gap-2 rounded-2xl bg-primary/10 p-3">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/20 text-primary shadow-sm">
+                          {getGameMetadata('arboles').icon}
                         </div>
                         <span className="text-center text-xs font-bold text-base-content leading-tight">
                           {r.opcionNombre}
                         </span>
-                        <span className="text-sm font-extrabold text-green-600">{pct}%</span>
+                        <span className="text-sm font-extrabold text-primary">{pct}%</span>
                       </div>
                     )
                   })}
@@ -144,22 +148,22 @@ export default async function EstadisticasPage() {
             )}
 
             {plaza.length > 0 && (
-              <div className="mb-6 rounded-3xl bg-white p-6 shadow-md">
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-extrabold text-base-content">
-                  <span className="text-2xl">🏞️</span> Elementos para la plaza
+              <div className="mb-6 rounded-2xl bg-base-100 p-6 shadow-sm">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-base-content">
+                  <span className="text-secondary">{getGameMetadata('plaza').icon}</span> Elementos para la plaza
                 </h2>
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                   {plaza.slice(0, 8).map((r) => {
                     const pct = totalPlaza > 0 ? Math.round(((r.votos ?? 0) / totalPlaza) * 100) : 0
                     return (
-                      <div key={r.id} className="flex flex-col items-center gap-2 rounded-2xl bg-blue-50 p-3">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-3xl shadow-sm">
-                          🏞️
+                      <div key={r.id} className="flex flex-col items-center gap-2 rounded-2xl bg-secondary/10 p-3">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary/20 text-secondary shadow-sm">
+                          {getGameMetadata('plaza').icon}
                         </div>
                         <span className="text-center text-xs font-bold text-base-content leading-tight">
                           {r.opcionNombre}
                         </span>
-                        <span className="text-sm font-extrabold text-blue-600">{pct}%</span>
+                        <span className="text-sm font-extrabold text-secondary">{pct}%</span>
                       </div>
                     )
                   })}
@@ -168,15 +172,15 @@ export default async function EstadisticasPage() {
             )}
 
             {presupuesto.length > 0 && (
-              <div className="mb-6 rounded-3xl bg-white p-6 shadow-md">
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-extrabold text-base-content">
-                  <span className="text-2xl">🪙</span> Prioridades del barrio
+              <div className="mb-6 rounded-2xl bg-base-100 p-6 shadow-sm">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-base-content">
+                  <span className="text-secondary">{getGameMetadata('presupuesto').icon}</span> Prioridades del barrio
                 </h2>
                 <div className="space-y-3">
                   {presupuesto.map((r, i) => {
                     const pct = totalPresupuesto > 0 ? Math.round(((r.votos ?? 0) / totalPresupuesto) * 100) : 0
                     const emoji = BUDGET_EMOJIS[r.opcionNombre ?? ''] ?? '📌'
-                    const color = SPORT_COLORS[i % SPORT_COLORS.length]
+                    const color = WARM_COLORS[i % WARM_COLORS.length]
                     return (
                       <div key={r.id} className="flex items-center gap-3">
                         <span className="text-xl">{emoji}</span>
@@ -203,15 +207,16 @@ export default async function EstadisticasPage() {
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <a
-            href="/participacion/demo"
-            className="btn btn-md w-full rounded-2xl border-2 border-green-500 bg-white font-bold text-green-600 shadow-sm hover:bg-green-50 sm:w-auto sm:min-w-[200px]"
+            href="/participacion"
+            className="btn btn-md w-full gap-2 rounded-2xl border-2 border-primary bg-base-100 font-bold text-primary shadow-sm hover:bg-primary/5 sm:w-auto sm:min-w-[200px]"
           >
-            🔄 Participar de nuevo
+            <IconRefresh size={20} />
+            Participar de nuevo
           </a>
         </div>
 
-        <div className="mt-10 rounded-3xl bg-green-600 p-6 text-center text-white shadow-lg">
-          <p className="text-lg font-extrabold">Tu opinión construye el futuro 💚</p>
+        <div className="mt-10 rounded-2xl bg-primary p-6 text-center text-primary-content shadow-md">
+          <p className="text-lg font-bold">Tu opinión construye el futuro</p>
           <p className="mt-1 text-sm opacity-80">Municipio + Vecinos = Un mejor barrio para todos</p>
         </div>
       </div>

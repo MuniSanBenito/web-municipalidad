@@ -1,7 +1,6 @@
 'use client'
 
 import { submitResults } from '@/participacion/actions'
-import { ActivityPreviewScreen } from '@/participacion/components/screens/activity-preview-screen'
 import { BudgetScreen } from '@/participacion/components/screens/budget-screen'
 import { CelebrationScreen } from '@/participacion/components/screens/celebration-screen'
 import { PlazaScreen } from '@/participacion/components/screens/plaza-screen'
@@ -9,22 +8,25 @@ import { SportsScreen } from '@/participacion/components/screens/sports-screen'
 import { TreesScreen } from '@/participacion/components/screens/trees-screen'
 import { WelcomeScreen } from '@/participacion/components/screens/welcome-screen'
 import { ContinueButton, StepLayout } from '@/participacion/components/ui'
-import { useAnalytics, useConfetti, useStepper } from '@/participacion/hooks'
+import { useGameSession } from '@/participacion/engine/use-game-session'
+import { useConfetti, useStepper } from '@/participacion/hooks'
 import type { ActiveSteps, BudgetOption, CampaignData, Sport, Tree } from '@/participacion/types'
 import { AnimatePresence } from 'framer-motion'
 import { useCallback, useState } from 'react'
 
-interface ExperienceClientProps {
+interface GameShellProps {
   data: CampaignData
 }
 
-export function ExperienceClient({ data }: ExperienceClientProps) {
+export function GameShell({ data }: GameShellProps) {
   const { campaign, sports, trees, budgetOptions, plazaElements } = data
   const stepper = useStepper()
-  const { recordVote, setVotes, getPayload } = useAnalytics(campaign.slug)
+  const { recordVote, setVotes, getPayload } = useGameSession(campaign.slug)
   const { smallBurst } = useConfetti()
 
   const [completed, setCompleted] = useState(false)
+
+  const ACCENT_COLORS = ['#5A7A3E', '#D98A4E', '#F4B840', '#7AC2D4']
 
   const activeSteps: ActiveSteps = {
     sports: campaign.deportesActivo ?? false,
@@ -35,14 +37,18 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
 
   const handleFinish = useCallback(async () => {
     const payload = getPayload()
-    await submitResults(payload)
-    window.location.href = '/participacion/estadisticas'
-  }, [getPayload])
+    const result = await submitResults(payload)
+    if (result.success) {
+      window.location.href = `/participacion/${campaign.slug}/resultados`
+    } else {
+      window.location.href = '/participacion'
+    }
+  }, [getPayload, campaign.slug])
 
   const handleSportSelect = useCallback(
     (sport: Sport) => {
       recordVote('deportes', sport.id, sport.nombre)
-      smallBurst(0.5, 0.5, [campaign.colorPrincipal])
+      smallBurst(0.5, 0.5, ACCENT_COLORS)
       setCompleted(true)
     },
     [recordVote, smallBurst, campaign.colorPrincipal],
@@ -60,7 +66,7 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
     (selectedIds: string[]) => {
       const selected = plazaElements.filter((el) => selectedIds.includes(el.id))
       setVotes('plaza', selected.map((el) => ({ opcionId: el.id, opcionNombre: el.nombre, votos: 1 })))
-      smallBurst(0.5, 0.5, [campaign.colorPrincipal])
+      smallBurst(0.5, 0.5, ACCENT_COLORS)
     },
     [setVotes, smallBurst, campaign.colorPrincipal, plazaElements],
   )
@@ -101,26 +107,7 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
           <StepLayout key="welcome" stepKey="welcome" showProgress={false}>
             <WelcomeScreen
               onStart={stepper.next}
-              colorPrincipal={campaign.colorPrincipal}
               barrio={campaign.barrio}
-            />
-          </StepLayout>
-        )}
-
-        {stepper.step === 'preview' && (
-          <StepLayout
-            key="preview"
-            stepKey="preview"
-            showProgress={true}
-            progress={stepper.progress}
-            stepIndex={stepper.stepIndex}
-            totalSteps={stepper.totalSteps}
-            onBack={handleBack}
-          >
-            <ActivityPreviewScreen
-              activeSteps={activeSteps}
-              colorPrincipal={campaign.colorPrincipal}
-              onComplete={stepper.next}
             />
           </StepLayout>
         )}
@@ -141,7 +128,7 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
               onSelect={handleSportSelect}
             />
             {completed && (
-              <ContinueButton onClick={handleNext} color={campaign.colorPrincipal} />
+              <ContinueButton onClick={handleNext} />
             )}
           </StepLayout>
         )}
@@ -162,7 +149,7 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
               onSelect={handleTreeSelect}
             />
             {completed && (
-              <ContinueButton onClick={handleNext} color={campaign.colorPrincipal} />
+              <ContinueButton onClick={handleNext} />
             )}
           </StepLayout>
         )}
@@ -204,7 +191,7 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
               onAllocate={handleBudgetAllocate}
             />
             {completed && (
-              <ContinueButton onClick={handleNext} color={campaign.colorPrincipal} />
+              <ContinueButton onClick={handleNext} />
             )}
           </StepLayout>
         )}
@@ -214,7 +201,6 @@ export function ExperienceClient({ data }: ExperienceClientProps) {
             <CelebrationScreen
               elapsedSeconds={stepper.elapsedSeconds}
               activitiesCompleted={activitiesCompleted}
-              colorPrincipal={campaign.colorPrincipal}
               onFinish={handleFinish}
               onRestart={handleRestart}
             />

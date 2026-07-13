@@ -2,13 +2,15 @@
 
 import { bounceIn, buttonTap, staggerContainer, staggerItem } from '@/participacion/components/ui'
 import { useConfetti } from '@/participacion/hooks'
+import { IconChartBar, IconConfetti, IconRefresh } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import { useEffect } from 'react'
+
+const WARM_COLORS = ['#5A7A3E', '#D98A4E', '#F4B840', '#7AC2D4']
 
 interface CelebrationScreenProps {
   elapsedSeconds: number
   activitiesCompleted: number
-  colorPrincipal: string
   onFinish: () => void
   onRestart: () => void
 }
@@ -16,16 +18,15 @@ interface CelebrationScreenProps {
 export function CelebrationScreen({
   elapsedSeconds,
   activitiesCompleted,
-  colorPrincipal,
   onFinish,
   onRestart,
 }: CelebrationScreenProps) {
   const { celebration } = useConfetti()
 
   useEffect(() => {
-    const timer = setTimeout(() => celebration([colorPrincipal, '#3b82f6', '#f59e0b', '#ef4444']), 200)
+    const timer = setTimeout(() => celebration(WARM_COLORS), 200)
     return () => clearTimeout(timer)
-  }, [celebration, colorPrincipal])
+  }, [celebration])
 
   const minutes = Math.floor(elapsedSeconds / 60)
   const seconds = elapsedSeconds % 60
@@ -39,26 +40,29 @@ export function CelebrationScreen({
       exit="exit"
       className="flex h-full w-full flex-col items-center justify-center text-center"
     >
-      <motion.div variants={bounceIn} className="mb-4 text-7xl sm:text-8xl">
-        🎉
+      <motion.div
+        variants={bounceIn}
+        className="mb-4 flex h-28 w-28 items-center justify-center rounded-[2rem] bg-accent/20 text-accent sm:h-32 sm:w-32"
+      >
+        <IconConfetti size={64} strokeWidth={1.5} />
       </motion.div>
 
       <motion.h2
         variants={staggerItem}
-        className="max-w-md text-2xl font-extrabold text-base-content sm:text-4xl"
+        className="max-w-md text-2xl font-bold text-base-content sm:text-4xl"
       >
         ¡Gracias por ayudarnos a imaginar un mejor barrio!
       </motion.h2>
 
       <motion.div variants={staggerItem} className="mt-6 flex gap-3">
         <div className="flex flex-col items-center rounded-2xl bg-base-200 px-5 py-3">
-          <span className="text-2xl font-extrabold" style={{ color: colorPrincipal }}>
+          <span className="text-2xl font-extrabold text-secondary">
             {activitiesCompleted}
           </span>
           <span className="text-xs text-base-content/60">Actividades</span>
         </div>
         <div className="flex flex-col items-center rounded-2xl bg-base-200 px-5 py-3">
-          <span className="text-2xl font-extrabold" style={{ color: colorPrincipal }}>
+          <span className="text-2xl font-extrabold text-secondary">
             {timeStr}
           </span>
           <span className="text-xs text-base-content/60">Tiempo</span>
@@ -69,17 +73,18 @@ export function CelebrationScreen({
         <motion.button
           {...buttonTap}
           onClick={onFinish}
-          className="btn btn-lg min-w-[220px] rounded-2xl border-none text-lg font-semibold text-white shadow-xl"
-          style={{ backgroundColor: colorPrincipal }}
+          className="btn btn-lg min-w-[220px] gap-2 rounded-2xl border-none bg-primary text-lg font-semibold text-primary-content shadow-md hover:shadow-lg"
         >
-          📊 Ver estadísticas
+          <IconChartBar size={22} />
+          Ver estadísticas
         </motion.button>
         <motion.button
           {...buttonTap}
           onClick={onRestart}
-          className="btn btn-lg min-w-[220px] rounded-2xl border-2 border-base-300 bg-base-100 text-lg font-semibold text-base-content shadow-md"
+          className="btn btn-lg min-w-[220px] gap-2 rounded-2xl border-2 border-base-300 bg-base-100 text-lg font-semibold text-base-content shadow-sm hover:bg-base-200"
         >
-          🔄 Completar otra vez
+          <IconRefresh size={22} />
+          Completar otra vez
         </motion.button>
       </motion.div>
     </motion.div>

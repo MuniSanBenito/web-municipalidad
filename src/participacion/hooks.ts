@@ -1,10 +1,10 @@
 'use client'
 
-import type { AnalyticsActivity, AnalyticsEntry, AnalyticsPayload, StepId } from '@/participacion/types'
+import type { StepId } from '@/participacion/types'
 import confetti from 'canvas-confetti'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-const ALL_STEPS: StepId[] = ['welcome', 'preview', 'sports', 'trees', 'plaza', 'budget', 'celebration']
+const ALL_STEPS: StepId[] = ['welcome', 'sports', 'trees', 'plaza', 'budget', 'celebration']
 
 export function useStepper() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -71,31 +71,3 @@ export function useConfetti() {
   return { burst, celebration, smallBurst }
 }
 
-export function useAnalytics(campaignSlug: string) {
-  const entriesRef = useRef<AnalyticsEntry[]>([])
-
-  const recordVote = useCallback((actividad: AnalyticsActivity, opcionId: string, opcionNombre: string, votos = 1) => {
-    const existing = entriesRef.current.find((e) => e.actividad === actividad && e.opcionId === opcionId)
-    if (existing) {
-      existing.votos += votos
-    } else {
-      entriesRef.current.push({ actividad, opcionId, opcionNombre, votos })
-    }
-  }, [])
-
-  const resetActivity = useCallback((actividad: AnalyticsActivity) => {
-    entriesRef.current = entriesRef.current.filter((e) => e.actividad !== actividad)
-  }, [])
-
-  const setVotes = useCallback((actividad: AnalyticsActivity, entries: { opcionId: string; opcionNombre: string; votos: number }[]) => {
-    entriesRef.current = entriesRef.current.filter((e) => e.actividad !== actividad)
-    entries.forEach((e) => entriesRef.current.push({ actividad, ...e }))
-  }, [])
-
-  const getPayload = useCallback((): AnalyticsPayload => ({
-    campaignSlug,
-    entries: [...entriesRef.current],
-  }), [campaignSlug])
-
-  return { recordVote, resetActivity, setVotes, getPayload }
-}
