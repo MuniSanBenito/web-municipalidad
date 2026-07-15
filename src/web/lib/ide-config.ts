@@ -3,7 +3,7 @@ export const GEOSERVER_BASE_URL =
 export const WMS_URL = `${GEOSERVER_BASE_URL}/wms`
 export const OWS_URL = `${GEOSERVER_BASE_URL}/ows`
 
-export const MAP_CENTER = { lat: -31.78, lng: -60.52 }
+export const MAP_CENTER = { lat: -31.77198, lng: -60.42374 }
 export const MAP_ZOOM = 13
 
 export interface IdeLayerConfig {

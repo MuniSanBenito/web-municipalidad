@@ -136,3 +136,26 @@
   font-size: 10px !important;
   padding: 2px 6px !important;
 }
+
+/* Ensure Leaflet popups and attribution are above custom UI panels */
+.leaflet-popup-pane {
+  z-index: 1003 !important;
+}
+
+.leaflet-bottom {
+  z-index: 1002 !important;
+}
+
+/* Mobile: smaller attribution and larger popup close target */
+@media (max-width: 768px) {
+  .leaflet-control-attribution {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+  }
+
+  .leaflet-popup-close-button {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 20px !important;
+  }
+}

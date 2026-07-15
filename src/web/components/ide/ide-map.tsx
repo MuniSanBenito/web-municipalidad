@@ -4,7 +4,7 @@ import { GEOSERVER_BASE_URL, WMS_URL } from '@/web/lib/ide-config'
 import { buildGetFeatureInfoUrl, type FeatureInfoResponse } from '@/web/lib/ide-wms'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     MapContainer,
     Popup,
@@ -14,8 +14,10 @@ import {
     useMapEvents,
 } from 'react-leaflet'
 import { FeatureInfoPanel } from './feature-info-panel'
+import { FeatureInfoSheet } from './feature-info-sheet'
 import { LayerControlPanel } from './layer-control-panel'
 import { LegendPanel } from './legend-panel'
+import { MapFloatingControls } from './map-floating-controls'
 import { useMapState } from './use-map-state'
 
 const OSM_ATTRIBUTION =
@@ -31,9 +33,12 @@ function MapEventHandler({
   onZoomEnd?: (zoom: number) => void
 }) {
   useMapEvents({
-    click: (e) => onClick(e as L.LeafletMouseEvent),
-    moveend: (e) => onMoveEnd?.({ lat: e.target.getCenter().lat, lng: e.target.getCenter().lng }),
-    zoomend: (e) => onZoomEnd?.(e.target.getZoom()),
+    click: (e: L.LeafletMouseEvent) => onClick(e as L.LeafletMouseEvent),
+    moveend: (e: L.LeafletEvent) => {
+      const map = e.target as L.Map
+      onMoveEnd?.({ lat: map.getCenter().lat, lng: map.getCenter().lng })
+    },
+    zoomend: (e: L.LeafletEvent) => onZoomEnd?.((e.target as L.Map).getZoom()),
   })
   return null
 }
@@ -65,6 +70,7 @@ export function IdeMap() {
     capabilitiesError,
     fitTo,
     featureInfo,
+    queryMode,
     setCenter,
     setZoom,
     toggleLayer,
@@ -74,9 +80,16 @@ export function IdeMap() {
     setFeatureInfoSuccess,
     setFeatureInfoError,
     closeFeatureInfo,
+    toggleQueryMode,
+    reloadCapabilities,
   } = useMapState()
 
   const handleMapClick = async (e: L.LeafletMouseEvent) => {
+    if (!queryMode) {
+      closeFeatureInfo()
+      return
+    }
+
     const map = e.target as L.Map
     const visibleNames = activeLayers.map((l) => l.name)
     if (visibleNames.length === 0) {
@@ -115,25 +128,41 @@ export function IdeMap() {
     }
   }
 
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false,
+  )
+  const [mobileLayersOpen, setMobileLayersOpen] = useState(false)
+  const [mobileLegendOpen, setMobileLegendOpen] = useState(false)
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)')
+    setIsMobile(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
+
   const popupPosition = useMemo(() => {
-    if (!featureInfo) return null
+    if (!featureInfo || isMobile) return null
     return [featureInfo.lat, featureInfo.lng] as [number, number]
-  }, [featureInfo])
+  }, [featureInfo, isMobile])
 
   return (
-    <div className="relative h-[calc(100vh-80px)] min-h-[400px] w-full overflow-hidden rounded-xl border border-base-300 shadow-lg md:h-[calc(100vh-120px)] md:min-h-[600px] md:rounded-2xl">
+    <div className="relative z-0 h-full min-h-[400px] w-full overflow-hidden rounded-xl border border-base-300 shadow-lg md:min-h-[600px] md:rounded-2xl">
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={zoom}
         scrollWheelZoom={true}
+        zoomControl={false}
         className="h-full w-full"
-        style={{ zIndex: 0 }}
       >
         <TileLayer
           attribution={OSM_ATTRIBUTION}
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={22}
           maxNativeZoom={19}
+          detectRetina
+          updateWhenIdle
         />
 
         {activeLayers.map((layer) => (
@@ -158,8 +187,28 @@ export function IdeMap() {
           onZoomEnd={setZoom}
         />
         <FitToBounds bounds={fitTo} />
+        <MapFloatingControls
+          queryMode={queryMode}
+          onToggleQueryMode={toggleQueryMode}
+          onToggleLayers={() =>
+            setMobileLayersOpen((prev) => {
+              const next = !prev
+              if (next && isMobile) setMobileLegendOpen(false)
+              return next
+            })
+          }
+          onToggleLegend={() =>
+            setMobileLegendOpen((prev) => {
+              const next = !prev
+              if (next && isMobile) setMobileLayersOpen(false)
+              return next
+            })
+          }
+          layersOpen={mobileLayersOpen}
+          legendOpen={mobileLegendOpen}
+        />
 
-        {popupPosition && (
+        {!isMobile && popupPosition && (
           <Popup
             position={popupPosition}
             eventHandlers={{
@@ -180,9 +229,26 @@ export function IdeMap() {
         onToggle={toggleLayer}
         onOpacityChange={setLayerOpacity}
         onZoomToLayer={fitToLayer}
+        onRetry={reloadCapabilities}
+        open={isMobile ? mobileLayersOpen : undefined}
+        onOpenChange={(open) => {
+          setMobileLayersOpen(open)
+          if (open && isMobile) setMobileLegendOpen(false)
+        }}
       />
 
-      <LegendPanel activeLayers={activeLayers} />
+      <LegendPanel
+        activeLayers={activeLayers}
+        open={isMobile ? mobileLegendOpen : undefined}
+        onOpenChange={(open) => {
+          setMobileLegendOpen(open)
+          if (open && isMobile) setMobileLayersOpen(false)
+        }}
+      />
+
+      {isMobile && featureInfo && (
+        <FeatureInfoSheet featureInfo={featureInfo} onClose={closeFeatureInfo} />
+      )}
     </div>
   )
 }

@@ -1,16 +1,16 @@
 'use client'
 
 import {
-  GEOSERVER_BASE_URL,
-  MAP_CENTER,
-  MAP_ZOOM,
-  type IdeLayerConfig,
+    GEOSERVER_BASE_URL,
+    MAP_CENTER,
+    MAP_ZOOM,
+    type IdeLayerConfig,
 } from '@/web/lib/ide-config'
 import {
-  fetchWmsCapabilities,
-  mergeWithDefaults,
-  type FeatureInfoResponse,
-  type WmsLayer,
+    fetchWmsCapabilities,
+    mergeWithDefaults,
+    type FeatureInfoResponse,
+    type WmsLayer,
 } from '@/web/lib/ide-wms'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -46,11 +46,14 @@ export function useMapState() {
   const [discoveredCapabilities, setDiscoveredCapabilities] = useState<WmsLayer[]>([])
   const [fitTo, setFitTo] = useState<[number, number, number, number] | undefined>(undefined)
   const [featureInfo, setFeatureInfo] = useState<FeatureInfoState | null>(null)
+  const [queryMode, setQueryMode] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     let cancelled = false
 
     async function loadCapabilities() {
+      setLoadingLayers(true)
       try {
         const capabilities = await fetchWmsCapabilities(GEOSERVER_BASE_URL)
         if (cancelled) return
@@ -89,6 +92,10 @@ export function useMapState() {
     return () => {
       cancelled = true
     }
+  }, [retryCount])
+
+  const reloadCapabilities = useCallback(() => {
+    setRetryCount((c) => c + 1)
   }, [])
 
   const toggleLayer = useCallback((id: string) => {
@@ -142,6 +149,14 @@ export function useMapState() {
     setFeatureInfo(null)
   }, [])
 
+  const toggleQueryMode = useCallback(() => {
+    setQueryMode((prev) => {
+      const next = !prev
+      if (!next) closeFeatureInfo()
+      return next
+    })
+  }, [closeFeatureInfo])
+
   return {
     center,
     zoom,
@@ -152,6 +167,7 @@ export function useMapState() {
     capabilitiesError,
     fitTo,
     featureInfo,
+    queryMode,
     setCenter,
     setZoom,
     toggleLayer,
@@ -161,5 +177,7 @@ export function useMapState() {
     setFeatureInfoSuccess,
     setFeatureInfoError,
     closeFeatureInfo,
+    toggleQueryMode,
+    reloadCapabilities,
   }
 }

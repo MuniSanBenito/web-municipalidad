@@ -6,10 +6,11 @@ import {
     IconChevronRight,
     IconLoader2,
     IconMapPin,
+    IconSearch,
     IconStack2,
     IconX,
 } from '@tabler/icons-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type LayerState } from './use-map-state'
 
 interface LayerControlPanelProps {
@@ -20,6 +21,9 @@ interface LayerControlPanelProps {
   onToggle: (id: string) => void
   onOpacityChange: (id: string, opacity: number) => void
   onZoomToLayer: (id: string) => void
+  onRetry?: () => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export function LayerControlPanel({
@@ -30,14 +34,27 @@ export function LayerControlPanel({
   onToggle,
   onOpacityChange,
   onZoomToLayer,
+  onRetry,
+  open,
+  onOpenChange,
 }: LayerControlPanelProps) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [internalCollapsed, setInternalCollapsed] = useState(false)
+  const collapsed = open !== undefined ? !open : internalCollapsed
+  const setCollapsed = (next: boolean) => {
+    if (open !== undefined) {
+      onOpenChange?.(!next)
+    } else {
+      setInternalCollapsed(next)
+    }
+  }
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
+    if (open !== undefined) return
     const isMobile = window.matchMedia('(max-width: 768px)').matches
-    if (isMobile) setCollapsed(true)
-  }, [])
+    if (isMobile) setInternalCollapsed(true)
+  }, [open])
 
   const toggleGroup = (category: string) => {
     setCollapsedGroups((prev) => {
@@ -51,7 +68,23 @@ export function LayerControlPanel({
     })
   }
 
-  const categories = Array.from(groupedLayers.keys()).sort((a, b) => {
+  const filteredGroups = useMemo(() => {
+    const query = search.trim().toLowerCase()
+    if (!query) return groupedLayers
+
+    const next = new Map<string, LayerState[]>()
+    groupedLayers.forEach((layers, category) => {
+      const filtered = layers.filter(
+        (l) =>
+          l.title.toLowerCase().includes(query) ||
+          (l.abstract && l.abstract.toLowerCase().includes(query)),
+      )
+      if (filtered.length) next.set(category, filtered)
+    })
+    return next
+  }, [groupedLayers, search])
+
+  const categories = Array.from(filteredGroups.keys()).sort((a, b) => {
     const indexA = CATEGORY_ORDER.indexOf(a)
     const indexB = CATEGORY_ORDER.indexOf(b)
     if (indexA === -1 && indexB === -1) return a.localeCompare(b)
@@ -127,8 +160,27 @@ export function LayerControlPanel({
                   <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <span>{error}</span>
+                {onRetry && (
+                  <button onClick={onRetry} className="btn btn-ghost btn-xs ml-2">
+                    Reintentar
+                  </button>
+                )}
               </div>
             )}
+
+            <div className="relative mb-3">
+              <IconSearch
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar capas..."
+                className="input input-sm input-bordered w-full pl-9"
+              />
+            </div>
 
             {categories.length === 0 && !loading && (
               <p className="py-8 text-center text-sm text-base-content/50">
@@ -148,7 +200,7 @@ export function LayerControlPanel({
             )}
 
             {categories.map((category) => {
-              const layers = groupedLayers.get(category) || []
+              const layers = filteredGroups.get(category) || []
               const isGroupCollapsed = collapsedGroups.has(category)
               const activeCount = layers.filter((l) => l.visible).length
               return (

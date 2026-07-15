@@ -8,21 +8,41 @@ import { type LayerState } from './use-map-state'
 
 interface LegendPanelProps {
   activeLayers: LayerState[]
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function LegendPanel({ activeLayers }: LegendPanelProps) {
-  const [collapsed, setCollapsed] = useState(true)
+export function LegendPanel({ activeLayers, open, onOpenChange }: LegendPanelProps) {
+  const [internalCollapsed, setInternalCollapsed] = useState(true)
+  const collapsed = open !== undefined ? !open : internalCollapsed
+  const setCollapsed = (next: boolean) => {
+    if (open !== undefined) {
+      onOpenChange?.(!next)
+    } else {
+      setInternalCollapsed(next)
+    }
+  }
   const hasLegend = activeLayers.length > 0
 
   return (
-    <div
-      className={`
-        absolute z-[1001] flex flex-col overflow-hidden border border-base-300 bg-base-100/95 shadow-2xl backdrop-blur-md transition-all duration-300 ease-out
-        bottom-16 right-0 max-h-[35vh] rounded-tl-2xl
-        md:bottom-4 md:right-4 md:max-h-[calc(50%-1rem)] md:rounded-2xl
-        ${collapsed ? 'h-12 md:w-auto' : 'md:w-72'}
-      `}
-    >
+    <>
+      {!collapsed && (
+        <div
+          className="absolute inset-0 z-[999] bg-black/30 backdrop-blur-sm md:hidden"
+          onClick={() => setCollapsed(true)}
+        />
+      )}
+      <div
+        className={`
+          absolute z-[1001] flex flex-col overflow-hidden border border-base-300 bg-base-100/95 shadow-2xl backdrop-blur-md transition-all duration-300 ease-out
+          md:bottom-4 md:right-4 md:max-h-[calc(50%-1rem)] md:rounded-2xl
+          ${
+            collapsed
+              ? 'bottom-16 right-0 h-12 rounded-tl-2xl md:w-auto'
+              : 'bottom-0 left-0 right-0 max-h-[50vh] rounded-t-2xl md:bottom-4 md:right-4 md:w-72 md:rounded-2xl'
+          }
+        `}
+      >
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="flex items-center justify-between gap-2 border-b border-base-300 p-3 transition-colors hover:bg-base-200/50 active:bg-base-200"
@@ -71,5 +91,6 @@ export function LegendPanel({ activeLayers }: LegendPanelProps) {
         </div>
       )}
     </div>
+    </>
   )
 }
