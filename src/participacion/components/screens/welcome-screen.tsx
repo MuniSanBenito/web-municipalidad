@@ -2,15 +2,27 @@
 
 import { BeniAvatar } from '@/participacion/components/beni-avatar'
 import { bounceIn, buttonTap, staggerContainer, staggerItem } from '@/participacion/components/ui'
+import type { Imagen } from '@/payload-types'
 import { IconHomeHeart, IconMapPin } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
+import NextImage from 'next/image'
 
 interface WelcomeScreenProps {
   onStart: () => void
   barrio: string
+  imagen?: (string | null) | Imagen
+  colorPrincipal: string
 }
 
-export function WelcomeScreen({ onStart, barrio }: WelcomeScreenProps) {
+function getImageUrl(imagen?: (string | null) | Imagen): string | undefined {
+  if (!imagen || typeof imagen === 'string') return undefined
+  return imagen.sizes?.square?.url || imagen.url || undefined
+}
+
+export function WelcomeScreen({ onStart, barrio, imagen, colorPrincipal }: WelcomeScreenProps) {
+  const imageUrl = getImageUrl(imagen)
+  const imageAlt = typeof imagen === 'object' && imagen?.alt ? imagen.alt : 'Imagen de la campaña'
+
   return (
     <motion.div
       variants={staggerContainer}
@@ -24,11 +36,29 @@ export function WelcomeScreen({ onStart, barrio }: WelcomeScreenProps) {
         size={64}
       />
 
-      <motion.div
-        variants={bounceIn}
-        className="mb-6 mt-4 flex h-28 w-28 items-center justify-center rounded-[2rem] bg-secondary/10 text-secondary sm:h-32 sm:w-32"
-      >
-        <IconHomeHeart size={64} strokeWidth={1.5} />
+      <motion.div variants={bounceIn} className="mb-6 mt-4">
+        {imageUrl ? (
+          <div
+            className="relative h-28 w-28 overflow-hidden rounded-full border-4 shadow-xl sm:h-32 sm:w-32"
+            style={{ borderColor: colorPrincipal }}
+          >
+            <NextImage
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 112px, 128px"
+              unoptimized
+            />
+          </div>
+        ) : (
+          <div
+            className="flex h-28 w-28 items-center justify-center rounded-full border-4 bg-base-100 shadow-xl sm:h-32 sm:w-32"
+            style={{ borderColor: colorPrincipal }}
+          >
+            <IconHomeHeart size={64} strokeWidth={1.5} style={{ color: colorPrincipal }} />
+          </div>
+        )}
       </motion.div>
 
       <motion.h1

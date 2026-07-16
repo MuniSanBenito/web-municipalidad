@@ -2,8 +2,51 @@
 
 import { checkmarkPop, staggerContainer, staggerItem } from '@/participacion/components/ui'
 import type { Sport } from '@/participacion/types'
+import {
+    IconBallAmericanFootball,
+    IconBallFootball,
+    IconBallVolleyball,
+    IconBarbell,
+    IconBike,
+    IconCards,
+    IconDiscGolf,
+    IconGolf,
+    IconHorse,
+    IconMusic,
+    IconPlayFootball,
+    IconPlayVolleyball,
+    IconPool,
+    IconRun,
+    IconStretching,
+    IconSwimming,
+} from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'framer-motion'
+import type { ComponentType, CSSProperties } from 'react'
 import { useState } from 'react'
+
+interface IconProps {
+  size?: number
+  style?: CSSProperties
+}
+
+const SPORT_ICONS: Record<string, ComponentType<IconProps>> = {
+  'ball-football': IconBallFootball,
+  'ball-american-football': IconBallAmericanFootball,
+  'ball-volleyball': IconBallVolleyball,
+  barbell: IconBarbell,
+  bike: IconBike,
+  cards: IconCards,
+  'disc-golf': IconDiscGolf,
+  golf: IconGolf,
+  horse: IconHorse,
+  music: IconMusic,
+  'play-football': IconPlayFootball,
+  'play-volleyball': IconPlayVolleyball,
+  pool: IconPool,
+  run: IconRun,
+  stretching: IconStretching,
+  swimming: IconSwimming,
+}
 
 interface SportsScreenProps {
   sports: Sport[]
@@ -11,7 +54,7 @@ interface SportsScreenProps {
   onSelect: (sport: Sport) => void
 }
 
-export function SportsScreen({ sports, onSelect }: SportsScreenProps) {
+export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenProps) {
   const [selected, setSelected] = useState<string | null>(null)
 
   function handleSelect(sport: Sport) {
@@ -55,7 +98,13 @@ export function SportsScreen({ sports, onSelect }: SportsScreenProps) {
                 isSelected ? 'border-primary bg-primary/10' : 'border-transparent bg-base-100'
               } ${isDisabled ? 'opacity-40' : 'hover:shadow-md'}`}
             >
-              <span className="text-3xl sm:text-4xl">{sport.emoji}</span>
+              {(() => {
+                const Icon = sport.icono ? SPORT_ICONS[sport.icono] : undefined
+                if (Icon) {
+                  return <Icon size={40} style={{ color: colorPrincipal }} />
+                }
+                return <span className="text-3xl sm:text-4xl">{sport.emoji}</span>
+              })()}
               <span className="text-center text-xs font-medium text-base-content sm:text-sm">
                 {sport.nombre}
               </span>

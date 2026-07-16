@@ -27,6 +27,7 @@ export default async function ParticipacionPage({ params }: PageProps) {
     collection: 'campanas',
     where: { slug: { equals: slug } },
     limit: 1,
+    depth: 1,
   })
 
   const campaign = campaignRes.docs[0]

@@ -4,15 +4,23 @@ import config from '@/payload.config'
 import { getPayload } from 'payload'
 
 const SEED_SPORTS = [
-  { nombre: 'Fútbol', emoji: '⚽', orden: 1 },
-  { nombre: 'Vóley', emoji: '🏐', orden: 2 },
-  { nombre: 'Básquet', emoji: '🏀', orden: 3 },
-  { nombre: 'Hockey', emoji: '🏑', orden: 4 },
-  { nombre: 'Patín', emoji: '🛼', orden: 5 },
-  { nombre: 'Atletismo', emoji: '🏃', orden: 6 },
-  { nombre: 'Gimnasia', emoji: '🤸', orden: 7 },
-  { nombre: 'Ciclismo', emoji: '🚴', orden: 8 },
-  { nombre: 'Artes marciales', emoji: '🥋', orden: 9 },
+  { nombre: 'Fútbol', emoji: '⚽', icono: 'ball-football', orden: 1 },
+  { nombre: 'Iniciación deportiva', emoji: '⚽', icono: 'play-football', orden: 2 },
+  { nombre: 'Ciclismo', emoji: '🚴', icono: 'bike', orden: 3 },
+  { nombre: 'Atletismo', emoji: '🏃', icono: 'run', orden: 4 },
+  { nombre: 'Vóley', emoji: '🏐', icono: 'ball-volleyball', orden: 5 },
+  { nombre: 'Beach vóley', emoji: '�', icono: 'ball-volleyball', orden: 6 },
+  { nombre: 'Cartas', emoji: '�', icono: 'cards', orden: 7 },
+  { nombre: 'Newcom', emoji: '🏐', icono: 'play-volleyball', orden: 8 },
+  { nombre: 'Golfcrocket', emoji: '⛳', icono: 'golf', orden: 9 },
+  { nombre: 'Tejo', emoji: '🥏', icono: 'disc-golf', orden: 10 },
+  { nombre: 'Zumba', emoji: '�', icono: 'music', orden: 11 },
+  { nombre: 'Running', emoji: '🏃', icono: 'run', orden: 12 },
+  { nombre: 'Aquagym', emoji: '🏊', icono: 'pool', orden: 13 },
+  { nombre: 'Funcional', emoji: '🏋️', icono: 'barbell', orden: 14 },
+  { nombre: 'Funcional para adultos', emoji: '🧘', icono: 'stretching', orden: 15 },
+  { nombre: 'Jockey sobre césped', emoji: '🏇', icono: 'horse', orden: 16 },
+  { nombre: 'Rugby', emoji: '🏉', icono: 'ball-american-football', orden: 17 },
 ]
 
 const SEED_TREES = [
@@ -64,8 +72,31 @@ async function seedDemo() {
 
   if (existing.docs.length > 0) {
     const campaign = existing.docs[0]
+
+    // Upsert sports: update existing or create missing ones with icono
+    const existingSports = await payload.find({ collection: 'deportes', limit: 50, sort: 'orden' })
+    const sportsByNombre = new Map(existingSports.docs.map((s) => [s.nombre, s]))
+
+    for (const seed of SEED_SPORTS) {
+      const existingSport = sportsByNombre.get(seed.nombre)
+      if (existingSport) {
+        if (!existingSport.icono || existingSport.icono !== seed.icono) {
+          await payload.update({
+            collection: 'deportes',
+            id: existingSport.id,
+            data: { icono: seed.icono, emoji: seed.emoji, orden: seed.orden },
+          })
+        }
+      } else {
+        await payload.create({
+          collection: 'deportes',
+          data: { ...seed, campana: campaign.id },
+        })
+      }
+    }
+
     const [sports, trees, budget, plaza] = await Promise.all([
-      payload.find({ collection: 'deportes', limit: 20, sort: 'orden' }),
+      payload.find({ collection: 'deportes', limit: 50, sort: 'orden' }),
       payload.find({ collection: 'arboles', limit: 20, sort: 'orden' }),
       payload.find({ collection: 'opciones-presupuesto', limit: 20, sort: 'orden' }),
       payload.find({ collection: 'elementos-plaza', limit: 20, sort: 'orden' }),

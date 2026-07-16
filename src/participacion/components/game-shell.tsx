@@ -107,6 +107,8 @@ export function GameShell({ data }: GameShellProps) {
             <WelcomeScreen
               onStart={stepper.next}
               barrio={campaign.barrio}
+              imagen={campaign.imagen}
+              colorPrincipal={campaign.colorPrincipal}
             />
           </StepLayout>
         )}
