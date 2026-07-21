@@ -47,3 +47,5 @@ next-env.d.ts
 contribuyentes_conmail
 
 .pnpm-store
+
+.anotaciones.md
