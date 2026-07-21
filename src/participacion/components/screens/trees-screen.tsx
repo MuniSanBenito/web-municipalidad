@@ -73,7 +73,18 @@ export function TreesScreen({ trees, maxSelections = 3, onSelect }: TreesScreenP
                 isSelected ? 'border-primary bg-primary/10' : 'border-transparent bg-base-100'
               } ${isDisabled ? 'opacity-40' : 'hover:shadow-md'}`}
             >
-              <span className="text-4xl sm:text-5xl">{tree.emoji}</span>
+              {tree.imagen && typeof tree.imagen === 'object' && tree.imagen.url ? (
+                <div className="relative h-20 w-20 overflow-hidden rounded-xl sm:h-24 sm:w-24">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={tree.imagen.thumbnailURL ?? tree.imagen.url}
+                    alt={tree.imagen.alt ?? tree.nombre}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <span className="text-4xl sm:text-5xl">{tree.emoji ?? '🌳'}</span>
+              )}
               <span className="text-center text-xs font-bold text-base-content sm:text-sm">
                 {tree.nombre}
               </span>

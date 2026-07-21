@@ -36,18 +36,21 @@ export const Arboles: CollectionConfig = {
     {
       type: 'text',
       name: 'emoji',
-      label: 'Emoji',
-      required: true,
+      label: 'Emoji (fallback)',
+      required: false,
       admin: {
-        description: 'Emoji que representa al árbol, ej: 🌳',
+        description: 'Emoji de respaldo si no hay imagen cargada, ej: 🌳',
       },
     },
     {
       type: 'upload',
       name: 'imagen',
-      label: 'Imagen del árbol',
+      label: 'Foto del árbol',
       relationTo: 'imagenes',
       required: false,
+      admin: {
+        description: 'Foto real del árbol. Se muestra en lugar del emoji cuando está cargada.',
+      },
     },
     {
       type: 'number',

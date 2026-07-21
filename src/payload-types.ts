@@ -1073,9 +1073,12 @@ export interface Arbole {
   nombre: string;
   caracteristicas: string;
   /**
-   * Emoji que representa al árbol, ej: 🌳
+   * Emoji de respaldo si no hay imagen cargada, ej: 🌳
    */
-  emoji: string;
+  emoji?: string | null;
+  /**
+   * Foto real del árbol. Se muestra en lugar del emoji cuando está cargada.
+   */
   imagen?: (string | null) | Imagen;
   orden?: number | null;
   /**
