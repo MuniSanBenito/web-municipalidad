@@ -15,11 +15,11 @@ import { Avatares } from './payload/collections/Avatares'
 import { BalancesMensuales } from './payload/collections/BalancesMensuales'
 import { Campanas } from './payload/collections/Campanas'
 import { ChatbotConversations } from './payload/collections/ChatbotConversations'
-
 import { Ciudadanos } from './payload/collections/Ciudadanos'
 import { ComerciosHabilitados } from './payload/collections/ComerciosHabilitados'
 import { Concursos } from './payload/collections/Concursos'
 import { Contabilidad } from './payload/collections/Contabilidad'
+import { Contribuyentes } from './payload/collections/Contribuyentes'
 import { Curriculums } from './payload/collections/Curriculums'
 import { Deportes } from './payload/collections/Deportes'
 import { ElementosPlaza } from './payload/collections/ElementosPlaza'
@@ -158,6 +158,7 @@ export default buildConfig({
     Avatares,
     Memorias,
     Contabilidad,
+    Contribuyentes,
     Intimaciones,
     Ubicaciones,
     Eventos,
