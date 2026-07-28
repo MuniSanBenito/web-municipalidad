@@ -2,13 +2,13 @@
 
 import { CATEGORY_COLORS, CATEGORY_ORDER } from '@/web/lib/ide-config'
 import {
-    IconChevronDown,
-    IconChevronRight,
-    IconLoader2,
-    IconMapPin,
-    IconSearch,
-    IconStack2,
-    IconX,
+  IconChevronDown,
+  IconChevronRight,
+  IconLoader2,
+  IconMapPin,
+  IconSearch,
+  IconStack2,
+  IconX,
 } from '@tabler/icons-react'
 import { useEffect, useMemo, useState } from 'react'
 import { type LayerState } from './use-map-state'
@@ -104,23 +104,11 @@ export function LayerControlPanel({
       )}
 
       <div
-        className={`
-          absolute z-[1000] flex flex-col border border-base-300 bg-base-100/95 shadow-2xl backdrop-blur-md transition-all duration-300 ease-out
-          bottom-0 left-0 right-0 max-h-[70vh] rounded-t-2xl
-          md:bottom-auto md:left-4 md:right-auto md:top-4 md:max-h-[calc(100%-2rem)] md:rounded-2xl
-          ${collapsed ? 'h-14 md:h-auto md:w-14' : 'md:w-80'}
-        `}
+        className={`border-base-300 bg-base-100/95 absolute right-0 bottom-0 left-0 z-[1000] flex max-h-[70vh] flex-col rounded-t-2xl border shadow-2xl backdrop-blur-md transition-all duration-300 ease-out md:top-4 md:right-auto md:bottom-auto md:left-4 md:max-h-[calc(100%-2rem)] md:rounded-2xl ${collapsed ? 'hidden h-14 md:flex md:h-auto md:w-14' : 'md:w-80'} `}
       >
-        {/* Drag handle for mobile */}
-        {collapsed && (
-          <div className="flex justify-center pt-2 md:hidden">
-            <div className="h-1.5 w-12 rounded-full bg-base-300" />
-          </div>
-        )}
-
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-between gap-2 border-b border-base-300 p-3 transition-colors hover:bg-base-200/50 active:bg-base-200"
+          className="border-base-300 hover:bg-base-200/50 active:bg-base-200 flex items-center justify-between gap-2 border-b p-3 transition-colors"
           title={collapsed ? 'Expandir panel de capas' : 'Colapsar panel de capas'}
         >
           <div className="flex items-center gap-2">
@@ -129,32 +117,34 @@ export function LayerControlPanel({
           </div>
           <div className="flex items-center gap-2">
             {!collapsed && loading && (
-              <IconLoader2 size={18} className="animate-spin text-primary" />
+              <IconLoader2 size={18} className="text-primary animate-spin" />
             )}
             {!collapsed && !loading && (
               <span className="badge badge-primary badge-sm">{activeLayers.length}</span>
             )}
-            {collapsed ? (
-              <IconChevronDown size={20} className="md:hidden" />
-            ) : (
-              <IconX size={20} className="md:hidden" />
-            )}
-            {!collapsed && (
-              <IconChevronDown size={18} className="hidden md:block" />
-            )}
+            {!collapsed && <IconX size={20} className="md:hidden" />}
+            {!collapsed && <IconChevronDown size={18} className="hidden md:block" />}
           </div>
         </button>
 
         {!collapsed && (
-          <div className="flex-1 overflow-y-auto p-3 overscroll-contain">
+          <div className="flex-1 overflow-y-auto overscroll-contain p-3">
             {/* Mobile drag handle */}
             <div className="mb-3 flex justify-center md:hidden">
-              <div className="h-1.5 w-12 rounded-full bg-base-300" />
+              <div className="bg-base-300 h-1.5 w-12 rounded-full" />
             </div>
 
             {error && (
               <div className="alert alert-warning mb-3 p-2.5 text-sm">
-                <svg className="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  className="h-5 w-5 flex-shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   <line x1="12" y1="9" x2="12" y2="13" />
                   <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -171,7 +161,7 @@ export function LayerControlPanel({
             <div className="relative mb-3">
               <IconSearch
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"
+                className="text-base-content/50 absolute top-1/2 left-3 -translate-y-1/2"
               />
               <input
                 type="text"
@@ -183,7 +173,7 @@ export function LayerControlPanel({
             </div>
 
             {categories.length === 0 && !loading && (
-              <p className="py-8 text-center text-sm text-base-content/50">
+              <p className="text-base-content/50 py-8 text-center text-sm">
                 No hay capas disponibles.
               </p>
             )}
@@ -192,8 +182,8 @@ export function LayerControlPanel({
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="mb-2 h-4 w-32 rounded bg-base-200" />
-                    <div className="h-12 w-full rounded-lg bg-base-200" />
+                    <div className="bg-base-200 mb-2 h-4 w-32 rounded" />
+                    <div className="bg-base-200 h-12 w-full rounded-lg" />
                   </div>
                 ))}
               </div>
@@ -207,20 +197,20 @@ export function LayerControlPanel({
                 <div key={category} className="mb-3">
                   <button
                     onClick={() => toggleGroup(category)}
-                    className="flex w-full items-center gap-2 rounded-lg p-2.5 text-sm font-semibold transition-colors hover:bg-base-200/70 active:bg-base-200"
+                    className="hover:bg-base-200/70 active:bg-base-200 flex w-full items-center gap-2 rounded-lg p-2.5 text-sm font-semibold transition-colors"
                   >
                     <span
-                      className={`inline-block h-3 w-3 flex-shrink-0 rounded-full ring-2 ring-base-100 ${
+                      className={`ring-base-100 inline-block h-3 w-3 flex-shrink-0 rounded-full ring-2 ${
                         CATEGORY_COLORS[category] || 'bg-base-300'
                       }`}
                     />
                     {isGroupCollapsed ? (
-                      <IconChevronRight size={16} className="flex-shrink-0 text-base-content/50" />
+                      <IconChevronRight size={16} className="text-base-content/50 flex-shrink-0" />
                     ) : (
-                      <IconChevronDown size={16} className="flex-shrink-0 text-base-content/50" />
+                      <IconChevronDown size={16} className="text-base-content/50 flex-shrink-0" />
                     )}
                     <span className="truncate">{category}</span>
-                    <span className="ml-auto flex-shrink-0 text-xs text-base-content/50">
+                    <span className="text-base-content/50 ml-auto flex-shrink-0 text-xs">
                       {activeCount > 0 ? (
                         <span className="badge badge-primary badge-xs gap-1">
                           {activeCount}/{layers.length}
@@ -253,19 +243,19 @@ export function LayerControlPanel({
                             <div className="min-w-0 flex-1">
                               <label
                                 htmlFor={`layer-${layer.id}`}
-                                className="block cursor-pointer text-sm font-medium leading-tight"
+                                className="block cursor-pointer text-sm leading-tight font-medium"
                                 title={layer.abstract || layer.title}
                               >
                                 {layer.title}
                               </label>
                               {layer.abstract && (
-                                <p className="mt-0.5 line-clamp-2 text-xs text-base-content/50">
+                                <p className="text-base-content/50 mt-0.5 line-clamp-2 text-xs">
                                   {layer.abstract}
                                 </p>
                               )}
                               {layer.visible && (
                                 <div className="mt-2.5">
-                                  <div className="mb-1 flex items-center justify-between text-xs text-base-content/60">
+                                  <div className="text-base-content/60 mb-1 flex items-center justify-between text-xs">
                                     <span>Opacidad</span>
                                     <span className="font-mono font-semibold">
                                       {Math.round((layer.opacity ?? 0.85) * 100)}%
@@ -306,9 +296,9 @@ export function LayerControlPanel({
               )
             })}
 
-            <div className="mt-3 flex items-center justify-between border-t border-base-300 pt-3 text-xs text-base-content/60">
+            <div className="border-base-300 text-base-content/60 mt-3 flex items-center justify-between border-t pt-3 text-xs">
               <span>
-                <span className="font-bold text-primary">{activeLayers.length}</span> capa
+                <span className="text-primary font-bold">{activeLayers.length}</span> capa
                 {activeLayers.length === 1 ? '' : 's'} activa
                 {activeLayers.length === 1 ? '' : 's'}
               </span>

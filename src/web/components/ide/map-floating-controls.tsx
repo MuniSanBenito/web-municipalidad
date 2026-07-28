@@ -2,13 +2,13 @@
 
 import { MAP_CENTER, MAP_ZOOM } from '@/web/lib/ide-config'
 import {
-    IconClick,
-    IconCurrentLocation,
-    IconMap2,
-    IconMapPin,
-    IconMinus,
-    IconPlus,
-    IconStack2,
+  IconClick,
+  IconCurrentLocation,
+  IconMap2,
+  IconMapPin,
+  IconMinus,
+  IconPlus,
+  IconStack2,
 } from '@tabler/icons-react'
 import { useMap } from 'react-leaflet'
 import { toast } from 'sonner'
@@ -44,11 +44,7 @@ export function MapFloatingControls({
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        map.flyTo(
-          [position.coords.latitude, position.coords.longitude],
-          16,
-          { duration: 1.5 },
-        )
+        map.flyTo([position.coords.latitude, position.coords.longitude], 16, { duration: 1.5 })
       },
       () => {
         toast.error('No se pudo obtener tu ubicación. Verificá los permisos.')
@@ -58,12 +54,12 @@ export function MapFloatingControls({
 
   return (
     <div
-      className="pointer-events-none absolute right-3 top-20 z-[1003] flex flex-col gap-2 md:right-6 md:top-6"
+      className="pointer-events-none absolute top-20 left-3 z-[1003] flex flex-col gap-2 md:top-6 md:left-6"
       aria-label="Controles del mapa"
     >
       <button
         onClick={onToggleQueryMode}
-        className={`btn btn-circle btn-sm pointer-events-auto shadow-lg backdrop-blur md:btn-md ${
+        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur ${
           queryMode ? 'btn-primary' : 'btn-ghost bg-base-100/95'
         }`}
         title={queryMode ? 'Desactivar modo consulta' : 'Activar modo consulta'}
@@ -74,7 +70,7 @@ export function MapFloatingControls({
 
       <button
         onClick={() => map.zoomIn()}
-        className="btn btn-circle btn-sm pointer-events-auto bg-base-100/95 shadow-lg backdrop-blur md:btn-md"
+        className="btn btn-circle btn-sm bg-base-100/95 md:btn-md pointer-events-auto shadow-lg backdrop-blur"
         title="Acercar"
       >
         <IconPlus size={18} />
@@ -82,7 +78,7 @@ export function MapFloatingControls({
 
       <button
         onClick={() => map.zoomOut()}
-        className="btn btn-circle btn-sm pointer-events-auto bg-base-100/95 shadow-lg backdrop-blur md:btn-md"
+        className="btn btn-circle btn-sm bg-base-100/95 md:btn-md pointer-events-auto shadow-lg backdrop-blur"
         title="Alejar"
       >
         <IconMinus size={18} />
@@ -90,7 +86,7 @@ export function MapFloatingControls({
 
       <button
         onClick={onToggleLayers}
-        className={`btn btn-circle btn-sm pointer-events-auto shadow-lg backdrop-blur md:btn-md md:hidden ${
+        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur md:hidden ${
           layersOpen ? 'btn-primary' : 'btn-ghost bg-base-100/95'
         }`}
         title={layersOpen ? 'Cerrar capas' : 'Abrir capas'}
@@ -100,7 +96,7 @@ export function MapFloatingControls({
 
       <button
         onClick={onToggleLegend}
-        className={`btn btn-circle btn-sm pointer-events-auto shadow-lg backdrop-blur md:btn-md md:hidden ${
+        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur md:hidden ${
           legendOpen ? 'btn-primary' : 'btn-ghost bg-base-100/95'
         }`}
         title={legendOpen ? 'Cerrar leyenda' : 'Abrir leyenda'}
@@ -110,7 +106,7 @@ export function MapFloatingControls({
 
       <button
         onClick={centerSanBenito}
-        className="btn btn-circle btn-sm pointer-events-auto bg-base-100/95 shadow-lg backdrop-blur md:btn-md"
+        className="btn btn-circle btn-sm bg-base-100/95 md:btn-md pointer-events-auto shadow-lg backdrop-blur"
         title="Centrar en San Benito"
       >
         <IconMapPin size={18} />
@@ -118,7 +114,7 @@ export function MapFloatingControls({
 
       <button
         onClick={locateUser}
-        className="btn btn-circle btn-sm pointer-events-auto bg-base-100/95 shadow-lg backdrop-blur md:btn-md"
+        className="btn btn-circle btn-sm bg-base-100/95 md:btn-md pointer-events-auto shadow-lg backdrop-blur"
         title="Mi ubicación"
       >
         <IconCurrentLocation size={18} />
