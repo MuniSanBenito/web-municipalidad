@@ -8,7 +8,6 @@ import {
   IconMapPin,
   IconMinus,
   IconPlus,
-  IconStack2,
 } from '@tabler/icons-react'
 import { useMap } from 'react-leaflet'
 import { toast } from 'sonner'
@@ -16,18 +15,14 @@ import { toast } from 'sonner'
 interface MapFloatingControlsProps {
   queryMode: boolean
   onToggleQueryMode: () => void
-  onToggleLayers?: () => void
   onToggleLegend?: () => void
-  layersOpen?: boolean
   legendOpen?: boolean
 }
 
 export function MapFloatingControls({
   queryMode,
   onToggleQueryMode,
-  onToggleLayers,
   onToggleLegend,
-  layersOpen,
   legendOpen,
 }: MapFloatingControlsProps) {
   const map = useMap()
@@ -54,7 +49,7 @@ export function MapFloatingControls({
 
   return (
     <div
-      className="pointer-events-none absolute top-20 left-3 z-[1003] flex flex-col gap-2 md:top-6 md:left-6"
+      className="pointer-events-none absolute top-3 left-3 z-[1003] flex flex-col gap-2 md:top-6 md:right-6 md:left-auto"
       aria-label="Controles del mapa"
     >
       <button
@@ -82,16 +77,6 @@ export function MapFloatingControls({
         title="Alejar"
       >
         <IconMinus size={18} />
-      </button>
-
-      <button
-        onClick={onToggleLayers}
-        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur md:hidden ${
-          layersOpen ? 'btn-primary' : 'btn-ghost bg-base-100/95'
-        }`}
-        title={layersOpen ? 'Cerrar capas' : 'Abrir capas'}
-      >
-        <IconStack2 size={18} />
       </button>
 
       <button

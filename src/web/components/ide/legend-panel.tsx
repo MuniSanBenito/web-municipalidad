@@ -33,10 +33,10 @@ export function LegendPanel({ activeLayers, open, onOpenChange }: LegendPanelPro
         />
       )}
       <div
-        className={`border-base-300 bg-base-100/95 absolute z-[1001] flex flex-col overflow-hidden border shadow-2xl backdrop-blur-md transition-all duration-300 ease-out md:right-4 md:bottom-4 md:max-h-[calc(50%-1rem)] md:rounded-2xl ${
+        className={`border-base-300 bg-base-100/95 absolute z-[1001] flex flex-col overflow-hidden border shadow-2xl backdrop-blur-md transition-all duration-300 ease-out md:right-4 md:bottom-4 md:left-auto md:max-h-[calc(50%-1rem)] md:rounded-2xl ${
           collapsed
             ? 'right-0 bottom-16 hidden h-12 rounded-tl-2xl md:flex md:w-auto'
-            : 'right-0 bottom-0 left-0 max-h-[50vh] rounded-t-2xl md:right-4 md:bottom-4 md:w-72 md:rounded-2xl'
+            : 'right-0 bottom-0 left-0 max-h-[50vh] rounded-t-2xl md:right-4 md:bottom-4 md:left-auto md:w-72 md:rounded-2xl'
         } `}
       >
         <button

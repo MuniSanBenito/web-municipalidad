@@ -98,13 +98,18 @@ export function LayerControlPanel({
       {/* Mobile backdrop */}
       {!collapsed && (
         <div
-          className="absolute inset-0 z-[999] bg-black/30 backdrop-blur-sm md:hidden"
+          className="absolute inset-0 z-[1010] bg-black/30 backdrop-blur-sm md:hidden"
           onClick={() => setCollapsed(true)}
+          aria-hidden
         />
       )}
 
       <div
-        className={`border-base-300 bg-base-100/95 absolute right-0 bottom-0 left-0 z-[1000] flex max-h-[70vh] flex-col rounded-t-2xl border shadow-2xl backdrop-blur-md transition-all duration-300 ease-out md:top-4 md:right-auto md:bottom-auto md:left-4 md:max-h-[calc(100%-2rem)] md:rounded-2xl ${collapsed ? 'hidden h-14 md:flex md:h-auto md:w-14' : 'md:w-80'} `}
+        className={`border-base-300 bg-base-100/95 absolute z-[1011] flex flex-col border shadow-2xl backdrop-blur-md transition-transform duration-300 ease-out md:top-4 md:bottom-auto md:left-4 md:max-h-[calc(100%-2rem)] md:rounded-2xl md:transition-all ${
+          collapsed
+            ? 'pointer-events-none -translate-x-full md:pointer-events-auto md:flex md:h-auto md:w-14 md:translate-x-0'
+            : 'translate-x-0 md:w-80'
+        } inset-y-0 left-0 h-full w-[min(20rem,85vw)] md:inset-y-auto md:h-auto`}
       >
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -129,11 +134,6 @@ export function LayerControlPanel({
 
         {!collapsed && (
           <div className="flex-1 overflow-y-auto overscroll-contain p-3">
-            {/* Mobile drag handle */}
-            <div className="mb-3 flex justify-center md:hidden">
-              <div className="bg-base-300 h-1.5 w-12 rounded-full" />
-            </div>
-
             {error && (
               <div className="alert alert-warning mb-3 p-2.5 text-sm">
                 <svg

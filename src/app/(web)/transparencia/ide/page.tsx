@@ -101,7 +101,7 @@ export default function PageIde() {
               toma de decisiones y la implementación de políticas públicas.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-4">
-              <Link href="/transparencia/ide/visor/" className="btn btn-primary gap-2">
+              <Link href="/ide/" className="btn btn-primary gap-2">
                 <IconWorld size={20} />
                 <span>Mapa Interactivo</span>
               </Link>

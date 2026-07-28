@@ -15,6 +15,7 @@ import {
 } from 'react-leaflet'
 import { FeatureInfoPanel } from './feature-info-panel'
 import { FeatureInfoSheet } from './feature-info-sheet'
+import { useIdeLayersDrawer } from './ide-layers-drawer-context'
 import { LayerControlPanel } from './layer-control-panel'
 import { LegendPanel } from './legend-panel'
 import { MapFloatingControls } from './map-floating-controls'
@@ -131,7 +132,7 @@ export function IdeMap() {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false,
   )
-  const [mobileLayersOpen, setMobileLayersOpen] = useState(false)
+  const { open: mobileLayersOpen, setOpen: setMobileLayersOpen } = useIdeLayersDrawer()
   const [mobileLegendOpen, setMobileLegendOpen] = useState(false)
 
   useEffect(() => {
@@ -141,6 +142,10 @@ export function IdeMap() {
     mql.addEventListener('change', handler)
     return () => mql.removeEventListener('change', handler)
   }, [])
+
+  useEffect(() => {
+    if (mobileLayersOpen && isMobile) setMobileLegendOpen(false)
+  }, [mobileLayersOpen, isMobile])
 
   const popupPosition = useMemo(() => {
     if (!featureInfo || isMobile) return null
@@ -190,13 +195,6 @@ export function IdeMap() {
         <MapFloatingControls
           queryMode={queryMode}
           onToggleQueryMode={toggleQueryMode}
-          onToggleLayers={() =>
-            setMobileLayersOpen((prev) => {
-              const next = !prev
-              if (next && isMobile) setMobileLegendOpen(false)
-              return next
-            })
-          }
           onToggleLegend={() =>
             setMobileLegendOpen((prev) => {
               const next = !prev
@@ -204,7 +202,6 @@ export function IdeMap() {
               return next
             })
           }
-          layersOpen={mobileLayersOpen}
           legendOpen={mobileLegendOpen}
         />
 
