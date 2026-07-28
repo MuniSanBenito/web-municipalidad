@@ -148,7 +148,7 @@ export function IdeMap() {
   }, [featureInfo, isMobile])
 
   return (
-    <div className="relative z-0 h-full min-h-[400px] w-full overflow-hidden rounded-xl border border-base-300 shadow-lg md:min-h-[600px] md:rounded-2xl">
+    <div className="relative z-0 h-full min-h-0 w-full overflow-hidden rounded-xl border border-base-300 shadow-lg md:rounded-2xl">
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={zoom}
