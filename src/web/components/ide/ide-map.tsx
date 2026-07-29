@@ -6,13 +6,14 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEffect, useMemo, useState } from 'react'
 import {
-    MapContainer,
-    Popup,
-    TileLayer,
-    WMSTileLayer,
-    useMap,
-    useMapEvents,
+  MapContainer,
+  Popup,
+  TileLayer,
+  WMSTileLayer,
+  useMap,
+  useMapEvents,
 } from 'react-leaflet'
+import { BASE_LAYERS, BaseLayerSelector } from './base-layer-selector'
 import { FeatureInfoPanel } from './feature-info-panel'
 import { FeatureInfoSheet } from './feature-info-sheet'
 import { useIdeLayersDrawer } from './ide-layers-drawer-context'
@@ -23,6 +24,30 @@ import { useMapState } from './use-map-state'
 
 const OSM_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+function BaseTileLayer({ baseLayerId }: { baseLayerId: string }) {
+  const config = BASE_LAYERS.find((l) => l.id === baseLayerId) ?? BASE_LAYERS[0]
+  const map = useMap()
+
+  return (
+    <TileLayer
+      key={config.id}
+      url={config.url}
+      tms={config.tms}
+      attribution={config.attribution}
+      maxZoom={22}
+      maxNativeZoom={config.maxNativeZoom ?? 18}
+      detectRetina
+      updateWhenIdle
+      eventHandlers={{
+        add: (e) => {
+          const layer = e.target as L.TileLayer
+          layer.bringToBack()
+        },
+      }}
+    />
+  )
+}
 
 function MapEventHandler({
   onClick,
@@ -134,6 +159,8 @@ export function IdeMap() {
   )
   const { open: mobileLayersOpen, setOpen: setMobileLayersOpen } = useIdeLayersDrawer()
   const [mobileLegendOpen, setMobileLegendOpen] = useState(false)
+  const [baseLayerId, setBaseLayerId] = useState('argenmap')
+  const [baseLayersOpen, setBaseLayersOpen] = useState(false)
 
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 768px)')
@@ -161,14 +188,7 @@ export function IdeMap() {
         zoomControl={false}
         className="h-full w-full"
       >
-        <TileLayer
-          attribution={OSM_ATTRIBUTION}
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          maxZoom={22}
-          maxNativeZoom={19}
-          detectRetina
-          updateWhenIdle
-        />
+        <BaseTileLayer baseLayerId={baseLayerId} />
 
         {activeLayers.map((layer) => (
           <WMSTileLayer
@@ -202,7 +222,9 @@ export function IdeMap() {
               return next
             })
           }
+          onToggleBaseLayers={() => setBaseLayersOpen((prev) => !prev)}
           legendOpen={mobileLegendOpen}
+          baseLayersOpen={baseLayersOpen}
         />
 
         {!isMobile && popupPosition && (
@@ -232,6 +254,13 @@ export function IdeMap() {
           setMobileLayersOpen(open)
           if (open && isMobile) setMobileLegendOpen(false)
         }}
+      />
+
+      <BaseLayerSelector
+        activeBaseLayer={baseLayerId}
+        onSelect={setBaseLayerId}
+        open={baseLayersOpen}
+        onClose={() => setBaseLayersOpen(false)}
       />
 
       <LegendPanel

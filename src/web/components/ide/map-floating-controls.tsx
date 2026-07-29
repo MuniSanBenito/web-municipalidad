@@ -2,12 +2,13 @@
 
 import { MAP_CENTER, MAP_ZOOM } from '@/web/lib/ide-config'
 import {
-  IconClick,
-  IconCurrentLocation,
-  IconMap2,
-  IconMapPin,
-  IconMinus,
-  IconPlus,
+    IconClick,
+    IconCurrentLocation,
+    IconMap2,
+    IconMapPin,
+    IconMinus,
+    IconPlus,
+    IconStack2,
 } from '@tabler/icons-react'
 import { useMap } from 'react-leaflet'
 import { toast } from 'sonner'
@@ -16,14 +17,18 @@ interface MapFloatingControlsProps {
   queryMode: boolean
   onToggleQueryMode: () => void
   onToggleLegend?: () => void
+  onToggleBaseLayers?: () => void
   legendOpen?: boolean
+  baseLayersOpen?: boolean
 }
 
 export function MapFloatingControls({
   queryMode,
   onToggleQueryMode,
   onToggleLegend,
+  onToggleBaseLayers,
   legendOpen,
+  baseLayersOpen,
 }: MapFloatingControlsProps) {
   const map = useMap()
 
@@ -52,6 +57,17 @@ export function MapFloatingControls({
       className="pointer-events-none absolute top-3 left-3 z-[1003] flex flex-col gap-2 md:top-6 md:right-6 md:left-auto"
       aria-label="Controles del mapa"
     >
+      <button
+        onClick={onToggleBaseLayers}
+        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur ${
+          baseLayersOpen ? 'btn-primary' : 'btn-ghost bg-base-100/95'
+        }`}
+        title="Mapas base"
+        aria-pressed={baseLayersOpen}
+      >
+        <IconStack2 size={18} />
+      </button>
+
       <button
         onClick={onToggleQueryMode}
         className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur ${
