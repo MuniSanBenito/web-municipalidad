@@ -12,7 +12,7 @@ import { IdeLayersDrawerProvider, useIdeLayersDrawer } from './ide-layers-drawer
 const VISOR_PATH = '/ide/'
 
 function IdeHeader() {
-  const pathname = usePathname()
+  const pathname = usePathname() ?? ''
   const { open, toggle } = useIdeLayersDrawer()
   const showLayersButton = pathname === VISOR_PATH || pathname.startsWith(`${VISOR_PATH}/`)
 

@@ -1,3 +1,4 @@
+@import 'leaflet/dist/leaflet.css';
 @import 'tailwindcss';
 @plugin 'daisyui';
 
@@ -90,18 +91,18 @@
 }
 
 /* Dark mode: make popup adopt the dark theme */
-[data-theme=dark] .ide-popup .leaflet-popup-content-wrapper {
+[data-theme='dark'] .ide-popup .leaflet-popup-content-wrapper {
   background: var(--color-base-100);
   color: var(--color-base-content);
   border: 1px solid var(--color-base-300);
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
 }
 
-[data-theme=dark] .ide-popup .leaflet-popup-tip {
+[data-theme='dark'] .ide-popup .leaflet-popup-tip {
   background: var(--color-base-100);
 }
 
-[data-theme=dark] .ide-popup .leaflet-popup-close-button {
+[data-theme='dark'] .ide-popup .leaflet-popup-close-button {
   color: var(--color-base-content) !important;
 }
 

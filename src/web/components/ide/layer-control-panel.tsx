@@ -11,6 +11,7 @@ import {
   IconX,
 } from '@tabler/icons-react'
 import { useEffect, useMemo, useState } from 'react'
+import { LayerFilterControl } from './layer-filter-control'
 import { type LayerState } from './use-map-state'
 
 interface LayerControlPanelProps {
@@ -20,6 +21,7 @@ interface LayerControlPanelProps {
   error: string | null
   onToggle: (id: string) => void
   onOpacityChange: (id: string, opacity: number) => void
+  onFilterChange: (id: string, filter?: string) => void
   onZoomToLayer: (id: string) => void
   onRetry?: () => void
   open?: boolean
@@ -33,6 +35,7 @@ export function LayerControlPanel({
   error,
   onToggle,
   onOpacityChange,
+  onFilterChange,
   onZoomToLayer,
   onRetry,
   open,
@@ -254,25 +257,32 @@ export function LayerControlPanel({
                                 </p>
                               )}
                               {layer.visible && (
-                                <div className="mt-2.5">
-                                  <div className="text-base-content/60 mb-1 flex items-center justify-between text-xs">
-                                    <span>Opacidad</span>
-                                    <span className="font-mono font-semibold">
-                                      {Math.round((layer.opacity ?? 0.85) * 100)}%
-                                    </span>
+                                <>
+                                  <div className="mt-2.5">
+                                    <div className="text-base-content/60 mb-1 flex items-center justify-between text-xs">
+                                      <span>Opacidad</span>
+                                      <span className="font-mono font-semibold">
+                                        {Math.round((layer.opacity ?? 0.85) * 100)}%
+                                      </span>
+                                    </div>
+                                    <input
+                                      type="range"
+                                      min={0}
+                                      max={1}
+                                      step={0.05}
+                                      value={layer.opacity ?? 0.85}
+                                      onChange={(e) =>
+                                        onOpacityChange(layer.id, parseFloat(e.target.value))
+                                      }
+                                      className="range range-primary range-xs h-2"
+                                    />
                                   </div>
-                                  <input
-                                    type="range"
-                                    min={0}
-                                    max={1}
-                                    step={0.05}
-                                    value={layer.opacity ?? 0.85}
-                                    onChange={(e) =>
-                                      onOpacityChange(layer.id, parseFloat(e.target.value))
-                                    }
-                                    className="range range-primary range-xs h-2"
+                                  <LayerFilterControl
+                                    layer={layer}
+                                    cqlFilter={layer.cqlFilter}
+                                    onApply={(filter) => onFilterChange(layer.id, filter)}
                                   />
-                                </div>
+                                </>
                               )}
                             </div>
                           </div>

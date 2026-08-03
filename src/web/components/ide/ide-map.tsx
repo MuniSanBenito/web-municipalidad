@@ -3,16 +3,8 @@
 import { GEOSERVER_BASE_URL, WMS_URL } from '@/web/lib/ide-config'
 import { buildGetFeatureInfoUrl, type FeatureInfoResponse } from '@/web/lib/ide-wms'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { useEffect, useMemo, useState } from 'react'
-import {
-  MapContainer,
-  Popup,
-  TileLayer,
-  WMSTileLayer,
-  useMap,
-  useMapEvents,
-} from 'react-leaflet'
+import { MapContainer, Popup, TileLayer, WMSTileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { BASE_LAYERS, BaseLayerSelector } from './base-layer-selector'
 import { FeatureInfoPanel } from './feature-info-panel'
 import { FeatureInfoSheet } from './feature-info-sheet'
@@ -101,6 +93,7 @@ export function IdeMap() {
     setZoom,
     toggleLayer,
     setLayerOpacity,
+    setLayerFilter,
     fitToLayer,
     startFeatureInfo,
     setFeatureInfoSuccess,
@@ -180,7 +173,7 @@ export function IdeMap() {
   }, [featureInfo, isMobile])
 
   return (
-    <div className="relative z-0 h-full min-h-0 w-full overflow-hidden rounded-xl border border-base-300 shadow-lg md:rounded-2xl">
+    <div className="border-base-300 relative z-0 h-full min-h-0 w-full overflow-hidden rounded-xl border shadow-lg md:rounded-2xl">
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={zoom}
@@ -200,17 +193,14 @@ export function IdeMap() {
             version="1.3.0"
             opacity={layer.opacity ?? 0.85}
             styles={layer.defaultStyle || ''}
+            params={(layer.cqlFilter ? { CQL_FILTER: layer.cqlFilter } : undefined) as never}
             crossOrigin={true}
             maxZoom={22}
             maxNativeZoom={20}
           />
         ))}
 
-        <MapEventHandler
-          onClick={handleMapClick}
-          onMoveEnd={setCenter}
-          onZoomEnd={setZoom}
-        />
+        <MapEventHandler onClick={handleMapClick} onMoveEnd={setCenter} onZoomEnd={setZoom} />
         <FitToBounds bounds={fitTo} />
         <MapFloatingControls
           queryMode={queryMode}
@@ -247,6 +237,7 @@ export function IdeMap() {
         error={capabilitiesError}
         onToggle={toggleLayer}
         onOpacityChange={setLayerOpacity}
+        onFilterChange={setLayerFilter}
         onZoomToLayer={fitToLayer}
         onRetry={reloadCapabilities}
         open={isMobile ? mobileLayersOpen : undefined}
@@ -265,7 +256,7 @@ export function IdeMap() {
 
       <LegendPanel
         activeLayers={activeLayers}
-        open={isMobile ? mobileLegendOpen : undefined}
+        open={mobileLegendOpen}
         onOpenChange={(open) => {
           setMobileLegendOpen(open)
           if (open && isMobile) setMobileLayersOpen(false)

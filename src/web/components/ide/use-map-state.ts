@@ -1,16 +1,11 @@
 'use client'
 
+import { GEOSERVER_BASE_URL, MAP_CENTER, MAP_ZOOM, type IdeLayerConfig } from '@/web/lib/ide-config'
 import {
-    GEOSERVER_BASE_URL,
-    MAP_CENTER,
-    MAP_ZOOM,
-    type IdeLayerConfig,
-} from '@/web/lib/ide-config'
-import {
-    fetchWmsCapabilities,
-    mergeWithDefaults,
-    type FeatureInfoResponse,
-    type WmsLayer,
+  fetchWmsCapabilities,
+  mergeWithDefaults,
+  type FeatureInfoResponse,
+  type WmsLayer,
 } from '@/web/lib/ide-wms'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -18,6 +13,7 @@ export interface LayerState extends IdeLayerConfig {
   id: string
   loading: boolean
   error: boolean
+  cqlFilter?: string
 }
 
 export interface MapState {
@@ -72,7 +68,12 @@ export function useMapState() {
           return withState.map((l) => {
             const existing = prevMap.get(l.name)
             if (existing) {
-              return { ...l, visible: existing.visible, opacity: existing.opacity }
+              return {
+                ...l,
+                visible: existing.visible,
+                opacity: existing.opacity,
+                cqlFilter: existing.cqlFilter,
+              }
             }
             return l
           })
@@ -106,13 +107,22 @@ export function useMapState() {
     setLayers((prev) => prev.map((l) => (l.id === id ? { ...l, opacity } : l)))
   }, [])
 
+  const setLayerFilter = useCallback((id: string, cqlFilter?: string) => {
+    setLayers((prev) => prev.map((l) => (l.id === id ? { ...l, cqlFilter } : l)))
+  }, [])
+
   const fitToLayer = useCallback(
     (id: string) => {
       const bbox = discoveredCapabilities.find((l) => l.name === id)?.bbox
       if (bbox) {
         setFitTo([...bbox])
       } else {
-        setFitTo([MAP_CENTER.lng - 0.05, MAP_CENTER.lat - 0.05, MAP_CENTER.lng + 0.05, MAP_CENTER.lat + 0.05])
+        setFitTo([
+          MAP_CENTER.lng - 0.05,
+          MAP_CENTER.lat - 0.05,
+          MAP_CENTER.lng + 0.05,
+          MAP_CENTER.lat + 0.05,
+        ])
       }
     },
     [discoveredCapabilities],
@@ -136,9 +146,7 @@ export function useMapState() {
   }, [])
 
   const setFeatureInfoSuccess = useCallback((data: FeatureInfoResponse) => {
-    setFeatureInfo((prev) =>
-      prev ? { ...prev, loading: false, data, error: null } : null,
-    )
+    setFeatureInfo((prev) => (prev ? { ...prev, loading: false, data, error: null } : null))
   }, [])
 
   const setFeatureInfoError = useCallback((error: string) => {
@@ -172,6 +180,7 @@ export function useMapState() {
     setZoom,
     toggleLayer,
     setLayerOpacity,
+    setLayerFilter,
     fitToLayer,
     startFeatureInfo,
     setFeatureInfoSuccess,

@@ -1,4 +1,4 @@
-import { type LegendOptions } from '@/web/types/geoserver'
+import { type LegendOptions } from '../types/geoserver'
 import { CATEGORY_ORDER, CATEGORY_PATTERNS, type IdeLayerConfig } from './ide-config'
 
 export interface WmsLayer {
@@ -96,7 +96,8 @@ export function parseCapabilities(xmlText: string): WmsCapabilities {
   walk(rootLayer)
 
   return {
-    version: getAttr(doc.querySelector('WMS_Capabilities, WMT_MS_Capabilities'), 'version') || '1.3.0',
+    version:
+      getAttr(doc.querySelector('WMS_Capabilities, WMT_MS_Capabilities'), 'version') || '1.3.0',
     serviceTitle: getText(doc.querySelector('Service'), 'Title') || undefined,
     abstract: getText(doc.querySelector('Service'), 'Abstract') || undefined,
     layers,
@@ -115,9 +116,9 @@ function getAttr(el: Element | null, attr: string): string {
 
 function isGlobalBbox(west: number, south: number, east: number, north: number): boolean {
   return (
-    Math.abs(west - (-180)) < 0.001 &&
+    Math.abs(west - -180) < 0.001 &&
     Math.abs(east - 180) < 0.001 &&
-    Math.abs(south - (-90)) < 0.001 &&
+    Math.abs(south - -90) < 0.001 &&
     Math.abs(north - 90) < 0.001
   )
 }
@@ -250,7 +251,10 @@ export function buildGetFeatureInfoUrl(
   url.searchParams.set('QUERY_LAYERS', layers.join(','))
   url.searchParams.set('STYLES', '')
   url.searchParams.set('CRS', 'EPSG:4326')
-  url.searchParams.set('BBOX', `${mapBounds.south},${mapBounds.west},${mapBounds.north},${mapBounds.east}`)
+  url.searchParams.set(
+    'BBOX',
+    `${mapBounds.south},${mapBounds.west},${mapBounds.north},${mapBounds.east}`,
+  )
   url.searchParams.set('WIDTH', String(mapSize.width))
   url.searchParams.set('HEIGHT', String(mapSize.height))
   url.searchParams.set('I', String(Math.round(point.x)))
@@ -268,6 +272,62 @@ export const LEGEND_OPTIONS_DEFAULT: Required<LegendOptions> = {
   bgColor: '0xFFFFFF',
   dpi: 180,
   forceLabels: true,
+}
+
+export interface WfsAttributeData {
+  fields: string[]
+  values: Record<string, string[]>
+}
+
+export async function fetchWfsAttributes(
+  baseUrl: string,
+  params: { workspace?: string; layerName: string; maxFeatures?: number },
+): Promise<WfsAttributeData> {
+  const url = new URL(`${baseUrl}/wfs`)
+  url.searchParams.set('SERVICE', 'WFS')
+  url.searchParams.set('VERSION', '2.0.0')
+  url.searchParams.set('REQUEST', 'GetFeature')
+  url.searchParams.set('OUTPUTFORMAT', 'application/json')
+  url.searchParams.set('TYPENAMES', qualifyLayerName(params.workspace, params.layerName))
+  url.searchParams.set('COUNT', String(params.maxFeatures ?? 1000))
+
+  const response = await fetch(url.toString())
+  if (!response.ok) throw new Error(`WFS falló: ${response.status}`)
+
+  const data = (await response.json()) as {
+    features?: Array<{ properties?: Record<string, unknown> }>
+  }
+  const features = data.features ?? []
+  const values: Record<string, Set<string>> = {}
+
+  for (const feature of features) {
+    for (const [field, rawValue] of Object.entries(feature.properties ?? {})) {
+      if (rawValue === null || rawValue === undefined || typeof rawValue === 'object') continue
+      values[field] ??= new Set<string>()
+      values[field].add(String(rawValue))
+    }
+  }
+
+  return {
+    fields: Object.keys(values),
+    values: Object.fromEntries(
+      Object.entries(values).map(([field, fieldValues]) => [
+        field,
+        Array.from(fieldValues).sort((a, b) => a.localeCompare(b)),
+      ]),
+    ),
+  }
+}
+
+export function buildCqlEqualsFilter(field: string, value: string): string {
+  const safeField = field.replace(/[^a-zA-Z0-9_]/g, '')
+  const safeValue = value.replace(/'/g, "''")
+  return `${safeField}='${safeValue}'`
+}
+
+function qualifyLayerName(workspace: string | undefined, layerName: string): string {
+  if (layerName.includes(':') || !workspace) return layerName
+  return `${workspace}:${layerName}`
 }
 
 export function buildLegendUrl(

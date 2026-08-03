@@ -2,13 +2,13 @@
 
 import { MAP_CENTER, MAP_ZOOM } from '@/web/lib/ide-config'
 import {
-    IconClick,
-    IconCurrentLocation,
-    IconMap2,
-    IconMapPin,
-    IconMinus,
-    IconPlus,
-    IconStack2,
+  IconClick,
+  IconCurrentLocation,
+  IconMap2,
+  IconMapPin,
+  IconMinus,
+  IconPlus,
+  IconStack2,
 } from '@tabler/icons-react'
 import { useMap } from 'react-leaflet'
 import { toast } from 'sonner'
@@ -97,7 +97,7 @@ export function MapFloatingControls({
 
       <button
         onClick={onToggleLegend}
-        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur md:hidden ${
+        className={`btn btn-circle btn-sm md:btn-md pointer-events-auto shadow-lg backdrop-blur ${
           legendOpen ? 'btn-primary' : 'btn-ghost bg-base-100/95'
         }`}
         title={legendOpen ? 'Cerrar leyenda' : 'Abrir leyenda'}
