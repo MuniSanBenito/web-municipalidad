@@ -1,4 +1,5 @@
-import { type IdeLayerConfig } from './ide-config'
+import { type LegendOptions } from '@/web/types/geoserver'
+import { CATEGORY_ORDER, CATEGORY_PATTERNS, type IdeLayerConfig } from './ide-config'
 
 export interface WmsLayer {
   name: string
@@ -66,7 +67,8 @@ export function parseCapabilities(xmlText: string): WmsCapabilities {
     const name = getText(layerEl, 'Name')
     const title = getText(layerEl, 'Title') || name
     const abstract = getText(layerEl, 'Abstract') || undefined
-    const category = deriveCategory(name, title, parentCategory)
+    const keywords = extractKeywords(layerEl)
+    const category = resolveCategory(keywords, name, title, parentCategory, CATEGORY_PATTERNS)
 
     const styles = Array.from(layerEl.querySelectorAll(':scope > Style')).map((style) =>
       getText(style, 'Name'),
@@ -168,13 +170,38 @@ function extractBoundingBox(layerEl: Element): [number, number, number, number] 
   return undefined
 }
 
-function deriveCategory(name: string, title: string, parent?: string): string | undefined {
+function extractKeywords(layerEl: Element): string[] {
+  const keywordList = layerEl.querySelector(':scope > KeywordList')
+  if (!keywordList) return []
+  return Array.from(keywordList.querySelectorAll(':scope > Keyword'))
+    .map((el) => el.textContent?.trim() || '')
+    .filter((kw) => /^categoria:\s*/i.test(kw))
+}
+
+function resolveCategory(
+  keywords: string[],
+  name: string,
+  title: string,
+  parent: string | undefined,
+  patterns: Record<string, RegExp[]>,
+): string {
+  // 1. Keyword GeoServer — categoria:<Nombre>
+  for (const kw of keywords) {
+    const m = kw.match(/^categoria:\s*(.+)$/i)
+    if (m && CATEGORY_ORDER.includes(m[1])) return m[1]
+  }
+  // 2. Herencia estructural del padre
   if (parent && parent !== 'Root') return parent
-  if (name.includes('catastro')) return 'Catastro'
-  if (name.includes('Planta_Urbana') || /planta|urbana|manzana|lote|parcela/i.test(title)) return 'Urbano'
-  if (/obra|red|cloaca|agua|luz|gas/i.test(title)) return 'Obras'
-  if (/ambiente|verde|arbol|parque/i.test(title)) return 'Ambiente'
+  // 3. Heurística por patrones
+  for (const [cat, pats] of Object.entries(patterns)) {
+    if (pats.some((p) => p.test(name) || p.test(title))) return cat
+  }
+  // 4. Fallback
   return 'Otros'
+}
+
+function deriveCategory(name: string, title: string, parent?: string): string {
+  return resolveCategory([], name, title, parent, CATEGORY_PATTERNS)
 }
 
 export function mergeWithDefaults(
@@ -234,14 +261,53 @@ export function buildGetFeatureInfoUrl(
   return url.toString()
 }
 
-export function buildLegendUrl(baseUrl: string, layerName: string, style = ''): string {
+export const LEGEND_OPTIONS_DEFAULT: Required<LegendOptions> = {
+  fontName: 'Arial',
+  fontSize: 12,
+  fontColor: '0x333333',
+  bgColor: '0xFFFFFF',
+  dpi: 180,
+  forceLabels: true,
+}
+
+export function buildLegendUrl(
+  baseUrl: string,
+  params: { workspace?: string; layerName: string; style?: string },
+  options?: LegendOptions,
+): string {
   const url = new URL(`${baseUrl}/wms`)
   url.searchParams.set('REQUEST', 'GetLegendGraphic')
-  url.searchParams.set('VERSION', '1.3.0')
+  url.searchParams.set('VERSION', '1.0.0')
   url.searchParams.set('FORMAT', 'image/png')
-  url.searchParams.set('LAYER', layerName)
-  if (style) url.searchParams.set('STYLE', style)
-  url.searchParams.set('WIDTH', '20')
-  url.searchParams.set('HEIGHT', '20')
+
+  const layer = params.layerName.includes(':')
+    ? params.layerName
+    : params.workspace
+      ? `${params.workspace}:${params.layerName}`
+      : params.layerName
+  url.searchParams.set('LAYER', layer)
+
+  if (params.style) url.searchParams.set('STYLE', params.style)
+
+  const legendOptions: Required<LegendOptions> = {
+    fontName: options?.fontName ?? LEGEND_OPTIONS_DEFAULT.fontName,
+    fontSize: options?.fontSize ?? LEGEND_OPTIONS_DEFAULT.fontSize,
+    fontColor: options?.fontColor ?? LEGEND_OPTIONS_DEFAULT.fontColor,
+    bgColor: options?.bgColor ?? LEGEND_OPTIONS_DEFAULT.bgColor,
+    dpi: options?.dpi ?? LEGEND_OPTIONS_DEFAULT.dpi,
+    forceLabels: options?.forceLabels ?? LEGEND_OPTIONS_DEFAULT.forceLabels,
+  }
+  url.searchParams.set(
+    'LEGEND_OPTIONS',
+    [
+      `fontName:${legendOptions.fontName}`,
+      `fontSize:${legendOptions.fontSize}`,
+      `fontColor:${legendOptions.fontColor}`,
+      `bgColor:${legendOptions.bgColor}`,
+      `dpi:${legendOptions.dpi}`,
+      `forceLabels:${legendOptions.forceLabels ? 'on' : 'off'}`,
+    ].join(';'),
+  )
+
   return url.toString()
 }
