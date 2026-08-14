@@ -2,6 +2,7 @@ import {
   IconBuildingSkyscraper,
   IconCertificate,
   IconCopy,
+  IconDownload,
   IconFileDescription,
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
@@ -150,10 +151,26 @@ export default function PageObrasPrivadas() {
                 <p className="text-base-content">
                   Las construcciones en el municipio de San Benito deben cumplir con:
                 </p>
-                <ul className="text-base-content mt-2 list-disc space-y-2 pl-5">
-                  <li className="hover:text-primary transition-colors duration-300">
-                    Código de Edificación Municipal
-                  </li>
+                <div className="border-primary/20 bg-base-100 mt-4 rounded-lg border p-4 shadow-sm">
+                  <div className="space-y-2">
+                    <h4 className="text-base-content font-semibold">
+                      Código de Edificación Municipal
+                    </h4>
+                    <p className="text-base-content text-sm leading-relaxed">
+                      Consultá la normativa que establece los requisitos y condiciones para
+                      proyectar, construir, ampliar o modificar obras en San Benito.
+                    </p>
+                    <a
+                      href="/documents/codigo-edificacion-municipal.pdf"
+                      download="codigo-edificacion-municipal.pdf"
+                      className="btn btn-primary mt-2 w-full gap-2 sm:w-auto"
+                    >
+                      <IconDownload size={18} />
+                      <span>Descargar Código de Edificación Municipal (PDF)</span>
+                    </a>
+                  </div>
+                </div>
+                <ul className="text-base-content mt-4 list-disc space-y-2 pl-5">
                   <li className="hover:text-primary transition-colors duration-300">
                     Ordenanza de Uso del Suelo
                   </li>
