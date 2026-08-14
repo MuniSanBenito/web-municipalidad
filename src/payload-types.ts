@@ -77,6 +77,7 @@ export interface Config {
     avatares: Avatar;
     memorias: Memoria;
     contabilidad: Contabilidad;
+    contribuyentes: Contribuyente;
     intimaciones: Intimacione;
     ubicaciones: Ubicacione;
     eventos: Evento;
@@ -90,6 +91,12 @@ export interface Config {
     'rubros-comercios': RubrosComercio;
     'comercios-habilitados': ComerciosHabilitado;
     'chatbot-conversations': ChatbotConversation;
+    campanas: Campana;
+    deportes: Deporte;
+    arboles: Arbole;
+    'opciones-presupuesto': OpcionesPresupuesto;
+    'elementos-plaza': ElementosPlaza;
+    'resultados-campana': ResultadosCampana;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -110,6 +117,7 @@ export interface Config {
     avatares: AvataresSelect<false> | AvataresSelect<true>;
     memorias: MemoriasSelect<false> | MemoriasSelect<true>;
     contabilidad: ContabilidadSelect<false> | ContabilidadSelect<true>;
+    contribuyentes: ContribuyentesSelect<false> | ContribuyentesSelect<true>;
     intimaciones: IntimacionesSelect<false> | IntimacionesSelect<true>;
     ubicaciones: UbicacionesSelect<false> | UbicacionesSelect<true>;
     eventos: EventosSelect<false> | EventosSelect<true>;
@@ -123,6 +131,12 @@ export interface Config {
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
+    campanas: CampanasSelect<false> | CampanasSelect<true>;
+    deportes: DeportesSelect<false> | DeportesSelect<true>;
+    arboles: ArbolesSelect<false> | ArbolesSelect<true>;
+    'opciones-presupuesto': OpcionesPresupuestoSelect<false> | OpcionesPresupuestoSelect<true>;
+    'elementos-plaza': ElementosPlazaSelect<false> | ElementosPlazaSelect<true>;
+    'resultados-campana': ResultadosCampanaSelect<false> | ResultadosCampanaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -607,6 +621,125 @@ export interface Contabilidad {
   createdAt: string;
 }
 /**
+ * Datos de contribuyentes importados del sistema legacy de Rentas
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contribuyentes".
+ */
+export interface Contribuyente {
+  id: string;
+  /**
+   * Identificador único del contribuyente en el sistema legacy de Rentas (num_cont). Clave de deduplicación en la importación.
+   */
+  numero_contribuyente?: number | null;
+  /**
+   * Nombre o razón social del contribuyente (nom_cont).
+   */
+  nombre?: string | null;
+  /**
+   * Domicilio fiscal o de contacto (dom_cont).
+   */
+  domicilio?: string | null;
+  /**
+   * Código postal del domicilio (pos_cont).
+   */
+  codigo_postal?: number | null;
+  /**
+   * Código AFIP del tipo de documento (tdo_cont). Ej.: 96 = DNI, 80 = CUIT, 89 = LE, 90 = LC.
+   */
+  tipo_documento?: number | null;
+  /**
+   * Número de documento de identidad (ndo_cont).
+   */
+  numero_documento?: string | null;
+  /**
+   * Categoría del contribuyente en Rentas (cat_cont). Valor numérico; en el export predominan categoría 1.
+   */
+  categoria?: number | null;
+  /**
+   * CUIT/CUIL del contribuyente (cui_cont).
+   */
+  cuit?: string | null;
+  /**
+   * Habilitación para trámites web (hwe_cont). En legacy: 1 = habilitado, 2 = no habilitado; importado como checkbox (solo 1 → true).
+   */
+  habilitado_web?: boolean | null;
+  /**
+   * Clave de acceso web (cwe_cont). Suele venir como (Binary/Image) en el export y se importa vacío.
+   */
+  clave_web?: string | null;
+  /**
+   * Email principal para trámites web (mwe_cont). Normalizado a minúsculas en la importación; muchos registros sin dato en el export.
+   */
+  email?: string | null;
+  /**
+   * Campo numérico legacy de Rentas (dcc_cont), importado sin transformación.
+   */
+  dcc?: number | null;
+  /**
+   * Altura o número de calle del domicilio (dca_cont).
+   */
+  domicilio_altura?: string | null;
+  /**
+   * Entre calle o referencia secundaria (dcs_cont). Valores - se importan vacíos.
+   */
+  domicilio_calle_secundaria?: string | null;
+  /**
+   * Torre o bloque del domicilio (dct_cont).
+   */
+  domicilio_torre?: string | null;
+  /**
+   * Piso del domicilio (dcp_cont).
+   */
+  domicilio_piso?: string | null;
+  /**
+   * Departamento o unidad (dcd_cont).
+   */
+  domicilio_depto?: string | null;
+  /**
+   * Código de sexo (sex_cont). 1 = masculino, 2 = femenino, 0 = no informado.
+   */
+  sexo?: number | null;
+  /**
+   * Nacionalidad declarada (nac_cont). Ej.: ARG.; valores (Binary/Image) se importan vacíos.
+   */
+  nacionalidad?: string | null;
+  /**
+   * Campo numérico legacy (cba_cont). En el export actual todos los valores son 0.
+   */
+  cba?: number | null;
+  /**
+   * CBU — Clave Bancaria Uniforme (cbu_cont), si fue informado.
+   */
+  cbu?: string | null;
+  /**
+   * Fecha de alta en Rentas (fha_cont). La fecha sentinel 9999-12-31 se importa vacía.
+   */
+  fecha_alta?: string | null;
+  /**
+   * Fecha de nacimiento (fna_cont). La fecha sentinel 1900-01-01 se importa vacía.
+   */
+  fecha_nacimiento?: string | null;
+  /**
+   * Email secundario para trámites web (m2w_cont). Normalizado a minúsculas en la importación.
+   */
+  email_secundario?: string | null;
+  /**
+   * Teléfono principal para trámites web (twe_cont).
+   */
+  telefono_web?: string | null;
+  /**
+   * Teléfono secundario (t2w_cont).
+   */
+  telefono_secundario?: string | null;
+  /**
+   * Campo numérico legacy (dfi_cont). En el export actual todos los valores son 0.
+   */
+  dfi?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "intimaciones".
  */
@@ -1000,6 +1133,166 @@ export interface ChatbotConversation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas".
+ */
+export interface Campana {
+  id: string;
+  nombre: string;
+  slug: string;
+  descripcion: string;
+  barrio: string;
+  /**
+   * Color en formato hex, ej: #10b981
+   */
+  colorPrincipal: string;
+  imagen?: (string | null) | Imagen;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: 'borrador' | 'activa' | 'finalizada';
+  deportesActivo?: boolean | null;
+  arbolesActivo?: boolean | null;
+  plazaActivo?: boolean | null;
+  presupuestoActivo?: boolean | null;
+  publico: 'niños' | 'adultos' | 'mixto';
+  sessionUnica?: boolean | null;
+  resultadosPublicos?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes".
+ */
+export interface Deporte {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa al deporte, ej: ⚽
+   */
+  emoji: string;
+  /**
+   * Nombre del ícono de Tabler Icons, ej: ball-football
+   */
+  icono?: string | null;
+  /**
+   * Orden de aparición (menor = primero)
+   */
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles".
+ */
+export interface Arbole {
+  id: string;
+  nombre: string;
+  caracteristicas: string;
+  /**
+   * Emoji de respaldo si no hay imagen cargada, ej: 🌳
+   */
+  emoji?: string | null;
+  /**
+   * Foto real del árbol. Se muestra en lugar del emoji cuando está cargada.
+   */
+  imagen?: (string | null) | Imagen;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto".
+ */
+export interface OpcionesPresupuesto {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa la opción, ej: 🛣️
+   */
+  emoji: string;
+  icono?: string | null;
+  descripcion?: string | null;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza".
+ */
+export interface ElementosPlaza {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa el elemento, ej: 🛝
+   */
+  emoji: string;
+  /**
+   * Ancho en unidades de grilla del canvas
+   */
+  ancho: number;
+  /**
+   * Alto en unidades de grilla del canvas
+   */
+  alto: number;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana".
+ */
+export interface ResultadosCampana {
+  id: string;
+  campana: string | Campana;
+  /**
+   * Identificador único de la sesión de juego
+   */
+  sessionId: string;
+  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro';
+  edad?: ('niño' | 'adulto') | null;
+  /**
+   * ID o nombre de la opción seleccionada
+   */
+  opcionId: string;
+  opcionNombre: string;
+  votos: number;
+  /**
+   * Datos adicionales del resultado (posición, respuesta, etc.)
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1059,6 +1352,10 @@ export interface PayloadLockedDocument {
         value: string | Contabilidad;
       } | null)
     | ({
+        relationTo: 'contribuyentes';
+        value: string | Contribuyente;
+      } | null)
+    | ({
         relationTo: 'intimaciones';
         value: string | Intimacione;
       } | null)
@@ -1109,6 +1406,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'chatbot-conversations';
         value: string | ChatbotConversation;
+      } | null)
+    | ({
+        relationTo: 'campanas';
+        value: string | Campana;
+      } | null)
+    | ({
+        relationTo: 'deportes';
+        value: string | Deporte;
+      } | null)
+    | ({
+        relationTo: 'arboles';
+        value: string | Arbole;
+      } | null)
+    | ({
+        relationTo: 'opciones-presupuesto';
+        value: string | OpcionesPresupuesto;
+      } | null)
+    | ({
+        relationTo: 'elementos-plaza';
+        value: string | ElementosPlaza;
+      } | null)
+    | ({
+        relationTo: 'resultados-campana';
+        value: string | ResultadosCampana;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1510,6 +1831,41 @@ export interface ContabilidadSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contribuyentes_select".
+ */
+export interface ContribuyentesSelect<T extends boolean = true> {
+  numero_contribuyente?: T;
+  nombre?: T;
+  domicilio?: T;
+  codigo_postal?: T;
+  tipo_documento?: T;
+  numero_documento?: T;
+  categoria?: T;
+  cuit?: T;
+  habilitado_web?: T;
+  clave_web?: T;
+  email?: T;
+  dcc?: T;
+  domicilio_altura?: T;
+  domicilio_calle_secundaria?: T;
+  domicilio_torre?: T;
+  domicilio_piso?: T;
+  domicilio_depto?: T;
+  sexo?: T;
+  nacionalidad?: T;
+  cba?: T;
+  cbu?: T;
+  fecha_alta?: T;
+  fecha_nacimiento?: T;
+  email_secundario?: T;
+  telefono_web?: T;
+  telefono_secundario?: T;
+  dfi?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "intimaciones_select".
  */
 export interface IntimacionesSelect<T extends boolean = true> {
@@ -1734,6 +2090,101 @@ export interface ChatbotConversationsSelect<T extends boolean = true> {
   startedAt?: T;
   lastUpdated?: T;
   userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas_select".
+ */
+export interface CampanasSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  descripcion?: T;
+  barrio?: T;
+  colorPrincipal?: T;
+  imagen?: T;
+  fechaInicio?: T;
+  fechaFin?: T;
+  estado?: T;
+  deportesActivo?: T;
+  arbolesActivo?: T;
+  plazaActivo?: T;
+  presupuestoActivo?: T;
+  publico?: T;
+  sessionUnica?: T;
+  resultadosPublicos?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes_select".
+ */
+export interface DeportesSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles_select".
+ */
+export interface ArbolesSelect<T extends boolean = true> {
+  nombre?: T;
+  caracteristicas?: T;
+  emoji?: T;
+  imagen?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto_select".
+ */
+export interface OpcionesPresupuestoSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  descripcion?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza_select".
+ */
+export interface ElementosPlazaSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  ancho?: T;
+  alto?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana_select".
+ */
+export interface ResultadosCampanaSelect<T extends boolean = true> {
+  campana?: T;
+  sessionId?: T;
+  actividad?: T;
+  edad?: T;
+  opcionId?: T;
+  opcionNombre?: T;
+  votos?: T;
+  metadata?: T;
   updatedAt?: T;
   createdAt?: T;
 }

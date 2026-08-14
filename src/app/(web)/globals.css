@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+
+@theme {
+  --shadow-warm: 0 6px 24px -6px rgba(90, 60, 40, 0.12);
+  --shadow-warm-sm: 0 2px 8px -2px rgba(90, 60, 40, 0.08);
+}
+
 @plugin 'daisyui';
 
 @plugin 'daisyui/theme' {
@@ -64,6 +70,41 @@
   --radius-selector: 0.5rem;
   --radius-field: 0.25rem;
   --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin 'daisyui/theme' {
+  name: 'warm';
+  default: false;
+  prefersdark: false;
+  color-scheme: 'light';
+  --color-base-100: #FDFBF7;
+  --color-base-200: #F6F1E9;
+  --color-base-300: #E8E0D2;
+  --color-base-content: #3D3A36;
+  --color-primary: #5A7A3E;
+  --color-primary-content: #FFFFFF;
+  --color-secondary: #D98A4E;
+  --color-secondary-content: #FFFFFF;
+  --color-accent: #F4B840;
+  --color-accent-content: #3D3A36;
+  --color-neutral: #6D5D52;
+  --color-neutral-content: #FFFFFF;
+  --color-info: #7AC2D4;
+  --color-info-content: #FFFFFF;
+  --color-success: #6A9E4F;
+  --color-success-content: #FFFFFF;
+  --color-warning: #F2A93B;
+  --color-warning-content: #3D3A36;
+  --color-error: #C85A54;
+  --color-error-content: #FFFFFF;
+  --radius-selector: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
