@@ -1,5 +1,6 @@
 import type { Archivo, Noticia } from '@/payload-types'
 import ShareButton from '@/web/components/ShareButton'
+import { YouTuveVideo } from '@/web/components/youtube-video'
 import { generateStructuredData } from '@/web/lib/metadata'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { IconArrowLeft, IconFileDownload } from '@tabler/icons-react'
@@ -81,6 +82,17 @@ export function TemplateNoticia({ noticia }: Props) {
           <RichText data={noticia.contenido!} className="space-y-6" />
         )}
       </section>
+
+      {noticia.youtube_videos && noticia.youtube_videos.length > 0 && (
+        <section className="container mx-auto max-w-4xl px-4 pb-8 sm:px-6">
+          <h2 className="text-primary mb-4 text-2xl font-bold">Videos de YouTube</h2>
+          <div className="space-y-4">
+            {noticia.youtube_videos.map((video, index) => (
+              <YouTuveVideo key={video.id ?? `${video.url}-${index}`} url={video.url} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Archivos adjuntos */}
       {noticia.archivos && noticia.archivos.length > 0 && (
