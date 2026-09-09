@@ -1123,6 +1123,10 @@ export interface ExpedientesHabilitacion {
    */
   faseINotaCiudadano?: string | null;
   /**
+   * Archivo visible al ciudadano junto con la nota de Fase I. Puede ser el informe de Obras o la resolución de habilitación.
+   */
+  faseIInformeObras?: (string | null) | Archivo;
+  /**
    * Solo visible para el equipo municipal.
    */
   faseINotaInterna?: string | null;
@@ -2267,6 +2271,7 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIEstado?: T;
   faseINumeroPermisoUso?: T;
   faseINotaCiudadano?: T;
+  faseIInformeObras?: T;
   faseINotaInterna?: T;
   faseIDireccionLocal?: T;
   faseITelefono?: T;

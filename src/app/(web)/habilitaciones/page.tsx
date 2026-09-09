@@ -1,15 +1,17 @@
 import type { Ciudadano } from '@/payload-types'
 import { basePayload } from '@/web/lib/payload'
 import {
-    IconArrowRight,
-    IconBuildingStore,
-    IconCalendarCheck,
-    IconCircleCheck,
-    IconFileDescription,
-    IconInfoCircle,
-    IconLock,
-    IconMail,
-    IconPhone,
+  IconArrowRight,
+  IconBuildingStore,
+  IconCalendarCheck,
+  IconCircleCheck,
+  IconDownload,
+  IconFile,
+  IconFileDescription,
+  IconInfoCircle,
+  IconLock,
+  IconMail,
+  IconPhone,
 } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -50,6 +52,7 @@ function PasoCard({
   area,
   estado,
   notaCiudadano,
+  archivoFase,
   ctaHref,
   ctaLabel,
   bloqueado,
@@ -61,6 +64,7 @@ function PasoCard({
   area: string
   estado: EstadoFase
   notaCiudadano?: string | null
+  archivoFase?: { url?: string | null; filename?: string | null } | null
   ctaHref?: string
   ctaLabel?: string
   bloqueado?: boolean
@@ -105,7 +109,29 @@ function PasoCard({
         {notaCiudadano && (
           <div className="alert alert-info mt-3 p-3">
             <IconInfoCircle size={16} className="shrink-0" />
-            <p className="text-xs">{notaCiudadano}</p>
+            <p className="text-xs whitespace-pre-wrap">{notaCiudadano}</p>
+          </div>
+        )}
+
+        {archivoFase?.url && (
+          <div className="border-info/30 bg-info/5 mt-3 flex flex-wrap items-center gap-2 rounded-lg border p-3">
+            <IconFile size={16} className="text-info shrink-0" />
+            <span className="text-base-content/70 min-w-0 flex-1 truncate text-xs">
+              {archivoFase.filename ?? 'Informe o resolución'}
+            </span>
+            <a
+              href={archivoFase.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-info btn-xs gap-1"
+            >
+              <IconFile size={13} />
+              Ver
+            </a>
+            <a href={archivoFase.url} download className="btn btn-ghost btn-xs gap-1">
+              <IconDownload size={13} />
+              Descargar
+            </a>
           </div>
         )}
 
@@ -161,10 +187,14 @@ export default async function HabilitacionesPage() {
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     sort: '-createdAt',
-    depth: 0,
+    depth: 1,
   })
 
   const exp = (docs[0] as any) ?? null
+  const archivoFase1 =
+    exp?.faseIInformeObras && typeof exp.faseIInformeObras === 'object'
+      ? { url: exp.faseIInformeObras.url ?? null, filename: exp.faseIInformeObras.filename ?? null }
+      : null
 
   const f1Estado: EstadoFase = exp?.faseIEstado ?? null
   const f2Estado: EstadoFase = exp?.faseIIEstado ?? null
@@ -263,6 +293,7 @@ export default async function HabilitacionesPage() {
             area="Obras Privadas"
             estado={f1Estado}
             notaCiudadano={exp?.faseINotaCiudadano}
+            archivoFase={archivoFase1}
             ctaHref={ctaFase1?.href}
             ctaLabel={ctaFase1?.label}
             bloqueado={false}

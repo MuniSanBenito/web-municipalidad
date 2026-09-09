@@ -10,7 +10,7 @@ import {
   IconLoader2,
   IconMail,
   IconSend,
-  IconUpload
+  IconUpload,
 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -127,6 +127,8 @@ function FileZone({ fileRef, file, error, existing, onFileChange }: FileZoneProp
 interface Props {
   expedienteId?: string
   isEdit?: boolean
+  notaCiudadano?: string | null
+  informeObras?: ArchivoExistente
   emailDefault?: string
   apellidoDefault?: string
   nombreDefault?: string
@@ -140,6 +142,8 @@ interface Props {
 export function ExpedienteFase1Form({
   expedienteId,
   isEdit = false,
+  notaCiudadano,
+  informeObras,
   emailDefault = '',
   apellidoDefault = '',
   nombreDefault = '',
@@ -284,6 +288,39 @@ export function ExpedienteFase1Form({
           </span>
         </div>
       )}
+
+      {(notaCiudadano || informeObras?.url) && (
+        <div className="card border-info bg-info/5 border shadow-sm">
+          <div className="card-body p-4">
+            <h2 className="text-info-content text-sm font-semibold">
+              Información de Obras Privadas
+            </h2>
+            {notaCiudadano && <p className="text-sm whitespace-pre-wrap">{notaCiudadano}</p>}
+            {informeObras?.url && (
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-base-content/70 flex items-center gap-2 text-sm">
+                  <IconFile size={16} />
+                  {informeObras.filename ?? 'Informe o resolución'}
+                </span>
+                <a
+                  href={informeObras.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-info btn-sm gap-1"
+                >
+                  <IconFile size={14} />
+                  Ver archivo
+                </a>
+                <a href={informeObras.url} download className="btn btn-ghost btn-sm gap-1">
+                  <IconDownload size={14} />
+                  Descargar
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Introducción */}
       <div className="card bg-base-100 shadow-lg">
         <div className="card-body">
@@ -634,8 +671,8 @@ export function ExpedienteFase1Form({
                 <span className="text-error">*</span>
               </p>
               <p className="text-base-content/60 mb-2 text-xs">
-                Adjuntar al menos uno de los dos: certificado emitido por profesional matriculado
-                o copia de una factura de energía reciente.
+                Adjuntar al menos uno de los dos: certificado emitido por profesional matriculado o
+                copia de una factura de energía reciente.
               </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>

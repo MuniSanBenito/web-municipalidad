@@ -143,6 +143,8 @@ export default async function HabilitacionFasePage({ params }: Props) {
           <ExpedienteFase1Form
             expedienteId={expediente?.id}
             isEdit={!!expediente?.faseIEstado}
+            notaCiudadano={expediente?.faseINotaCiudadano ?? null}
+            informeObras={fileMeta(expediente?.faseIInformeObras)}
             emailDefault={expediente?.faseIEmail ?? undefined}
             apellidoDefault={expediente?.faseIApellido ?? undefined}
             nombreDefault={expediente?.faseINombre ?? undefined}

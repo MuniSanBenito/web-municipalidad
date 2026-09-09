@@ -2,7 +2,12 @@ import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import { HIDE_API_URL } from '../config'
 
-export const ESTADOS_FASE_HABILITACION = ['INICIADO', 'PENDIENTE', 'VISITA_PROGRAMADA', 'APROBADO'] as const
+export const ESTADOS_FASE_HABILITACION = [
+  'INICIADO',
+  'PENDIENTE',
+  'VISITA_PROGRAMADA',
+  'APROBADO',
+] as const
 export type EstadoFaseHabilitacion = (typeof ESTADOS_FASE_HABILITACION)[number]
 
 const FASE_OPTIONS = ESTADOS_FASE_HABILITACION.map((e) => ({
@@ -218,6 +223,17 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               access: { update: isNotCiudadano },
               admin: {
                 description: 'Mensaje visible al ciudadano sobre esta fase.',
+              },
+            },
+            {
+              name: 'faseIInformeObras',
+              type: 'upload',
+              label: 'Informe de visita / Resolución de habilitación (Fase I)',
+              relationTo: 'archivos',
+              access: { update: isNotCiudadano },
+              admin: {
+                description:
+                  'Archivo visible al ciudadano junto con la nota de Fase I. Puede ser el informe de Obras o la resolución de habilitación.',
               },
             },
             {
