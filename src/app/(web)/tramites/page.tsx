@@ -15,7 +15,9 @@ import {
   IconHeadset,
   IconHomeEdit,
   IconLicense,
+  IconMap,
   IconMasksTheater,
+  IconMoodKid,
   IconPhoneCall,
   IconUserCircle
 } from '@tabler/icons-react'
@@ -148,6 +150,18 @@ const tramites = [
     icon: IconBuildingCommunity,
     link: '/tramites/nido',
     description: 'Núcleo de innovación y Desarrollo de Oportunidades',
+  },
+  {
+    title: 'Turismo',
+    icon: IconMap,
+    link: '/gobierno/turismo',
+    description: 'Lugares históricos y culturales para visitar en San Benito',
+  },
+  {
+    title: 'Espacio de Primera Infancia',
+    icon: IconMoodKid,
+    link: '/tramites/epi',
+    description: 'Cuidado, acompañamiento y desarrollo integral para niños y niñas en sus primeros años de vida',
   },
 ]
 

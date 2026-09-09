@@ -43,3 +43,9 @@ next-env.d.ts
 /media
 
 /informes
+
+contribuyentes_conmail
+
+.pnpm-store
+
+.anotaciones.md
