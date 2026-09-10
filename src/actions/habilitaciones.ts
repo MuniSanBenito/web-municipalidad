@@ -35,7 +35,10 @@ async function uploadArchivoLocal(file: File, user: any): Promise<string | null>
       collection: 'archivos',
       overrideAccess: false,
       user,
-      data: {} as any,
+      data: {
+        esPrivado: true,
+        propietarioCiudadano: user.id,
+      } as any,
       file: {
         data: buffer,
         mimetype: file.type || 'application/octet-stream',

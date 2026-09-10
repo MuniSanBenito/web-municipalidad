@@ -188,6 +188,8 @@ export default async function HabilitacionesPage() {
     limit: 1,
     sort: '-createdAt',
     depth: 1,
+    overrideAccess: false,
+    user: ciudadano,
   })
 
   const exp = (docs[0] as any) ?? null

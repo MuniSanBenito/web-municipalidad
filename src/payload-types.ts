@@ -541,6 +541,14 @@ export interface Imagen {
  */
 export interface Archivo {
   id: string;
+  /**
+   * Los archivos privados solo pueden ser vistos por su propietario y personal autorizado.
+   */
+  esPrivado?: boolean | null;
+  /**
+   * Se completa automáticamente para las cargas realizadas por ciudadanos.
+   */
+  propietarioCiudadano?: (string | null) | Ciudadano;
   created_by:
     | {
         relationTo: 'users';
@@ -1868,6 +1876,8 @@ export interface CurriculumsSelect<T extends boolean = true> {
  * via the `definition` "archivos_select".
  */
 export interface ArchivosSelect<T extends boolean = true> {
+  esPrivado?: T;
+  propietarioCiudadano?: T;
   created_by?: T;
   prefix?: T;
   updatedAt?: T;

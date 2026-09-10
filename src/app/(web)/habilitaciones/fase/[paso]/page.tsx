@@ -33,6 +33,8 @@ export default async function HabilitacionFasePage({ params }: Props) {
     limit: 1,
     sort: '-createdAt',
     depth: 1,
+    overrideAccess: false,
+    user: ciudadano,
   })
 
   const expediente = docs[0] as any | null
