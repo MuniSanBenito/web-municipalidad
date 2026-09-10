@@ -1166,6 +1166,10 @@ export interface ExpedientesHabilitacion {
    * Mensaje visible al ciudadano sobre esta fase.
    */
   faseIINotaCiudadano?: string | null;
+  /**
+   * Resolución visible al ciudadano una vez aprobada la Fase II.
+   */
+  faseIIResolucionHabilitacion?: (string | null) | Archivo;
   faseIINotaInterna?: string | null;
   faseIINombreFantasia?: string | null;
   faseIIRazonSocial?: string | null;
@@ -1189,6 +1193,11 @@ export interface ExpedientesHabilitacion {
   faseIITituloProfesional?: boolean | null;
   faseIIPlanoEvacuacion?: boolean | null;
   faseIIResiduosPeligrosos?: boolean | null;
+  faseIIRequiereLibretaSanitaria?: boolean | null;
+  /**
+   * Documento obligatorio cuando el rubro requiere libreta sanitaria.
+   */
+  faseIILibretaSanitaria?: (string | null) | Archivo;
   faseIIDeclaracionJurada?: boolean | null;
   /**
    * Permiso de Uso aprobado, DNI, CUIT, Libre Deuda, Boleta de Tasa Inmobiliaria y otros documentos requeridos.
@@ -2291,6 +2300,7 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIDeclaracionJurada?: T;
   faseIIEstado?: T;
   faseIINotaCiudadano?: T;
+  faseIIResolucionHabilitacion?: T;
   faseIINotaInterna?: T;
   faseIINombreFantasia?: T;
   faseIIRazonSocial?: T;
@@ -2311,6 +2321,8 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIITituloProfesional?: T;
   faseIIPlanoEvacuacion?: T;
   faseIIResiduosPeligrosos?: T;
+  faseIIRequiereLibretaSanitaria?: T;
+  faseIILibretaSanitaria?: T;
   faseIIDeclaracionJurada?: T;
   faseIIAdjuntos?: T;
   faseIIIEstado?: T;

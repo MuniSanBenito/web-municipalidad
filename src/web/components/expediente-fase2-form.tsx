@@ -31,20 +31,27 @@ interface Props {
   superficieDefault?: number
   empleadosDefault?: number
   horarioDefault?: string
+  requiereLibretaSanitariaDefault?: boolean | null
   rubros: RubrosComercio[]
   adjuntosExistentes?: { url?: string | null; filename?: string | null }[]
+  libretaSanitariaExistente?: { url?: string | null; filename?: string | null } | null
 }
 
 function FileField({
   label,
   name,
   required = false,
+  existing,
+  error,
 }: {
   label: string
   name: string
   required?: boolean
+  existing?: { url?: string | null; filename?: string | null } | null
+  error?: string
 }) {
   const [file, setFile] = useState<File | null>(null)
+  const hasExisting = !file && !!existing?.url
   const ref = useRef<HTMLInputElement>(null)
   return (
     <div className="form-control">
@@ -54,7 +61,7 @@ function FileField({
         </span>
       </label>
       <div
-        className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed p-3 transition-colors ${file ? 'border-success bg-success/5' : 'border-base-300 hover:border-primary/40'}`}
+        className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed p-3 transition-colors ${file ? 'border-success bg-success/5' : hasExisting ? 'border-primary/40 bg-primary/5' : error ? 'border-error bg-error/5' : 'border-base-300 hover:border-primary/40'}`}
         onClick={() => ref.current?.click()}
       >
         <input
@@ -70,6 +77,13 @@ function FileField({
             <IconCheck size={16} className="text-success shrink-0" />
             <span className="text-success truncate text-xs">{file.name}</span>
           </>
+        ) : hasExisting ? (
+          <>
+            <IconCheck size={16} className="text-primary shrink-0" />
+            <span className="text-primary truncate text-xs">
+              {existing?.filename ?? 'Archivo ya cargado'} — click para reemplazar
+            </span>
+          </>
         ) : (
           <>
             <IconUpload size={16} className="text-base-content/30 shrink-0" />
@@ -77,6 +91,7 @@ function FileField({
           </>
         )}
       </div>
+      {error && <p className="text-error mt-1 text-xs">{error}</p>}
     </div>
   )
 }
@@ -129,8 +144,10 @@ export function ExpedienteFase2Form({
   superficieDefault,
   empleadosDefault,
   horarioDefault,
+  requiereLibretaSanitariaDefault,
   rubros,
   adjuntosExistentes = [],
+  libretaSanitariaExistente,
 }: Props) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
@@ -145,6 +162,9 @@ export function ExpedienteFase2Form({
   const [tituloProfesional, setTituloProfesional] = useState('')
   const [planoEvac, setPlanoEvac] = useState('')
   const [residuosPelig, setResiduosPelig] = useState('')
+  const [requiereLibreta, setRequiereLibreta] = useState(
+    requiereLibretaSanitariaDefault == null ? '' : requiereLibretaSanitariaDefault ? 'si' : 'no',
+  )
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -158,6 +178,15 @@ export function ExpedienteFase2Form({
     if (!fd.get('telefono')?.toString().trim()) newErrors.telefono = 'Requerido'
     if (!rubro) newErrors.rubro = 'Seleccioná un rubro'
     if (!declaracion) newErrors.declaracion = 'Debés aceptar la declaración jurada'
+
+    const libretaSanitariaFile = fd.get('doc_libreta_sanitaria') as File | null
+    if (
+      requiereLibreta === 'si' &&
+      !libretaSanitariaFile?.size &&
+      !libretaSanitariaExistente?.url
+    ) {
+      newErrors.libretaSanitaria = 'Debés adjuntar la libreta sanitaria'
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -186,11 +215,14 @@ export function ExpedienteFase2Form({
     combined.set('tituloProfesional', tituloProfesional)
     combined.set('planoEvacuacion', planoEvac)
     combined.set('residuosPeligrosos', residuosPelig)
+    combined.set('requiereLibretaSanitaria', String(requiereLibreta === 'si'))
     combined.set('declaracionJurada', String(declaracion))
 
     form.querySelectorAll<HTMLInputElement>('input[type="file"]').forEach((input) => {
       Array.from(input.files ?? []).forEach((file) => {
-        if (file.size > 0) combined.append('adjuntos', file)
+        if (file.size === 0) return
+        if (input.name === 'doc_libreta_sanitaria') combined.set('libretaSanitaria', file)
+        else combined.append('adjuntos', file)
       })
     })
 
@@ -631,6 +663,25 @@ export function ExpedienteFase2Form({
             {residuosPelig === 'si' && (
               <div className="border-warning mt-3 border-l-2 pl-4">
                 <FileField label="Certificación Ambiental Provincial" name="doc_cert_ambiental" />
+              </div>
+            )}
+          </div>
+
+          <div className="border-base-200 border-t pt-5">
+            <YesNoQ
+              q="¿El rubro requiere presentar libreta sanitaria?"
+              value={requiereLibreta}
+              onChange={setRequiereLibreta}
+            />
+            {requiereLibreta === 'si' && (
+              <div className="border-warning mt-3 border-l-2 pl-4">
+                <FileField
+                  label="Libreta sanitaria"
+                  name="doc_libreta_sanitaria"
+                  required
+                  existing={libretaSanitariaExistente}
+                  error={errors.libretaSanitaria}
+                />
               </div>
             )}
           </div>

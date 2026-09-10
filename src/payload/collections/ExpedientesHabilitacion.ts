@@ -405,6 +405,16 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               },
             },
             {
+              name: 'faseIIResolucionHabilitacion',
+              type: 'upload',
+              label: 'Resolución de habilitación (Fase II)',
+              relationTo: 'archivos',
+              access: { update: isNotCiudadano },
+              admin: {
+                description: 'Resolución visible al ciudadano una vez aprobada la Fase II.',
+              },
+            },
+            {
               name: 'faseIINotaInterna',
               type: 'textarea',
               label: 'Nota interna — Habilitaciones',
@@ -544,6 +554,20 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIResiduosPeligrosos',
               type: 'checkbox',
               label: 'Genera residuos peligrosos',
+            },
+            {
+              name: 'faseIIRequiereLibretaSanitaria',
+              type: 'checkbox',
+              label: 'Requiere presentar libreta sanitaria',
+            },
+            {
+              name: 'faseIILibretaSanitaria',
+              type: 'upload',
+              label: 'Libreta sanitaria',
+              relationTo: 'archivos',
+              admin: {
+                description: 'Documento obligatorio cuando el rubro requiere libreta sanitaria.',
+              },
             },
             {
               name: 'faseIIDeclaracionJurada',

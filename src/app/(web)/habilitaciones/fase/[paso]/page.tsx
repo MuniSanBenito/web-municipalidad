@@ -186,6 +186,8 @@ export default async function HabilitacionFasePage({ params }: Props) {
             superficieDefault={expediente.faseIISuperficieAfectada ?? undefined}
             empleadosDefault={expediente.faseIICantidadEmpleados ?? undefined}
             horarioDefault={expediente.faseIIHorarioFuncionamiento ?? undefined}
+            requiereLibretaSanitariaDefault={expediente.faseIIRequiereLibretaSanitaria ?? null}
+            libretaSanitariaExistente={fileMeta(expediente.faseIILibretaSanitaria)}
             adjuntosExistentes={
               Array.isArray(expediente.faseIIAdjuntos)
                 ? expediente.faseIIAdjuntos

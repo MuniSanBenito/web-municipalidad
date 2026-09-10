@@ -28,7 +28,8 @@ export default async function TramitesLicenciaPage() {
       </section>
 
       <section className="mt-8 space-y-6">
-        <Link
+        {/* ACA IRIAN LA SECCION DONDE VAN LOS COMERCIOS HABILITADOS LA COMENTO PARA QUE NO SE VENA PERO EL DIA DE MAñANA DEBERIAN IR */}
+        {/* <Link
           href="/tramites/habilitaciones/comercios-habilitados"
           className="bg-primary text-primary-content hover:bg-primary/90 group flex items-center justify-between rounded-lg p-6 shadow-md transition-all duration-300 hover:shadow-lg"
         >
@@ -46,7 +47,7 @@ export default async function TramitesLicenciaPage() {
           <span className="text-primary-content/70 hidden text-sm font-medium md:block">
             Ver registro →
           </span>
-        </Link>
+        </Link> */}
 
         <div className="bg-base-100 rounded-lg p-6 shadow-md">
           <h2 className="mb-6 text-2xl font-semibold md:text-3xl">Tipos de Habilitaciones</h2>

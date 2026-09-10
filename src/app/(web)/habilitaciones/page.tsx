@@ -195,6 +195,13 @@ export default async function HabilitacionesPage() {
     exp?.faseIInformeObras && typeof exp.faseIInformeObras === 'object'
       ? { url: exp.faseIInformeObras.url ?? null, filename: exp.faseIInformeObras.filename ?? null }
       : null
+  const archivoFase2 =
+    exp?.faseIIResolucionHabilitacion && typeof exp.faseIIResolucionHabilitacion === 'object'
+      ? {
+          url: exp.faseIIResolucionHabilitacion.url ?? null,
+          filename: exp.faseIIResolucionHabilitacion.filename ?? null,
+        }
+      : null
 
   const f1Estado: EstadoFase = exp?.faseIEstado ?? null
   const f2Estado: EstadoFase = exp?.faseIIEstado ?? null
@@ -307,6 +314,7 @@ export default async function HabilitacionesPage() {
             area="Habilitaciones Comerciales"
             estado={f2Estado}
             notaCiudadano={exp?.faseIINotaCiudadano}
+            archivoFase={archivoFase2}
             ctaHref={ctaFase2?.href}
             ctaLabel={ctaFase2?.label}
             bloqueado={fase2Bloqueada}

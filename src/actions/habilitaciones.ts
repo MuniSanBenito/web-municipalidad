@@ -238,10 +238,42 @@ export async function submitFaseII(
   const tituloProfesional = formData.get('tituloProfesional') === 'si'
   const planoEvacuacion = formData.get('planoEvacuacion') === 'si'
   const residuosPeligrosos = formData.get('residuosPeligrosos') === 'si'
+  const requiereLibretaSanitaria = formData.get('requiereLibretaSanitaria') === 'true'
   const declaracionJurada = formData.get('declaracionJurada') === 'true'
+  const libretaSanitariaFile = formData.get('libretaSanitaria') as File | null
 
   if (!nombreFantasia || !razonSocial || !cuit || !telefono || !rubro) {
     return { error: 'Completá todos los campos obligatorios.' }
+  }
+
+  let actual: any = null
+  try {
+    actual = await basePayload.findByID({
+      collection: 'expedientes-habilitacion' as any,
+      id: expedienteId,
+      depth: 0,
+      overrideAccess: false,
+      user: ciudadano,
+    })
+  } catch {
+    actual = null
+  }
+
+  const libretaSanitariaExistente = actual?.faseIILibretaSanitaria
+  const libretaSanitariaExistenteId =
+    typeof libretaSanitariaExistente === 'string'
+      ? libretaSanitariaExistente
+      : libretaSanitariaExistente?.id
+
+  if (requiereLibretaSanitaria && !libretaSanitariaFile?.size && !libretaSanitariaExistenteId) {
+    return { error: 'Debés adjuntar la libreta sanitaria.' }
+  }
+
+  const libretaSanitariaId = libretaSanitariaFile?.size
+    ? await uploadArchivoLocal(libretaSanitariaFile, ciudadano)
+    : null
+  if (requiereLibretaSanitaria && libretaSanitariaFile?.size && !libretaSanitariaId) {
+    return { error: 'Error al subir la libreta sanitaria. Intentá nuevamente.' }
   }
 
   // Upload multiple files
@@ -258,23 +290,12 @@ export async function submitFaseII(
   // reemplazar todo el array (evita perder documentación previa).
   let adjuntosFinales: string[] = adjuntosIds
   if (adjuntosIds.length > 0) {
-    try {
-      const actual = await basePayload.findByID({
-        collection: 'expedientes-habilitacion' as any,
-        id: expedienteId,
-        depth: 0,
-        overrideAccess: false,
-        user: ciudadano,
-      })
-      const existentes = Array.isArray((actual as any)?.faseIIAdjuntos)
-        ? ((actual as any).faseIIAdjuntos as unknown[])
-            .map((a) => (typeof a === 'string' ? a : (a as any)?.id))
-            .filter((id): id is string => typeof id === 'string')
-        : []
-      adjuntosFinales = [...existentes, ...adjuntosIds]
-    } catch {
-      adjuntosFinales = adjuntosIds
-    }
+    const existentes = Array.isArray(actual?.faseIIAdjuntos)
+      ? (actual.faseIIAdjuntos as unknown[])
+          .map((a) => (typeof a === 'string' ? a : (a as any)?.id))
+          .filter((id): id is string => typeof id === 'string')
+      : []
+    adjuntosFinales = [...existentes, ...adjuntosIds]
   }
 
   try {
@@ -301,7 +322,13 @@ export async function submitFaseII(
         faseIITituloProfesional: tituloProfesional,
         faseIIPlanoEvacuacion: planoEvacuacion,
         faseIIResiduosPeligrosos: residuosPeligrosos,
+        faseIIRequiereLibretaSanitaria: requiereLibretaSanitaria,
         faseIIDeclaracionJurada: declaracionJurada,
+        ...(libretaSanitariaId
+          ? { faseIILibretaSanitaria: libretaSanitariaId }
+          : libretaSanitariaExistenteId
+            ? { faseIILibretaSanitaria: libretaSanitariaExistenteId }
+            : {}),
         ...(adjuntosIds.length > 0 ? { faseIIAdjuntos: adjuntosFinales } : {}),
       } as any,
     })
@@ -310,4 +337,3 @@ export async function submitFaseII(
     return { error: e?.message ?? 'Error al enviar la solicitud.' }
   }
 }
-
