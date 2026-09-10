@@ -14,6 +14,20 @@ async function getAuthenticatedCiudadano() {
   return user
 }
 
+async function getOwnedExpediente(expedienteId: string, ciudadano: any): Promise<any | null> {
+  try {
+    return await basePayload.findByID({
+      collection: 'expedientes-habilitacion' as any,
+      id: expedienteId,
+      depth: 0,
+      overrideAccess: false,
+      user: ciudadano,
+    })
+  } catch {
+    return null
+  }
+}
+
 async function uploadArchivoLocal(file: File, user: any): Promise<string | null> {
   try {
     const buffer = Buffer.from(await file.arrayBuffer())
@@ -65,11 +79,7 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
   if (!formularioFile || formularioFile.size === 0) {
     return { error: 'Debés adjuntar el formulario de Permiso de Uso completado.' }
   }
-  if (
-    !docInmuebleFile?.size ||
-    !planoLocalFile?.size ||
-    !planchetaFile?.size
-  ) {
+  if (!docInmuebleFile?.size || !planoLocalFile?.size || !planchetaFile?.size) {
     return { error: 'Debés adjuntar toda la documentación obligatoria.' }
   }
   if (!certElectricoFile?.size && !facturaEnergiaFile?.size) {
@@ -148,6 +158,12 @@ export async function updateFaseI(
 ): Promise<{ error?: string }> {
   const ciudadano = await getAuthenticatedCiudadano()
   if (!ciudadano) return { error: 'Debés iniciar sesión para continuar.' }
+
+  const expediente = await getOwnedExpediente(expedienteId, ciudadano)
+  if (!expediente) return { error: 'No se pudo acceder al expediente.' }
+  if (['VISITA_PROGRAMADA', 'APROBADO'].includes(expediente.faseIEstado)) {
+    return { error: 'La Fase I ya no admite modificaciones.' }
+  }
 
   const email = formData.get('email')?.toString().trim()
   const apellido = formData.get('apellido')?.toString().trim()
@@ -246,17 +262,13 @@ export async function submitFaseII(
     return { error: 'Completá todos los campos obligatorios.' }
   }
 
-  let actual: any = null
-  try {
-    actual = await basePayload.findByID({
-      collection: 'expedientes-habilitacion' as any,
-      id: expedienteId,
-      depth: 0,
-      overrideAccess: false,
-      user: ciudadano,
-    })
-  } catch {
-    actual = null
+  const actual = await getOwnedExpediente(expedienteId, ciudadano)
+  if (!actual) return { error: 'No se pudo acceder al expediente.' }
+  if (actual.faseIEstado !== 'APROBADO') {
+    return { error: 'La Fase II todavía no está habilitada.' }
+  }
+  if (['VISITA_PROGRAMADA', 'APROBADO'].includes(actual.faseIIEstado)) {
+    return { error: 'La Fase II ya no admite modificaciones.' }
   }
 
   const libretaSanitariaExistente = actual?.faseIILibretaSanitaria

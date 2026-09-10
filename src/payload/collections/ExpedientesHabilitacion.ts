@@ -1,5 +1,15 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
+import {
+  expedienteMunicipalFieldAccess,
+  expedienteReadInternalFieldAccess,
+  expedienteUpdateAccess,
+  faseIAdminFieldAccess,
+  faseIFieldAccess,
+  faseIIAdminFieldAccess,
+  faseIIFieldAccess,
+  faseIIIAdminFieldAccess,
+} from '../access/expedientes-habilitacion'
 import { HIDE_API_URL } from '../config'
 
 export const ESTADOS_FASE_HABILITACION = [
@@ -17,11 +27,6 @@ const FASE_OPTIONS = ESTADOS_FASE_HABILITACION.map((e) => ({
     .replace(/^\w/, (c) => c.toUpperCase()),
   value: e,
 }))
-
-const isNotCiudadano = ({ req }: { req: any }) => {
-  if (!req.user) return false
-  return req.user.collection !== 'ciudadanos'
-}
 
 const readAccess = ({ req }: { req: any }) => {
   if (!req.user) return false
@@ -46,7 +51,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
   access: {
     create: ({ req }) => Boolean(req.user),
     read: readAccess,
-    update: ({ req }) => Boolean(req.user),
+    update: expedienteUpdateAccess,
     delete: ({ req }) => {
       if (!req.user || req.user.collection === 'ciudadanos') return false
       return req.user.rol?.includes('ADMIN') ?? false
@@ -175,6 +180,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
       name: 'titulo',
       type: 'text',
       label: 'Identificación del Expediente',
+      access: { create: expedienteMunicipalFieldAccess, update: expedienteMunicipalFieldAccess },
       admin: {
         position: 'sidebar',
         description: 'Se genera automáticamente. Editable por el equipo municipal.',
@@ -197,7 +203,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   type: 'select',
                   label: 'Estado Fase I',
                   options: FASE_OPTIONS,
-                  access: { update: isNotCiudadano },
+                  access: { create: faseIAdminFieldAccess, update: faseIAdminFieldAccess },
                   admin: {
                     width: '50%',
                     description: 'Gestionado por Obras Privadas.',
@@ -207,7 +213,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseINumeroPermisoUso',
                   type: 'text',
                   label: 'N° de Permiso de Uso',
-                  access: { update: isNotCiudadano },
+                  access: { create: faseIAdminFieldAccess, update: faseIAdminFieldAccess },
                   admin: {
                     width: '50%',
                     description:
@@ -220,7 +226,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseINotaCiudadano',
               type: 'textarea',
               label: 'Nota para el ciudadano (Fase I)',
-              access: { update: isNotCiudadano },
+              access: { create: faseIAdminFieldAccess, update: faseIAdminFieldAccess },
               admin: {
                 description: 'Mensaje visible al ciudadano sobre esta fase.',
               },
@@ -230,7 +236,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Informe de visita / Resolución de habilitación (Fase I)',
               relationTo: 'archivos',
-              access: { update: isNotCiudadano },
+              access: { create: faseIAdminFieldAccess, update: faseIAdminFieldAccess },
               admin: {
                 description:
                   'Archivo visible al ciudadano junto con la nota de Fase I. Puede ser el informe de Obras o la resolución de habilitación.',
@@ -241,8 +247,9 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'textarea',
               label: 'Nota interna — Obras Privadas',
               access: {
-                read: isNotCiudadano,
-                update: isNotCiudadano,
+                read: expedienteReadInternalFieldAccess,
+                create: faseIAdminFieldAccess,
+                update: faseIAdminFieldAccess,
               },
               admin: {
                 description: 'Solo visible para el equipo municipal.',
@@ -255,12 +262,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIDireccionLocal',
                   type: 'text',
                   label: 'Dirección del local',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '60%' },
                 },
                 {
                   name: 'faseITelefono',
                   type: 'text',
                   label: 'Teléfono de contacto',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '40%' },
                 },
               ],
@@ -269,17 +278,20 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIRubro',
               type: 'text',
               label: 'Rubro / Actividad comercial',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
             {
               name: 'faseIDescripcion',
               type: 'textarea',
               label: 'Descripción de la actividad',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
             {
               name: 'faseIFormularioAdjunto',
               type: 'upload',
               label: 'Formulario de Permiso de Uso completado',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
               admin: {
                 description: 'Formulario completado y firmado (PDF o imagen).',
               },
@@ -291,12 +303,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIEmail',
                   type: 'text',
                   label: 'Correo electrónico del solicitante',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '50%' },
                 },
                 {
                   name: 'faseIDNI',
                   type: 'text',
                   label: 'DNI del solicitante',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '50%' },
                 },
               ],
@@ -308,12 +322,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIApellido',
                   type: 'text',
                   label: 'Apellido',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '50%' },
                 },
                 {
                   name: 'faseINombre',
                   type: 'text',
                   label: 'Nombre',
+                  access: { create: faseIFieldAccess, update: faseIFieldAccess },
                   admin: { width: '50%' },
                 },
               ],
@@ -322,12 +338,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIBarrio',
               type: 'text',
               label: 'Barrio',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
             {
               name: 'faseIDocInmueble',
               type: 'upload',
               label: 'Documentación del inmueble',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
               admin: {
                 description:
                   'Título de propiedad, contrato de locación o autorización del propietario.',
@@ -338,12 +356,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Plano o croquis del local',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
             {
               name: 'faseICertElectrico',
               type: 'upload',
               label: 'Certificado de instalaciones eléctricas',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
               admin: {
                 description:
                   'Emitido por profesional matriculado. Requisito alternativo: se debe adjuntar este certificado O la factura de energía eléctrica (al menos uno).',
@@ -354,6 +374,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Factura de energía eléctrica',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
               admin: {
                 description:
                   'Copia de una factura reciente. Requisito alternativo: se debe adjuntar esta factura O el certificado de instalaciones eléctricas (al menos uno).',
@@ -364,11 +385,13 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Plancheta catastral',
               relationTo: 'archivos',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
             {
               name: 'faseIDeclaracionJurada',
               type: 'checkbox',
               label: 'Declaración jurada aceptada por el solicitante',
+              access: { create: faseIFieldAccess, update: faseIFieldAccess },
             },
           ],
         },
@@ -387,7 +410,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   type: 'select',
                   label: 'Estado Fase II',
                   options: FASE_OPTIONS,
-                  access: { update: isNotCiudadano },
+                  access: { create: faseIIAdminFieldAccess, update: faseIIAdminFieldAccess },
                   admin: {
                     width: '50%',
                     description: 'Gestionado por Habilitaciones Comerciales.',
@@ -399,7 +422,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIINotaCiudadano',
               type: 'textarea',
               label: 'Nota para el ciudadano (Fase II)',
-              access: { update: isNotCiudadano },
+              access: { create: faseIIAdminFieldAccess, update: faseIIAdminFieldAccess },
               admin: {
                 description: 'Mensaje visible al ciudadano sobre esta fase.',
               },
@@ -409,7 +432,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'upload',
               label: 'Resolución de habilitación (Fase II)',
               relationTo: 'archivos',
-              access: { update: isNotCiudadano },
+              access: { create: faseIIAdminFieldAccess, update: faseIIAdminFieldAccess },
               admin: {
                 description: 'Resolución visible al ciudadano una vez aprobada la Fase II.',
               },
@@ -419,8 +442,9 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'textarea',
               label: 'Nota interna — Habilitaciones',
               access: {
-                read: isNotCiudadano,
-                update: isNotCiudadano,
+                read: expedienteReadInternalFieldAccess,
+                create: faseIIAdminFieldAccess,
+                update: faseIIAdminFieldAccess,
               },
             },
             {
@@ -430,12 +454,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIINombreFantasia',
                   type: 'text',
                   label: 'Nombre de Fantasía del Comercio',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
                 {
                   name: 'faseIIRazonSocial',
                   type: 'text',
                   label: 'Razón Social / Nombre del Titular',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
               ],
@@ -447,12 +473,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIICuit',
                   type: 'text',
                   label: 'CUIT / CUIL',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
                 {
                   name: 'faseIITelefono',
                   type: 'text',
                   label: 'Teléfono de contacto',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
               ],
@@ -461,6 +489,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIDireccion',
               type: 'text',
               label: 'Dirección del Local',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               type: 'row',
@@ -471,6 +500,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   label: 'Rubro principal',
                   relationTo: 'rubros-comercios',
                   hasMany: false,
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
                 {
@@ -479,6 +509,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   label: 'Actividades',
                   relationTo: 'actividades-comercios',
                   hasMany: true,
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '50%' },
                 },
               ],
@@ -487,11 +518,13 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIEmail',
               type: 'text',
               label: 'Correo electrónico de contacto',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIDescripcionActividad',
               type: 'textarea',
               label: 'Descripción de la actividad comercial',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
               admin: {
                 description:
                   'Describí brevemente qué vas a comercializar o qué servicio vas a brindar.',
@@ -504,18 +537,21 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   name: 'faseIISuperficieAfectada',
                   type: 'number',
                   label: 'Superficie afectada (m²)',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '33%' },
                 },
                 {
                   name: 'faseIICantidadEmpleados',
                   type: 'number',
                   label: 'Cantidad de empleados',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '33%' },
                 },
                 {
                   name: 'faseIIHorarioFuncionamiento',
                   type: 'text',
                   label: 'Horario de funcionamiento',
+                  access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
                   admin: { width: '34%' },
                 },
               ],
@@ -524,47 +560,56 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIManipulacionAlimentos',
               type: 'checkbox',
               label: 'Requiere manipulación/elaboración de alimentos',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIHigieneSeguridad',
               type: 'checkbox',
               label: 'Requiere Informe de Higiene y Seguridad (>100 m² o permanencia de personas)',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIISeguroRC',
               type: 'checkbox',
               label: 'Requiere Seguro de Responsabilidad Civil',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIBuenaConducta',
               type: 'checkbox',
               label: 'Requiere Certificado de Buena Conducta',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIITituloProfesional',
               type: 'checkbox',
               label: 'Requiere título profesional habilitante',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIPlanoEvacuacion',
               type: 'checkbox',
               label: 'Requiere Plano de Evacuación (>50 m²)',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIResiduosPeligrosos',
               type: 'checkbox',
               label: 'Genera residuos peligrosos',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIRequiereLibretaSanitaria',
               type: 'checkbox',
               label: 'Requiere presentar libreta sanitaria',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIILibretaSanitaria',
               type: 'upload',
               label: 'Libreta sanitaria',
               relationTo: 'archivos',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
               admin: {
                 description: 'Documento obligatorio cuando el rubro requiere libreta sanitaria.',
               },
@@ -573,6 +618,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIDeclaracionJurada',
               type: 'checkbox',
               label: 'Declaración jurada aceptada por el ciudadano',
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
             },
             {
               name: 'faseIIAdjuntos',
@@ -580,6 +626,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               label: 'Documentación adjunta',
               relationTo: 'archivos',
               hasMany: true,
+              access: { create: faseIIFieldAccess, update: faseIIFieldAccess },
               admin: {
                 description:
                   'Permiso de Uso aprobado, DNI, CUIT, Libre Deuda, Boleta de Tasa Inmobiliaria y otros documentos requeridos.',
@@ -602,7 +649,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
                   type: 'select',
                   label: 'Estado Fase III',
                   options: FASE_OPTIONS,
-                  access: { update: isNotCiudadano },
+                  access: { create: faseIIIAdminFieldAccess, update: faseIIIAdminFieldAccess },
                   admin: {
                     width: '50%',
                     description: 'Gestionado por el área de Rentas.',
@@ -614,7 +661,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               name: 'faseIIINotaCiudadano',
               type: 'textarea',
               label: 'Nota para el ciudadano (Fase III)',
-              access: { update: isNotCiudadano },
+              access: { create: faseIIIAdminFieldAccess, update: faseIIIAdminFieldAccess },
               admin: {
                 description: 'Mensaje visible al ciudadano sobre esta fase.',
               },
@@ -624,8 +671,9 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               type: 'textarea',
               label: 'Nota interna — Rentas',
               access: {
-                read: isNotCiudadano,
-                update: isNotCiudadano,
+                read: expedienteReadInternalFieldAccess,
+                create: faseIIIAdminFieldAccess,
+                update: faseIIIAdminFieldAccess,
               },
             },
             {
@@ -635,8 +683,8 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               relationTo: 'comercios-habilitados',
               hasMany: false,
               access: {
-                update: isNotCiudadano,
-                create: isNotCiudadano,
+                update: faseIIIAdminFieldAccess,
+                create: faseIIIAdminFieldAccess,
               },
               admin: {
                 description:
