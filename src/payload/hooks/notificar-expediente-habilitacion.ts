@@ -33,19 +33,21 @@ async function queueEmail({
   recipients,
   doc,
   req,
+  baseUrl,
 }: {
   event: EventoNotificacionHabilitacion
   audience: 'AREA' | 'CIUDADANO'
   recipients: string[]
   doc: Record<string, any>
   req: any
+  baseUrl: string
 }) {
   if (recipients.length === 0) return
   const email = construirCorreoNotificacion({
     event,
     expedienteId: String(doc.id),
     audience,
-    baseUrl: process.env.NEXT_PUBLIC_SERVER_URL ?? '',
+    baseUrl,
   })
 
   await req.payload.jobs.queue({
@@ -88,10 +90,18 @@ export const notificarExpedienteHabilitacion: CollectionAfterChangeHook = async 
     })
     if (!config?.notificacionesActivas) return doc
 
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL?.trim()
+    if (!baseUrl) {
+      req.payload.logger.error(
+        '[NotificacionesHabilitacion] Falta NEXT_PUBLIC_SERVER_URL; no se encolaron correos.',
+      )
+      return doc
+    }
+
     const loginEmail = await getCitizenLoginEmail(doc, req)
     for (const event of events) {
       const areaRecipients = correosAreas(config, event.areas)
-      await queueEmail({ event, audience: 'AREA', recipients: areaRecipients, doc, req })
+      await queueEmail({ event, audience: 'AREA', recipients: areaRecipients, doc, req, baseUrl })
 
       if (event.notificarCiudadano) {
         const citizenRecipients = correosCiudadano({ loginEmail, doc, fase: event.fase })
@@ -101,6 +111,7 @@ export const notificarExpedienteHabilitacion: CollectionAfterChangeHook = async 
           recipients: citizenRecipients,
           doc,
           req,
+          baseUrl,
         })
       }
     }

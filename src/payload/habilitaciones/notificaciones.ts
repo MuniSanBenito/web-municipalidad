@@ -149,6 +149,27 @@ export function correosAreas(config: Record<string, any>, areas: AreaHabilitacio
   )
 }
 
+export function normalizarBaseUrl(baseUrl: string) {
+  const value = baseUrl.trim()
+  if (!value) throw new Error('NEXT_PUBLIC_SERVER_URL no está configurada')
+
+  let parsed: URL
+  try {
+    parsed = new URL(value)
+  } catch {
+    throw new Error('NEXT_PUBLIC_SERVER_URL debe ser una URL absoluta con http o https')
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('NEXT_PUBLIC_SERVER_URL debe usar http o https')
+  }
+
+  return parsed.toString().replace(/\/+$/, '')
+}
+
+function absoluteUrl(baseUrl: string, pathname: string) {
+  return new URL(pathname, `${baseUrl}/`).toString()
+}
+
 function escapeHtml(value: string) {
   return value
     .replaceAll('&', '&amp;')
@@ -172,6 +193,20 @@ function eventoLabel(event: EventoNotificacionHabilitacion) {
   return `Estado actualizado a ${estadoLabel(event.estadoNuevo)}`
 }
 
+function eventColor(event: EventoNotificacionHabilitacion) {
+  if (event.tipo === 'CAMBIO_ESTADO' && event.estadoNuevo === 'APROBADO') return '#2f855a'
+  if (event.tipo === 'CAMBIO_ESTADO' && event.estadoNuevo === 'VISITA_PROGRAMADA') return '#7c3aed'
+  if (event.tipo === 'CAMBIO_ESTADO') return '#2563eb'
+  if (event.tipo === 'ACTUALIZACION_CIUDADANA') return '#d97706'
+  return '#5A7A3E'
+}
+
+function tipoEventoLabel(event: EventoNotificacionHabilitacion) {
+  if (event.tipo === 'PRESENTACION') return 'Nueva presentación'
+  if (event.tipo === 'ACTUALIZACION_CIUDADANA') return 'Documentación actualizada'
+  return 'Cambio de estado'
+}
+
 export function construirCorreoNotificacion({
   event,
   expedienteId,
@@ -183,23 +218,86 @@ export function construirCorreoNotificacion({
   audience: 'AREA' | 'CIUDADANO'
   baseUrl: string
 }) {
+  const normalizedBaseUrl = normalizarBaseUrl(baseUrl)
   const label = eventoLabel(event)
   const safeId = escapeHtml(expedienteId)
-  const normalizedBaseUrl = baseUrl.replace(/\/$/, '')
-  const url =
-    audience === 'AREA'
-      ? `${normalizedBaseUrl}/admin/collections/expedientes-habilitacion/${encodeURIComponent(expedienteId)}`
-      : `${normalizedBaseUrl}/habilitaciones`
+  const portalUrl = absoluteUrl(normalizedBaseUrl, '/habilitaciones')
+  const detailUrl = absoluteUrl(
+    normalizedBaseUrl,
+    `/admin/collections/expedientes-habilitacion/${encodeURIComponent(expedienteId)}`,
+  )
+  const actionUrl = audience === 'AREA' ? detailUrl : portalUrl
+  const logoUrl = absoluteUrl(normalizedBaseUrl, '/images/escudo.webp')
+  const actionLabel = audience === 'AREA' ? 'Abrir expediente' : 'Ver mi trámite'
   const subject =
     audience === 'AREA'
       ? `[Habilitaciones] Fase ${event.fase}: ${label}`
-      : `Tu trámite de habilitación cambió de estado`
+      : `Tu trámite de habilitación tiene una novedad`
   const intro =
     audience === 'AREA'
-      ? `Hay una novedad en la Fase ${event.fase} del expediente ${safeId}.`
+      ? `Hay una novedad en la Fase ${event.fase} del expediente <strong>${safeId}</strong>.`
       : `Tu trámite de habilitación tiene una novedad en la Fase ${event.fase}.`
-  const text = `${intro}\n${label}.\nIngresá al portal para consultar el detalle: ${url}`
-  const html = `<p>${intro}</p><p><strong>${escapeHtml(label)}</strong></p><p><a href="${escapeHtml(url)}">Ingresar al portal de habilitaciones</a></p>`
+  const statusDetail =
+    event.tipo === 'CAMBIO_ESTADO'
+      ? `${estadoLabel(event.estadoAnterior)} → ${estadoLabel(event.estadoNuevo)}`
+      : label
+  const color = eventColor(event)
+  const preheader = escapeHtml(`${label} — Fase ${event.fase}`)
+  const text = [
+    audience === 'AREA' ? `Expediente ${expedienteId}` : 'Municipalidad de San Benito',
+    `Fase ${event.fase}: ${label}`,
+    event.tipo === 'CAMBIO_ESTADO'
+      ? `Estado: ${estadoLabel(event.estadoAnterior)} → ${estadoLabel(event.estadoNuevo)}`
+      : '',
+    `Ingresá al portal: ${actionUrl}`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  const html = `<!doctype html>
+<html lang="es">
+  <body style="margin:0;background:#f3f5f0;color:#4d4d4d;font-family:Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f5f0;padding:28px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border:1px solid #e3e8df;border-radius:14px;overflow:hidden;">
+            <tr>
+              <td style="background:#b6c544;padding:24px 28px;text-align:center;">
+                <img src="${escapeHtml(logoUrl)}" width="64" height="64" alt="Escudo Municipalidad de San Benito" style="display:block;margin:0 auto 10px;object-fit:contain;" />
+                <div style="font-size:12px;letter-spacing:1.5px;font-weight:bold;color:#4d4d4d;text-transform:uppercase;">Municipalidad de San Benito</div>
+                <div style="font-size:22px;line-height:30px;font-weight:bold;color:#354020;margin-top:5px;">Habilitaciones Comerciales</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:30px 32px 12px;">
+                <div style="font-size:14px;line-height:22px;color:#687065;">${intro}</div>
+                <h1 style="font-size:22px;line-height:30px;color:#3f4c31;margin:12px 0 22px;">${escapeHtml(label)}</h1>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e1e8d9;border-radius:10px;background:#f8faf6;">
+                  <tr>
+                    <td style="padding:16px 18px;">
+                      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#7b8674;font-weight:bold;">Fase ${event.fase}</div>
+                      <div style="font-size:16px;font-weight:bold;color:#4d4d4d;margin-top:5px;">${escapeHtml(tipoEventoLabel(event))}</div>
+                      ${event.tipo === 'CAMBIO_ESTADO' ? `<div style="display:inline-block;margin-top:12px;padding:7px 11px;border-radius:999px;background:${color};color:#ffffff;font-size:13px;font-weight:bold;">${escapeHtml(statusDetail)}</div>` : ''}
+                    </td>
+                  </tr>
+                </table>
+                <div style="text-align:center;padding:28px 0 20px;">
+                  <a href="${escapeHtml(actionUrl)}" style="display:inline-block;background:#5A7A3E;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;border-radius:7px;padding:13px 24px;">${escapeHtml(actionLabel)}</a>
+                </div>
+                <div style="font-size:12px;line-height:18px;color:#8a9386;word-break:break-all;">Si el botón no funciona, copiá este enlace:<br /><a href="${escapeHtml(actionUrl)}" style="color:#5A7A3E;">${escapeHtml(actionUrl)}</a></div>
+              </td>
+            </tr>
+            <tr>
+              <td style="border-top:1px solid #edf0ea;padding:18px 32px 24px;text-align:center;color:#92998f;font-size:12px;line-height:18px;">
+                Notificación automática de la Municipalidad de San Benito.<br />Por favor, no respondas este correo.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
 
   return { subject, text, html }
 }

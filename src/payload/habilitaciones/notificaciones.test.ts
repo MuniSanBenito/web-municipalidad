@@ -5,6 +5,7 @@ import {
   correosAreas,
   correosCiudadano,
   detectarEventosNotificacion,
+  normalizarBaseUrl,
 } from './notificaciones'
 
 const baseDoc = {
@@ -119,6 +120,41 @@ test('combina y deduplica los correos de las áreas', () => {
   )
 })
 
+test('normaliza la URL pública del servidor y rechaza URLs inválidas', () => {
+  assert.equal(normalizarBaseUrl('https://sanbenito.gob.ar/'), 'https://sanbenito.gob.ar')
+  assert.throws(() => normalizarBaseUrl(''), /NEXT_PUBLIC_SERVER_URL/)
+  assert.throws(() => normalizarBaseUrl('sanbenito.gob.ar'), /http o https/)
+})
+
+test('los enlaces del correo son absolutos y apuntan al destino correcto', () => {
+  const event = detectarEventosNotificacion({
+    doc: baseDoc,
+    operation: 'create',
+    actorCollection: 'ciudadanos',
+  })[0]
+  const citizenEmail = construirCorreoNotificacion({
+    event,
+    expedienteId: 'exp/1',
+    audience: 'CIUDADANO',
+    baseUrl: 'https://sanbenito.gob.ar/',
+  })
+  const areaEmail = construirCorreoNotificacion({
+    event,
+    expedienteId: 'exp/1',
+    audience: 'AREA',
+    baseUrl: 'https://sanbenito.gob.ar/',
+  })
+
+  assert.equal(citizenEmail.html.includes('https://sanbenito.gob.ar/habilitaciones'), true)
+  assert.equal(
+    areaEmail.html.includes(
+      'https://sanbenito.gob.ar/admin/collections/expedientes-habilitacion/exp%2F1',
+    ),
+    true,
+  )
+  assert.equal(areaEmail.html.includes('https://sanbenito.gob.ar/images/escudo.webp'), true)
+})
+
 test('el correo no expone datos sensibles ni enlaces a archivos', () => {
   const event = detectarEventosNotificacion({
     doc: baseDoc,
@@ -135,4 +171,6 @@ test('el correo no expone datos sensibles ni enlaces a archivos', () => {
   assert.equal(email.html.includes('12345678'), false)
   assert.equal(email.html.includes('/api/archivos/'), false)
   assert.equal(email.html.includes('/habilitaciones'), true)
+  assert.equal(email.html.includes('Municipalidad de San Benito'), true)
+  assert.equal(email.html.includes('Ver mi trámite'), true)
 })
