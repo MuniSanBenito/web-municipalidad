@@ -40,6 +40,8 @@ import { RubrosComercios } from './payload/collections/RubrosComercios'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
+import { ConfiguracionNotificacionesHabilitacion } from './payload/globals/ConfiguracionNotificacionesHabilitacion'
+import { EnviarNotificacionHabilitacion } from './payload/jobs/enviar-notificacion-habilitacion'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -185,7 +187,17 @@ export default buildConfig({
     ElementosPlaza,
     ResultadosCampana,
   ],
-  globals: [Autoridades],
+  globals: [Autoridades, ConfiguracionNotificacionesHabilitacion],
+  jobs: {
+    tasks: [EnviarNotificacionHabilitacion],
+    autoRun: [
+      {
+        cron: '* * * * *',
+        queue: 'notificaciones-habilitaciones',
+        limit: 20,
+      },
+    ],
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

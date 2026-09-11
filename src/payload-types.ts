@@ -100,6 +100,7 @@ export interface Config {
     'elementos-plaza': ElementosPlaza;
     'resultados-campana': ResultadosCampana;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -142,6 +143,7 @@ export interface Config {
     'elementos-plaza': ElementosPlazaSelect<false> | ElementosPlazaSelect<true>;
     'resultados-campana': ResultadosCampanaSelect<false> | ResultadosCampanaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -152,9 +154,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
+    'configuracion-notificaciones-habilitacion': ConfiguracionNotificacionesHabilitacion;
   };
   globalsSelect: {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
+    'configuracion-notificaciones-habilitacion': ConfiguracionNotificacionesHabilitacionSelect<false> | ConfiguracionNotificacionesHabilitacionSelect<true>;
   };
   locale: null;
   user:
@@ -165,7 +169,13 @@ export interface Config {
         collection: 'ciudadanos';
       });
   jobs: {
-    tasks: unknown;
+    tasks: {
+      enviarNotificacionHabilitacion: TaskEnviarNotificacionHabilitacion;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -1500,6 +1510,98 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: string;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'enviarNotificacionHabilitacion';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'enviarNotificacionHabilitacion') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -2480,6 +2582,37 @@ export interface PayloadKvSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -2544,6 +2677,46 @@ export interface Autoridade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "configuracion-notificaciones-habilitacion".
+ */
+export interface ConfiguracionNotificacionesHabilitacion {
+  id: string;
+  /**
+   * Activar después de configurar los destinatarios y verificar el SMTP.
+   */
+  notificacionesActivas?: boolean | null;
+  /**
+   * Reciben novedades de la Fase I.
+   */
+  emailsObrasPrivadas?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Reciben novedades de la Fase II y Fase III.
+   */
+  emailsHabilitaciones?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Reciben el traspaso de Fase II aprobada y novedades de Fase III.
+   */
+  emailsHacienda?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
@@ -2565,6 +2738,55 @@ export interface AutoridadesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "configuracion-notificaciones-habilitacion_select".
+ */
+export interface ConfiguracionNotificacionesHabilitacionSelect<T extends boolean = true> {
+  notificacionesActivas?: T;
+  emailsObrasPrivadas?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  emailsHabilitaciones?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  emailsHacienda?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskEnviarNotificacionHabilitacion".
+ */
+export interface TaskEnviarNotificacionHabilitacion {
+  input: {
+    destinatarios: {
+      email: string;
+    }[];
+    asunto: string;
+    texto: string;
+    html: string;
+    expedienteId: string;
+    fase: number;
+    tipoEvento: string;
+    claveEvento: string;
+  };
+  output: {
+    enviados: number;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

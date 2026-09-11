@@ -11,6 +11,7 @@ import {
   faseIIIAdminFieldAccess,
 } from '../access/expedientes-habilitacion'
 import { HIDE_API_URL } from '../config'
+import { notificarExpedienteHabilitacion } from '../hooks/notificar-expediente-habilitacion'
 
 export const ESTADOS_FASE_HABILITACION = [
   'INICIADO',
@@ -173,6 +174,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
 
         return doc
       },
+      notificarExpedienteHabilitacion,
     ],
   },
   fields: [
