@@ -13,13 +13,26 @@ export const CreatedBy: Field = {
   unique: false,
   hooks: {
     beforeChange: [
-      ({ req }) =>
-        req.user
-          ? {
-              relationTo: req.user.collection,
-              value: req.user.id,
-            }
-          : undefined,
+      ({ req, operation, value, originalDoc }) => {
+        // Solo asignar el propietario al CREAR el registro.
+        if (operation === 'create') {
+          return req.user ? { relationTo: req.user.collection, value: req.user.id } : value
+        }
+
+        // En updates NUNCA reasignar: preservamos el propietario original.
+        // (evita que un admin que edita el registro se convierta en el "creado por")
+        const existing = originalDoc?.created_by ?? value
+        if (existing && typeof existing === 'object') {
+          return {
+            relationTo: existing.relationTo,
+            value:
+              typeof existing.value === 'object' && existing.value !== null
+                ? existing.value.id
+                : existing.value,
+          }
+        }
+        return existing
+      },
     ],
   },
 }

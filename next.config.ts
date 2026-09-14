@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   },
   output: 'standalone',
   // reactCompiler: true,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '64mb',
+    },
+  },
 }
 
 export default withPayload(nextConfig)

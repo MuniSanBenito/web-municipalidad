@@ -8,6 +8,7 @@ import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { ActividadesComercios } from './payload/collections/ActividadesComercios'
 import { Arboles } from './payload/collections/Arboles'
 import { Archivos } from './payload/collections/Archivos'
 import { ArchivosObras } from './payload/collections/ArchivosObras'
@@ -25,6 +26,7 @@ import { Deportes } from './payload/collections/Deportes'
 import { ElementosPlaza } from './payload/collections/ElementosPlaza'
 import { Eventos } from './payload/collections/Eventos'
 import { EventosTags } from './payload/collections/EventosTags'
+import { ExpedientesHabilitacion } from './payload/collections/ExpedientesHabilitacion'
 import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Intimaciones } from './payload/collections/Intimaciones'
@@ -38,6 +40,8 @@ import { RubrosComercios } from './payload/collections/RubrosComercios'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
 import { Users } from './payload/collections/Users'
 import { Autoridades } from './payload/globals/Autoridades'
+import { ConfiguracionNotificacionesHabilitacion } from './payload/globals/ConfiguracionNotificacionesHabilitacion'
+import { EnviarNotificacionHabilitacion } from './payload/jobs/enviar-notificacion-habilitacion'
 
 const accountId = process.env.R2_ACCOUNT_ID
 const accessKeyId = process.env.R2_ACCESS_KEY_ID!
@@ -170,7 +174,9 @@ export default buildConfig({
     Ciudadanos,
     Matriculados,
     RubrosComercios,
+    ActividadesComercios,
     ComerciosHabilitados,
+    ExpedientesHabilitacion,
     // Analytics
     ChatbotConversations,
     // Participación ciudadana
@@ -181,7 +187,17 @@ export default buildConfig({
     ElementosPlaza,
     ResultadosCampana,
   ],
-  globals: [Autoridades],
+  globals: [Autoridades, ConfiguracionNotificacionesHabilitacion],
+  jobs: {
+    tasks: [EnviarNotificacionHabilitacion],
+    autoRun: [
+      {
+        cron: '* * * * *',
+        queue: 'notificaciones-habilitaciones',
+        limit: 20,
+      },
+    ],
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

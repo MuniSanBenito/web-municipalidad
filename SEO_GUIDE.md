@@ -96,7 +96,7 @@ Las siguientes páginas podrían beneficiarse de metadatos específicos:
 
 ### Métricas Clave a Monitorear
 
-- **Core Web Vitals**: LCP, FID, CLS
+- **Core Web Vitals**: LCP, FID, CLS.
 - **Posiciones de búsqueda** para keywords municipales
 - **Tiempo de carga** de páginas principales
 - **Tasa de rebote** por página

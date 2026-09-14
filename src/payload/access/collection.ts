@@ -126,6 +126,24 @@ export const isObrasPrivadasOrAdminCollectionAccess: Access = ({ req }) => {
 }
 
 /*
+ComerciosHabilitados
+- C: admin y habilitaciones
+- R: publico
+- U: admin y habilitaciones
+- D: admin y habilitaciones
+
+RubrosComercios
+- C: admin y habilitaciones
+- R: publico
+- U: admin y habilitaciones
+- D: admin y habilitaciones
+
+ActividadesComercios
+- C: admin y habilitaciones
+- R: publico
+- U: admin y habilitaciones
+- D: admin y habilitaciones
+
 GLOBALS
 Autoridades
 - C: admin

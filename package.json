@@ -4,10 +4,9 @@
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@10.33.2",
   "browserslist": "> 1%",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
+    "build": "pnpm run generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -41,7 +40,7 @@
     "jspdf": "3.0.4",
     "next": "16.0.10",
     "next-themes": "0.4.6",
-    "payload": "3.68.5",
+    "payload": "3.68.3",
     "postcss": "8.5.6",
     "react": "19.2.3",
     "react-chatbot-kit": "2.2.2",
@@ -55,12 +54,12 @@
     "@swc-node/register": "1.11.1",
     "@types/canvas-confetti": "^1.9.0",
     "@types/jsdom": "27.0.0",
-    "@types/node": "25.0.3",
+    "@types/node": "25.0.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "daisyui": "5.5.14",
-    "eslint": "9.39.2",
+    "daisyui": "5.5.13",
+    "eslint": "9.39.1",
     "eslint-config-next": "16.0.10",
     "fast-xml-parser": "5.2.5",
     "jsdom": "27.3.0",
@@ -71,11 +70,12 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@swc/core",
-      "core-js",
-      "esbuild",
       "sharp",
+      "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "@aws-sdk/client-s3": "3.1005.0"
+    }
   }
 }
