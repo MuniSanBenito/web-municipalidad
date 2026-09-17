@@ -69,6 +69,24 @@ export default async function PerfilPage() {
   })
   const expediente = (expedientes[0] as any) ?? null
 
+  const { docs: comerciosPerfil } = await basePayload.find({
+    collection: 'comercios-habilitados',
+    where: { titulares: { equals: ciudadano.id } },
+    limit: 20,
+    depth: 0,
+  })
+  const { docs: renovacionesPerfil } = await basePayload.find({
+    collection: 'expedientes-renovacion',
+    where: {
+      and: [
+        { 'created_by.value': { equals: ciudadano.id } },
+        { estado: { not_equals: 'APROBADO' } },
+      ],
+    },
+    limit: 10,
+    depth: 0,
+  })
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No especificado'
     return new Date(dateString).toLocaleDateString('es-AR', {
@@ -254,6 +272,45 @@ export default async function PerfilPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {comerciosPerfil.length > 0 && (
+          <div className="card bg-base-100 mt-8 shadow-lg">
+            <div className="card-body">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="card-title text-primary flex items-center gap-2">
+                  <IconBuildingStore size={22} />
+                  Mis comercios
+                </h2>
+                <Link href="/habilitaciones" className="btn btn-outline btn-sm gap-1">
+                  Ver portal
+                  <IconArrowRight size={14} />
+                </Link>
+              </div>
+              <ul className="space-y-2">
+                {comerciosPerfil.map((c) => (
+                  <li
+                    key={c.id}
+                    className="bg-base-200 rounded-box flex items-center justify-between p-3"
+                  >
+                    <div>
+                      <p className="font-medium">{c.nombre}</p>
+                      <p className="text-base-content/60 text-xs">{c.direccion}</p>
+                    </div>
+                    {c.numeroHabilitacion && (
+                      <span className="font-mono text-xs">{c.numeroHabilitacion}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              {renovacionesPerfil.length > 0 && (
+                <p className="text-warning mt-3 text-sm">
+                  Tenés {renovacionesPerfil.length} renovación
+                  {renovacionesPerfil.length === 1 ? '' : 'es'} en curso.
+                </p>
+              )}
             </div>
           </div>
         )}

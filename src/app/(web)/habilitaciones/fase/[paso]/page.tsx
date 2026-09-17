@@ -2,6 +2,7 @@ import type { Ciudadano } from '@/payload-types'
 import { ExpedienteFase1Form } from '@/web/components/expediente-fase1-form'
 import { ExpedienteFase2Form } from '@/web/components/expediente-fase2-form'
 import { ExpedienteFase3Form } from '@/web/components/expediente-fase3-form'
+import { ciudadanoTieneModuloHabilitaciones } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import { IconArrowLeft, IconBuildingStore, IconCircleCheck } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
@@ -25,6 +26,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
   if (user.collection !== 'ciudadanos') redirect('/habilitaciones')
 
   const ciudadano = user as Ciudadano
+  if (!ciudadanoTieneModuloHabilitaciones(ciudadano)) redirect('/habilitaciones')
 
   // Buscar el expediente activo del ciudadano
   const { docs } = await basePayload.find({

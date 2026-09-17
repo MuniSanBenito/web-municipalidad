@@ -9,6 +9,7 @@ import {
     IconShieldCheck,
     IconTag,
 } from '@tabler/icons-react'
+import { comercioEstaVigente } from '@/web/lib/habilitaciones'
 
 interface CertificadoHabilitacionProps {
   nombre: string
@@ -16,6 +17,7 @@ interface CertificadoHabilitacionProps {
   cuit: string
   direccion: string
   fechaAlta?: string | null
+  fechaVencimiento?: string | null
   fechaBaja?: string | null
   urlValidacion?: string | null
   numeroHabilitacion?: string | null
@@ -39,13 +41,15 @@ export function CertificadoHabilitacion({
   cuit,
   direccion,
   fechaAlta,
+  fechaVencimiento,
   fechaBaja,
   urlValidacion,
   numeroHabilitacion,
   rubroNombre,
   showActions = false,
 }: CertificadoHabilitacionProps) {
-  const vigente = !fechaBaja || new Date(fechaBaja) >= new Date()
+  const vencimientoMostrado = fechaVencimiento ?? fechaBaja
+  const vigente = comercioEstaVigente({ fechaBaja, fechaVencimiento })
 
   return (
     <div className="space-y-4">
@@ -185,10 +189,14 @@ export function CertificadoHabilitacion({
                     <dd
                       className={[
                         'mt-0.5 text-sm font-medium',
-                        fechaBaja ? (vigente ? 'text-gray-800' : 'text-red-600') : 'text-gray-400',
+                        vencimientoMostrado
+                          ? vigente
+                            ? 'text-gray-800'
+                            : 'text-red-600'
+                          : 'text-gray-400',
                       ].join(' ')}
                     >
-                      {fechaBaja ? formatFecha(fechaBaja) : 'Sin vencimiento'}
+                      {vencimientoMostrado ? formatFecha(vencimientoMostrado) : 'Sin vencimiento'}
                     </dd>
                   </div>
                 </div>

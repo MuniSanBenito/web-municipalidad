@@ -116,6 +116,17 @@ export const isGestorCiudadanoOrAdminCollectionAccess: Access = ({ req }) => {
   )
 }
 
+export const isGestorHabilitacionesOrAdminCollectionAccess: Access = ({ req }) => {
+  if (req.user?.collection === 'ciudadanos') return false
+
+  return (
+    (req?.user?.rol?.includes('GESTOR CIUDADANO') ||
+      req?.user?.rol?.includes('HABILITACIONES') ||
+      req?.user?.rol?.includes(ROL_ADMIN_VALUE)) ??
+    false
+  )
+}
+
 export const isObrasPrivadasOrAdminCollectionAccess: Access = ({ req }) => {
   if (req.user?.collection === 'ciudadanos') return false
 

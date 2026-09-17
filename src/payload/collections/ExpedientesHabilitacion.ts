@@ -140,6 +140,14 @@ export const ExpedientesHabilitacion: CollectionConfig = {
         const rubro = (doc as any).faseIIRubro
         const actividades = (doc as any).faseIIActividades
 
+        const createdBy = (doc as any).created_by
+        const titularId =
+          createdBy?.relationTo === 'ciudadanos'
+            ? typeof createdBy.value === 'object' && createdBy.value !== null
+              ? createdBy.value.id
+              : createdBy.value
+            : null
+
         try {
           const nuevoComercio = await req.payload.create({
             collection: 'comercios-habilitados',
@@ -152,6 +160,7 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               rubro: rubro ?? undefined,
               actividades: actividades ?? undefined,
               fechaAlta: new Date().toISOString(),
+              ...(titularId ? { titulares: [titularId] } : {}),
             } as any,
           })
 

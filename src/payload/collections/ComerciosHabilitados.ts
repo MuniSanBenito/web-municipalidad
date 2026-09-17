@@ -18,7 +18,9 @@ export const ComerciosHabilitados: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
     hideAPIURL: HIDE_API_URL,
-    defaultColumns: ['nombre', 'razonSocial', 'rubro', 'fechaAlta', 'fechaBaja'],
+    defaultColumns: ['nombre', 'razonSocial', 'rubro', 'fechaAlta', 'fechaVencimiento', 'fechaBaja'],
+    description:
+      'Para renovaciones históricas: crear o buscar el ciudadano, asignarle el módulo HABILITACIONES y vincularlo en Titulares.',
   },
   hooks: {
     beforeChange: [
@@ -28,21 +30,23 @@ export const ComerciosHabilitados: CollectionConfig = {
           data.tokenValidacion = token
           data.urlValidacion = `${process.env.NEXT_PUBLIC_SERVER_URL}/validar/${token}`
 
-          // Generar número de habilitación secuencial: HB-{año}-{correlativo}
-          const year = new Date().getFullYear()
-          const { totalDocs } = await req.payload.find({
-            collection: 'comercios-habilitados',
-            where: {
-              and: [
-                { numeroHabilitacion: { exists: true } },
-                { numeroHabilitacion: { contains: `HB-${year}-` } },
-              ],
-            },
-            limit: 0,
-            depth: 0,
-          })
-          const correlativo = String((totalDocs ?? 0) + 1).padStart(4, '0')
-          data.numeroHabilitacion = `HB-${year}-${correlativo}`
+          // Autogenerar solo si staff no cargó el nro. papel del expediente histórico.
+          if (!data.numeroHabilitacion) {
+            const year = new Date().getFullYear()
+            const { totalDocs } = await req.payload.find({
+              collection: 'comercios-habilitados',
+              where: {
+                and: [
+                  { numeroHabilitacion: { exists: true } },
+                  { numeroHabilitacion: { contains: `HB-${year}-` } },
+                ],
+              },
+              limit: 0,
+              depth: 0,
+            })
+            const correlativo = String((totalDocs ?? 0) + 1).padStart(4, '0')
+            data.numeroHabilitacion = `HB-${year}-${correlativo}`
+          }
         }
         return data
       },
@@ -84,7 +88,7 @@ export const ComerciosHabilitados: CollectionConfig = {
           rubro: rubroNombre,
           direccion: comercio.direccion,
           fechaAlta: comercio.fechaAlta ?? null,
-          fechaVencimiento: comercio.fechaBaja ?? null,
+          fechaVencimiento: comercio.fechaVencimiento ?? comercio.fechaBaja ?? null,
         })
       },
     },
@@ -122,6 +126,19 @@ export const ComerciosHabilitados: CollectionConfig = {
       },
     },
     {
+      name: 'fechaVencimiento',
+      type: 'date',
+      label: 'Fecha de Vencimiento',
+      admin: {
+        date: {
+          pickerAppearance: 'dayOnly',
+          displayFormat: 'dd/MM/yyyy',
+        },
+        position: 'sidebar',
+        description: 'Vigencia de la habilitación. Se actualiza al aprobar una renovación.',
+      },
+    },
+    {
       name: 'fechaBaja',
       type: 'date',
       label: 'Fecha de Baja',
@@ -131,7 +148,18 @@ export const ComerciosHabilitados: CollectionConfig = {
           displayFormat: 'dd/MM/yyyy',
         },
         position: 'sidebar',
-        description: 'Completar solo si la habilitación fue dada de baja.',
+        description: 'Completar solo si el comercio fue dado de baja (cierre).',
+      },
+    },
+    {
+      name: 'titulares',
+      type: 'relationship',
+      relationTo: 'ciudadanos',
+      label: 'Titulares',
+      hasMany: true,
+      admin: {
+        description:
+          'Ciudadanos que pueden ver este comercio en el portal y iniciar su renovación. Crear el ciudadano antes si no existe y asignarle el módulo HABILITACIONES.',
       },
     },
     {
@@ -171,9 +199,9 @@ export const ComerciosHabilitados: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
-        readOnly: true,
         position: 'sidebar',
-        description: 'Se genera automáticamente al crear. Formato: HB-{año}-{correlativo}.',
+        description:
+          'Si se deja vacío al crear, se genera HB-{año}-{correlativo}. En comercios históricos se puede cargar el nro. del expediente papel.',
       },
     },
     {

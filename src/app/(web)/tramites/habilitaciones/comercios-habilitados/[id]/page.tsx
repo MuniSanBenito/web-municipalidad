@@ -1,4 +1,5 @@
 import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
+import { comercioEstaVigente } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import { IconBuildingStore, IconCalendar, IconCertificate, IconHash, IconMapPin, IconTag } from '@tabler/icons-react'
 import Link from 'next/link'
@@ -45,6 +46,14 @@ export default async function DetalleComercioPage({ params }: Props) {
       })
     : null
 
+  const fechaVencimiento = comercio.fechaVencimiento
+    ? new Date(comercio.fechaVencimiento).toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : null
+
   const fechaBaja = comercio.fechaBaja
     ? new Date(comercio.fechaBaja).toLocaleDateString('es-AR', {
         day: '2-digit',
@@ -53,7 +62,11 @@ export default async function DetalleComercioPage({ params }: Props) {
       })
     : null
 
-  const estaVigente = !comercio.fechaBaja || new Date(comercio.fechaBaja) > new Date()
+  const estaVigente = comercioEstaVigente({
+    fechaBaja: comercio.fechaBaja,
+    fechaVencimiento: comercio.fechaVencimiento,
+  })
+  const estaCerrado = Boolean(comercio.fechaBaja && new Date(comercio.fechaBaja) <= new Date())
 
   return (
     <main className="container mx-auto px-4 py-6">
@@ -81,8 +94,10 @@ export default async function DetalleComercioPage({ params }: Props) {
             <div className="shrink-0">
               {estaVigente ? (
                 <span className="badge badge-success badge-lg gap-1">Vigente</span>
-              ) : (
+              ) : estaCerrado ? (
                 <span className="badge badge-error badge-lg gap-1">Dado de baja</span>
+              ) : (
+                <span className="badge badge-warning badge-lg gap-1">Vencida</span>
               )}
             </div>
           </div>
@@ -162,6 +177,18 @@ export default async function DetalleComercioPage({ params }: Props) {
               </div>
             )}
 
+            {fechaVencimiento && (
+              <div className="flex items-start gap-3">
+                <IconCalendar size={18} className="text-primary mt-0.5 shrink-0" stroke={1.5} />
+                <div>
+                  <dt className="text-base-content/60 text-xs font-medium tracking-wide uppercase">
+                    Vencimiento
+                  </dt>
+                  <dd className="mt-0.5 font-medium">{fechaVencimiento}</dd>
+                </div>
+              </div>
+            )}
+
             {fechaBaja && (
               <div className="flex items-start gap-3">
                 <IconCalendar size={18} className="text-error mt-0.5 shrink-0" stroke={1.5} />
@@ -210,6 +237,7 @@ export default async function DetalleComercioPage({ params }: Props) {
           cuit={comercio.cuit}
           direccion={comercio.direccion}
           fechaAlta={comercio.fechaAlta ?? null}
+          fechaVencimiento={comercio.fechaVencimiento ?? null}
           fechaBaja={comercio.fechaBaja ?? null}
           urlValidacion={(comercio as any).urlValidacion ?? null}
           numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}

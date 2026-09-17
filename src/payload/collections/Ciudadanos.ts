@@ -1,23 +1,36 @@
 import type { Ciudadano } from '@/payload-types'
 import type { Access, CollectionConfig, FieldAccess } from 'payload'
-import { isGestorCiudadanoOrAdminCollectionAccess } from '../access/collection'
+import {
+  isGestorCiudadanoOrAdminCollectionAccess,
+  isGestorHabilitacionesOrAdminCollectionAccess,
+} from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
 export const PERMISOS_CIUDADANO = ['HABILITACIONES'] as const
 export type PermisoCiudadano = (typeof PERMISOS_CIUDADANO)[number]
 
-const isMyselfGestorCiudadanoOrAdmin: Access<Ciudadano> = ({ req, id }) => {
+const isMyselfGestorHabilitacionesOrAdmin: Access<Ciudadano> = ({ req, id }) => {
   if (req.user?.collection === 'ciudadanos') {
     return req.user.id === id
   }
 
-  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
+  return (
+    req.user?.rol.includes('GESTOR CIUDADANO') ||
+    req.user?.rol.includes('HABILITACIONES') ||
+    req.user?.rol.includes('ADMIN') ||
+    false
+  )
 }
 
-const isGestorOrAdminFieldAccess: FieldAccess<Ciudadano> = ({ req, data, id }) => {
+const isGestorHabilitacionesOrAdminFieldAccess: FieldAccess<Ciudadano> = ({ req }) => {
   if (req.user?.collection !== 'users') return false
 
-  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
+  return (
+    req.user?.rol.includes('GESTOR CIUDADANO') ||
+    req.user?.rol.includes('HABILITACIONES') ||
+    req.user?.rol.includes('ADMIN') ||
+    false
+  )
 }
 
 export const Ciudadanos: CollectionConfig = {
@@ -32,9 +45,9 @@ export const Ciudadanos: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
   },
   access: {
-    create: isGestorCiudadanoOrAdminCollectionAccess,
-    read: isMyselfGestorCiudadanoOrAdmin,
-    update: isMyselfGestorCiudadanoOrAdmin,
+    create: isGestorHabilitacionesOrAdminCollectionAccess,
+    read: isMyselfGestorHabilitacionesOrAdmin,
+    update: isMyselfGestorHabilitacionesOrAdmin,
     delete: isGestorCiudadanoOrAdminCollectionAccess,
   },
   fields: [
@@ -47,8 +60,8 @@ export const Ciudadanos: CollectionConfig = {
         position: 'sidebar',
       },
       access: {
-        create: isGestorOrAdminFieldAccess,
-        update: isGestorOrAdminFieldAccess,
+        create: isGestorHabilitacionesOrAdminFieldAccess,
+        update: isGestorHabilitacionesOrAdminFieldAccess,
       },
     },
     {
@@ -105,12 +118,13 @@ export const Ciudadanos: CollectionConfig = {
       defaultValue: [],
       admin: {
         position: 'sidebar',
-        description: 'Módulos habilitados para este ciudadano en el portal.',
+        description:
+          'Módulos habilitados para este ciudadano en el portal. Asignar HABILITACIONES para alta o renovación comercial.',
       },
       access: {
-        create: isGestorOrAdminFieldAccess,
+        create: isGestorHabilitacionesOrAdminFieldAccess,
         read: () => true,
-        update: isGestorOrAdminFieldAccess,
+        update: isGestorHabilitacionesOrAdminFieldAccess,
       },
     },
     {
@@ -120,6 +134,13 @@ export const Ciudadanos: CollectionConfig = {
       collection: 'curriculums',
       on: 'ciudadano',
       hasMany: false,
+    },
+    {
+      type: 'join',
+      name: 'comercios',
+      label: 'Comercios habilitados',
+      collection: 'comercios-habilitados',
+      on: 'titulares',
     },
   ],
 }

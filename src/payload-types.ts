@@ -92,6 +92,7 @@ export interface Config {
     'actividades-comercios': ActividadesComercio;
     'comercios-habilitados': ComerciosHabilitado;
     'expedientes-habilitacion': ExpedientesHabilitacion;
+    'expedientes-renovacion': ExpedientesRenovacion;
     'chatbot-conversations': ChatbotConversation;
     campanas: Campana;
     deportes: Deporte;
@@ -108,6 +109,7 @@ export interface Config {
   collectionsJoins: {
     ciudadanos: {
       curriculum: 'curriculums';
+      comercios: 'comercios-habilitados';
     };
   };
   collectionsSelect: {
@@ -135,6 +137,7 @@ export interface Config {
     'actividades-comercios': ActividadesComerciosSelect<false> | ActividadesComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
     'expedientes-habilitacion': ExpedientesHabilitacionSelect<false> | ExpedientesHabilitacionSelect<true>;
+    'expedientes-renovacion': ExpedientesRenovacionSelect<false> | ExpedientesRenovacionSelect<true>;
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
     campanas: CampanasSelect<false> | CampanasSelect<true>;
     deportes: DeportesSelect<false> | DeportesSelect<true>;
@@ -345,11 +348,16 @@ export interface Ciudadano {
   ciudad?: string | null;
   telefono?: string | null;
   /**
-   * Módulos habilitados para este ciudadano en el portal.
+   * Módulos habilitados para este ciudadano en el portal. Asignar HABILITACIONES para alta o renovación comercial.
    */
   permisos?: 'HABILITACIONES'[] | null;
   curriculum?: {
     docs?: (string | Curriculum)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  comercios?: {
+    docs?: (string | ComerciosHabilitado)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -419,6 +427,93 @@ export interface Curriculum {
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
+}
+/**
+ * Para renovaciones históricas: crear o buscar el ciudadano, asignarle el módulo HABILITACIONES y vincularlo en Titulares.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comercios-habilitados".
+ */
+export interface ComerciosHabilitado {
+  id: string;
+  nombre: string;
+  razonSocial: string;
+  cuit: string;
+  fechaAlta: string;
+  /**
+   * Vigencia de la habilitación. Se actualiza al aprobar una renovación.
+   */
+  fechaVencimiento?: string | null;
+  /**
+   * Completar solo si el comercio fue dado de baja (cierre).
+   */
+  fechaBaja?: string | null;
+  /**
+   * Ciudadanos que pueden ver este comercio en el portal y iniciar su renovación. Crear el ciudadano antes si no existe y asignarle el módulo HABILITACIONES.
+   */
+  titulares?: (string | Ciudadano)[] | null;
+  direccion: string;
+  /**
+   * Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  localizacion?: [number, number] | null;
+  rubro: string | RubrosComercio;
+  actividades?: (string | ActividadesComercio)[] | null;
+  /**
+   * Si se deja vacío al crear, se genera HB-{año}-{correlativo}. En comercios históricos se puede cargar el nro. del expediente papel.
+   */
+  numeroHabilitacion?: string | null;
+  tokenValidacion?: string | null;
+  /**
+   * URL única para verificar la habilitación. Se genera automáticamente al crear.
+   */
+  urlValidacion?: string | null;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rubros-comercios".
+ */
+export interface RubrosComercio {
+  id: string;
+  /**
+   * Código del nomenclador de actividades económicas (ej: 471110)
+   */
+  codigo: string;
+  nombre: string;
+  /**
+   * Categoría principal del nomenclador (ej: Comercio al por mayor y al por menor)
+   */
+  categoria: string;
+  /**
+   * Subcategoría dentro de la categoría (ej: Venta al por menor de productos alimenticios)
+   */
+  subcategoria: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actividades-comercios".
+ */
+export interface ActividadesComercio {
+  id: string;
+  nombre: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1043,83 +1138,6 @@ export interface Matriculado {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "rubros-comercios".
- */
-export interface RubrosComercio {
-  id: string;
-  /**
-   * Código del nomenclador de actividades económicas (ej: 471110)
-   */
-  codigo: string;
-  nombre: string;
-  /**
-   * Categoría principal del nomenclador (ej: Comercio al por mayor y al por menor)
-   */
-  categoria: string;
-  /**
-   * Subcategoría dentro de la categoría (ej: Venta al por menor de productos alimenticios)
-   */
-  subcategoria: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "actividades-comercios".
- */
-export interface ActividadesComercio {
-  id: string;
-  nombre: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "comercios-habilitados".
- */
-export interface ComerciosHabilitado {
-  id: string;
-  nombre: string;
-  razonSocial: string;
-  cuit: string;
-  fechaAlta: string;
-  /**
-   * Completar solo si la habilitación fue dada de baja.
-   */
-  fechaBaja?: string | null;
-  direccion: string;
-  /**
-   * Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.
-   *
-   * @minItems 2
-   * @maxItems 2
-   */
-  localizacion?: [number, number] | null;
-  rubro: string | RubrosComercio;
-  actividades?: (string | ActividadesComercio)[] | null;
-  /**
-   * Se genera automáticamente al crear. Formato: HB-{año}-{correlativo}.
-   */
-  numeroHabilitacion?: string | null;
-  tokenValidacion?: string | null;
-  /**
-   * URL única para verificar la habilitación. Se genera automáticamente al crear.
-   */
-  urlValidacion?: string | null;
-  created_by:
-    | {
-        relationTo: 'users';
-        value: string | User;
-      }
-    | {
-        relationTo: 'ciudadanos';
-        value: string | Ciudadano;
-      };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "expedientes-habilitacion".
  */
 export interface ExpedientesHabilitacion {
@@ -1234,6 +1252,102 @@ export interface ExpedientesHabilitacion {
    * Vinculá el registro de Comercio Habilitado generado por Rentas. El ciudadano podrá ver su habilitación digital desde su portal.
    */
   faseIIIComercioHabilitado?: (string | null) | ComerciosHabilitado;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Trámite de una sola fase a cargo de Habilitaciones. El comercio y el titular deben existir previamente.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expedientes-renovacion".
+ */
+export interface ExpedientesRenovacion {
+  id: string;
+  /**
+   * Se completa al iniciar. Editable por Habilitaciones.
+   */
+  titulo?: string | null;
+  comercio: string | ComerciosHabilitado;
+  /**
+   * Gestionado por Habilitaciones Comerciales.
+   */
+  estado?: ('INICIADO' | 'PENDIENTE' | 'OBSERVADO' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
+  /**
+   * Mensaje visible en el portal (observaciones, visita, etc.).
+   */
+  notaCiudadano?: string | null;
+  fechaVisita?: string | null;
+  /**
+   * Si se deja vacío al aprobar, se asigna un año a partir de la fecha de aprobación.
+   */
+  fechaVencimientoNueva?: string | null;
+  resolucion?: (string | null) | Archivo;
+  notaInterna?: string | null;
+  solicitanteNombre?: string | null;
+  solicitanteDni?: string | null;
+  solicitanteDomicilio?: string | null;
+  solicitanteTelefono?: string | null;
+  /**
+   * El correo declarado será utilizado como domicilio fiscal electrónico para enviar notificaciones.
+   */
+  solicitanteEmail?: string | null;
+  numeroExpedienteAnterior?: string | null;
+  dniAdjunto?: (string | null) | Archivo;
+  /**
+   * Descargar, completar, firmar y adjuntar el Formulario 1 INICIO.
+   */
+  formularioInicio?: (string | null) | Archivo;
+  /**
+   * Pago en Rentas o por WhatsApp 3436127015.
+   */
+  comprobanteSellado?: (string | null) | Archivo;
+  /**
+   * Solicitar en Rentas o por WhatsApp 3436127015.
+   */
+  libreDeuda?: (string | null) | Archivo;
+  /**
+   * Obligatorio si el comercio genera residuos peligrosos.
+   */
+  certResiduosPeligrosos?: (string | null) | Archivo;
+  adjuntosOtros?: (string | Archivo)[] | null;
+  librosTapaDura?: ('SI' | 'LOS_TRAMITARE') | null;
+  /**
+   * Declaro contar con lo siguiente o comprometerme a regularizarlo antes de la inspección (Ley 19.587, CAA 18.284, Ord. 355/13).
+   */
+  higieneSeguridad?:
+    | (
+        | 'MATAFUEGOS'
+        | 'LUCES_EMERGENCIA'
+        | 'PLANO_EVACUACION'
+        | 'BOTIQUIN'
+        | 'SANITARIOS'
+        | 'AGUA_DESAGUES'
+        | 'CESTOS'
+        | 'ILUMINACION'
+        | 'SENALIZACION'
+        | 'ELECTRICA'
+        | 'VESTIMENTA_ALIMENTICIO'
+        | 'VENTILACION'
+        | 'PLAGAS'
+        | 'PISOS_PAREDES_TECHOS'
+        | 'SEGURO_RC'
+        | 'HORARIOS'
+      )[]
+    | null;
+  generaResiduosPeligrosos?: ('SI' | 'NO') | null;
+  /**
+   * Datos veraces. Falsedad, ocultamiento u omisión anulan el trámite. Ord. N° 355/13 HCDSB.
+   */
+  declaracionJurada?: boolean | null;
   created_by:
     | {
         relationTo: 'users';
@@ -1702,6 +1816,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'expedientes-habilitacion';
         value: string | ExpedientesHabilitacion;
+      } | null)
+    | ({
+        relationTo: 'expedientes-renovacion';
+        value: string | ExpedientesRenovacion;
       } | null)
     | ({
         relationTo: 'chatbot-conversations';
@@ -2308,6 +2426,7 @@ export interface CiudadanosSelect<T extends boolean = true> {
   telefono?: T;
   permisos?: T;
   curriculum?: T;
+  comercios?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -2371,7 +2490,9 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   razonSocial?: T;
   cuit?: T;
   fechaAlta?: T;
+  fechaVencimiento?: T;
   fechaBaja?: T;
+  titulares?: T;
   direccion?: T;
   localizacion?: T;
   rubro?: T;
@@ -2441,6 +2562,39 @@ export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
   faseIIINotaCiudadano?: T;
   faseIIINotaInterna?: T;
   faseIIIComercioHabilitado?: T;
+  created_by?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expedientes-renovacion_select".
+ */
+export interface ExpedientesRenovacionSelect<T extends boolean = true> {
+  titulo?: T;
+  comercio?: T;
+  estado?: T;
+  notaCiudadano?: T;
+  fechaVisita?: T;
+  fechaVencimientoNueva?: T;
+  resolucion?: T;
+  notaInterna?: T;
+  solicitanteNombre?: T;
+  solicitanteDni?: T;
+  solicitanteDomicilio?: T;
+  solicitanteTelefono?: T;
+  solicitanteEmail?: T;
+  numeroExpedienteAnterior?: T;
+  dniAdjunto?: T;
+  formularioInicio?: T;
+  comprobanteSellado?: T;
+  libreDeuda?: T;
+  certResiduosPeligrosos?: T;
+  adjuntosOtros?: T;
+  librosTapaDura?: T;
+  higieneSeguridad?: T;
+  generaResiduosPeligrosos?: T;
+  declaracionJurada?: T;
   created_by?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -1,6 +1,7 @@
 'use server'
 
 import { basePayload } from '@/web/lib/payload'
+import { ciudadanoTieneModuloHabilitaciones } from '@/web/lib/habilitaciones'
 import { headers as nextHeaders } from 'next/headers'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -11,6 +12,7 @@ async function getAuthenticatedCiudadano() {
   const headers = await nextHeaders()
   const { user } = await basePayload.auth({ headers, canSetHeaders: false })
   if (!user || user.collection !== 'ciudadanos') return null
+  if (!ciudadanoTieneModuloHabilitaciones(user)) return null
   return user
 }
 

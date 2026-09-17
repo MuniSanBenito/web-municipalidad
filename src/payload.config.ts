@@ -27,6 +27,7 @@ import { ElementosPlaza } from './payload/collections/ElementosPlaza'
 import { Eventos } from './payload/collections/Eventos'
 import { EventosTags } from './payload/collections/EventosTags'
 import { ExpedientesHabilitacion } from './payload/collections/ExpedientesHabilitacion'
+import { ExpedientesRenovacion } from './payload/collections/ExpedientesRenovacion'
 import { Habilitaciones } from './payload/collections/Habilitaciones'
 import { Imagenes } from './payload/collections/Imagenes'
 import { Intimaciones } from './payload/collections/Intimaciones'
@@ -177,6 +178,7 @@ export default buildConfig({
     ActividadesComercios,
     ComerciosHabilitados,
     ExpedientesHabilitacion,
+    ExpedientesRenovacion,
     // Analytics
     ChatbotConversations,
     // Participación ciudadana

@@ -44,6 +44,7 @@ export default async function ValidarHabilitacionPage({ params }: Props) {
         cuit={comercio.cuit}
         direccion={comercio.direccion}
         fechaAlta={comercio.fechaAlta ?? null}
+        fechaVencimiento={comercio.fechaVencimiento ?? null}
         fechaBaja={comercio.fechaBaja ?? null}
         urlValidacion={comercio.urlValidacion ?? null}
         numeroHabilitacion={comercio.numeroHabilitacion ?? null}

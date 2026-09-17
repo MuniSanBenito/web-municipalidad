@@ -1,4 +1,9 @@
 import type { Ciudadano } from '@/payload-types'
+import {
+  ciudadanoTieneModuloHabilitaciones,
+  comercioEstaVigente,
+  relationId,
+} from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import {
   IconArrowRight,
@@ -12,11 +17,19 @@ import {
   IconLock,
   IconMail,
   IconPhone,
+  IconRefresh,
 } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 
-type EstadoFase = 'INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO' | null | undefined
+type EstadoFase =
+  | 'INICIADO'
+  | 'PENDIENTE'
+  | 'OBSERVADO'
+  | 'VISITA_PROGRAMADA'
+  | 'APROBADO'
+  | null
+  | undefined
 
 function EstadoBadge({ estado }: { estado: EstadoFase }) {
   if (!estado) {
@@ -27,6 +40,9 @@ function EstadoBadge({ estado }: { estado: EstadoFase }) {
   }
   if (estado === 'PENDIENTE') {
     return <span className="badge badge-info">Pendiente — siendo procesado</span>
+  }
+  if (estado === 'OBSERVADO') {
+    return <span className="badge badge-warning">Observado — requiere correcciones</span>
   }
   if (estado === 'VISITA_PROGRAMADA') {
     return (
@@ -74,7 +90,10 @@ function PasoCard({
     ? 'border-success bg-success/5'
     : bloqueado
       ? 'border-base-300 bg-base-200/50 opacity-60'
-      : estado === 'INICIADO' || estado === 'PENDIENTE' || estado === 'VISITA_PROGRAMADA'
+      : estado === 'INICIADO' ||
+          estado === 'PENDIENTE' ||
+          estado === 'OBSERVADO' ||
+          estado === 'VISITA_PROGRAMADA'
         ? 'border-warning bg-warning/5'
         : 'border-primary bg-primary/5'
 
@@ -182,15 +201,65 @@ export default async function HabilitacionesPage() {
 
   const ciudadano = user as Ciudadano
 
-  const { docs } = await basePayload.find({
-    collection: 'expedientes-habilitacion' as any,
-    where: { 'created_by.value': { equals: ciudadano.id } },
-    limit: 1,
-    sort: '-createdAt',
-    depth: 1,
-    overrideAccess: false,
-    user: ciudadano,
-  })
+  if (!ciudadanoTieneModuloHabilitaciones(ciudadano)) {
+    return (
+      <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 py-20 text-center">
+        <IconLock size={48} className="text-base-content/30 mb-4" />
+        <h1 className="mb-4 text-2xl font-bold">Módulo no habilitado</h1>
+        <p className="text-base-content/70 mb-6 max-w-md">
+          Esta sección la habilita el área de Habilitaciones. Si necesitás iniciar un alta o renovar
+          un comercio, escribinos a{' '}
+          <a href="mailto:habilitaciones@munisanbenito.gov.ar" className="link">
+            habilitaciones@munisanbenito.gov.ar
+          </a>{' '}
+          o al 0343-154537319.
+        </p>
+        <Link href="/perfil" className="btn btn-ghost">
+          Volver a mi perfil
+        </Link>
+      </div>
+    )
+  }
+
+  const [{ docs }, { docs: comercios }, { docs: renovaciones }] = await Promise.all([
+    basePayload.find({
+      collection: 'expedientes-habilitacion' as any,
+      where: { 'created_by.value': { equals: ciudadano.id } },
+      limit: 1,
+      sort: '-createdAt',
+      depth: 1,
+      overrideAccess: false,
+      user: ciudadano,
+    }),
+    basePayload.find({
+      collection: 'comercios-habilitados',
+      where: { titulares: { equals: ciudadano.id } },
+      limit: 50,
+      sort: 'nombre',
+      depth: 1,
+      overrideAccess: false,
+      user: ciudadano,
+    }),
+    basePayload.find({
+      collection: 'expedientes-renovacion',
+      where: { 'created_by.value': { equals: ciudadano.id } },
+      limit: 50,
+      sort: '-createdAt',
+      depth: 0,
+      overrideAccess: false,
+      user: ciudadano,
+    }),
+  ])
+
+  const renovacionPorComercio = new Map<string, any>()
+  for (const reno of renovaciones as any[]) {
+    const cid = relationId(reno.comercio)
+    if (!cid) continue
+    const actual = renovacionPorComercio.get(cid)
+    if (!actual || reno.estado !== 'APROBADO') {
+      renovacionPorComercio.set(cid, reno)
+    }
+  }
 
   const exp = (docs[0] as any) ?? null
   const archivoFase1 =
@@ -234,6 +303,15 @@ export default async function HabilitacionesPage() {
       }
     : null
 
+  const formatFecha = (iso?: string | null) =>
+    iso
+      ? new Date(iso).toLocaleDateString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        })
+      : null
+
   return (
     <main className="bg-base-100 min-h-screen">
       <div className="container mx-auto max-w-3xl px-4 py-8 sm:px-6">
@@ -249,6 +327,105 @@ export default async function HabilitacionesPage() {
             </p>
           </div>
         </div>
+
+        {comercios.length > 0 && (
+          <section className="mb-8 space-y-3">
+            <h2 className="text-base-content/80 text-sm font-semibold tracking-wider uppercase">
+              Mis comercios
+            </h2>
+            {comercios.map((comercio: any) => {
+              const rubroNombre =
+                comercio.rubro && typeof comercio.rubro === 'object' ? comercio.rubro.nombre : null
+              const cerrado = Boolean(
+                comercio.fechaBaja && new Date(comercio.fechaBaja) <= new Date(),
+              )
+              const vigente = comercioEstaVigente({
+                fechaBaja: comercio.fechaBaja,
+                fechaVencimiento: comercio.fechaVencimiento,
+              })
+              const reno = renovacionPorComercio.get(comercio.id)
+              const renoAbierta = reno && reno.estado !== 'APROBADO'
+              const vencimientoLabel = formatFecha(comercio.fechaVencimiento)
+
+              return (
+                <div key={comercio.id} className="card bg-base-100 border-base-300 border shadow-sm">
+                  <div className="card-body gap-3 p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-bold">{comercio.nombre}</h3>
+                        <p className="text-base-content/60 text-sm">{comercio.direccion}</p>
+                        {comercio.numeroHabilitacion && (
+                          <p className="text-base-content/50 mt-1 font-mono text-xs">
+                            {comercio.numeroHabilitacion}
+                          </p>
+                        )}
+                        {rubroNombre && (
+                          <span className="badge badge-ghost badge-sm mt-2">{rubroNombre}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        {cerrado ? (
+                          <span className="badge badge-error">Dado de baja</span>
+                        ) : vigente ? (
+                          <span className="badge badge-success">Vigente</span>
+                        ) : (
+                          <span className="badge badge-warning">Vencida</span>
+                        )}
+                        {vencimientoLabel && !cerrado && (
+                          <span className="text-base-content/50 text-xs">
+                            Vence {vencimientoLabel}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {renoAbierta && (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <EstadoBadge estado={reno.estado} />
+                        <Link
+                          href={`/habilitaciones/renovacion/${reno.id}`}
+                          className="btn btn-outline btn-sm gap-1"
+                        >
+                          {reno.estado === 'OBSERVADO' || reno.estado === 'INICIADO'
+                            ? 'Completar renovación'
+                            : 'Ver renovación'}
+                          <IconArrowRight size={14} />
+                        </Link>
+                      </div>
+                    )}
+
+                    {!cerrado && !renoAbierta && (
+                      <Link
+                        href={`/habilitaciones/renovacion/nueva?comercio=${comercio.id}`}
+                        className="btn btn-primary btn-sm gap-1 self-start"
+                      >
+                        <IconRefresh size={14} />
+                        Renovar habilitación
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </section>
+        )}
+
+        {comercios.length === 0 && !exp && (
+          <div className="alert alert-info mb-8">
+            <IconInfoCircle size={20} className="shrink-0" />
+            <div>
+              <p className="font-semibold">¿Venís a renovar una habilitación?</p>
+              <p className="text-sm">
+                Si tu comercio todavía no está en la web, contactá a Habilitaciones para que te
+                creen el usuario y vinculen el comercio. Después vas a poder cargar la renovación
+                acá.
+              </p>
+              <a href="mailto:habilitaciones@munisanbenito.gov.ar" className="link text-sm">
+                habilitaciones@munisanbenito.gov.ar
+              </a>
+            </div>
+          </div>
+        )}
 
         {/* Certificado final */}
         {todoAprobado && (
@@ -273,7 +450,11 @@ export default async function HabilitacionesPage() {
             <div className="card-body">
               <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="card-title text-xl">Iniciá tu trámite de Alta de Comercio</h2>
+                  <h2 className="card-title text-xl">
+                    {comercios.length > 0
+                      ? 'Alta de un nuevo comercio'
+                      : 'Iniciá tu trámite de Alta de Comercio'}
+                  </h2>
                   <p className="mt-1 text-sm opacity-80">
                     El proceso tiene 3 pasos digitales. El primer paso es la solicitud del Permiso
                     de Uso, revisada por Obras Privadas.
@@ -290,10 +471,11 @@ export default async function HabilitacionesPage() {
         )}
 
         {/* Stepper — 3 pasos */}
-        <div className="mb-8 space-y-4">
-          <h2 className="text-base-content/80 mb-4 text-sm font-semibold tracking-wider uppercase">
-            Estado del trámite
-          </h2>
+        {exp && (
+          <div className="mb-8 space-y-4">
+            <h2 className="text-base-content/80 mb-4 text-sm font-semibold tracking-wider uppercase">
+              Alta de comercio
+            </h2>
 
           <PasoCard
             numero={1}
@@ -335,7 +517,8 @@ export default async function HabilitacionesPage() {
             bloqueado={fase3Bloqueada}
             completado={f3Estado === 'APROBADO'}
           />
-        </div>
+          </div>
+        )}
 
         {/* Info del proceso */}
         {!exp && (

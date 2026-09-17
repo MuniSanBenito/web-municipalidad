@@ -11,6 +11,7 @@ interface ComercioData {
   razonSocial: string
   cuit: string
   fechaAlta?: string | null
+  fechaVencimiento?: string | null
   fechaBaja?: string | null
   direccion: string
   urlValidacion?: string | null
@@ -81,6 +82,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
           cuit={comercio.cuit}
           direccion={comercio.direccion}
           fechaAlta={comercio.fechaAlta}
+          fechaVencimiento={comercio.fechaVencimiento}
           fechaBaja={comercio.fechaBaja}
           urlValidacion={comercio.urlValidacion}
           numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}

@@ -14,10 +14,21 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
   const hoy = new Date().toISOString()
 
   const whereBase = {
-    or: [
-      { fechaBaja: { exists: false } },
-      { fechaBaja: { equals: null } },
-      { fechaBaja: { greater_than: hoy } },
+    and: [
+      {
+        or: [
+          { fechaBaja: { exists: false } },
+          { fechaBaja: { equals: null } },
+          { fechaBaja: { greater_than: hoy } },
+        ],
+      },
+      {
+        or: [
+          { fechaVencimiento: { exists: false } },
+          { fechaVencimiento: { equals: null } },
+          { fechaVencimiento: { greater_than_equal: hoy } },
+        ],
+      },
     ],
   }
 
