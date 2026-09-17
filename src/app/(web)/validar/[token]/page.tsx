@@ -50,15 +50,6 @@ export default async function ValidarHabilitacionPage({ params }: Props) {
         numeroHabilitacion={comercio.numeroHabilitacion ?? null}
         rubroNombre={rubroNombre}
       />
-
-      <div className="no-print mt-6 text-center">
-        <a
-          href="/tramites/habilitaciones/comercios-habilitados"
-          className="btn btn-ghost btn-sm text-gray-500"
-        >
-          ← Ver todos los comercios habilitados
-        </a>
-      </div>
     </main>
   )
 }
