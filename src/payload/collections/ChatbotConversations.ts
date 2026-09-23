@@ -82,7 +82,7 @@ export const ChatbotConversations: CollectionConfig = {
           label: 'Proveedor',
           options: [
             { label: '📚 Knowledge Base', value: 'knowledge-base' },
-            { label: '🤖 Gemini', value: 'gemini' },
+            { label: '🤖 Groq', value: 'groq' },
             { label: '⚠️ Fallback', value: 'fallback' },
           ],
           admin: {

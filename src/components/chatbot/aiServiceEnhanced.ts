@@ -2,8 +2,8 @@
 
 /**
  * Servicio de IA mejorado que integra múltiples proveedores con fallback inteligente
- * FLUJO: Gemini SIEMPRE mejora las respuestas cuando está disponible
- * Orden: Gemini (con contexto de KB) → Knowledge Base → Fallback
+ * FLUJO: Groq SIEMPRE mejora las respuestas cuando está disponible
+ * Orden: Groq (con contexto de KB) → Knowledge Base → Fallback
  *
  * Mejoras v2.0:
  * - Rate limiting para proteger costos de API
@@ -20,6 +20,7 @@ import {
 import { getVerifiedInformation, sanitizeResponse, validateResponse } from './contentValidator'
 import { addAssistantMessage, addUserMessage, getContextForAI } from './conversationHistory'
 import {
+  asegurarEnlaceDePagina,
   buscarServicioPorKeyword,
   CONTACTO_GENERAL,
   formatearServicio,
@@ -34,7 +35,7 @@ const CACHE_TTL = 30 * 60 * 1000 // 30 minutos
 // Estadísticas de uso
 let stats = {
   knowledgeBase: 0,
-  gemini: 0,
+  groq: 0,
   fallback: 0,
 }
 
@@ -43,7 +44,7 @@ const DEBUG_MODE = process.env.NODE_ENV !== 'production'
 
 /**
  * Función principal mejorada para obtener respuestas de IA
- * NUEVO: Gemini se usa SIEMPRE que esté disponible para dar respuestas más naturales
+ * NUEVO: Groq se usa SIEMPRE que esté disponible para dar respuestas más naturales
  * v2.0: Integra rate limiting e historial de conversación
  */
 export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse> {
@@ -86,25 +87,25 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
     }
   }
 
-  // 3. Verificar rate limiting antes de llamar a Gemini
+  // 3. Verificar rate limiting antes de llamar a Groq
   const rateLimitCheck = canMakeRequest()
 
-  // 4. Verificar si Llama está disponible (UNA sola llamada que devuelve ambos flags)
+  // 4. Verificar si Groq está disponible (UNA sola llamada que devuelve ambos flags)
   const chatStatus = await getChatStatus()
-  const llamaAvailable = chatStatus.configured && chatStatus.available
+  const groqAvailable = chatStatus.configured && chatStatus.available
 
-  if (llamaAvailable && rateLimitCheck.allowed) {
+  if (groqAvailable && rateLimitCheck.allowed) {
     try {
       if (DEBUG_MODE) {
-        console.log('🤖 Gemini disponible - Generando respuesta mejorada con IA...')
+        console.log('🤖 Groq disponible - Generando respuesta mejorada con IA...')
         console.log(`📊 Rate limit: ${rateLimitCheck.requestsRemaining} consultas restantes`)
       }
 
       // Obtener contexto de conversación para mejor coherencia
       const conversationContext = getContextForAI(4)
 
-      // Gemini tiene toda la información en su system prompt, así que puede responder directamente
-      const geminiResponse = await generateChatResponse(
+      // Groq tiene toda la información en su system prompt, así que puede responder directamente
+      const groqResponse = await generateChatResponse(
         conversationContext
           ? `Contexto previo:\n${conversationContext}\n\nNueva consulta: ${query}`
           : query,
@@ -113,47 +114,48 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
       // Registrar request exitosa
       recordRequest()
 
-      // Validar respuesta de Gemini
-      const validation = validateResponse(geminiResponse, query)
+      // Validar respuesta de Groq
+      const validation = validateResponse(groqResponse, query)
 
       if (validation.isValid || validation.confidence >= 50) {
         if (DEBUG_MODE) {
-          console.log(`✅ Respuesta de Gemini válida (confianza: ${validation.confidence}%)`)
+          console.log(`✅ Respuesta de Groq válida (confianza: ${validation.confidence}%)`)
         }
-        stats.gemini++
-        cacheResponse(cacheKey, geminiResponse, 'gemini')
+        const respuesta = asegurarEnlaceDePagina(query, groqResponse)
+        stats.groq++
+        cacheResponse(cacheKey, respuesta, 'groq')
         // Guardar respuesta en historial
-        addAssistantMessage(geminiResponse, 'gemini')
+        addAssistantMessage(respuesta, 'groq')
         return {
-          response: geminiResponse,
-          provider: 'gemini',
+          response: respuesta,
+          provider: 'groq',
           cached: false,
         }
       } else {
         if (DEBUG_MODE) {
           console.warn(
-            `⚠️ Respuesta de Gemini con baja confianza (${validation.confidence}%), intentando sanitizar...`,
+            `⚠️ Respuesta de Groq con baja confianza (${validation.confidence}%), intentando sanitizar...`,
           )
         }
         // Intentar sanitizar
-        const sanitized = sanitizeResponse(geminiResponse, query)
+        const sanitized = asegurarEnlaceDePagina(query, sanitizeResponse(groqResponse, query))
         if (sanitized.length > 30) {
-          stats.gemini++
-          cacheResponse(cacheKey, sanitized, 'gemini')
-          addAssistantMessage(sanitized, 'gemini')
+          stats.groq++
+          cacheResponse(cacheKey, sanitized, 'groq')
+          addAssistantMessage(sanitized, 'groq')
           return {
             response: sanitized,
-            provider: 'gemini',
+            provider: 'groq',
             cached: false,
           }
         }
-        // Si Gemini falla, continuar con Knowledge Base
+        // Si Groq falla, continuar con Knowledge Base
         if (DEBUG_MODE) {
-          console.log('⚠️ Gemini no dio respuesta válida, usando Knowledge Base...')
+          console.log('⚠️ Groq no dio respuesta válida, usando Knowledge Base...')
         }
       }
     } catch (error) {
-      console.error('❌ Error con Gemini API:', error)
+      console.error('❌ Error con Groq API:', error)
       // Continuar con fallbacks
     }
   } else {
@@ -161,12 +163,12 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
       if (!rateLimitCheck.allowed) {
         console.log(`⏳ Rate limit activo: ${rateLimitCheck.reason}`)
       } else {
-        console.log('ℹ️ Gemini no disponible, usando Knowledge Base local...')
+        console.log('ℹ️ Groq no disponible, usando Knowledge Base local...')
       }
     }
   }
 
-  // 5. Buscar en Knowledge Base Enhanced (fallback si Gemini no está disponible)
+  // 5. Buscar en Knowledge Base Enhanced (fallback si Groq no está disponible)
   const kbResponse = searchEnhancedKnowledgeBase(normalizedQuery)
   if (kbResponse) {
     if (DEBUG_MODE) {
@@ -205,9 +207,9 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
  * Versión STREAMING de fetchEnhancedAIResponse.
  *
  * - Si la query matchea greeting/cache/KB → devuelve inmediatamente y NO usa stream.
- * - Si Llama está disponible y rate limit OK → usa el endpoint /api/chat/stream
+ * - Si Groq está disponible y rate limit OK → usa el endpoint /api/chat/stream
  *   y emite chunks vía onChunk a medida que llegan.
- * - Si Llama falla → fallback a Knowledge Base (no streaming).
+ * - Si Groq falla → fallback a Knowledge Base (no streaming).
  *
  * El caller debe asumir que onChunk podría no llamarse nunca (caso non-stream).
  * En ese caso el resultado final está en el resolve de la promesa.
@@ -244,12 +246,12 @@ export async function fetchEnhancedAIResponseStreaming(
     return { response: greeting, provider: 'knowledge-base', cached: false }
   }
 
-  // 3. Rate limit + Llama disponible
+  // 3. Rate limit + Groq disponible
   const rateLimitCheck = canMakeRequest()
   const chatStatus = await getChatStatus()
-  const llamaAvailable = chatStatus.configured && chatStatus.available
+  const groqAvailable = chatStatus.configured && chatStatus.available
 
-  if (llamaAvailable && rateLimitCheck.allowed) {
+  if (groqAvailable && rateLimitCheck.allowed) {
     try {
       const conversationContext = getContextForAI(4)
       const enrichedQuery = conversationContext
@@ -261,16 +263,18 @@ export async function fetchEnhancedAIResponseStreaming(
       recordRequest()
 
       const validation = validateResponse(fullText, query)
-      const finalText =
+      const finalText = asegurarEnlaceDePagina(
+        query,
         validation.isValid || validation.confidence >= 50
           ? fullText
-          : sanitizeResponse(fullText, query)
+          : sanitizeResponse(fullText, query),
+      )
 
       if (finalText && finalText.length > 30) {
-        stats.gemini++
-        cacheResponse(normalizedQuery, finalText, 'gemini')
-        addAssistantMessage(finalText, 'gemini')
-        return { response: finalText, provider: 'gemini', cached: false }
+        stats.groq++
+        cacheResponse(normalizedQuery, finalText, 'groq')
+        addAssistantMessage(finalText, 'groq')
+        return { response: finalText, provider: 'groq', cached: false }
       }
       // si la sanitización dejó algo demasiado corto → fallback a KB
     } catch (err) {
@@ -354,8 +358,8 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
     horarios += `**Horario General:** ${CONTACTO_GENERAL.horarioGeneral}\n\n`
     horarios += `**Por área:**\n`
     horarios += `• 💰 Rentas: Lunes a Viernes 7:00-13:00 hs\n`
-    horarios += `• 🏗️ Obras Privadas: Lunes a Viernes 7:00-13:00 hs\n`
-    horarios += `• 📚 Punto Digital: Lunes a Viernes 8:00-12:00 y 16:00-20:00 hs\n`
+    horarios += `• 🏗️ Obras Privadas: Lunes a Viernes 7:30-12:30 hs\n`
+    horarios += `• 📚 Punto Digital: Lunes a Viernes 7:00-19:00 hs\n`
     horarios += `• 🏪 Habilitaciones: Lunes a Viernes 7:00-13:00 hs\n`
     horarios += `• 🚗 Licencias: Lunes a Viernes 7:00-13:00 hs`
     return horarios
@@ -373,7 +377,7 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
       `• 📋 CAV (Reclamos): 3436127013\n` +
       `• ⚽ Deportes: 5493434658210\n` +
       `• 💼 Producción y Empleo: 3434657917\n` +
-      `• 📚 Punto Digital/Biblioteca: 3434508085\n` +
+      `• 📚 Punto Digital/Biblioteca: 3434503200\n` +
       `• 💜 Área Mujer y Género: 3435204239\n` +
       `• 🧓 Tercera Edad y Discapacidad: 3433027297\n` +
       `• 🗺️ Catastro: 4973454\n` +
@@ -392,9 +396,9 @@ function searchEnhancedKnowledgeBase(query: string): string | null {
       `• 🏪 **Habilitaciones** - Comercios y locales (WhatsApp: 3434537319)\n` +
       `• ⚽ **Actividades Deportivas** - Talleres gratuitos (WhatsApp: 5493434658210)\n` +
       `• 📋 **CAV** - Reclamos vecinos (WhatsApp: 3436127013)\n` +
-      `• 📚 **Punto Digital/Biblioteca** - Talleres y SUBE 24hs (WhatsApp: 3434508085)\n` +
+      `• 📚 **Punto Digital/Biblioteca** - Talleres y SUBE 24hs (WhatsApp: 3434503200)\n` +
       `• 🏢 **NIDO** - Talleres culturales y emprendimientos (Buenos Aires y Misiones)\n` +
-      `• 🏘️ **CIC Barrio San Pedro** - Talleres comunitarios (WhatsApp: 3434508085)\n` +
+      `• 🏘️ **CIC Barrio San Pedro** - Talleres comunitarios (WhatsApp: 3434503200)\n` +
       `• 💜 **Área Mujer y Género** (WhatsApp: 3435204239)\n` +
       `• 🧓 **Tercera Edad y Discapacidad** (WhatsApp: 3433027297)\n` +
       `• 🗺️ **Catastro** - Trámites catastrales (Tel: 4973454)\n` +
@@ -496,7 +500,7 @@ function generateSmartFallback(query: string): string {
       emoji: '📋',
     },
     'biblioteca|libro|computadora|internet|punto digital': {
-      contacto: 'WhatsApp 3434508085',
+      contacto: 'WhatsApp 3434503200',
       mensaje: 'Punto Digital y Biblioteca',
       emoji: '📚',
     },
@@ -533,7 +537,7 @@ function generateSmartFallback(query: string): string {
         emoji: '🏢',
       },
     'cic|barrio san pedro|telar|computacion niños': {
-      contacto: 'WhatsApp 3434508085 | Garay y Nogoyá, Barrio San Pedro',
+      contacto: 'WhatsApp 3434503200 | Garay y Nogoyá, Barrio San Pedro',
       mensaje: 'CIC Barrio San Pedro',
       emoji: '🏘️',
     },
@@ -609,16 +613,16 @@ function cacheResponse(key: string, response: string, provider: string): void {
  * Obtiene estadísticas de uso de los proveedores
  */
 export function getProviderStats() {
-  const total = stats.knowledgeBase + stats.gemini + stats.fallback
+  const total = stats.knowledgeBase + stats.groq + stats.fallback
 
   return {
     knowledgeBase: {
       count: stats.knowledgeBase,
       percentage: total > 0 ? ((stats.knowledgeBase / total) * 100).toFixed(1) : '0',
     },
-    gemini: {
-      count: stats.gemini,
-      percentage: total > 0 ? ((stats.gemini / total) * 100).toFixed(1) : '0',
+    groq: {
+      count: stats.groq,
+      percentage: total > 0 ? ((stats.groq / total) * 100).toFixed(1) : '0',
     },
     fallback: {
       count: stats.fallback,
@@ -634,7 +638,7 @@ export function getProviderStats() {
 export function resetStats() {
   stats = {
     knowledgeBase: 0,
-    gemini: 0,
+    groq: 0,
     fallback: 0,
   }
 }
@@ -881,22 +885,22 @@ export function extractKeywords(query: string): string[] {
 
 /**
  * Obtiene estadísticas de uso de los proveedores de IA
- * Útil para monitorear cuándo se usa Gemini vs Knowledge Base
+ * Útil para monitorear cuándo se usa Groq vs Knowledge Base
  */
 export function getAIStats(): {
   knowledgeBase: number
-  gemini: number
+  groq: number
   fallback: number
   total: number
-  geminiPercentage: string
+  groqPercentage: string
 } {
-  const total = stats.knowledgeBase + stats.gemini + stats.fallback
-  const geminiPercentage = total > 0 ? ((stats.gemini / total) * 100).toFixed(1) : '0.0'
+  const total = stats.knowledgeBase + stats.groq + stats.fallback
+  const groqPercentage = total > 0 ? ((stats.groq / total) * 100).toFixed(1) : '0.0'
 
   return {
     ...stats,
     total,
-    geminiPercentage: `${geminiPercentage}%`,
+    groqPercentage: `${groqPercentage}%`,
   }
 }
 
@@ -906,7 +910,7 @@ export function getAIStats(): {
 export function resetAIStats(): void {
   stats = {
     knowledgeBase: 0,
-    gemini: 0,
+    groq: 0,
     fallback: 0,
   }
   if (DEBUG_MODE) {

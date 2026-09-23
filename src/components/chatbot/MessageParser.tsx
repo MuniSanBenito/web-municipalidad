@@ -1,6 +1,7 @@
 // src/components/chatbot/MessageParser.tsx
 
 import type { IMessageParser, PhoneNumberMatcher, TramiteMatcher } from './types'
+import { buscarServicioPorKeyword } from './knowledgeBaseEnhanced'
 
 class MessageParser implements IMessageParser {
   actionProvider: any
@@ -45,7 +46,7 @@ class MessageParser implements IMessageParser {
       },
       {
         keywords: ['punto digital', 'biblioteca'],
-        phoneNumber: 'WhatsApp 3434508085',
+        phoneNumber: 'WhatsApp 3434503200',
         description: 'Punto Digital y Biblioteca',
       },
       {
@@ -287,9 +288,11 @@ class MessageParser implements IMessageParser {
       return
     }
 
-    // Verificar si es una consulta de horarios
+    // Horario general, sin un área concreta. Si nombra un trámite, se conserva
+    // la pregunta original para poder linkear la página de ese trámite.
     if (
-      /horario|hora de atencion|cuando atienden|a que hora|que hora abren/i.test(lowerCaseMessage)
+      /horario|hora de atencion|cuando atienden|a que hora|que hora abren/i.test(lowerCaseMessage) &&
+      !buscarServicioPorKeyword(message)
     ) {
       this.actionProvider.handleUnknown('horarios de atencion municipalidad')
       return
@@ -301,8 +304,10 @@ class MessageParser implements IMessageParser {
       return
     }
 
-    // Verificar si es una consulta de teléfono específico
-    const phoneMatch = this.findPhoneNumberMatch(lowerCaseMessage)
+    // Solo reescribir cuando piden un teléfono. "actividades deportivas" tiene
+    // que seguir siendo una consulta del área, no un pedido del número.
+    const pideTelefono = /telefono|whatsapp|numero|celular|llamar/.test(lowerCaseMessage)
+    const phoneMatch = pideTelefono ? this.findPhoneNumberMatch(lowerCaseMessage) : null
     if (phoneMatch) {
       const phoneMessage = this.createPhoneNumberMessage(phoneMatch)
       this.actionProvider.handleUnknown(phoneMessage)

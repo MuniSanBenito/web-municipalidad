@@ -72,7 +72,7 @@ export default function PageProduccionEmpleo() {
             <p className="text-base-content">Comunicate con nosotros por WhatsApp.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434470379"
+                href="https://wa.me/5493434657917"
                 className="btn btn-success gap-2 text-success-content"
                 target="_blank"
                 rel="noopener noreferrer"

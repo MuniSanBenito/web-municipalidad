@@ -1267,7 +1267,7 @@ export interface ChatbotConversation {
         role: 'user' | 'assistant';
         content: string;
         timestamp: number;
-        provider?: ('knowledge-base' | 'gemini' | 'fallback') | null;
+        provider?: ('knowledge-base' | 'groq' | 'fallback') | null;
         topic?:
           | (
               | 'rentas'
