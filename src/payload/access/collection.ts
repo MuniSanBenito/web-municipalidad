@@ -260,4 +260,10 @@ Users
 - U: admin o a si mismo (createdBy)
 - D: admin
 
+Ciudadanos
+- C: admin, gestor ciudadano y habilitaciones
+- R: admin, gestor ciudadano, habilitaciones, o el propio ciudadano
+- U: admin, gestor ciudadano, o el propio ciudadano
+- D: admin y gestor ciudadano
+
 */
