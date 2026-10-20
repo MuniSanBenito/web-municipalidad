@@ -101,7 +101,7 @@ export function LayerControlPanel({
       {/* Mobile backdrop */}
       {!collapsed && (
         <div
-          className="absolute inset-0 z-[1010] bg-black/30 backdrop-blur-sm md:hidden"
+          className="absolute inset-0 z-[1010] bg-black/40 md:hidden"
           onClick={() => setCollapsed(true)}
           aria-hidden
         />
@@ -112,7 +112,7 @@ export function LayerControlPanel({
           collapsed
             ? 'pointer-events-none -translate-x-full md:pointer-events-auto md:flex md:h-auto md:w-14 md:translate-x-0'
             : 'translate-x-0 md:w-80'
-        } inset-y-0 left-0 h-full w-[min(20rem,85vw)] md:inset-y-auto md:h-auto`}
+        } inset-y-0 left-0 h-full w-full md:inset-y-auto md:h-auto`}
       >
         <button
           onClick={() => setCollapsed(!collapsed)}

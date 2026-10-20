@@ -55,24 +55,24 @@ interface BaseLayerSelectorProps {
   onClose: () => void
 }
 
-export function BaseLayerSelector({ activeBaseLayer, onSelect, open, onClose }: BaseLayerSelectorProps) {
+export function BaseLayerSelector({
+  activeBaseLayer,
+  onSelect,
+  open,
+  onClose,
+}: BaseLayerSelectorProps) {
   if (!open) return null
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-[1001]"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 z-[1002] bg-black/25 md:bg-transparent" onClick={onClose} />
 
-      {/* Dropdown panel positioned to the left of the controls bar */}
-      <div className="absolute right-3 top-20 z-[1002] w-[200px] overflow-hidden rounded-xl border border-base-300 bg-base-100/95 shadow-2xl backdrop-blur-md md:right-6 md:top-6">
-        <div className="border-b border-base-300 px-3 py-2">
+      <div className="border-base-300 bg-base-100/95 absolute inset-x-3 bottom-24 z-[1005] overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-md md:inset-x-auto md:top-6 md:right-20 md:bottom-auto md:left-auto md:w-[220px]">
+        <div className="border-base-300 border-b px-3 py-2.5">
           <span className="text-sm font-bold">Mapas base</span>
         </div>
 
-        <ul>
+        <ul className="grid grid-cols-2 gap-1 p-2 md:flex md:flex-col md:gap-0 md:p-0">
           {BASE_LAYERS.map((layer) => (
             <li key={layer.id}>
               <button
@@ -80,7 +80,7 @@ export function BaseLayerSelector({ activeBaseLayer, onSelect, open, onClose }: 
                   onSelect(layer.id)
                   onClose()
                 }}
-                className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
+                className={`flex w-full flex-col items-stretch gap-2 rounded-xl px-2 py-2 text-left transition-colors md:flex-row md:items-center md:gap-3 md:rounded-none md:px-3 md:py-2 ${
                   layer.id === activeBaseLayer
                     ? 'bg-primary/10 text-primary'
                     : 'hover:bg-base-200/60'
@@ -88,14 +88,16 @@ export function BaseLayerSelector({ activeBaseLayer, onSelect, open, onClose }: 
               >
                 <img
                   src={layer.thumbnail}
-                  alt={layer.label}
-                  className="h-9 w-9 flex-shrink-0 rounded-md border border-base-300 object-cover"
+                  alt=""
+                  className="border-base-300 h-16 w-full rounded-lg border object-cover md:h-9 md:w-9 md:flex-shrink-0"
                   loading="lazy"
                 />
-                <span className="text-sm font-medium">{layer.label}</span>
-                {layer.id === activeBaseLayer && (
-                  <span className="ml-auto h-2.5 w-2.5 flex-shrink-0 rounded-full bg-primary" />
-                )}
+                <span className="flex items-center gap-2 text-sm font-medium">
+                  {layer.label}
+                  {layer.id === activeBaseLayer && (
+                    <span className="bg-primary ml-auto h-2.5 w-2.5 flex-shrink-0 rounded-full" />
+                  )}
+                </span>
               </button>
             </li>
           ))}

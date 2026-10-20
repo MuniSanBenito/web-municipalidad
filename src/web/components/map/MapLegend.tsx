@@ -75,17 +75,17 @@ export function MapLegend({
     <>
       {isOpen && (
         <div
-          className="absolute inset-0 z-[999] bg-black/30 backdrop-blur-sm md:hidden"
+          className="absolute inset-0 z-[1030] bg-black/40 md:hidden"
           onClick={() => setOpen(false)}
         />
       )}
       <section
         ref={panelRef}
         style={panelStyle}
-        className={`bg-base-100/95 border-base-300 absolute z-[1001] flex max-h-[50vh] flex-col overflow-hidden border shadow-2xl backdrop-blur-md ${
+        className={`bg-base-100/95 border-base-300 absolute flex max-h-[50vh] flex-col overflow-hidden border shadow-2xl backdrop-blur-md ${
           isOpen
-            ? 'right-0 bottom-0 left-0 rounded-t-2xl md:right-4 md:bottom-4 md:left-auto md:w-80 md:rounded-2xl'
-            : 'right-0 bottom-16 hidden h-12 rounded-tl-2xl md:right-4 md:bottom-4 md:left-auto md:flex md:w-auto'
+            ? 'right-0 bottom-0 left-0 z-[1040] rounded-t-3xl md:right-4 md:bottom-4 md:left-auto md:z-[1001] md:w-80 md:rounded-2xl'
+            : 'right-0 bottom-16 z-[1001] hidden h-12 rounded-tl-2xl md:right-4 md:bottom-4 md:left-auto md:flex md:w-auto'
         }`}
         aria-label="Leyenda del mapa"
       >

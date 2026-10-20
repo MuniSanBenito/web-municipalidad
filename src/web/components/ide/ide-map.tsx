@@ -61,6 +61,18 @@ function MapEventHandler({
   return null
 }
 
+function QueryCursor({ active }: { active: boolean }) {
+  const map = useMap()
+
+  useEffect(() => {
+    const container = map.getContainer()
+    container.classList.toggle('ide-query', active)
+    return () => container.classList.remove('ide-query')
+  }, [active, map])
+
+  return null
+}
+
 function FitToBounds({ bounds }: { bounds?: [number, number, number, number] }) {
   const map = useMap()
   useEffect(() => {
@@ -173,7 +185,7 @@ export function IdeMap() {
   }, [featureInfo, isMobile])
 
   return (
-    <div className="border-base-300 relative z-0 h-full min-h-0 w-full overflow-hidden rounded-xl border shadow-lg md:rounded-2xl">
+    <div className="md:border-base-300 relative z-0 h-full min-h-0 w-full overflow-hidden md:rounded-2xl md:border md:shadow-lg">
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={zoom}
@@ -181,6 +193,7 @@ export function IdeMap() {
         zoomControl={false}
         className="h-full w-full"
       >
+        <QueryCursor active={queryMode} />
         <BaseTileLayer baseLayerId={baseLayerId} />
 
         {activeLayers.map((layer) => (
@@ -215,6 +228,7 @@ export function IdeMap() {
           onToggleBaseLayers={() => setBaseLayersOpen((prev) => !prev)}
           legendOpen={mobileLegendOpen}
           baseLayersOpen={baseLayersOpen}
+          concealed={isMobile && mobileLayersOpen}
         />
 
         {!isMobile && popupPosition && (
@@ -262,6 +276,12 @@ export function IdeMap() {
           if (open && isMobile) setMobileLayersOpen(false)
         }}
       />
+
+      {queryMode && (
+        <p className="bg-base-100/95 text-base-content border-base-300 pointer-events-none absolute bottom-24 left-1/2 z-[1004] -translate-x-1/2 rounded-full border px-3 py-1.5 text-xs font-medium shadow-lg backdrop-blur-md md:bottom-6">
+          Tocá el mapa para consultar
+        </p>
+      )}
 
       {isMobile && featureInfo && (
         <FeatureInfoSheet featureInfo={featureInfo} onClose={closeFeatureInfo} />

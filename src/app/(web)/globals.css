@@ -74,6 +74,24 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+/* Keep the attribution above the mobile action bar */
+@media (max-width: 767px) {
+  .leaflet-bottom {
+    bottom: 5.75rem;
+  }
+}
+
+/* Crosshair while the IDE identify mode is on */
+.leaflet-container.ide-query,
+.leaflet-container.ide-query .leaflet-grab {
+  cursor: crosshair;
+}
+
+.leaflet-container.ide-query.leaflet-dragging,
+.leaflet-container.ide-query.leaflet-dragging .leaflet-grab {
+  cursor: grabbing;
+}
+
 /* Leaflet popup customization */
 .ide-popup .leaflet-popup-content-wrapper {
   border-radius: 1rem;

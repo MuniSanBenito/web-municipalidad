@@ -9,12 +9,10 @@ import type { PropsWithChildren } from 'react'
 import { twJoin } from 'tailwind-merge'
 import { IdeLayersDrawerProvider, useIdeLayersDrawer } from './ide-layers-drawer-context'
 
-const VISOR_PATH = '/ide/'
-
 function IdeHeader() {
   const pathname = usePathname() ?? ''
   const { open, toggle } = useIdeLayersDrawer()
-  const showLayersButton = pathname === VISOR_PATH || pathname.startsWith(`${VISOR_PATH}/`)
+  const showLayersButton = pathname === '/ide' || pathname.startsWith('/ide/')
 
   return (
     <header
@@ -29,26 +27,32 @@ function IdeHeader() {
         <img
           src={LogoDark.src}
           alt="San Benito Logo"
-          className={twJoin('hidden dark:block', 'h-12')}
+          className={twJoin('hidden dark:block', 'h-9 md:h-12')}
         />
-        <img alt="San Benito Logo" src={LogoLight.src} className={twJoin('dark:hidden', 'h-12')} />
+        <img
+          alt="San Benito Logo"
+          src={LogoLight.src}
+          className={twJoin('dark:hidden', 'h-9 md:h-12')}
+        />
       </Link>
-      <h1 className="text-base-content min-w-0 flex-1 text-sm leading-tight font-semibold md:text-xl">
-        Infraestuctura de Datos Espaciales
+      <h1 className="text-base-content min-w-0 flex-1 truncate text-sm leading-tight font-semibold md:text-xl">
+        <span className="md:hidden">Mapa de San Benito</span>
+        <span className="hidden md:inline">Infraestructura de Datos Espaciales</span>
       </h1>
       {showLayersButton ? (
         <button
           type="button"
           onClick={toggle}
           className={twJoin(
-            'btn btn-ghost btn-square shrink-0 md:hidden',
-            open ? 'btn-active' : '',
+            'btn btn-sm border-base-100/40 bg-base-100 text-primary h-10 min-h-10 shrink-0 gap-1.5 rounded-full border px-3 shadow-sm md:hidden',
+            open ? 'ring-primary/30 ring-2' : '',
           )}
           title={open ? 'Cerrar capas' : 'Abrir capas'}
           aria-label={open ? 'Cerrar capas' : 'Abrir capas'}
           aria-expanded={open}
         >
-          <IconStack2 size={22} />
+          <IconStack2 size={18} />
+          Capas
         </button>
       ) : null}
     </header>

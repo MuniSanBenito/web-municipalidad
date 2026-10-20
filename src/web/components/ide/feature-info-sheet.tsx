@@ -11,24 +11,20 @@ interface FeatureInfoSheetProps {
 
 export function FeatureInfoSheet({ featureInfo, onClose }: FeatureInfoSheetProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[1003] md:hidden">
-      <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="relative max-h-[60vh] rounded-t-2xl border-t border-base-300 bg-base-100/95 p-4 shadow-2xl backdrop-blur-md">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="h-1.5 w-12 rounded-full bg-base-300" />
+    <div className="fixed inset-0 z-[1100] md:hidden">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden="true" />
+      <div className="border-base-300 bg-base-100 absolute inset-x-0 bottom-0 max-h-[70vh] rounded-t-3xl border-t px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl">
+        <div className="relative mb-3 flex h-8 items-center justify-end">
+          <div className="bg-base-300 absolute top-1 left-1/2 h-1.5 w-10 -translate-x-1/2 rounded-full" />
           <button
             onClick={onClose}
-            className="btn btn-circle btn-ghost btn-xs"
+            className="btn btn-circle btn-ghost btn-sm"
             aria-label="Cerrar información"
           >
             <IconX size={18} />
           </button>
         </div>
-        <div className="max-h-[calc(60vh-4rem)] overflow-y-auto overscroll-contain">
+        <div className="max-h-[calc(70vh-5rem)] overflow-y-auto overscroll-contain">
           <FeatureInfoContent featureInfo={featureInfo} />
         </div>
       </div>
