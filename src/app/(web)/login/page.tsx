@@ -63,7 +63,7 @@ export default function LoginPage() {
 
         // Pequeña pausa para que se vea el toast antes de redirigir
         setTimeout(() => {
-          router.push('/')
+          router.push('/perfil')
           router.refresh()
         }, 500)
       } else {
