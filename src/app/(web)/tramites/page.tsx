@@ -13,14 +13,13 @@ import {
   IconClipboardList,
   IconGenderFemale,
   IconHeadset,
-  IconHeartHandshake,
   IconHomeEdit,
   IconLicense,
   IconMap,
   IconMasksTheater,
   IconMoodKid,
   IconPhoneCall,
-  IconUserCircle,
+  IconUserCircle
 } from '@tabler/icons-react'
 import type { Metadata } from 'next'
 
@@ -79,12 +78,6 @@ const tramites = [
     icon: IconGenderFemale,
     link: '/tramites/area-mujer',
     description: 'Servicios y asistencia del área de mujer y género',
-  },
-  {
-    title: 'Acción Social',
-    icon: IconHeartHandshake,
-    link: '/tramites/accion-social',
-    description: 'Subsidios, programas alimentarios, traslados y asistencia a familias vulnerables',
   },
   {
     title: 'Obras Privadas',

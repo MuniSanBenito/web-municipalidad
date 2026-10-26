@@ -89,9 +89,18 @@ export interface Config {
     ciudadanos: Ciudadano;
     matriculados: Matriculado;
     'rubros-comercios': RubrosComercio;
+    'actividades-comercios': ActividadesComercio;
     'comercios-habilitados': ComerciosHabilitado;
+    'expedientes-habilitacion': ExpedientesHabilitacion;
     'chatbot-conversations': ChatbotConversation;
+    campanas: Campana;
+    deportes: Deporte;
+    arboles: Arbole;
+    'opciones-presupuesto': OpcionesPresupuesto;
+    'elementos-plaza': ElementosPlaza;
+    'resultados-campana': ResultadosCampana;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -123,9 +132,18 @@ export interface Config {
     ciudadanos: CiudadanosSelect<false> | CiudadanosSelect<true>;
     matriculados: MatriculadosSelect<false> | MatriculadosSelect<true>;
     'rubros-comercios': RubrosComerciosSelect<false> | RubrosComerciosSelect<true>;
+    'actividades-comercios': ActividadesComerciosSelect<false> | ActividadesComerciosSelect<true>;
     'comercios-habilitados': ComerciosHabilitadosSelect<false> | ComerciosHabilitadosSelect<true>;
+    'expedientes-habilitacion': ExpedientesHabilitacionSelect<false> | ExpedientesHabilitacionSelect<true>;
     'chatbot-conversations': ChatbotConversationsSelect<false> | ChatbotConversationsSelect<true>;
+    campanas: CampanasSelect<false> | CampanasSelect<true>;
+    deportes: DeportesSelect<false> | DeportesSelect<true>;
+    arboles: ArbolesSelect<false> | ArbolesSelect<true>;
+    'opciones-presupuesto': OpcionesPresupuestoSelect<false> | OpcionesPresupuestoSelect<true>;
+    'elementos-plaza': ElementosPlazaSelect<false> | ElementosPlazaSelect<true>;
+    'resultados-campana': ResultadosCampanaSelect<false> | ResultadosCampanaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -136,9 +154,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     autoridades: Autoridade;
+    'configuracion-notificaciones-habilitacion': ConfiguracionNotificacionesHabilitacion;
   };
   globalsSelect: {
     autoridades: AutoridadesSelect<false> | AutoridadesSelect<true>;
+    'configuracion-notificaciones-habilitacion': ConfiguracionNotificacionesHabilitacionSelect<false> | ConfiguracionNotificacionesHabilitacionSelect<true>;
   };
   locale: null;
   user:
@@ -149,7 +169,13 @@ export interface Config {
         collection: 'ciudadanos';
       });
   jobs: {
-    tasks: unknown;
+    tasks: {
+      enviarNotificacionHabilitacion: TaskEnviarNotificacionHabilitacion;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -318,6 +344,10 @@ export interface Ciudadano {
   fecha_nacimiento?: string | null;
   ciudad?: string | null;
   telefono?: string | null;
+  /**
+   * Módulos habilitados para este ciudadano en el portal.
+   */
+  permisos?: 'HABILITACIONES'[] | null;
   curriculum?: {
     docs?: (string | Curriculum)[];
     hasNextPage?: boolean;
@@ -521,6 +551,14 @@ export interface Imagen {
  */
 export interface Archivo {
   id: string;
+  /**
+   * Los archivos privados solo pueden ser vistos por su propietario y personal autorizado.
+   */
+  esPrivado?: boolean | null;
+  /**
+   * Se completa automáticamente para las cargas realizadas por ciudadanos.
+   */
+  propietarioCiudadano?: (string | null) | Ciudadano;
   created_by:
     | {
         relationTo: 'users';
@@ -1009,6 +1047,28 @@ export interface Matriculado {
  */
 export interface RubrosComercio {
   id: string;
+  /**
+   * Código del nomenclador de actividades económicas (ej: 471110)
+   */
+  codigo: string;
+  nombre: string;
+  /**
+   * Categoría principal del nomenclador (ej: Comercio al por mayor y al por menor)
+   */
+  categoria: string;
+  /**
+   * Subcategoría dentro de la categoría (ej: Venta al por menor de productos alimenticios)
+   */
+  subcategoria: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actividades-comercios".
+ */
+export interface ActividadesComercio {
+  id: string;
   nombre: string;
   updatedAt: string;
   createdAt: string;
@@ -1020,17 +1080,169 @@ export interface RubrosComercio {
 export interface ComerciosHabilitado {
   id: string;
   nombre: string;
-  cuit: string;
   razonSocial: string;
+  cuit: string;
+  fechaAlta: string;
+  /**
+   * Completar solo si la habilitación fue dada de baja.
+   */
+  fechaBaja?: string | null;
   direccion: string;
   /**
-   * Se puede obtener ubicando el punto en Google Maps y copiando las coordenadas que se muestran apretando clic derecho.
+   * Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.
    *
    * @minItems 2
    * @maxItems 2
    */
-  localizacion: [number, number];
-  rubros?: (string | RubrosComercio)[] | null;
+  localizacion?: [number, number] | null;
+  rubro: string | RubrosComercio;
+  actividades?: (string | ActividadesComercio)[] | null;
+  /**
+   * Se genera automáticamente al crear. Formato: HB-{año}-{correlativo}.
+   */
+  numeroHabilitacion?: string | null;
+  tokenValidacion?: string | null;
+  /**
+   * URL única para verificar la habilitación. Se genera automáticamente al crear.
+   */
+  urlValidacion?: string | null;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expedientes-habilitacion".
+ */
+export interface ExpedientesHabilitacion {
+  id: string;
+  /**
+   * Se genera automáticamente. Editable por el equipo municipal.
+   */
+  titulo?: string | null;
+  /**
+   * Gestionado por Obras Privadas.
+   */
+  faseIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
+  /**
+   * Número de referencia del Permiso de Uso emitido por Obras Privadas. Se carga al aprobar la Fase I.
+   */
+  faseINumeroPermisoUso?: string | null;
+  /**
+   * Mensaje visible al ciudadano sobre esta fase.
+   */
+  faseINotaCiudadano?: string | null;
+  /**
+   * Archivo visible al ciudadano junto con la nota de Fase I. Puede ser el informe de Obras o la resolución de habilitación.
+   */
+  faseIInformeObras?: (string | null) | Archivo;
+  /**
+   * Solo visible para el equipo municipal.
+   */
+  faseINotaInterna?: string | null;
+  faseIDireccionLocal?: string | null;
+  faseITelefono?: string | null;
+  faseIRubro?: string | null;
+  faseIDescripcion?: string | null;
+  /**
+   * Formulario completado y firmado (PDF o imagen).
+   */
+  faseIFormularioAdjunto?: (string | null) | Archivo;
+  faseIEmail?: string | null;
+  faseIDNI?: string | null;
+  faseIApellido?: string | null;
+  faseINombre?: string | null;
+  faseIBarrio?: string | null;
+  /**
+   * Título de propiedad, contrato de locación o autorización del propietario.
+   */
+  faseIDocInmueble?: (string | null) | Archivo;
+  faseIPlanoLocal?: (string | null) | Archivo;
+  /**
+   * Emitido por profesional matriculado. Requisito alternativo: se debe adjuntar este certificado O la factura de energía eléctrica (al menos uno).
+   */
+  faseICertElectrico?: (string | null) | Archivo;
+  /**
+   * Copia de una factura reciente. Requisito alternativo: se debe adjuntar esta factura O el certificado de instalaciones eléctricas (al menos uno).
+   */
+  faseIFacturaEnergia?: (string | null) | Archivo;
+  faseIPlancheta?: (string | null) | Archivo;
+  faseIDeclaracionJurada?: boolean | null;
+  /**
+   * Gestionado por Habilitaciones Comerciales.
+   */
+  faseIIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
+  /**
+   * Mensaje visible al ciudadano sobre esta fase.
+   */
+  faseIINotaCiudadano?: string | null;
+  /**
+   * Resolución visible al ciudadano una vez aprobada la Fase II.
+   */
+  faseIIResolucionHabilitacion?: (string | null) | Archivo;
+  faseIINotaInterna?: string | null;
+  faseIINombreFantasia?: string | null;
+  faseIIRazonSocial?: string | null;
+  faseIICuit?: string | null;
+  faseIITelefono?: string | null;
+  faseIIDireccion?: string | null;
+  faseIIRubro?: (string | null) | RubrosComercio;
+  faseIIActividades?: (string | ActividadesComercio)[] | null;
+  faseIIEmail?: string | null;
+  /**
+   * Describí brevemente qué vas a comercializar o qué servicio vas a brindar.
+   */
+  faseIIDescripcionActividad?: string | null;
+  faseIISuperficieAfectada?: number | null;
+  faseIICantidadEmpleados?: number | null;
+  faseIIHorarioFuncionamiento?: string | null;
+  faseIIManipulacionAlimentos?: boolean | null;
+  faseIIHigieneSeguridad?: boolean | null;
+  faseIISeguroRC?: boolean | null;
+  faseIIBuenaConducta?: boolean | null;
+  faseIITituloProfesional?: boolean | null;
+  faseIIPlanoEvacuacion?: boolean | null;
+  faseIIResiduosPeligrosos?: boolean | null;
+  faseIIRequiereLibretaSanitaria?: boolean | null;
+  /**
+   * Documento obligatorio cuando el rubro requiere libreta sanitaria.
+   */
+  faseIILibretaSanitaria?: (string | null) | Archivo;
+  faseIIDeclaracionJurada?: boolean | null;
+  /**
+   * Permiso de Uso aprobado, DNI, CUIT, Libre Deuda, Boleta de Tasa Inmobiliaria y otros documentos requeridos.
+   */
+  faseIIAdjuntos?: (string | Archivo)[] | null;
+  /**
+   * Gestionado por el área de Rentas.
+   */
+  faseIIIEstado?: ('INICIADO' | 'PENDIENTE' | 'VISITA_PROGRAMADA' | 'APROBADO') | null;
+  /**
+   * Mensaje visible al ciudadano sobre esta fase.
+   */
+  faseIIINotaCiudadano?: string | null;
+  faseIIINotaInterna?: string | null;
+  /**
+   * Vinculá el registro de Comercio Habilitado generado por Rentas. El ciudadano podrá ver su habilitación digital desde su portal.
+   */
+  faseIIIComercioHabilitado?: (string | null) | ComerciosHabilitado;
+  created_by:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'ciudadanos';
+        value: string | Ciudadano;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -1055,7 +1267,7 @@ export interface ChatbotConversation {
         role: 'user' | 'assistant';
         content: string;
         timestamp: number;
-        provider?: ('knowledge-base' | 'gemini' | 'fallback') | null;
+        provider?: ('knowledge-base' | 'groq' | 'fallback') | null;
         topic?:
           | (
               | 'rentas'
@@ -1121,6 +1333,166 @@ export interface ChatbotConversation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas".
+ */
+export interface Campana {
+  id: string;
+  nombre: string;
+  slug: string;
+  descripcion: string;
+  barrio: string;
+  /**
+   * Color en formato hex, ej: #10b981
+   */
+  colorPrincipal: string;
+  imagen?: (string | null) | Imagen;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: 'borrador' | 'activa' | 'finalizada';
+  deportesActivo?: boolean | null;
+  arbolesActivo?: boolean | null;
+  plazaActivo?: boolean | null;
+  presupuestoActivo?: boolean | null;
+  publico: 'niños' | 'adultos' | 'mixto';
+  sessionUnica?: boolean | null;
+  resultadosPublicos?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes".
+ */
+export interface Deporte {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa al deporte, ej: ⚽
+   */
+  emoji: string;
+  /**
+   * Nombre del ícono de Tabler Icons, ej: ball-football
+   */
+  icono?: string | null;
+  /**
+   * Orden de aparición (menor = primero)
+   */
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles".
+ */
+export interface Arbole {
+  id: string;
+  nombre: string;
+  caracteristicas: string;
+  /**
+   * Emoji de respaldo si no hay imagen cargada, ej: 🌳
+   */
+  emoji?: string | null;
+  /**
+   * Foto real del árbol. Se muestra en lugar del emoji cuando está cargada.
+   */
+  imagen?: (string | null) | Imagen;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto".
+ */
+export interface OpcionesPresupuesto {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa la opción, ej: 🛣️
+   */
+  emoji: string;
+  icono?: string | null;
+  descripcion?: string | null;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza".
+ */
+export interface ElementosPlaza {
+  id: string;
+  nombre: string;
+  /**
+   * Emoji que representa el elemento, ej: 🛝
+   */
+  emoji: string;
+  /**
+   * Ancho en unidades de grilla del canvas
+   */
+  ancho: number;
+  /**
+   * Alto en unidades de grilla del canvas
+   */
+  alto: number;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, la opción estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana".
+ */
+export interface ResultadosCampana {
+  id: string;
+  campana: string | Campana;
+  /**
+   * Identificador único de la sesión de juego
+   */
+  sessionId: string;
+  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro';
+  edad?: ('niño' | 'adulto') | null;
+  /**
+   * ID o nombre de la opción seleccionada
+   */
+  opcionId: string;
+  opcionNombre: string;
+  votos: number;
+  /**
+   * Datos adicionales del resultado (posición, respuesta, etc.)
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1135,6 +1507,98 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: string;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'enviarNotificacionHabilitacion';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'enviarNotificacionHabilitacion') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1228,12 +1692,44 @@ export interface PayloadLockedDocument {
         value: string | RubrosComercio;
       } | null)
     | ({
+        relationTo: 'actividades-comercios';
+        value: string | ActividadesComercio;
+      } | null)
+    | ({
         relationTo: 'comercios-habilitados';
         value: string | ComerciosHabilitado;
       } | null)
     | ({
+        relationTo: 'expedientes-habilitacion';
+        value: string | ExpedientesHabilitacion;
+      } | null)
+    | ({
         relationTo: 'chatbot-conversations';
         value: string | ChatbotConversation;
+      } | null)
+    | ({
+        relationTo: 'campanas';
+        value: string | Campana;
+      } | null)
+    | ({
+        relationTo: 'deportes';
+        value: string | Deporte;
+      } | null)
+    | ({
+        relationTo: 'arboles';
+        value: string | Arbole;
+      } | null)
+    | ({
+        relationTo: 'opciones-presupuesto';
+        value: string | OpcionesPresupuesto;
+      } | null)
+    | ({
+        relationTo: 'elementos-plaza';
+        value: string | ElementosPlaza;
+      } | null)
+    | ({
+        relationTo: 'resultados-campana';
+        value: string | ResultadosCampana;
       } | null);
   globalSlug?: string | null;
   user:
@@ -1482,6 +1978,8 @@ export interface CurriculumsSelect<T extends boolean = true> {
  * via the `definition` "archivos_select".
  */
 export interface ArchivosSelect<T extends boolean = true> {
+  esPrivado?: T;
+  propietarioCiudadano?: T;
   created_by?: T;
   prefix?: T;
   updatedAt?: T;
@@ -1808,6 +2306,7 @@ export interface CiudadanosSelect<T extends boolean = true> {
   fecha_nacimiento?: T;
   ciudad?: T;
   telefono?: T;
+  permisos?: T;
   curriculum?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1847,6 +2346,18 @@ export interface MatriculadosSelect<T extends boolean = true> {
  * via the `definition` "rubros-comercios_select".
  */
 export interface RubrosComerciosSelect<T extends boolean = true> {
+  codigo?: T;
+  nombre?: T;
+  categoria?: T;
+  subcategoria?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actividades-comercios_select".
+ */
+export interface ActividadesComerciosSelect<T extends boolean = true> {
   nombre?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1857,11 +2368,80 @@ export interface RubrosComerciosSelect<T extends boolean = true> {
  */
 export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   nombre?: T;
-  cuit?: T;
   razonSocial?: T;
+  cuit?: T;
+  fechaAlta?: T;
+  fechaBaja?: T;
   direccion?: T;
   localizacion?: T;
-  rubros?: T;
+  rubro?: T;
+  actividades?: T;
+  numeroHabilitacion?: T;
+  tokenValidacion?: T;
+  urlValidacion?: T;
+  created_by?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expedientes-habilitacion_select".
+ */
+export interface ExpedientesHabilitacionSelect<T extends boolean = true> {
+  titulo?: T;
+  faseIEstado?: T;
+  faseINumeroPermisoUso?: T;
+  faseINotaCiudadano?: T;
+  faseIInformeObras?: T;
+  faseINotaInterna?: T;
+  faseIDireccionLocal?: T;
+  faseITelefono?: T;
+  faseIRubro?: T;
+  faseIDescripcion?: T;
+  faseIFormularioAdjunto?: T;
+  faseIEmail?: T;
+  faseIDNI?: T;
+  faseIApellido?: T;
+  faseINombre?: T;
+  faseIBarrio?: T;
+  faseIDocInmueble?: T;
+  faseIPlanoLocal?: T;
+  faseICertElectrico?: T;
+  faseIFacturaEnergia?: T;
+  faseIPlancheta?: T;
+  faseIDeclaracionJurada?: T;
+  faseIIEstado?: T;
+  faseIINotaCiudadano?: T;
+  faseIIResolucionHabilitacion?: T;
+  faseIINotaInterna?: T;
+  faseIINombreFantasia?: T;
+  faseIIRazonSocial?: T;
+  faseIICuit?: T;
+  faseIITelefono?: T;
+  faseIIDireccion?: T;
+  faseIIRubro?: T;
+  faseIIActividades?: T;
+  faseIIEmail?: T;
+  faseIIDescripcionActividad?: T;
+  faseIISuperficieAfectada?: T;
+  faseIICantidadEmpleados?: T;
+  faseIIHorarioFuncionamiento?: T;
+  faseIIManipulacionAlimentos?: T;
+  faseIIHigieneSeguridad?: T;
+  faseIISeguroRC?: T;
+  faseIIBuenaConducta?: T;
+  faseIITituloProfesional?: T;
+  faseIIPlanoEvacuacion?: T;
+  faseIIResiduosPeligrosos?: T;
+  faseIIRequiereLibretaSanitaria?: T;
+  faseIILibretaSanitaria?: T;
+  faseIIDeclaracionJurada?: T;
+  faseIIAdjuntos?: T;
+  faseIIIEstado?: T;
+  faseIIINotaCiudadano?: T;
+  faseIIINotaInterna?: T;
+  faseIIIComercioHabilitado?: T;
+  created_by?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1899,11 +2479,137 @@ export interface ChatbotConversationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campanas_select".
+ */
+export interface CampanasSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  descripcion?: T;
+  barrio?: T;
+  colorPrincipal?: T;
+  imagen?: T;
+  fechaInicio?: T;
+  fechaFin?: T;
+  estado?: T;
+  deportesActivo?: T;
+  arbolesActivo?: T;
+  plazaActivo?: T;
+  presupuestoActivo?: T;
+  publico?: T;
+  sessionUnica?: T;
+  resultadosPublicos?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deportes_select".
+ */
+export interface DeportesSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arboles_select".
+ */
+export interface ArbolesSelect<T extends boolean = true> {
+  nombre?: T;
+  caracteristicas?: T;
+  emoji?: T;
+  imagen?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opciones-presupuesto_select".
+ */
+export interface OpcionesPresupuestoSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  icono?: T;
+  descripcion?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "elementos-plaza_select".
+ */
+export interface ElementosPlazaSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  ancho?: T;
+  alto?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resultados-campana_select".
+ */
+export interface ResultadosCampanaSelect<T extends boolean = true> {
+  campana?: T;
+  sessionId?: T;
+  actividad?: T;
+  edad?: T;
+  opcionId?: T;
+  opcionNombre?: T;
+  votos?: T;
+  metadata?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1971,6 +2677,46 @@ export interface Autoridade {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "configuracion-notificaciones-habilitacion".
+ */
+export interface ConfiguracionNotificacionesHabilitacion {
+  id: string;
+  /**
+   * Activar después de configurar los destinatarios y verificar el SMTP.
+   */
+  notificacionesActivas?: boolean | null;
+  /**
+   * Reciben novedades de la Fase I.
+   */
+  emailsObrasPrivadas?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Reciben novedades de la Fase II y Fase III.
+   */
+  emailsHabilitaciones?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Reciben el traspaso de Fase II aprobada y novedades de Fase III.
+   */
+  emailsHacienda?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "autoridades_select".
  */
 export interface AutoridadesSelect<T extends boolean = true> {
@@ -1992,6 +2738,55 @@ export interface AutoridadesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "configuracion-notificaciones-habilitacion_select".
+ */
+export interface ConfiguracionNotificacionesHabilitacionSelect<T extends boolean = true> {
+  notificacionesActivas?: T;
+  emailsObrasPrivadas?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  emailsHabilitaciones?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  emailsHacienda?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskEnviarNotificacionHabilitacion".
+ */
+export interface TaskEnviarNotificacionHabilitacion {
+  input: {
+    destinatarios: {
+      email: string;
+    }[];
+    asunto: string;
+    texto: string;
+    html: string;
+    expedienteId: string;
+    fase: number;
+    tipoEvento: string;
+    claveEvento: string;
+  };
+  output: {
+    enviados: number;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

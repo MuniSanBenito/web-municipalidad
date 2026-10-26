@@ -1,21 +1,15 @@
-import type { Ciudadano } from '@/payload-types'
-import type { Access, CollectionConfig, FieldAccess } from 'payload'
-import { isGestorCiudadanoOrAdminCollectionAccess } from '../access/collection'
+import type { CollectionConfig } from 'payload'
+import {
+  ciudadanoCreateAccess,
+  ciudadanoDeleteAccess,
+  ciudadanoReadAccess,
+  ciudadanoStaffFieldAccess,
+  ciudadanoUpdateAccess,
+} from '../access/ciudadanos'
 import { HIDE_API_URL } from '../config'
 
-const isMyselfGestorCiudadanoOrAdmin: Access<Ciudadano> = ({ req, id }) => {
-  if (req.user?.collection === 'ciudadanos') {
-    return req.user.id === id
-  }
-
-  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
-}
-
-const isGestorOrAdminFieldAccess: FieldAccess<Ciudadano> = ({ req, data, id }) => {
-  if (req.user?.collection !== 'users') return false
-
-  return req.user?.rol.includes('GESTOR CIUDADANO') || req.user?.rol.includes('ADMIN') || false
-}
+export const PERMISOS_CIUDADANO = ['HABILITACIONES'] as const
+export type PermisoCiudadano = (typeof PERMISOS_CIUDADANO)[number]
 
 export const Ciudadanos: CollectionConfig = {
   slug: 'ciudadanos',
@@ -29,10 +23,10 @@ export const Ciudadanos: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
   },
   access: {
-    create: isGestorCiudadanoOrAdminCollectionAccess,
-    read: isMyselfGestorCiudadanoOrAdmin,
-    update: isMyselfGestorCiudadanoOrAdmin,
-    delete: isGestorCiudadanoOrAdminCollectionAccess,
+    create: ciudadanoCreateAccess,
+    read: ciudadanoReadAccess,
+    update: ciudadanoUpdateAccess,
+    delete: ciudadanoDeleteAccess,
   },
   fields: [
     {
@@ -44,8 +38,8 @@ export const Ciudadanos: CollectionConfig = {
         position: 'sidebar',
       },
       access: {
-        create: isGestorOrAdminFieldAccess,
-        update: isGestorOrAdminFieldAccess,
+        create: ciudadanoStaffFieldAccess,
+        update: ciudadanoStaffFieldAccess,
       },
     },
     {
@@ -92,6 +86,23 @@ export const Ciudadanos: CollectionConfig = {
       type: 'text',
       name: 'telefono',
       label: 'Teléfono',
+    },
+    {
+      type: 'select',
+      name: 'permisos',
+      label: 'Permisos de Módulos',
+      hasMany: true,
+      options: PERMISOS_CIUDADANO.map((p) => ({ label: p, value: p })),
+      defaultValue: [],
+      admin: {
+        position: 'sidebar',
+        description: 'Módulos habilitados para este ciudadano en el portal.',
+      },
+      access: {
+        create: ciudadanoStaffFieldAccess,
+        read: () => true,
+        update: ciudadanoStaffFieldAccess,
+      },
     },
     {
       type: 'join',

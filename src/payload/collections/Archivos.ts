@@ -1,10 +1,12 @@
 import { CreatedBy } from '@/payload/fields/created_by'
 import type { CollectionConfig } from 'payload'
 import {
-  isAdminOrCreatedByWithDataCollectionAccess,
-  isCiudadanoOrMoreCollectionAccess,
-  isPublicAccess,
-} from '../access/collection'
+  archivoClassificationFieldAccess,
+  archivoOwnerOrAdminAccess,
+  archivoReadAccess,
+  protectCitizenUpload,
+} from '../access/archivos'
+import { isCiudadanoOrMoreCollectionAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
 
 export const Archivos: CollectionConfig = {
@@ -15,15 +17,49 @@ export const Archivos: CollectionConfig = {
   },
   access: {
     create: isCiudadanoOrMoreCollectionAccess,
-    read: isPublicAccess,
-    update: isAdminOrCreatedByWithDataCollectionAccess,
-    delete: isAdminOrCreatedByWithDataCollectionAccess,
+    read: archivoReadAccess,
+    update: archivoOwnerOrAdminAccess,
+    delete: archivoOwnerOrAdminAccess,
+  },
+  hooks: {
+    beforeChange: [protectCitizenUpload],
   },
   admin: {
     group: 'Almacenamiento',
     hideAPIURL: HIDE_API_URL,
   },
-  fields: [CreatedBy],
+  fields: [
+    {
+      name: 'esPrivado',
+      type: 'checkbox',
+      label: 'Archivo privado',
+      defaultValue: false,
+      access: {
+        create: archivoClassificationFieldAccess,
+        update: archivoClassificationFieldAccess,
+      },
+      admin: {
+        position: 'sidebar',
+        description:
+          'Los archivos privados solo pueden ser vistos por su propietario y personal autorizado.',
+      },
+    },
+    {
+      name: 'propietarioCiudadano',
+      type: 'relationship',
+      label: 'Propietario ciudadano',
+      relationTo: 'ciudadanos',
+      access: {
+        create: archivoClassificationFieldAccess,
+        update: archivoClassificationFieldAccess,
+      },
+      admin: {
+        position: 'sidebar',
+        description: 'Se completa automáticamente para las cargas realizadas por ciudadanos.',
+      },
+    },
+    CreatedBy,
+  ],
   upload: {
     crop: false,
   },

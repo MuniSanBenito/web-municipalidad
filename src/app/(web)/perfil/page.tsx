@@ -2,7 +2,16 @@ import type { Ciudadano } from '@/payload-types'
 import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
 import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
-import { IconAlertTriangle, IconBriefcase, IconSchool, IconUsers } from '@tabler/icons-react'
+import {
+    IconAlertTriangle,
+    IconArrowRight,
+    IconBriefcase,
+    IconBuildingStore,
+    IconCalendarCheck,
+    IconCircleCheck,
+    IconSchool,
+    IconUsers,
+} from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
 
@@ -50,6 +59,15 @@ export default async function PerfilPage() {
   })
 
   const curriculum = curriculums.length > 0 ? curriculums[0] : null
+
+  const { docs: expedientes } = await basePayload.find({
+    collection: 'expedientes-habilitacion' as any,
+    where: { 'created_by.value': { equals: ciudadano.id } },
+    limit: 1,
+    sort: '-createdAt',
+    depth: 0,
+  })
+  const expediente = (expedientes[0] as any) ?? null
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No especificado'
@@ -173,9 +191,72 @@ export default async function PerfilPage() {
               <Link href="/perfil/curriculum" className="btn btn-accent">
                 {curriculum ? 'Editar Currículum' : 'Crear Currículum'}
               </Link>
+              <Link href="/habilitaciones" className="btn btn-outline gap-2">
+                <IconBuildingStore size={18} />
+                Habilitaciones Comerciales
+              </Link>
             </div>
           </div>
         </div>
+
+        {/* Sección Habilitación Comercial */}
+        {expediente && (
+          <div className="card bg-base-100 mt-8 shadow-lg">
+            <div className="card-body">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="card-title text-primary flex items-center gap-2">
+                  <IconBuildingStore size={22} />
+                  Mi Habilitación Comercial
+                </h2>
+                <Link href="/habilitaciones" className="btn btn-outline btn-sm gap-1">
+                  Ver trámite
+                  <IconArrowRight size={14} />
+                </Link>
+              </div>
+
+              {expediente.titulo && (
+                <p className="text-base-content/70 mb-4 text-sm">{expediente.titulo}</p>
+              )}
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {[
+                  { label: 'Paso 1 — Permiso de Uso', estado: expediente.faseIEstado },
+                  { label: 'Paso 2 — Habilitación', estado: expediente.faseIIEstado },
+                  { label: 'Paso 3 — Alta Fiscal', estado: expediente.faseIIIEstado },
+                ].map((fase) => (
+                  <div key={fase.label} className="bg-base-200 rounded-box p-3">
+                    <p className="text-base-content/70 mb-1.5 text-xs font-medium">{fase.label}</p>
+                    <span
+                      className={`badge badge-sm gap-1 ${
+                        fase.estado === 'APROBADO'
+                          ? 'badge-success'
+                          : fase.estado === 'VISITA_PROGRAMADA'
+                            ? 'badge-accent'
+                            : fase.estado === 'PENDIENTE'
+                              ? 'badge-info'
+                              : fase.estado === 'INICIADO'
+                                ? 'badge-warning'
+                                : 'badge-ghost'
+                      }`}
+                    >
+                      {fase.estado === 'APROBADO' && <IconCircleCheck size={12} />}
+                      {fase.estado === 'VISITA_PROGRAMADA' && <IconCalendarCheck size={12} />}
+                      {fase.estado === 'APROBADO'
+                        ? 'Aprobado'
+                        : fase.estado === 'VISITA_PROGRAMADA'
+                          ? 'Visita programada'
+                          : fase.estado === 'PENDIENTE'
+                            ? 'Pendiente'
+                            : fase.estado === 'INICIADO'
+                              ? 'En revisión'
+                              : 'Sin iniciar'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Sección de Curriculum */}
         {curriculum && (

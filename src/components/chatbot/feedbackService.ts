@@ -63,7 +63,7 @@ function createInitialAnalytics(): AnalyticsData {
     unratedResponses: 0,
     queriesByProvider: {
       'knowledge-base': 0,
-      gemini: 0,
+      groq: 0,
       fallback: 0,
     },
     topQueries: [],
@@ -84,7 +84,17 @@ function loadFromStorage(): void {
     const storedAnalytics = sessionStorage.getItem(ANALYTICS_STORAGE_KEY)
     if (storedAnalytics) {
       analyticsData = JSON.parse(storedAnalytics)
+      const providers = analyticsData.queriesByProvider as Record<string, number> | undefined
+      if (providers?.gemini) {
+        providers.groq = (providers.groq || 0) + providers.gemini
+        delete providers.gemini
+      }
+      if (providers && providers.groq == null) providers.groq = 0
     }
+
+    feedbackEntries = feedbackEntries.map((entry) =>
+      (entry.provider as string) === 'gemini' ? { ...entry, provider: 'groq' } : entry,
+    )
   } catch (error) {
     console.warn('Error al cargar datos de feedback:', error)
   }
@@ -273,14 +283,13 @@ export function getNegativeFeedback(): FeedbackEntry[] {
 export function getMetricsSummary(): {
   totalQueries: number
   satisfactionRate: string
-  geminiUsage: string
+  groqUsage: string
   topQueryCategory: string
 } {
   const total = analyticsData.totalQueries
 
-  // Calcular porcentaje de uso de Gemini
-  const geminiPercentage =
-    total > 0 ? Math.round((analyticsData.queriesByProvider.gemini / total) * 100) : 0
+  const groqPercentage =
+    total > 0 ? Math.round((analyticsData.queriesByProvider.groq / total) * 100) : 0
 
   // Encontrar categoría más consultada
   let topCategory = 'general'
@@ -308,7 +317,7 @@ export function getMetricsSummary(): {
   return {
     totalQueries: total,
     satisfactionRate: `${analyticsData.averageSatisfaction}%`,
-    geminiUsage: `${geminiPercentage}%`,
+    groqUsage: `${groqPercentage}%`,
     topQueryCategory: topCategory,
   }
 }

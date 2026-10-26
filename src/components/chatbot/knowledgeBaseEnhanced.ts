@@ -3,7 +3,7 @@
 /**
  * Base de conocimiento mejorada con información REAL extraída de las páginas del sitio
  * Esta información está sincronizada con el contenido actual de las páginas TSX
- * Última actualización: Febrero 2026
+ * Última actualización: Septiembre 2026
  */
 
 export interface ServiceInfo {
@@ -29,6 +29,8 @@ export const CONTACTO_GENERAL = {
   emailPrincipal: 'presidencia@munisanbenito.gov.ar',
   horarioGeneral: 'Lunes a Viernes de 7:00 a 13:00 hs',
   intendente: 'Ariel Voeffray',
+  periodoIntendencia: '2023-2027',
+  municipioDesde: '1987 (antes Junta de Gobierno desde 1968)',
   poblacion: '~25.000 habitantes aproximadamente',
 }
 
@@ -177,6 +179,7 @@ export const HABILITACIONES: ServiceInfo = {
   informacionAdicional: [
     'Tipos de habilitaciones: Comercios Minoristas, Servicios Profesionales, Gastronomía, Industrias',
     'La documentación debe presentarse en el Área de Habilitaciones Comerciales',
+    'Portal online para iniciar la habilitación por fases y para renovar: /habilitaciones. Hay que iniciar sesión como ciudadano.',
   ],
 }
 
@@ -201,15 +204,11 @@ export const ACTIVIDADES_DEPORTIVAS: ServiceInfo = {
     },
   ],
   informacionAdicional: [
-    'ACTIVIDADES DISPONIBLES:',
-    '• Golf Croquet Municipal: +55 años, Lunes y Miércoles 9:00 hs (Prof. Guillermina Clausich, Marcelo Monzon) — Parque Vieytes',
-    '• Escuela de Básquet y Voley: a partir de 6 años, Lunes, Miércoles y Viernes 17:30 hs (Prof. Santiago Farias) — Plaza Barrio San Pedro',
-    '• Escuela de Beach Voley: +12 años, Lunes, Miércoles y Viernes 14:30 hs (Prof. Milagros Schumacher, Alejandro Monzón) — Parque Vieytes',
-    '• Zumba: todas las edades, ver formulario para horarios (Prof. Vanina Bernasconi) — Parque Vieytes y CIC Barrio San Pedro',
-    '• Iniciación al Atletismo: todas las edades, Lunes, Martes, Miércoles y Jueves 17:30 hs (Prof. Alejandro Monzon) — Parque Vieytes',
-    '• Running: todas las edades, Lunes y Miércoles 20:15 hs (Prof. Gillermo Galeano) — Parque Vieytes',
-    '',
-    'REDES SOCIALES: Instagram @deportesanbenito',
+    'ACTIVIDADES DISPONIBLES (todas gratuitas):',
+    '• Golf Croquet Municipal: a partir de 55 años, Lunes 9:00 hs (Prof. Guillermina Clausich y Ariadna Vince)',
+    '• Actividades Recreativas en Agua: a partir de 55 años, Martes y Jueves 10:00 hs (Prof. Guillermina Clausich y Solange Valin)',
+    '• Iniciación Deportiva: de 3 a 7 años, Lunes y Miércoles 10:15 hs (Prof. Guillermina Clausich y Solange Valin)',
+    '• Escuela de Beach Voley: de 12 años en adelante, Lunes, Miércoles y Viernes 14:30 hs (Prof. Magalí Meier y Alejandro Monzón)',
     '',
     'PUNTOS DEPORTIVOS:',
     '• Parque Vieytes',
@@ -252,8 +251,8 @@ export const PUNTO_DIGITAL: ServiceInfo = {
   nombre: 'Punto Digital y Biblioteca Municipal "Santiago Tórtul"',
   descripcion:
     'Espacio cultural y educativo que ofrece acceso a computadoras, internet, biblioteca y talleres educativos gratuitos',
-  whatsapp: '3434508085',
-  telefono: '3434508085',
+  whatsapp: '3434503200',
+  telefono: '3434503200',
   horario: 'Lunes a Viernes de 7:00 a 19:00 hs',
   ubicacion: 'Friuli 1051',
   url: '/tramites/punto-digital-biblioteca',
@@ -363,6 +362,7 @@ export const TERCERA_EDAD: ServiceInfo = {
   telefono: '3433027297',
   email: 'adultosmayoresydiscapacidadsb@gmail.com',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
+  // Domicilio de la página del área. Teléfonos Útiles todavía lista Basavilbaso 1093.
   ubicacion: 'Edificio NIDO - Buenos Aires y Misiones, San Benito',
   url: '/tramites/tercera-edad-discapacidad',
   enlaces: [
@@ -499,9 +499,17 @@ export const TALLERES_CULTURALES: ServiceInfo = {
   url: '/tramites/talleres-culturales',
   enlaces: [{ texto: 'Inscripción Online', url: 'https://forms.gle/YMu2AjBLckmdZoF79' }],
   informacionAdicional: [
-    'Sede NIDO (Buenos Aires y Misiones): Guitarra (+9 años), Danzas Inmigrantes (+9 años), Banda Municipal (+9 años), Tango (+18 años), Danzas Tradicionales (+9 años)',
-    'Sede CIC (Garay y Nogoyá): Teatro (+16 años, Mi 18:30-20hs), Coro Municipal (+16 años, V 19:30-21:30hs)',
-    'Sede Biblioteca Municipal (Friuli 1051): Piano (+9 años, Ma 16:30-21:30hs y V 16:30-20:30hs)',
+    'Sede NIDO (Buenos Aires y Misiones):',
+    '• Guitarra (+9 años): Lunes y Martes 17:00 a 19:30, Jueves 17:00 a 20:30, Viernes 16:30 a 20:00',
+    '• Danzas Inmigrantes (+9 años): Lunes 18:30 a 20:00',
+    '• Banda Municipal (+9 años): Miércoles 18:00 a 20:30 y Sábados 10:00 a 12:00',
+    '• Tango (+18 años): Sábados 18:00 a 19:30',
+    '• Danzas Tradicionales (+9 años): Martes y Jueves 17:00 a 21:00',
+    'Sede CIC (Garay y Nogoyá):',
+    '• Teatro (+16 años): Miércoles 18:30 a 20:00',
+    '• Coro Municipal (+16 años): Viernes 19:30 a 21:30',
+    'Sede Biblioteca Municipal (Friuli 1051):',
+    '• Piano (+9 años): Martes 16:30 a 21:30 y Viernes 16:30 a 20:30',
     'Requisito: domicilio en San Benito. Cupos limitados.',
   ],
 }
@@ -529,6 +537,7 @@ export const TURISMO: ServiceInfo = {
     'EVENTOS DESTACADOS:',
     '• Fiesta Patronal San Benito Abad: 21 de marzo. Misas, procesiones y actividades culturales.',
     '• Fiesta del Gaucho: Jinetes, payadores, doma y música folklórica.',
+    'Barrios: Las Tunas, San Pedro, San Martín, San Sebastián, Portal del Sol, Solvencia, Altos del Este, 250 Viviendas, y más de 20 barrios.',
   ],
 }
 
@@ -574,6 +583,62 @@ export const ASESORIA_LEGAL: ServiceInfo = {
   email: 'asesorialegalytecnica@sanbenito.gob.ar',
   horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
   ubicacion: 'Edificio Municipal - Basavilbaso 1094',
+}
+
+// ===========================================
+// ESPACIO DE PRIMERA INFANCIA
+// ===========================================
+export const EPI: ServiceInfo = {
+  nombre: 'Espacio de Primera Infancia',
+  descripcion:
+    'Cuatro jardines maternales municipales, con salas multiedad de 2 y 3 años. Algunos funcionan en doble turno. Brindan cuidado, estimulación, contención y alimentación.',
+  ubicacion: 'Coordinación: Edificio Municipal — Basavilbaso 1094',
+  url: '/tramites/epi',
+  informacionAdicional: [
+    '• Maripositas I (Zona Centro, 25 de Mayo 1177): mañana 3435187971, tarde 3435187970',
+    '• Maripositas II (B° San Martín, Basavilbaso 1030): mañana 3435255527, tarde 3435238766',
+    '• Maripositas IV (B° Las Tunas, Concordia 1136): mañana 3434472539',
+    '• Rinconcito de Sueños (B° San Pedro, Sarmiento 2623): mañana 3435238766',
+  ],
+}
+
+// ===========================================
+// TRANSPORTE PÚBLICO Y SUBE
+// ===========================================
+export const TRANSPORTE: ServiceInfo = {
+  nombre: 'Transporte Público y SUBE',
+  descripcion:
+    'Colectivos que conectan San Benito con Paraná, Colonia Avellaneda y Oro Verde, y terminal SUBE de autoservicio.',
+  ubicacion: 'Terminal SUBE: Biblioteca Municipal Santiago Tórtul (Punto Digital), Friuli 1051',
+  url: '/nuestra-ciudad/lineas-colectivos',
+  informacionAdicional: [
+    'Líneas de colectivo: 4, 20, 22 y AM.',
+    'La terminal SUBE está disponible las 24 horas para consultar saldo, acreditar cargas virtuales y habilitar beneficios.',
+  ],
+}
+
+// ===========================================
+// RECURSOS HUMANOS
+// ===========================================
+export const RECURSOS_HUMANOS: ServiceInfo = {
+  nombre: 'Recursos Humanos',
+  descripcion: 'Recibos de sueldo y certificación de haberes para empleados municipales.',
+  url: 'http://sigem.sanbenito.gob.ar/personal/personal.aspx',
+  enlaces: [
+    {
+      texto: 'Sistema de personal (SIGEM)',
+      url: 'http://sigem.sanbenito.gob.ar/personal/personal.aspx',
+    },
+  ],
+}
+
+// ===========================================
+// AGENDA CULTURAL
+// ===========================================
+export const AGENDA_CULTURAL: ServiceInfo = {
+  nombre: 'Agenda Cultural',
+  descripcion: 'Eventos culturales, artísticos y recreativos de San Benito.',
+  url: '/agenda',
 }
 
 // ===========================================
@@ -648,6 +713,16 @@ export const SERVICIOS_COMPLETOS: { [key: string]: ServiceInfo } = {
   'servicios-externos': SERVICIOS_EXTERNOS,
   enersa: SERVICIOS_EXTERNOS,
   agua: SERVICIOS_EXTERNOS,
+  epi: EPI,
+  'primera-infancia': EPI,
+  jardines: EPI,
+  transporte: TRANSPORTE,
+  colectivos: TRANSPORTE,
+  sube: TRANSPORTE,
+  'recursos-humanos': RECURSOS_HUMANOS,
+  rrhh: RECURSOS_HUMANOS,
+  agenda: AGENDA_CULTURAL,
+  'agenda-cultural': AGENDA_CULTURAL,
 }
 
 // ===========================================
@@ -1095,6 +1170,52 @@ const SINONIMOS: { [key: string]: string[] } = {
     'telefono municipalidad',
     'intendente',
   ],
+  epi: [
+    'epi',
+    'primera infancia',
+    'jardin maternal',
+    'jardín maternal',
+    'jardines maternales',
+    'maripositas',
+    'rinconcito de sueños',
+    'rinconcito de suenos',
+    'maternal',
+    'guarderia',
+    'guardería',
+    'sala de 2',
+    'sala de 3',
+  ],
+  transporte: [
+    'colectivo',
+    'colectivos',
+    'transporte',
+    'omnibus',
+    'ómnibus',
+    'sube',
+    'linea 4',
+    'línea 4',
+    'linea 20',
+    'linea 22',
+    'bondi',
+    'parada',
+  ],
+  'recursos-humanos': [
+    'recibo de sueldo',
+    'recibos de sueldo',
+    'haberes',
+    'recursos humanos',
+    'certificacion de haberes',
+    'certificación de haberes',
+    'sueldo municipal',
+  ],
+  agenda: [
+    'agenda',
+    'agenda cultural',
+    'eventos',
+    'evento cultural',
+    'que hay este finde',
+    'actividades culturales',
+  ],
 }
 
 export const KEYWORDS_MAP: { [keyword: string]: string } = {}
@@ -1156,7 +1277,8 @@ export function buscarServicioPorKeyword(query: string): ServiceInfo | null {
 
     // Coincidencia exacta en la query
     if (queryNormalizado.includes(keywordNorm)) {
-      puntuaciones[serviceKey] = (puntuaciones[serviceKey] || 0) + 10
+      // Las frases más largas pesan más, para que "agenda cultural" no pierda contra "cultura".
+      puntuaciones[serviceKey] = (puntuaciones[serviceKey] || 0) + 10 + keywordNorm.length
       continue
     }
 
@@ -1213,21 +1335,21 @@ export function formatearServicio(servicio: ServiceInfo): string {
     'NIDO - Núcleo de Innovación y Desarrollo de Oportunidades': '🏠',
     'Asesoría Legal y Técnica': '⚖️',
     'Turismo en San Benito': '🏛️',
+    'Espacio de Primera Infancia': '👶',
+    'Transporte Público y SUBE': '🚌',
+    'Recursos Humanos': '👤',
+    'Agenda Cultural': '📅',
   }
 
   const emoji = emojis[servicio.nombre] || '📋'
 
-  // Descripción corta (máximo 100 caracteres)
-  const descripcionCorta =
-    servicio.descripcion.length > 100
-      ? servicio.descripcion.substring(0, 100) + '...'
-      : servicio.descripcion
-
-  let texto = `${emoji} **${servicio.nombre}**\n${descripcionCorta}\n\n`
+  let texto = `${emoji} **${servicio.nombre}**\n${servicio.descripcion}\n\n`
 
   // Contacto rápido (solo lo esencial)
   if (servicio.whatsapp) {
-    texto += `📱 WhatsApp: ${servicio.whatsapp}\n`
+    const digits = servicio.whatsapp.replace(/\D/g, '')
+    const full = digits.startsWith('54') ? digits : `549${digits}`
+    texto += `📱 WhatsApp: [${digits}](https://wa.me/${full})\n`
   } else if (servicio.telefono) {
     texto += `📞 Tel: ${servicio.telefono}\n`
   }
@@ -1240,14 +1362,41 @@ export function formatearServicio(servicio: ServiceInfo): string {
     texto += `📍 ${servicio.ubicacion}\n`
   }
 
+  if (servicio.informacionAdicional?.length) {
+    const extra = servicio.informacionAdicional.filter((linea) => linea.trim() !== '').slice(0, 8)
+    if (extra.length > 0) {
+      texto += `\n${extra.join('\n')}\n`
+    }
+  }
+
   // Link a la página con información completa
   if (servicio.url) {
-    texto += `\n👉 **[Ver información completa](${servicio.url})**`
+    texto += `\n[Ver información completa](${servicio.url})`
   } else if (servicio.enlaces && servicio.enlaces.length > 0) {
     texto += `\n🔗 [${servicio.enlaces[0].texto}](${servicio.enlaces[0].url})`
   }
 
   return texto.trim()
+}
+
+/**
+ * Si la consulta corresponde a un área con página, la respuesta cierra con
+ * un link markdown a esa página. Así el chat nunca muestra la ruta suelta.
+ */
+export function asegurarEnlaceDePagina(query: string, respuesta: string): string {
+  const servicio = buscarServicioPorKeyword(query)
+  const url = servicio?.url
+  if (!url || !url.startsWith('/')) return respuesta
+
+  const sinLinkEquivocado = respuesta
+    .replace(/[👉\s]*\*{0,2}\[Ver información completa\]\((\/[^)\s]*)\)\*{0,2}/g, (full, destino) =>
+      destino === url ? full : '',
+    )
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+
+  if (sinLinkEquivocado.includes(url)) return sinLinkEquivocado
+  return `${sinLinkEquivocado}\n\n[Ver información completa](${url})`
 }
 
 /**
@@ -1274,8 +1423,11 @@ export function formatearContactoGeneral(): string {
     `• 🧓 Tercera Edad y Discapacidad: ${TERCERA_EDAD.whatsapp}\n` +
     `• 🤝 Acción Social: ${ACCION_SOCIAL.whatsapp}\n` +
     `• 🏘️ CIC Barrio San Pedro: ${CIC_BARRIO_SAN_PEDRO.whatsapp}\n` +
+    `• 🎨 Talleres Culturales: ${TALLERES_CULTURALES.whatsapp}\n` +
     `• 🏛️ Concejo Deliberante: ${CONCEJO_DELIBERANTE.whatsapp}\n` +
-    `• 🏠 NIDO (Talleres / Emprendedores): Buenos Aires y Misiones\n`
+    `• 🏠 NIDO (Talleres / Emprendedores): Buenos Aires y Misiones\n` +
+    `• 👶 Primera Infancia: coordinación en Basavilbaso 1094 (jardines en /tramites/epi)\n` +
+    `• 🚌 SUBE 24 hs: ${TRANSPORTE.ubicacion}\n`
   )
 }
 
@@ -1297,3 +1449,92 @@ export function formatearHorariosGeneral(): string {
     `• 🏠 NIDO: ${NIDO.horario}`
   )
 }
+
+const REGLAS_BENI = `REGLAS ABSOLUTAS — SIN EXCEPCIONES (sos un asistente OFICIAL, una respuesta incorrecta puede perjudicar a un vecino):
+
+A) FUENTE DE INFORMACIÓN
+1. ✅ SOLO usá datos presentes literalmente en este documento. Si un dato NO está acá, NO existe para vos.
+2. ❌ PROHIBIDO inventar, deducir o estimar: montos, valores de tasas, fechas, vencimientos, plazos administrativos, requisitos no listados, nombres de funcionarios, teléfonos, emails, direcciones u horarios.
+3. ❌ Si el usuario pregunta por un monto/precio/valor de tasa/multa/trámite y NO está en este documento, respondé EXACTAMENTE:
+   "No tengo el monto exacto de ese trámite. Te recomiendo confirmarlo directamente en el área correspondiente — [agregar contacto del área del documento]."
+4. ❌ Si te preguntan por un teléfono, email u horario que NO está en este documento, decí explícitamente "No tengo ese dato registrado" y derivá al teléfono principal 343-4973454.
+5. ❌ NUNCA digas "creo que", "posiblemente", "aproximadamente", "tal vez", "alrededor de", "más o menos", "suele ser".
+
+B) FORMATO DE RESPUESTA
+6. ✅ Respuestas CONCISAS: máximo 6 líneas o 80 palabras. Usá bullets ("• ") cuando haya varios items.
+7. ✅ Usá negritas markdown (**texto**) para resaltar el dato clave (teléfono, horario, lugar).
+8. ✅ SIEMPRE cerrá la respuesta con el contacto relevante del área (WhatsApp / teléfono / email tomados de este documento).
+9. ✅ Si el área tiene una página interna (empieza con /), cerrá además con un link markdown exactamente así: [Ver información completa](/ruta). Nunca escribas la ruta suelta ni entre corchetes sin el formato [texto](ruta).
+10. ✅ Tono cálido pero profesional. Voseo argentino. Emojis con moderación (1-3 por respuesta).
+
+C) ALCANCE TEMÁTICO
+11. ❌ Si la pregunta NO tiene relación con la Municipalidad de San Benito, sus servicios, trámites, la ciudad o información municipal local, respondé ÚNICAMENTE:
+    "Solo puedo ayudarte con información de la Municipalidad de San Benito. ¿Hay algún trámite o servicio municipal en el que pueda ayudarte? 🏛️"
+12. ❌ Aplicá la regla 11 a: clima/tiempo, política nacional o provincial, deportes profesionales, noticias generales, tareas escolares, opiniones personales, recomendaciones de productos, programación, traducciones, recetas, etc.
+
+D) SEGURIDAD Y ÉTICA
+13. ❌ NUNCA des consejo legal, médico, financiero o psicológico personalizado. Siempre derivá al área correspondiente del municipio o a profesionales.
+14. ❌ Ante consultas sobre violencia de género, emergencias o riesgo de vida, priorizá SIEMPRE: derivar a 911, 144 (violencia de género), 107 (emergencias médicas) y al Área Mujer y Género (WhatsApp 3435204239) si aplica.
+15. ❌ NO repitas datos personales que el usuario te haya dado (DNI, dirección particular, teléfono).
+
+E) MANEJO DE INCERTIDUMBRE
+16. ✅ Es 100 % preferible decir "no tengo ese dato" + derivar, que dar una respuesta posiblemente incorrecta. La confiabilidad es más importante que la completitud.`
+
+function fichasUnicas(): ServiceInfo[] {
+  const vistas = new Set<ServiceInfo>()
+  const fichas: ServiceInfo[] = []
+  for (const servicio of Object.values(SERVICIOS_COMPLETOS)) {
+    if (vistas.has(servicio)) continue
+    vistas.add(servicio)
+    fichas.push(servicio)
+  }
+  return fichas
+}
+
+function serializarFicha(servicio: ServiceInfo): string {
+  const lineas = [`## ${servicio.nombre}`, servicio.descripcion]
+  if (servicio.telefono) lineas.push(`Teléfono: ${servicio.telefono}`)
+  if (servicio.whatsapp) lineas.push(`WhatsApp: ${servicio.whatsapp}`)
+  if (servicio.email) lineas.push(`Email: ${servicio.email}`)
+  if (servicio.horario) lineas.push(`Horario: ${servicio.horario}`)
+  if (servicio.ubicacion) lineas.push(`Ubicación: ${servicio.ubicacion}`)
+  if (servicio.url) lineas.push(`Página: ${servicio.url}`)
+  if (servicio.requisitos?.length) {
+    lineas.push('Requisitos:')
+    for (const requisito of servicio.requisitos) lineas.push(`- ${requisito}`)
+  }
+  if (servicio.enlaces?.length) {
+    for (const enlace of servicio.enlaces) lineas.push(`Enlace ${enlace.texto}: ${enlace.url}`)
+  }
+  if (servicio.informacionAdicional?.length) {
+    lineas.push(...servicio.informacionAdicional.filter((linea) => linea.trim() !== ''))
+  }
+  return lineas.join('\n')
+}
+
+/**
+ * Arma el system prompt de Beni desde las fichas. El modelo y el fallback leen la misma fuente.
+ */
+export function buildSystemPrompt(): string {
+  const encabezado = `Eres Beni, el asistente virtual oficial de la Municipalidad de San Benito, Entre Ríos, Argentina.
+Tu personalidad es amigable, servicial y profesional. Usás lenguaje coloquial argentino (vos, podés, etc.).
+
+INFORMACIÓN OFICIAL VERIFICADA DE LA MUNICIPALIDAD (Actualizado Septiembre 2026):
+
+UBICACIÓN Y CONTACTO GENERAL:
+- Dirección: ${CONTACTO_GENERAL.direccion}
+- Horario general: ${CONTACTO_GENERAL.horarioGeneral}
+- Teléfono principal: ${CONTACTO_GENERAL.telefonoPrincipal}
+- Email principal: ${CONTACTO_GENERAL.emailPrincipal}
+- Intendente actual: ${CONTACTO_GENERAL.intendente} (período ${CONTACTO_GENERAL.periodoIntendencia})
+- Municipio desde: ${CONTACTO_GENERAL.municipioDesde}
+- Población: ${CONTACTO_GENERAL.poblacion}
+
+NÚMEROS DE EMERGENCIA (24 horas):
+${EMERGENCIAS.map((item) => `- ${item.nombre}: ${item.telefono}`).join('\n')}`
+
+  const fichas = fichasUnicas().map(serializarFicha).join('\n\n')
+  return `${encabezado}\n\n${fichas}\n\n${REGLAS_BENI}`
+}
+
+export const SYSTEM_PROMPT = buildSystemPrompt()

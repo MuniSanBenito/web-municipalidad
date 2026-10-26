@@ -23,7 +23,7 @@ export {
   resetStats,
 } from './aiServiceEnhanced'
 
-// Servicio de Chat (Groq + Llama 3.3)
+// Servicio de Chat (Groq)
 export {
   generateChatResponse,
   generateChatResponseStreaming,

@@ -109,7 +109,7 @@ export interface PhoneNumberMatcher {
 // TIPOS PARA SERVICIOS DE IA
 // ===============================================
 
-export type AIProvider = 'knowledge-base' | 'gemini' | 'fallback'
+export type AIProvider = 'knowledge-base' | 'groq' | 'fallback'
 
 export interface AIResponse {
   response: string
@@ -119,10 +119,10 @@ export interface AIResponse {
 
 export interface AIStats {
   knowledgeBase: number
-  gemini: number
+  groq: number
   fallback: number
   total: number
-  geminiPercentage: string
+  groqPercentage: string
 }
 
 export interface CachedResponse {
@@ -299,10 +299,9 @@ export const STORAGE_KEYS = {
 // TTL de mensajes UI en sessionStorage (24 hs según privacy policy del bot)
 export const UI_MESSAGES_TTL = 24 * 60 * 60 * 1000
 
-// Límites ajustados para Gemini Free Tier (Febrero 2026)
-// Free tier: 15 RPM, 1,500 RPD para gemini-2.0-flash
+// Límites para el free tier de Groq (30 RPM). 12/min deja margen.
 export const DEFAULT_RATE_LIMIT: RateLimitConfig = {
-  maxRequests: 12, // máximo 12 requests por minuto (conservador vs 15 RPM del free tier)
+  maxRequests: 12, // máximo 12 requests por minuto
   windowMs: 60 * 1000, // por minuto
   minInterval: 2000, // mínimo 2 segundos entre requests para evitar bursts
 } as const

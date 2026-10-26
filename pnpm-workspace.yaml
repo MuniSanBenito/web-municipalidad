@@ -5,3 +5,6 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   protobufjs: false
+
+overrides:
+  '@aws-sdk/client-s3': 3.1005.0

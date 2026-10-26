@@ -63,7 +63,7 @@ export default function LoginPage() {
 
         // Pequeña pausa para que se vea el toast antes de redirigir
         setTimeout(() => {
-          router.push('/')
+          router.push('/perfil')
           router.refresh()
         }, 500)
       } else {
@@ -110,11 +110,11 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="from-primary/5 to-secondary/5 flex min-h-screen items-center justify-center bg-linear-to-br p-4">
+    <section className="from-primary/5 to-secondary/5 flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="from-primary to-secondary text-primary-content mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br shadow-lg">
+          <div className="from-primary to-secondary text-primary-content mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br shadow-lg">
             <IconUser size={32} />
           </div>
           <h1 className="text-base-content mb-2 text-3xl font-bold">Iniciar Sesión</h1>
