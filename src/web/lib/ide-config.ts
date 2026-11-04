@@ -21,7 +21,7 @@ export const CATEGORY_ORDER = [
   'Base',
   'Urbano',
   'Catastro',
-  'Obras',
+  'Infraestructura',
   'Ambiente',
   'Municipio',
   'Otros',
@@ -31,7 +31,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   Base: 'bg-base-300',
   Urbano: 'bg-primary',
   Catastro: 'bg-secondary',
-  Obras: 'bg-accent',
+  Infraestructura: 'bg-accent',
   Ambiente: 'bg-success',
   Municipio: 'bg-warning',
   Otros: 'bg-info',
@@ -40,7 +40,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
 export const CATEGORY_PATTERNS: Record<string, RegExp[]> = {
   Catastro: [/catastro/i],
   Urbano: [/planta/i, /urbana/i, /manzana/i, /lote/i, /parcela/i],
-  Obras: [/obra/i, /red/i, /cloaca/i, /agua/i, /luz/i, /gas/i],
+  Infraestructura: [/obra/i, /infraestructura/i, /red/i, /cloaca/i, /agua/i, /luz/i, /gas/i],
   Ambiente: [/ambiente/i, /verde/i, /arbol/i, /parque/i],
   Municipio: [/municipio/i, /ejido/i, /concesion/i],
 }

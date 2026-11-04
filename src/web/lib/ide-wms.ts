@@ -1,6 +1,10 @@
 import { type LegendOptions } from '../types/geoserver'
 import { CATEGORY_ORDER, CATEGORY_PATTERNS, type IdeLayerConfig } from './ide-config'
 
+const CATEGORY_ALIASES: Record<string, string> = {
+  Obras: 'Infraestructura',
+}
+
 export interface WmsLayer {
   name: string
   title: string
@@ -189,7 +193,9 @@ function resolveCategory(
   // 1. Keyword GeoServer — categoria:<Nombre>
   for (const kw of keywords) {
     const m = kw.match(/^categoria:\s*(.+)$/i)
-    if (m && CATEGORY_ORDER.includes(m[1])) return m[1]
+    if (!m) continue
+    const canonical = CATEGORY_ALIASES[m[1].trim()] ?? m[1].trim()
+    if (CATEGORY_ORDER.includes(canonical)) return canonical
   }
   // 2. Herencia estructural del padre
   if (parent && parent !== 'Root') return parent
