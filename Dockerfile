@@ -5,6 +5,10 @@ FROM node:lts-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+# Node 25+ ya no trae Corepack en la imagen oficial, así que se instala pnpm directo.
+# La versión tiene que coincidir con "packageManager" en package.json.
+RUN npm install -g pnpm@9.15.4
+
 # Install dependencies with bun
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -22,7 +26,7 @@ COPY package.json pnpm-lock.yaml .npmrc* ./
 #   else echo "Lockfile not found." && exit 1; \
 #   fi
 
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -73,7 +77,7 @@ ENV EMAIL_AUTH_PASS=$EMAIL_AUTH_PASS
 #   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
 #   else echo "Lockfile not found." && exit 1; \
 #   fi
-RUN corepack enable && pnpm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
