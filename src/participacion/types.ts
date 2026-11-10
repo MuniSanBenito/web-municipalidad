@@ -1,10 +1,11 @@
-import type { Arbole, Campana, Deporte, ElementosPlaza, OpcionesPresupuesto } from '@/payload-types'
+import type { Arbole, Campana, Deporte, ElementosPlaza, OpcionesPresupuesto, Premio } from '@/payload-types'
 
 export type Campaign = Campana
 export type Sport = Deporte
 export type Tree = Arbole
 export type BudgetOption = OpcionesPresupuesto
 export type PlazaElement = ElementosPlaza
+export type Prize = Premio
 
 export type StepId =
   | 'welcome'
@@ -12,10 +13,11 @@ export type StepId =
   | 'trees'
   | 'plaza'
   | 'budget'
+  | 'roulette'
   | 'celebration'
 
-export type ActivityId = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro'
-export type AnalyticsActivity = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro'
+export type ActivityId = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'ruleta' | 'quiz' | 'caza-tesoro'
+export type AnalyticsActivity = 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'ruleta' | 'quiz' | 'caza-tesoro'
 
 export interface CampaignData {
   campaign: Campaign
@@ -23,6 +25,7 @@ export interface CampaignData {
   trees: Tree[]
   budgetOptions: BudgetOption[]
   plazaElements: PlazaElement[]
+  prizes: Prize[]
 }
 
 export interface ActiveSteps {
@@ -30,6 +33,7 @@ export interface ActiveSteps {
   trees: boolean
   plaza: boolean
   budget: boolean
+  roulette: boolean
 }
 
 export interface PlacedElement {
@@ -55,3 +59,7 @@ export interface AnalyticsPayload {
   edad: string | null
   entries: AnalyticsEntry[]
 }
+
+export type SpinResult =
+  | { success: true; prize: { id: string; nombre: string }; repetido: boolean }
+  | { success: false; agotado?: boolean; error: string }

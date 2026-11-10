@@ -1,5 +1,5 @@
 import type { ActivityId } from '@/participacion/types'
-import { IconBallFootball, IconHelpHexagon, IconMapPin2, IconScale, IconTournament, IconTrees } from '@tabler/icons-react'
+import { IconBallFootball, IconGift, IconHelpHexagon, IconMapPin2, IconScale, IconTournament, IconTrees } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
 
 export interface GameMetadata {
@@ -39,6 +39,13 @@ export const GAME_METADATA: Record<ActivityId, GameMetadata> = {
     desc: 'Invertí en tu barrio',
     emoji: '🏘️',
     icon: <IconScale size={32} />,
+  },
+  ruleta: {
+    id: 'ruleta',
+    title: 'Ruleta de premios',
+    desc: 'Girá la ruleta y ganá un premio',
+    emoji: '🎡',
+    icon: <IconGift size={32} />,
   },
   quiz: {
     id: 'quiz',

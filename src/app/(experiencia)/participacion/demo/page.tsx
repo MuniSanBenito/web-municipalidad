@@ -101,7 +101,7 @@ async function seedDemo() {
       payload.find({ collection: 'opciones-presupuesto', limit: 20, sort: 'orden' }),
       payload.find({ collection: 'elementos-plaza', limit: 20, sort: 'orden' }),
     ])
-    return { campaign, sports: sports.docs, trees: trees.docs, budgetOptions: budget.docs, plazaElements: plaza.docs }
+    return { campaign, sports: sports.docs, trees: trees.docs, budgetOptions: budget.docs, plazaElements: plaza.docs, prizes: [] }
   }
 
   const campaign = await payload.create({
@@ -132,7 +132,7 @@ async function seedDemo() {
     Promise.all(SEED_PLAZA.map((p) => payload.create({ collection: 'elementos-plaza', data: { ...p, campana: campaign.id } }))),
   ])
 
-  return { campaign, sports, trees, budgetOptions: budget, plazaElements: plaza }
+  return { campaign, sports, trees, budgetOptions: budget, plazaElements: plaza, prizes: [] }
 }
 
 export default async function DemoPage() {
