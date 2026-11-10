@@ -47,6 +47,7 @@ export const ResultadosCampana: CollectionConfig = {
         { label: 'Árboles', value: 'arboles' },
         { label: 'Plaza', value: 'plaza' },
         { label: 'Presupuesto', value: 'presupuesto' },
+        { label: 'Ruleta', value: 'ruleta' },
         { label: 'Quiz', value: 'quiz' },
         { label: 'Caza del tesoro', value: 'caza-tesoro' },
       ],

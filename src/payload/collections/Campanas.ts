@@ -1,6 +1,7 @@
 import type { CollectionConfig, FieldHook } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+import { revalidateParticipacionHooks } from '../hooks/revalidate-participacion'
 
 const beforeChangeSlug: FieldHook = ({ value }) => {
   const slug = String(value || Date.now())
@@ -27,6 +28,7 @@ export const Campanas: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
     group: 'Participación',
   },
+  hooks: revalidateParticipacionHooks,
   fields: [
     {
       type: 'text',
@@ -130,6 +132,12 @@ export const Campanas: CollectionConfig = {
       name: 'presupuestoActivo',
       label: 'Actividad: Presupuesto',
       defaultValue: true,
+    },
+    {
+      type: 'checkbox',
+      name: 'ruletaActivo',
+      label: 'Actividad: Ruleta de premios',
+      defaultValue: false,
     },
     {
       type: 'select',

@@ -58,7 +58,7 @@ export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenP
   const [selected, setSelected] = useState<string | null>(null)
 
   function handleSelect(sport: Sport) {
-    if (selected) return
+    if (selected === sport.id) return
     setSelected(sport.id)
     onSelect(sport)
   }
@@ -84,19 +84,17 @@ export function SportsScreen({ sports, colorPrincipal, onSelect }: SportsScreenP
       <div className="grid w-full max-w-2xl grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3">
         {sports.map((sport) => {
           const isSelected = selected === sport.id
-          const isDisabled = selected !== null && !isSelected
 
           return (
             <motion.button
               key={sport.id}
               variants={staggerItem}
-              whileHover={!isDisabled ? { y: -4, scale: 1.03 } : undefined}
-              whileTap={!isDisabled ? { scale: 0.95 } : undefined}
+              whileHover={{ y: -4, scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleSelect(sport)}
-              disabled={isDisabled}
-              className={`relative flex flex-col items-center gap-2 rounded-2xl border-2 p-3 shadow-sm transition-all sm:p-4 ${
+              className={`relative flex flex-col items-center gap-2 rounded-2xl border-2 p-3 shadow-sm transition-all hover:shadow-md sm:p-4 ${
                 isSelected ? 'border-primary bg-primary/10' : 'border-transparent bg-base-100'
-              } ${isDisabled ? 'opacity-40' : 'hover:shadow-md'}`}
+              }`}
             >
               {(() => {
                 const Icon = sport.icono ? SPORT_ICONS[sport.icono] : undefined

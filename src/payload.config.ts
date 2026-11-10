@@ -7,7 +7,6 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { es } from 'payload/i18n/es'
 import sharp from 'sharp'
-import { fileURLToPath } from 'url'
 import { ActividadesComercios } from './payload/collections/ActividadesComercios'
 import { Arboles } from './payload/collections/Arboles'
 import { Archivos } from './payload/collections/Archivos'
@@ -35,6 +34,7 @@ import { Matriculados } from './payload/collections/Matriculados'
 import { Memorias } from './payload/collections/Memorias'
 import { Noticias } from './payload/collections/Noticias'
 import { OpcionesPresupuesto } from './payload/collections/OpcionesPresupuesto'
+import { Premios } from './payload/collections/Premios'
 import { ResultadosCampana } from './payload/collections/ResultadosCampana'
 import { RubrosComercios } from './payload/collections/RubrosComercios'
 import { Ubicaciones } from './payload/collections/Ubicaciones'
@@ -73,8 +73,9 @@ const storagePlugin = s3Storage({
   bucket,
 })
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+// process.cwd() y no import.meta.url: con Turbopack el config se compila dentro de .next
+// y el import map del admin terminaba apuntando a archivos que no existen ahí.
+const dirname = path.resolve(process.cwd(), 'src')
 
 const email = nodemailerAdapter({
   defaultFromAddress: process.env.EMAIL_FROM_ADDRESS ?? '',
@@ -185,6 +186,7 @@ export default buildConfig({
     Arboles,
     OpcionesPresupuesto,
     ElementosPlaza,
+    Premios,
     ResultadosCampana,
   ],
   globals: [Autoridades, ConfiguracionNotificacionesHabilitacion],
