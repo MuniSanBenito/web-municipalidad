@@ -182,6 +182,21 @@ export function getRecentHistory(count: number = 10): ConversationEntry[] {
 }
 
 /**
+ * Turnos previos, con rol, para el array `history` de Groq.
+ * No incluye el mensaje actual: hay que llamarla antes de addUserMessage.
+ */
+export function getHistoryForAI(
+  maxEntries: number = 6,
+): Array<{ role: 'user' | 'assistant'; content: string }> {
+  return getRecentHistory(maxEntries)
+    .map((entry) => ({
+      role: entry.role,
+      content: entry.content.trim().slice(0, 2000),
+    }))
+    .filter((entry) => entry.content.length > 0)
+}
+
+/**
  * Obtiene el contexto de conversación para enviar a la IA
  * Formato optimizado para prompts
  */

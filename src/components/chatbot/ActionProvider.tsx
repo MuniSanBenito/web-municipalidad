@@ -275,9 +275,16 @@ class ActionProvider {
    */
   handleTramite(tramiteKey: string): void {
     const config = TRAMITES_CONFIG[tramiteKey]
-    if (config) {
-      this._createLinkedMessage(config.descripcion, config.etiquetaBoton, config.url)
-    }
+    if (!config) return
+
+    const query = `Quiero información sobre ${config.nombre}`
+    this._updateChatbotState(this.createClientMessage(query))
+    void this.handleUnknown(
+      query,
+      config.url
+        ? { label: config.etiquetaBoton || `Ver ${config.nombre}`, url: config.url }
+        : undefined,
+    )
   }
 
   handleLicencia() {
@@ -403,7 +410,10 @@ class ActionProvider {
   }
 
   // Manejar mensaje desconocido con mejor retroalimentación y validación
-  async handleUnknown(userMessage: string): Promise<void> {
+  async handleUnknown(
+    userMessage: string,
+    pageLink?: { label: string; url: string },
+  ): Promise<void> {
     // Validar entrada
     if (!userMessage || userMessage.trim().length === 0) {
       const errorMessage = this.createChatBotMessage(
@@ -520,6 +530,14 @@ class ActionProvider {
         newMessages[idx] = newMsg
         return { ...prevState, messages: newMessages }
       })
+
+      if (pageLink?.url) {
+        this._createLinkedMessage(
+          'También podés ver el detalle en la página del trámite.',
+          pageLink.label || 'Ver más',
+          pageLink.url,
+        )
+      }
 
       // Registrar para analytics y feedback
       trackQuery(messageId, userMessage, aiResponse, provider)

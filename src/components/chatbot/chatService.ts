@@ -254,7 +254,9 @@ export async function generateChatResponseStreaming(
             throw e
           }
           if (parsed.done) {
-            // fin del stream
+            if (DEBUG_MODE && typeof parsed.model === 'string') {
+              console.log(`✅ Stream generado con modelo: ${parsed.model}`)
+            }
             continue
           }
           if (typeof parsed.delta === 'string' && parsed.delta.length > 0) {

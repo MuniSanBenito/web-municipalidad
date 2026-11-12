@@ -107,11 +107,10 @@ Este proyecto es el sitio web oficial de la Municipalidad de San Benito, Entre R
      ```plaintext
      MONGODB_URI=mongodb://localhost:27017/san-benito
      PAYLOAD_SECRET=tu_secret_aqui
+     GROQ_API_KEY=tu_key_de_groq
      ```
 
-     ```
-
-     ```
+   - `GROQ_API_KEY` habilita las respuestas de Beni con Groq. Sin esa variable el chatbot responde solo con la base local. `IA_API_KEY` sirve como alias.
 
 4. Iniciar el servidor de desarrollo :
 

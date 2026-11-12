@@ -1,14 +1,11 @@
 import { SYSTEM_PROMPT } from '@/components/chatbot/knowledgeBaseEnhanced'
 import { NextResponse } from 'next/server'
+import { consumeChatRateLimit } from './rateLimit'
 
 /**
- * API Route para Groq AI - Municipalidad de San Benito
- * Usa los modelos vigentes de Groq (gpt-oss / Qwen) para respuestas inteligentes
- *
- * FREE TIER LIMITS (Groq):
- * - 30 requests per minute
- * - 14,400 requests per day
- * - 6,000 tokens per minute
+ * API Route para Groq AI - Municipalidad de San Benito.
+ * Modelos vigentes: openai/gpt-oss-120b, con fallback a openai/gpt-oss-20b.
+ * La key va en GROQ_API_KEY (o IA_API_KEY). Sin esa variable el chat usa la base local.
  */
 
 // Variable de entorno para la API Key de Groq
@@ -27,77 +24,39 @@ export const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 export { SYSTEM_PROMPT }
 
 /**
- * GET: Verificar estado del servicio Groq
+ * GET: informa si hay key. No llama a Groq: un completion de prueba gastaba cuota
+ * y podía marcar la IA como caída durante el cache del cliente.
  */
 export async function GET() {
-  try {
-    const isConfigured = Boolean(API_KEY)
+  const configured = Boolean(API_KEY)
 
-    if (!isConfigured) {
-      return NextResponse.json({
-        configured: false,
-        available: false,
-        model: MODEL_NAME,
-        provider: 'groq',
-        error: 'GROQ_API_KEY no configurada',
-      })
-    }
-
-    let lastError = 'Sin modelos disponibles'
-    for (const model of MODELS) {
-      const response = await fetch(GROQ_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${API_KEY}`,
-        },
-        body: JSON.stringify({
-          model,
-          messages: [{ role: 'user', content: 'Responde solo con OK' }],
-          max_tokens: 10,
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        lastError = `${model}: ${errorData.error?.message || `HTTP ${response.status}`}`
-        console.warn(lastError)
-        continue
-      }
-
-      return NextResponse.json({
-        configured: true,
-        available: true,
-        model,
-        provider: 'groq',
-      })
-    }
-
-    throw new Error(lastError)
-  } catch (error) {
-    console.error('Error en GET /api/chat:', error)
-
-    const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-    const isRateLimited = errorMessage.includes('429') || errorMessage.includes('rate')
-
-    return NextResponse.json(
-      {
-        configured: true,
-        available: false,
-        model: MODEL_NAME,
-        provider: 'groq',
-        error: isRateLimited
-          ? 'Sistema temporalmente ocupado. Intenta en unos segundos.'
-          : errorMessage,
-      },
-      { status: isRateLimited ? 429 : 500 },
-    )
-  }
+  return NextResponse.json({
+    configured,
+    available: configured,
+    model: MODEL_NAME,
+    provider: 'groq',
+    ...(configured ? {} : { error: 'GROQ_API_KEY no configurada' }),
+  })
 }
 
 /**
  * POST: Generar respuesta con Groq
  */
+function tooManyRequests(retryAfter: number) {
+  return NextResponse.json(
+    {
+      success: false,
+      response:
+        'El sistema está procesando muchas consultas. Esperá unos segundos e intentá de nuevo.',
+      error: 'Rate limited',
+    },
+    {
+      status: 429,
+      headers: { 'Retry-After': String(retryAfter) },
+    },
+  )
+}
+
 export async function POST(request: Request) {
   try {
     // Validar configuración
@@ -139,10 +98,11 @@ export async function POST(request: Request) {
     // Agregar historial si existe
     if (history && Array.isArray(history)) {
       for (const msg of history.slice(-6)) {
-        // Últimos 6 mensajes
+        const content = msg?.content || msg?.parts
+        if (typeof content !== 'string' || content.trim().length === 0) continue
         messages.push({
           role: msg.role === 'user' ? 'user' : 'assistant',
-          content: msg.content || msg.parts,
+          content: content.trim().slice(0, 2000),
         })
       }
     }
@@ -150,8 +110,14 @@ export async function POST(request: Request) {
     // Agregar la consulta actual
     messages.push({ role: 'user', content: query.trim() })
 
+    const rateLimit = consumeChatRateLimit(request)
+    if (!rateLimit.allowed) {
+      return tooManyRequests(rateLimit.retryAfter)
+    }
+
     // Llamar a Groq API con fallback de modelos
     let responseText = ''
+    let usedModel: string | null = null
     let lastError: Error | null = null
 
     for (const model of MODELS) {
@@ -190,6 +156,7 @@ export async function POST(request: Request) {
         responseText = data.choices?.[0]?.message?.content || ''
 
         if (responseText) {
+          usedModel = model
           console.log(`✅ Respuesta generada con modelo: ${model}`)
           break
         }
@@ -201,16 +168,17 @@ export async function POST(request: Request) {
       }
     }
 
-    // Si todos los modelos fallaron por rate limit
-    if (!responseText && lastError?.message === 'Rate limited') {
+    if (!responseText) {
+      const rateLimited = lastError?.message === 'Rate limited'
       return NextResponse.json(
         {
           success: false,
-          response:
-            '🔄 El sistema está procesando muchas consultas. Por favor, esperá unos segundos e intentá de nuevo.',
-          error: 'Rate limited en todos los modelos',
+          response: rateLimited
+            ? 'El sistema está procesando muchas consultas. Esperá unos segundos e intentá de nuevo.'
+            : 'Lo siento, hubo un error al procesar tu consulta. Por favor, intenta de nuevo o contacta a la municipalidad al 343-4973454.',
+          error: rateLimited ? 'Rate limited en todos los modelos' : 'Sin respuesta del modelo',
         },
-        { status: 429 },
+        { status: rateLimited ? 429 : 500 },
       )
     }
 
@@ -220,7 +188,7 @@ export async function POST(request: Request) {
       success: true,
       response: responseText,
       provider: 'groq',
-      model: MODEL_NAME,
+      model: usedModel,
     })
   } catch (error) {
     console.error('❌ Error en POST /api/chat:', error)
