@@ -239,6 +239,27 @@
   border-bottom-color: #076633 !important;
 }
 
+.react-chatbot-kit-chat-bot-message a.chatbot-link-btn {
+  display: inline-flex !important;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 14px !important;
+  color: #fff !important;
+  background: #076633 !important;
+  border: none !important;
+  border-bottom: none !important;
+  border-radius: 999px;
+  word-break: normal !important;
+  white-space: normal !important;
+  text-decoration: none !important;
+}
+
+.react-chatbot-kit-chat-bot-message a.chatbot-link-btn:hover {
+  color: #076633 !important;
+  background: #b6c544 !important;
+  border-bottom: none !important;
+}
+
 .react-chatbot-kit-chat-bot-message::before {
   display: none;
 }

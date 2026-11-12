@@ -23,7 +23,7 @@ const VERIFIED_INFORMATION = {
     habilitaciones: '3434537319',
     cav: '3436127013',
     deportes: '5493434658210',
-    punto_digital: '3434508085',
+    punto_digital: '3434503200',
     obras_privadas: '3434681033',
     area_mujer: '3435204239',
     tercera_edad: '3433027297',

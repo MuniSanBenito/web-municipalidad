@@ -171,7 +171,7 @@ export default function PageActividadesDeportivas() {
             <p className="text-base-content">Comunícate con el Área de Deportes.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434682745"
+                href="https://wa.me/5493434658210"
                 className="btn btn-success gap-2 text-success-content"
                 target="_blank"
                 rel="noopener noreferrer"

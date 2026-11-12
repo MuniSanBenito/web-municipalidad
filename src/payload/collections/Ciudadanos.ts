@@ -1,37 +1,15 @@
-import type { Ciudadano } from '@/payload-types'
-import type { Access, CollectionConfig, FieldAccess } from 'payload'
+import type { CollectionConfig } from 'payload'
 import {
-  isGestorCiudadanoOrAdminCollectionAccess,
-  isGestorHabilitacionesOrAdminCollectionAccess,
-} from '../access/collection'
+  ciudadanoCreateAccess,
+  ciudadanoDeleteAccess,
+  ciudadanoReadAccess,
+  ciudadanoStaffFieldAccess,
+  ciudadanoUpdateAccess,
+} from '../access/ciudadanos'
 import { HIDE_API_URL } from '../config'
 
 export const PERMISOS_CIUDADANO = ['HABILITACIONES'] as const
 export type PermisoCiudadano = (typeof PERMISOS_CIUDADANO)[number]
-
-const isMyselfGestorHabilitacionesOrAdmin: Access<Ciudadano> = ({ req, id }) => {
-  if (req.user?.collection === 'ciudadanos') {
-    return req.user.id === id
-  }
-
-  return (
-    req.user?.rol.includes('GESTOR CIUDADANO') ||
-    req.user?.rol.includes('HABILITACIONES') ||
-    req.user?.rol.includes('ADMIN') ||
-    false
-  )
-}
-
-const isGestorHabilitacionesOrAdminFieldAccess: FieldAccess<Ciudadano> = ({ req }) => {
-  if (req.user?.collection !== 'users') return false
-
-  return (
-    req.user?.rol.includes('GESTOR CIUDADANO') ||
-    req.user?.rol.includes('HABILITACIONES') ||
-    req.user?.rol.includes('ADMIN') ||
-    false
-  )
-}
 
 export const Ciudadanos: CollectionConfig = {
   slug: 'ciudadanos',
@@ -45,10 +23,10 @@ export const Ciudadanos: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
   },
   access: {
-    create: isGestorHabilitacionesOrAdminCollectionAccess,
-    read: isMyselfGestorHabilitacionesOrAdmin,
-    update: isMyselfGestorHabilitacionesOrAdmin,
-    delete: isGestorCiudadanoOrAdminCollectionAccess,
+    create: ciudadanoCreateAccess,
+    read: ciudadanoReadAccess,
+    update: ciudadanoUpdateAccess,
+    delete: ciudadanoDeleteAccess,
   },
   fields: [
     {
@@ -60,8 +38,8 @@ export const Ciudadanos: CollectionConfig = {
         position: 'sidebar',
       },
       access: {
-        create: isGestorHabilitacionesOrAdminFieldAccess,
-        update: isGestorHabilitacionesOrAdminFieldAccess,
+        create: ciudadanoStaffFieldAccess,
+        update: ciudadanoStaffFieldAccess,
       },
     },
     {
@@ -122,9 +100,9 @@ export const Ciudadanos: CollectionConfig = {
           'Módulos habilitados para este ciudadano en el portal. Asignar HABILITACIONES para alta o renovación comercial.',
       },
       access: {
-        create: isGestorHabilitacionesOrAdminFieldAccess,
+        create: ciudadanoStaffFieldAccess,
         read: () => true,
-        update: isGestorHabilitacionesOrAdminFieldAccess,
+        update: ciudadanoStaffFieldAccess,
       },
     },
     {

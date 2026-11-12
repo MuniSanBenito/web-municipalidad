@@ -28,7 +28,7 @@ export default async function ResultadosPorCampanaPage({ params }: PageProps) {
   }
 
   const { campana, resultados } = data
-  const actividades = ['deportes', 'arboles', 'plaza', 'presupuesto', 'quiz', 'caza-tesoro'] as const
+  const actividades = ['deportes', 'arboles', 'plaza', 'presupuesto', 'ruleta', 'quiz', 'caza-tesoro'] as const
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200 pb-16">
@@ -53,9 +53,14 @@ export default async function ResultadosPorCampanaPage({ params }: PageProps) {
           </div>
         ) : (
           actividades.map((actividad) => {
-            const items = resultados
-              .filter((r) => r.actividad === actividad)
-              .sort((a, b) => (b.votos ?? 0) - (a.votos ?? 0))
+            const grouped = new Map<string, { id: string; opcionNombre: string; votos: number }>()
+            for (const r of resultados) {
+              if (r.actividad !== actividad) continue
+              const prev = grouped.get(r.opcionId)
+              if (prev) prev.votos += r.votos ?? 0
+              else grouped.set(r.opcionId, { id: r.opcionId, opcionNombre: r.opcionNombre, votos: r.votos ?? 0 })
+            }
+            const items = [...grouped.values()].sort((a, b) => b.votos - a.votos)
             if (items.length === 0) return null
             const total = items.reduce((s, r) => s + (r.votos ?? 0), 0)
             const meta = getGameMetadata(actividad)

@@ -1,4 +1,5 @@
 // src/components/chatbot/widgets/CustomBotMessage.tsx
+import Link from 'next/link'
 import React from 'react'
 
 interface CustomBotMessageProps {
@@ -29,6 +30,13 @@ const PATTERNS: Array<{
     regex: /\[([^\]]+)\]\(([^)\s]+)\)/g,
     build: (m) => ({ type: 'mdLink', text: m[1], url: m[2] }),
   },
+  // Rutas internas sueltas: /tramites/actividades-deportivas
+  {
+    name: 'mdLink',
+    regex:
+      /(\/(?:tramites|agenda|habilitaciones|nuestra-ciudad|gobierno|noticias|transparencia|participacion)(?:\/[a-z0-9\-._~%]*)*)/gi,
+    build: (m) => ({ type: 'mdLink', text: etiquetaDeRuta(m[1]), url: m[1] }),
+  },
   // Negritas **texto** (no captura ** vacíos ni multilínea)
   {
     name: 'bold',
@@ -46,6 +54,16 @@ const PATTERNS: Array<{
     name: 'email',
     regex: /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/g,
     build: (m) => ({ type: 'email', value: m[1] }),
+  },
+  // WhatsApp suelto: 5493434658210 o 3434658210
+  {
+    name: 'mdLink',
+    regex: /\b((?:549)?343\d{7})\b/g,
+    build: (m) => ({
+      type: 'mdLink',
+      text: m[1],
+      url: `https://wa.me/${m[1].startsWith('54') ? m[1] : `549${m[1]}`}`,
+    }),
   },
 ]
 
@@ -90,7 +108,14 @@ const linkStyle: React.CSSProperties = {
   fontWeight: 600,
 }
 
-function renderToken(token: Token, key: number): React.ReactNode {
+function etiquetaDeRuta(url: string): string {
+  const ultimo = url.split('/').filter(Boolean).pop() || 'página'
+  return ultimo
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (letra) => letra.toUpperCase())
+}
+
+function renderToken(token: Token, key: string): React.ReactNode {
   switch (token.type) {
     case 'text':
       // Preservamos saltos de línea convirtiendo \n en <br/>
@@ -100,25 +125,39 @@ function renderToken(token: Token, key: number): React.ReactNode {
           {i < arr.length - 1 && <br />}
         </React.Fragment>
       ))
-    case 'bold':
+    case 'bold': {
+      const internos = tokenize(token.value)
+      const soloLink = internos.length === 1 && internos[0].type === 'mdLink'
+      if (soloLink) return renderToken(internos[0], key)
       return (
         <strong key={`b-${key}`} style={{ fontWeight: 700 }}>
-          {token.value}
+          {internos.map((interno, i) => renderToken(interno, `${key}-${i}`))}
         </strong>
       )
-    case 'mdLink':
+    }
+    case 'mdLink': {
+      const esInterno = token.url.startsWith('/')
+      const className = esInterno ? 'chatbot-link-btn' : 'chatbot-link'
+      if (esInterno) {
+        return (
+          <Link key={`mdl-${key}`} href={token.url} className={className}>
+            {token.text}
+          </Link>
+        )
+      }
       return (
         <a
           key={`mdl-${key}`}
           href={token.url}
-          target={token.url.startsWith('http') ? '_blank' : undefined}
+          target="_blank"
           rel="noopener noreferrer"
-          className="chatbot-link"
+          className={className}
           style={linkStyle}
         >
           {token.text}
         </a>
       )
+    }
     case 'url':
       return (
         <a
@@ -152,7 +191,7 @@ function renderToken(token: Token, key: number): React.ReactNode {
  */
 const parseMessage = (text: string): React.ReactNode[] => {
   if (!text) return []
-  return tokenize(text).map((tok, i) => renderToken(tok, i))
+  return tokenize(text).map((tok, i) => renderToken(tok, String(i)))
 }
 
 const CustomBotMessage: React.FC<CustomBotMessageProps> = ({ message }) => {

@@ -167,7 +167,7 @@ export default function PageTalleresCulturales() {
             <p className="text-base-content">Comunícate directamente con nosotros.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434508085"
+                href="https://wa.me/5493434503200"
                 className="btn btn-success text-success-content gap-2"
                 target="_blank"
                 rel="noopener noreferrer"

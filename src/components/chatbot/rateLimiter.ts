@@ -1,7 +1,7 @@
 // src/components/chatbot/rateLimiter.ts
 
 /**
- * Sistema de Rate Limiting para proteger la API de Gemini
+ * Sistema de Rate Limiting para proteger la API de Groq
  * Evita costos excesivos y abuso del servicio
  */
 

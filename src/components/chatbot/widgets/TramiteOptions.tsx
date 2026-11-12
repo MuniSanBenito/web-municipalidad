@@ -72,6 +72,21 @@ const TramiteOptions: React.FC<TramiteOptionsProps> = ({ actionProvider }) => {
       icon: '⚽',
       action: () => actionProvider.handleActividadesDeportivas(),
     },
+    {
+      text: 'Producción y Empleo',
+      icon: '💼',
+      action: () => actionProvider.handleProduccionEmpleo(),
+    },
+    {
+      text: 'Primera Infancia',
+      icon: '👶',
+      action: () => actionProvider.handleEpi(),
+    },
+    {
+      text: 'Transporte y SUBE',
+      icon: '🚌',
+      action: () => actionProvider.handleTransporte(),
+    },
   ]
 
   const handleOptionClick = useCallback((index: number, action: () => void) => {

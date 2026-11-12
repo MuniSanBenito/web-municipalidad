@@ -50,6 +50,10 @@ export function initConversationHistory(): ConversationHistory {
         return createNewHistory()
       }
 
+      for (const entry of parsed.entries) {
+        if ((entry.provider as string) === 'gemini') entry.provider = 'groq'
+      }
+
       currentHistory = parsed
       console.log(`📝 Historial recuperado: ${parsed.entries.length} mensajes`)
       return parsed

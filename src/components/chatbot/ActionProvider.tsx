@@ -178,6 +178,18 @@ const TRAMITES_CONFIG: Record<string, TramiteConfig> = {
     url: '', // Se deja vacío ya que la IA contestará con la info de forma directa
     etiquetaBoton: '',
   },
+  epi: {
+    nombre: 'Espacio de Primera Infancia',
+    descripcion: 'Información sobre el Espacio de Primera Infancia:',
+    url: '/tramites/epi',
+    etiquetaBoton: 'Ver Primera Infancia',
+  },
+  transporte: {
+    nombre: 'Transporte y SUBE',
+    descripcion: 'Información sobre colectivos y el punto SUBE:',
+    url: '/nuestra-ciudad/lineas-colectivos',
+    etiquetaBoton: 'Ver Transporte',
+  },
 }
 
 /**
@@ -266,6 +278,46 @@ class ActionProvider {
     if (config) {
       this._createLinkedMessage(config.descripcion, config.etiquetaBoton, config.url)
     }
+  }
+
+  handleLicencia() {
+    this.handleTramite('licencia')
+  }
+  handleRentas() {
+    this.handleTramite('rentas')
+  }
+  handleObrasPrivadas() {
+    this.handleTramite('obrasPrivadas')
+  }
+  handleHabilitaciones() {
+    this.handleTramite('habilitaciones')
+  }
+  handleCatastro() {
+    this.handleTramite('catastro')
+  }
+  handleMesaDeEntrada() {
+    this.handleTramite('mesaDeEntrada')
+  }
+  handleAreaMujer() {
+    this.handleTramite('areaMujer')
+  }
+  handleTerceraEdadDiscapacidad() {
+    this.handleTramite('terceraEdad')
+  }
+  handleTalleresCulturales() {
+    this.handleTramite('talleresCulturales')
+  }
+  handleActividadesDeportivas() {
+    this.handleTramite('actividadesDeportivas')
+  }
+  handleProduccionEmpleo() {
+    this.handleTramite('produccionEmpleo')
+  }
+  handleEpi() {
+    this.handleTramite('epi')
+  }
+  handleTransporte() {
+    this.handleTramite('transporte')
   }
 
   greet(): void {

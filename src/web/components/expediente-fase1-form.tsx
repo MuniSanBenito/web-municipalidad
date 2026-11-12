@@ -419,8 +419,10 @@ export function ExpedienteFase1Form({
               deberá adjuntarlo.
             </p>
             <a
-              href="/formularios/permiso-de-uso.pdf"
-              download
+              href="/documents/FORMULARIO-PERMISO-DE-USO.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              download="FORMULARIO-PERMISO-DE-USO.pdf"
               className="btn btn-primary btn-sm w-fit gap-2"
             >
               <IconDownload size={16} />

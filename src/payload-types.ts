@@ -99,6 +99,7 @@ export interface Config {
     arboles: Arbole;
     'opciones-presupuesto': OpcionesPresupuesto;
     'elementos-plaza': ElementosPlaza;
+    premios: Premio;
     'resultados-campana': ResultadosCampana;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -144,6 +145,7 @@ export interface Config {
     arboles: ArbolesSelect<false> | ArbolesSelect<true>;
     'opciones-presupuesto': OpcionesPresupuestoSelect<false> | OpcionesPresupuestoSelect<true>;
     'elementos-plaza': ElementosPlazaSelect<false> | ElementosPlazaSelect<true>;
+    premios: PremiosSelect<false> | PremiosSelect<true>;
     'resultados-campana': ResultadosCampanaSelect<false> | ResultadosCampanaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -1381,7 +1383,7 @@ export interface ChatbotConversation {
         role: 'user' | 'assistant';
         content: string;
         timestamp: number;
-        provider?: ('knowledge-base' | 'gemini' | 'fallback') | null;
+        provider?: ('knowledge-base' | 'groq' | 'fallback') | null;
         topic?:
           | (
               | 'rentas'
@@ -1467,6 +1469,7 @@ export interface Campana {
   arbolesActivo?: boolean | null;
   plazaActivo?: boolean | null;
   presupuestoActivo?: boolean | null;
+  ruletaActivo?: boolean | null;
   publico: 'niños' | 'adultos' | 'mixto';
   sessionUnica?: boolean | null;
   resultadosPublicos?: boolean | null;
@@ -1573,6 +1576,37 @@ export interface ElementosPlaza {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "premios".
+ */
+export interface Premio {
+  id: string;
+  nombre: string;
+  /**
+   * Se muestra en la ruleta, ej: 🎁
+   */
+  emoji?: string | null;
+  /**
+   * Se muestra al ganar el premio
+   */
+  imagen?: (string | null) | Imagen;
+  /**
+   * Se descuenta automáticamente cada vez que alguien gana este premio
+   */
+  stock: number;
+  /**
+   * Un premio con peso 2 sale el doble de veces que uno con peso 1
+   */
+  peso: number;
+  orden?: number | null;
+  /**
+   * Si se deja vacío, el premio estará disponible para todas las campañas
+   */
+  campana?: (string | null) | Campana;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "resultados-campana".
  */
 export interface ResultadosCampana {
@@ -1582,7 +1616,7 @@ export interface ResultadosCampana {
    * Identificador único de la sesión de juego
    */
   sessionId: string;
-  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'quiz' | 'caza-tesoro';
+  actividad: 'deportes' | 'arboles' | 'plaza' | 'presupuesto' | 'ruleta' | 'quiz' | 'caza-tesoro';
   edad?: ('niño' | 'adulto') | null;
   /**
    * ID o nombre de la opción seleccionada
@@ -1844,6 +1878,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'elementos-plaza';
         value: string | ElementosPlaza;
+      } | null)
+    | ({
+        relationTo: 'premios';
+        value: string | Premio;
       } | null)
     | ({
         relationTo: 'resultados-campana';
@@ -2649,6 +2687,7 @@ export interface CampanasSelect<T extends boolean = true> {
   arbolesActivo?: T;
   plazaActivo?: T;
   presupuestoActivo?: T;
+  ruletaActivo?: T;
   publico?: T;
   sessionUnica?: T;
   resultadosPublicos?: T;
@@ -2705,6 +2744,21 @@ export interface ElementosPlazaSelect<T extends boolean = true> {
   emoji?: T;
   ancho?: T;
   alto?: T;
+  orden?: T;
+  campana?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "premios_select".
+ */
+export interface PremiosSelect<T extends boolean = true> {
+  nombre?: T;
+  emoji?: T;
+  imagen?: T;
+  stock?: T;
+  peso?: T;
   orden?: T;
   campana?: T;
   updatedAt?: T;

@@ -1,6 +1,6 @@
 // src/components/chatbot/chatService.ts
 /**
- * Cliente para el servicio de Chat (Groq + Llama 3.3)
+ * Cliente para el servicio de Chat (Groq)
  * Llama a la API Route /api/chat para mantener la API Key segura en el servidor
  */
 
@@ -53,7 +53,7 @@ async function checkChatStatus(): Promise<StatusPayload> {
       const fallback: StatusPayload = {
         configured: false,
         available: false,
-        model: 'llama-3.3-70b-versatile',
+        model: 'openai/gpt-oss-120b',
         provider: 'groq',
         error: error instanceof Error ? error.message : 'Error de conexión',
       }
@@ -84,7 +84,7 @@ export async function isChatConfigured(): Promise<boolean> {
 }
 
 /**
- * Genera una respuesta usando el servicio de Chat (Groq/Llama)
+ * Genera una respuesta usando Groq
  */
 export async function generateChatResponse(
   userQuery: string,
@@ -92,7 +92,7 @@ export async function generateChatResponse(
 ): Promise<string> {
   try {
     if (DEBUG_MODE) {
-      console.log('🤖 Generando respuesta con Llama 3.3...')
+      console.log('🤖 Generando respuesta con Groq...')
     }
 
     const response = await fetch(API_ENDPOINT, {
@@ -112,7 +112,7 @@ export async function generateChatResponse(
     }
 
     if (DEBUG_MODE) {
-      console.log('✅ Respuesta de Llama generada:', data.response.substring(0, 100) + '...')
+      console.log('✅ Respuesta de Groq generada:', data.response.substring(0, 100) + '...')
     }
 
     return data.response

@@ -1,9 +1,10 @@
 'use client'
 
-import { submitResults } from '@/participacion/actions'
+import { spinRoulette, submitResults } from '@/participacion/actions'
 import { BudgetScreen } from '@/participacion/components/screens/budget-screen'
 import { CelebrationScreen } from '@/participacion/components/screens/celebration-screen'
 import { PlazaScreen } from '@/participacion/components/screens/plaza-screen'
+import { RouletteScreen } from '@/participacion/components/screens/roulette-screen'
 import { SportsScreen } from '@/participacion/components/screens/sports-screen'
 import { TreesScreen } from '@/participacion/components/screens/trees-screen'
 import { WelcomeScreen } from '@/participacion/components/screens/welcome-screen'
@@ -19,21 +20,21 @@ interface GameShellProps {
 }
 
 export function GameShell({ data }: GameShellProps) {
-  const { campaign, sports, trees, budgetOptions, plazaElements } = data
-  const stepper = useStepper()
-  const { recordVote, setVotes, getPayload } = useGameSession(campaign.slug)
-  const { smallBurst } = useConfetti()
-
-  const [completed, setCompleted] = useState(false)
-
-  const ACCENT_COLORS = ['#5A7A3E', '#D98A4E', '#F4B840', '#7AC2D4']
-
+  const { campaign, sports, trees, budgetOptions, plazaElements, prizes } = data
   const activeSteps: ActiveSteps = {
     sports: campaign.deportesActivo ?? false,
     trees: campaign.arbolesActivo ?? false,
     plaza: campaign.plazaActivo ?? false,
     budget: campaign.presupuestoActivo ?? false,
+    roulette: campaign.ruletaActivo ?? false,
   }
+  const stepper = useStepper(activeSteps)
+  const { sessionId, beginParticipation, setVotes, getPayload } = useGameSession(campaign.slug)
+  const { smallBurst, burst } = useConfetti()
+
+  const [completed, setCompleted] = useState(false)
+
+  const ACCENT_COLORS = ['#5A7A3E', '#D98A4E', '#F4B840', '#7AC2D4']
 
   const handleFinish = useCallback(async () => {
     const payload = getPayload()
@@ -46,11 +47,11 @@ export function GameShell({ data }: GameShellProps) {
 
   const handleSportSelect = useCallback(
     (sport: Sport) => {
-      recordVote('deportes', sport.id, sport.nombre)
+      setVotes('deportes', [{ opcionId: sport.id, opcionNombre: sport.nombre, votos: 1 }])
       smallBurst(0.5, 0.5, ACCENT_COLORS)
       setCompleted(true)
     },
-    [recordVote, smallBurst, campaign.colorPrincipal],
+    [setVotes, smallBurst, campaign.colorPrincipal],
   )
 
   const handleTreeSelect = useCallback(
@@ -78,6 +79,21 @@ export function GameShell({ data }: GameShellProps) {
     [setVotes],
   )
 
+  const handleSpin = useCallback(() => spinRoulette(campaign.slug, sessionId), [campaign.slug, sessionId])
+
+  const handleSpinResult = useCallback(
+    (prize: { id: string } | null) => {
+      if (prize) burst(ACCENT_COLORS)
+      setCompleted(true)
+    },
+    [burst],
+  )
+
+  const handleStart = useCallback(() => {
+    beginParticipation()
+    stepper.next()
+  }, [beginParticipation, stepper])
+
   const handleRestart = useCallback(() => {
     window.location.reload()
   }, [])
@@ -97,6 +113,7 @@ export function GameShell({ data }: GameShellProps) {
     activeSteps.trees,
     activeSteps.plaza,
     activeSteps.budget,
+    activeSteps.roulette,
   ].filter(Boolean).length
 
   return (
@@ -105,7 +122,7 @@ export function GameShell({ data }: GameShellProps) {
         {stepper.step === 'welcome' && (
           <StepLayout key="welcome" stepKey="welcome" showProgress={false}>
             <WelcomeScreen
-              onStart={stepper.next}
+              onStart={handleStart}
               barrio={campaign.barrio}
               imagen={campaign.imagen}
               colorPrincipal={campaign.colorPrincipal}
@@ -190,6 +207,28 @@ export function GameShell({ data }: GameShellProps) {
               options={budgetOptions}
               colorPrincipal={campaign.colorPrincipal}
               onAllocate={handleBudgetAllocate}
+            />
+            {completed && (
+              <ContinueButton onClick={handleNext} />
+            )}
+          </StepLayout>
+        )}
+
+        {stepper.step === 'roulette' && activeSteps.roulette && (
+          <StepLayout
+            key="roulette"
+            stepKey="roulette"
+            showProgress={true}
+            progress={stepper.progress}
+            stepIndex={stepper.stepIndex}
+            totalSteps={stepper.totalSteps}
+            onBack={handleBack}
+          >
+            <RouletteScreen
+              prizes={prizes}
+              colors={ACCENT_COLORS}
+              onSpin={handleSpin}
+              onResult={handleSpinResult}
             />
             {completed && (
               <ContinueButton onClick={handleNext} />

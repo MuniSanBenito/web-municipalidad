@@ -128,7 +128,7 @@ export default function PageCICBarrioSanPedro() {
             <p className="text-base-content">Comunicate con nosotros por WhatsApp.</p>
             <div className="card-actions mt-2">
               <a
-                href="https://wa.me/5493434508085"
+                href="https://wa.me/5493434503200"
                 className="btn btn-success gap-2 text-success-content"
                 target="_blank"
                 rel="noopener noreferrer"

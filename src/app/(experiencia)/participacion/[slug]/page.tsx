@@ -37,11 +37,12 @@ export default async function ParticipacionPage({ params }: PageProps) {
 
   const campaignId = campaign.id
 
-  const [sportsRes, treesRes, budgetRes, plazaRes] = await Promise.all([
+  const [sportsRes, treesRes, budgetRes, plazaRes, prizesRes] = await Promise.all([
     payload.find({ collection: 'deportes', limit: 50, sort: 'orden' }),
     payload.find({ collection: 'arboles', limit: 50, sort: 'orden' }),
     payload.find({ collection: 'opciones-presupuesto', limit: 50, sort: 'orden' }),
     payload.find({ collection: 'elementos-plaza', limit: 50, sort: 'orden' }),
+    payload.find({ collection: 'premios', limit: 50, sort: 'orden' }),
   ])
 
   const data: CampaignData = {
@@ -50,6 +51,7 @@ export default async function ParticipacionPage({ params }: PageProps) {
     trees: treesRes.docs.filter((t) => belongsToCampaign(t, campaignId)),
     budgetOptions: budgetRes.docs.filter((b) => belongsToCampaign(b, campaignId)),
     plazaElements: plazaRes.docs.filter((e) => belongsToCampaign(e, campaignId)),
+    prizes: prizesRes.docs.filter((p) => belongsToCampaign(p, campaignId) && (p.peso ?? 0) > 0),
   }
 
   return <GameShell data={data} />
