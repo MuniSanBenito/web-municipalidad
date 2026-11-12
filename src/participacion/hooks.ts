@@ -1,20 +1,25 @@
 'use client'
 
-import type { StepId } from '@/participacion/types'
+import type { ActiveSteps, StepId } from '@/participacion/types'
 import confetti from 'canvas-confetti'
 import { useCallback, useMemo, useState } from 'react'
 
-const ALL_STEPS: StepId[] = ['welcome', 'sports', 'trees', 'plaza', 'budget', 'celebration']
+const ACTIVITY_STEPS: (keyof ActiveSteps & StepId)[] = ['sports', 'trees', 'plaza', 'budget', 'roulette']
 
-export function useStepper() {
+export function useStepper(activeSteps: ActiveSteps) {
+  const stepsKey = ACTIVITY_STEPS.filter((s) => activeSteps[s]).join(',')
+  const steps = useMemo<StepId[]>(
+    () => ['welcome', ...(stepsKey ? (stepsKey.split(',') as StepId[]) : []), 'celebration'],
+    [stepsKey],
+  )
   const [currentStep, setCurrentStep] = useState(0)
   const [startTime] = useState(() => Date.now())
   const [endTime, setEndTime] = useState<number | null>(null)
 
-  const step = ALL_STEPS[currentStep]
-  const totalSteps = ALL_STEPS.length
+  const step = steps[currentStep]
+  const totalSteps = steps.length
   const isFirstStep = currentStep === 0
-  const isLastStep = currentStep === ALL_STEPS.length - 1
+  const isLastStep = currentStep === steps.length - 1
 
   const progress = useMemo(() => {
     if (currentStep === 0) return 0
@@ -22,17 +27,17 @@ export function useStepper() {
   }, [currentStep, totalSteps])
 
   const next = useCallback(() => {
-    setCurrentStep((prev) => (prev >= ALL_STEPS.length - 1 ? prev : prev + 1))
-  }, [])
+    setCurrentStep((prev) => (prev >= steps.length - 1 ? prev : prev + 1))
+  }, [steps])
 
   const back = useCallback(() => {
     setCurrentStep((prev) => (prev <= 0 ? prev : prev - 1))
   }, [])
 
   const goTo = useCallback((stepId: StepId) => {
-    const idx = ALL_STEPS.indexOf(stepId)
+    const idx = steps.indexOf(stepId)
     if (idx >= 0) setCurrentStep(idx)
-  }, [])
+  }, [steps])
 
   const finish = useCallback(() => setEndTime(Date.now()), [])
 

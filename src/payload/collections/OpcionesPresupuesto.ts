@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isComunicacionOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+import { revalidateParticipacionHooks } from '../hooks/revalidate-participacion'
 
 export const OpcionesPresupuesto: CollectionConfig = {
   slug: 'opciones-presupuesto',
@@ -19,6 +20,7 @@ export const OpcionesPresupuesto: CollectionConfig = {
     hideAPIURL: HIDE_API_URL,
     group: 'Participación',
   },
+  hooks: revalidateParticipacionHooks,
   fields: [
     {
       type: 'text',

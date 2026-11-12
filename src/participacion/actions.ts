@@ -1,8 +1,111 @@
 'use server'
 
-import type { AnalyticsPayload } from '@/participacion/types'
+import type { AnalyticsPayload, SpinResult } from '@/participacion/types'
 import config from '@/payload.config'
+import type { Premio } from '@/payload-types'
+import type { MongooseAdapter } from '@payloadcms/db-mongodb'
 import { getPayload } from 'payload'
+
+function pickWeighted(prizes: Premio[]): Premio | null {
+  const total = prizes.reduce((sum, p) => sum + (p.peso ?? 0), 0)
+  if (total <= 0) return null
+  let roll = Math.random() * total
+  for (const prize of prizes) {
+    roll -= prize.peso ?? 0
+    if (roll < 0) return prize
+  }
+  return prizes[prizes.length - 1]
+}
+
+export async function spinRoulette(campaignSlug: string, sessionId: string): Promise<SpinResult> {
+  try {
+    if (!campaignSlug || !sessionId) {
+      return { success: false, error: 'Datos inválidos' }
+    }
+
+    const payloadInstance = await getPayload({ config })
+
+    const campanaRes = await payloadInstance.find({
+      collection: 'campanas',
+      where: { slug: { equals: campaignSlug } },
+      limit: 1,
+    })
+    const campana = campanaRes.docs[0]
+    if (!campana || campana.estado !== 'activa' || !campana.ruletaActivo) {
+      return { success: false, error: 'Campaña no encontrada o sin ruleta' }
+    }
+
+    const previous = await payloadInstance.find({
+      collection: 'resultados-campana',
+      where: {
+        and: [
+          { 'campana.id': { equals: campana.id } },
+          { sessionId: { equals: sessionId } },
+          { actividad: { equals: 'ruleta' } },
+        ],
+      },
+      limit: 1,
+      overrideAccess: true,
+    })
+    if (previous.docs.length > 0) {
+      const doc = previous.docs[0]
+      return { success: true, prize: { id: doc.opcionId, nombre: doc.opcionNombre }, repetido: true }
+    }
+
+    const prizesRes = await payloadInstance.find({
+      collection: 'premios',
+      where: {
+        and: [
+          { stock: { greater_than: 0 } },
+          { peso: { greater_than: 0 } },
+          { or: [{ campana: { equals: campana.id } }, { campana: { exists: false } }, { campana: { equals: null } }] },
+        ],
+      },
+      limit: 100,
+      depth: 0,
+    })
+
+    const premiosModel = (payloadInstance.db as MongooseAdapter).collections['premios']
+    let candidates = prizesRes.docs
+
+    while (candidates.length > 0) {
+      const prize = pickWeighted(candidates)
+      if (!prize) break
+
+      // Descuento atómico: si otro participante se llevó la última unidad, no matchea y se reintenta
+      const updated = await premiosModel.findOneAndUpdate(
+        { _id: prize.id, stock: { $gt: 0 } },
+        { $inc: { stock: -1 } },
+        { new: true },
+      )
+
+      if (!updated) {
+        candidates = candidates.filter((p) => p.id !== prize.id)
+        continue
+      }
+
+      await payloadInstance.create({
+        collection: 'resultados-campana',
+        overrideAccess: true,
+        data: {
+          campana: campana.id,
+          sessionId,
+          actividad: 'ruleta',
+          opcionId: prize.id,
+          opcionNombre: prize.nombre,
+          votos: 1,
+        },
+      })
+
+      return { success: true, prize: { id: prize.id, nombre: prize.nombre }, repetido: false }
+    }
+
+    return { success: false, agotado: true, error: 'Se agotaron los premios' }
+  } catch (error) {
+    console.error('[spinRoulette] Error:', error)
+    return { success: false, error: 'No se pudo girar la ruleta' }
+  }
+}
 
 export async function submitResults(payload: AnalyticsPayload) {
   try {
@@ -33,7 +136,11 @@ export async function submitResults(payload: AnalyticsPayload) {
       const previous = await payloadInstance.find({
         collection: 'resultados-campana',
         where: {
-          and: [{ 'campana.id': { equals: campanaId } }, { sessionId: { equals: sessionId } }],
+          and: [
+            { 'campana.id': { equals: campanaId } },
+            { sessionId: { equals: sessionId } },
+            { actividad: { not_equals: 'ruleta' } },
+          ],
         },
         limit: 1,
         overrideAccess: true,

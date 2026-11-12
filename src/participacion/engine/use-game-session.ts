@@ -1,13 +1,20 @@
 'use client'
 
-import { getEdad, getSessionId, setEdad as setStoredEdad } from '@/participacion/engine/session-store'
+import { getEdad, getSessionId, setEdad as setStoredEdad, startNewSession } from '@/participacion/engine/session-store'
 import type { AnalyticsEntry, AnalyticsPayload } from '@/participacion/types'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 export function useGameSession(campaignSlug: string) {
-  const sessionId = useMemo(() => getSessionId(campaignSlug), [campaignSlug])
+  const [sessionId, setSessionId] = useState(() => getSessionId(campaignSlug))
+  const participationStarted = useRef(false)
   const [edad, setEdadState] = useState<string | null>(getEdad(campaignSlug))
   const entriesRef = useRef<AnalyticsEntry[]>([])
+
+  const beginParticipation = useCallback(() => {
+    if (participationStarted.current) return
+    participationStarted.current = true
+    setSessionId(startNewSession(campaignSlug))
+  }, [campaignSlug])
 
   const setEdad = useCallback(
     (value: string | null) => {
@@ -52,5 +59,5 @@ export function useGameSession(campaignSlug: string) {
     [campaignSlug, sessionId, edad],
   )
 
-  return { sessionId, edad, setEdad, recordVote, resetActivity, setVotes, getPayload }
+  return { sessionId, beginParticipation, edad, setEdad, recordVote, resetActivity, setVotes, getPayload }
 }
