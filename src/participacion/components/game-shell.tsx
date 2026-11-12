@@ -29,7 +29,7 @@ export function GameShell({ data }: GameShellProps) {
     roulette: campaign.ruletaActivo ?? false,
   }
   const stepper = useStepper(activeSteps)
-  const { sessionId, setVotes, getPayload } = useGameSession(campaign.slug)
+  const { sessionId, beginParticipation, setVotes, getPayload } = useGameSession(campaign.slug)
   const { smallBurst, burst } = useConfetti()
 
   const [completed, setCompleted] = useState(false)
@@ -89,6 +89,11 @@ export function GameShell({ data }: GameShellProps) {
     [burst],
   )
 
+  const handleStart = useCallback(() => {
+    beginParticipation()
+    stepper.next()
+  }, [beginParticipation, stepper])
+
   const handleRestart = useCallback(() => {
     window.location.reload()
   }, [])
@@ -117,7 +122,7 @@ export function GameShell({ data }: GameShellProps) {
         {stepper.step === 'welcome' && (
           <StepLayout key="welcome" stepKey="welcome" showProgress={false}>
             <WelcomeScreen
-              onStart={stepper.next}
+              onStart={handleStart}
               barrio={campaign.barrio}
               imagen={campaign.imagen}
               colorPrincipal={campaign.colorPrincipal}

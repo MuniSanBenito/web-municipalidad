@@ -20,6 +20,14 @@ export function getSessionId(campaignSlug: string): string {
   return id
 }
 
+export function startNewSession(campaignSlug: string): string {
+  const id = generateId()
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(SESSION_KEY(campaignSlug), id)
+  }
+  return id
+}
+
 export function getEdad(campaignSlug: string): string | null {
   if (typeof window === 'undefined') return null
   return window.localStorage.getItem(EDAD_KEY(campaignSlug))
