@@ -32,6 +32,17 @@ export function comercioEstaVencido(fechaVencimiento?: string | null): boolean {
   return new Date(fechaVencimiento) < new Date()
 }
 
+/** localizacion de Payload es [longitud, latitud]. */
+export function coordenadasComercio(localizacion: unknown): { lat: number; lng: number } | null {
+  if (!Array.isArray(localizacion) || localizacion.length < 2) return null
+  const lng = localizacion[0]
+  const lat = localizacion[1]
+  if (typeof lat !== 'number' || typeof lng !== 'number') return null
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null
+  return { lat, lng }
+}
+
 export function comercioEstaVigente(opts: {
   fechaBaja?: string | null
   fechaVencimiento?: string | null

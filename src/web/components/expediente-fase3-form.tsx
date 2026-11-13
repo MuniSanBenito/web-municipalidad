@@ -1,9 +1,5 @@
 import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
-import {
-  IconCircleCheck,
-  IconClock,
-  IconFileText,
-} from '@tabler/icons-react'
+import { IconCircleCheck, IconClock, IconFileText } from '@tabler/icons-react'
 
 interface ComercioData {
   id: string
@@ -15,6 +11,7 @@ interface ComercioData {
   fechaBaja?: string | null
   direccion: string
   urlValidacion?: string | null
+  numeroHabilitacion?: string | null
   rubro?: { nombre: string } | string | null
 }
 
@@ -23,7 +20,6 @@ interface Props {
   notaCiudadano?: string | null
   comercio?: ComercioData | null
 }
-
 
 export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: Props) {
   const isAprobado = faseIIIEstado === 'APROBADO'
@@ -85,7 +81,7 @@ export function ExpedienteFase3Form({ faseIIIEstado, notaCiudadano, comercio }: 
           fechaVencimiento={comercio.fechaVencimiento}
           fechaBaja={comercio.fechaBaja}
           urlValidacion={comercio.urlValidacion}
-          numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}
+          numeroHabilitacion={comercio.numeroHabilitacion ?? null}
           rubroNombre={rubroNombre}
           showActions
         />

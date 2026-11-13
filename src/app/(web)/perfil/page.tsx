@@ -3,14 +3,14 @@ import { CurriculumPDFDownload } from '@/web/components/curriculum-pdf-download'
 import { LogoutButton } from '@/web/components/logout-button'
 import { basePayload } from '@/web/lib/payload'
 import {
-    IconAlertTriangle,
-    IconArrowRight,
-    IconBriefcase,
-    IconBuildingStore,
-    IconCalendarCheck,
-    IconCircleCheck,
-    IconSchool,
-    IconUsers,
+  IconAlertTriangle,
+  IconArrowRight,
+  IconBriefcase,
+  IconBuildingStore,
+  IconCalendarCheck,
+  IconCircleCheck,
+  IconSchool,
+  IconUsers,
 } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -61,13 +61,13 @@ export default async function PerfilPage() {
   const curriculum = curriculums.length > 0 ? curriculums[0] : null
 
   const { docs: expedientes } = await basePayload.find({
-    collection: 'expedientes-habilitacion' as any,
+    collection: 'expedientes-habilitacion',
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     sort: '-createdAt',
     depth: 0,
   })
-  const expediente = (expedientes[0] as any) ?? null
+  const expediente = expedientes[0] ?? null
 
   const { docs: comerciosPerfil } = await basePayload.find({
     collection: 'comercios-habilitados',

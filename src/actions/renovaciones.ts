@@ -1,15 +1,39 @@
 'use server'
 
+import type { Ciudadano, ComerciosHabilitado, ExpedientesRenovacion } from '@/payload-types'
 import {
   ciudadanoTieneModuloHabilitaciones,
   esTitularDelComercio,
   relationId,
 } from '@/web/lib/habilitaciones'
-import { HIGIENE_SEGURIDAD_VALUES } from '@/payload/constants/renovacion'
+import { HIGIENE_SEGURIDAD_VALUES, type HigieneSeguridadItem } from '@/payload/constants/renovacion'
 import { basePayload } from '@/web/lib/payload'
 import { headers as nextHeaders } from 'next/headers'
 
-const ESTADOS_EDITABLES = ['INICIADO', 'OBSERVADO']
+type CiudadanoAuth = Ciudadano & { collection: 'ciudadanos' }
+
+type DatosRenovacion = {
+  solicitanteNombre: string
+  solicitanteDni: string
+  solicitanteDomicilio: string
+  solicitanteTelefono: string
+  solicitanteEmail: string
+  numeroExpedienteAnterior?: string
+  dniAdjunto: string
+  formularioInicio: string
+  comprobanteSellado: string
+  libreDeuda: string
+  certResiduosPeligrosos?: string
+  adjuntosOtros?: string[]
+  librosTapaDura: 'SI' | 'LOS_TRAMITARE'
+  higieneSeguridad: HigieneSeguridadItem[]
+  generaResiduosPeligrosos: 'SI' | 'NO'
+  declaracionJurada: true
+}
+
+function errorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback
+}
 
 async function getAuthenticatedCiudadanoHabilitaciones() {
   const headers = await nextHeaders()
@@ -19,7 +43,7 @@ async function getAuthenticatedCiudadanoHabilitaciones() {
   return user
 }
 
-async function uploadArchivoLocal(file: File, user: any): Promise<string | null> {
+async function uploadArchivoLocal(file: File, user: CiudadanoAuth): Promise<string | null> {
   try {
     const buffer = Buffer.from(await file.arrayBuffer())
     const doc = await basePayload.create({
@@ -29,7 +53,8 @@ async function uploadArchivoLocal(file: File, user: any): Promise<string | null>
       data: {
         esPrivado: true,
         propietarioCiudadano: user.id,
-      } as any,
+        created_by: { relationTo: 'ciudadanos', value: user.id },
+      },
       file: {
         data: buffer,
         mimetype: file.type || 'application/octet-stream',
@@ -37,7 +62,7 @@ async function uploadArchivoLocal(file: File, user: any): Promise<string | null>
         size: file.size,
       },
     })
-    return (doc as any).id ?? null
+    return doc.id
   } catch (e) {
     console.error('[uploadArchivoLocal] Error al subir archivo:', e)
     return null
@@ -48,7 +73,11 @@ function fileId(value: unknown): string | null {
   return relationId(value)
 }
 
-async function parseRenovacionForm(formData: FormData, ciudadano: any, existing?: any) {
+async function parseRenovacionForm(
+  formData: FormData,
+  ciudadano: CiudadanoAuth,
+  existing?: ExpedientesRenovacion,
+): Promise<{ error: string } | { data: DatosRenovacion }> {
   const solicitanteNombre = formData.get('solicitanteNombre')?.toString().trim()
   const solicitanteDni = formData.get('solicitanteDni')?.toString().trim()
   const solicitanteDomicilio = formData.get('solicitanteDomicilio')?.toString().trim()
@@ -58,7 +87,7 @@ async function parseRenovacionForm(formData: FormData, ciudadano: any, existing?
   const librosTapaDura = formData.get('librosTapaDura')?.toString().trim()
   const generaResiduosPeligrosos = formData.get('generaResiduosPeligrosos')?.toString().trim()
   const declaracionJurada = formData.get('declaracionJurada') === 'true'
-  const higieneSeguridad = formData.getAll('higieneSeguridad').map((v) => String(v))
+  const higieneSeguridad = formData.getAll('higieneSeguridad').map(String) as HigieneSeguridadItem[]
 
   if (
     !solicitanteNombre ||
@@ -123,7 +152,8 @@ async function parseRenovacionForm(formData: FormData, ciudadano: any, existing?
 
   if (generaResiduosPeligrosos === 'SI' && !certResiduosFinal) {
     return {
-      error: 'Si genera residuos peligrosos, adjuntá la certificación de Medio Ambiente de la Provincia.',
+      error:
+        'Si genera residuos peligrosos, adjuntá la certificación de Medio Ambiente de la Provincia.',
     }
   }
 
@@ -160,8 +190,8 @@ async function parseRenovacionForm(formData: FormData, ciudadano: any, existing?
       ...(adjuntosOtros.length > 0 ? { adjuntosOtros } : {}),
       librosTapaDura,
       higieneSeguridad,
-      generaResiduosPeligrosos,
-      declaracionJurada,
+      generaResiduosPeligrosos: generaResiduosPeligrosos === 'SI' ? 'SI' : 'NO',
+      declaracionJurada: true,
     },
   }
 }
@@ -175,7 +205,7 @@ export async function submitRenovacion(
   const comercioId = formData.get('comercioId')?.toString().trim()
   if (!comercioId) return { error: 'Falta el comercio a renovar.' }
 
-  let comercio: any
+  let comercio: ComerciosHabilitado
   try {
     comercio = await basePayload.findByID({
       collection: 'comercios-habilitados',
@@ -211,12 +241,12 @@ export async function submitRenovacion(
   if (abiertos.length > 0) {
     return {
       error: 'Ya tenés una renovación en curso para este comercio.',
-      id: abiertos[0].id as string,
+      id: abiertos[0].id,
     }
   }
 
   const parsed = await parseRenovacionForm(formData, ciudadano)
-  if ('error' in parsed && parsed.error) return { error: parsed.error }
+  if ('error' in parsed) return { error: parsed.error }
 
   try {
     const doc = await basePayload.create({
@@ -225,12 +255,13 @@ export async function submitRenovacion(
       user: ciudadano,
       data: {
         comercio: comercioId,
-        ...(parsed as { data: Record<string, unknown> }).data,
-      } as any,
+        ...parsed.data,
+        created_by: { relationTo: 'ciudadanos', value: ciudadano.id },
+      },
     })
-    return { id: doc.id as string }
-  } catch (e: any) {
-    return { error: e?.message ?? 'Error al enviar la renovación.' }
+    return { id: doc.id }
+  } catch (e) {
+    return { error: errorMessage(e, 'Error al enviar la renovación.') }
   }
 }
 
@@ -241,7 +272,7 @@ export async function updateRenovacion(
   const ciudadano = await getAuthenticatedCiudadanoHabilitaciones()
   if (!ciudadano) return { error: 'No tenés acceso al módulo de Habilitaciones.' }
 
-  let actual: any
+  let actual: ExpedientesRenovacion
   try {
     actual = await basePayload.findByID({
       collection: 'expedientes-renovacion',
@@ -254,12 +285,12 @@ export async function updateRenovacion(
     return { error: 'No se pudo acceder al trámite.' }
   }
 
-  if (!ESTADOS_EDITABLES.includes(actual.estado)) {
+  if (actual.estado !== 'INICIADO' && actual.estado !== 'OBSERVADO') {
     return { error: 'Esta renovación ya no admite modificaciones.' }
   }
 
   const parsed = await parseRenovacionForm(formData, ciudadano, actual)
-  if ('error' in parsed && parsed.error) return { error: parsed.error }
+  if ('error' in parsed) return { error: parsed.error }
 
   try {
     await basePayload.update({
@@ -267,10 +298,10 @@ export async function updateRenovacion(
       id: renovacionId,
       overrideAccess: false,
       user: ciudadano,
-      data: (parsed as { data: Record<string, unknown> }).data as any,
+      data: parsed.data,
     })
     return {}
-  } catch (e: any) {
-    return { error: e?.message ?? 'Error al actualizar la renovación.' }
+  } catch (e) {
+    return { error: errorMessage(e, 'Error al actualizar la renovación.') }
   }
 }

@@ -29,12 +29,9 @@ export default async function ValidarHabilitacionPage({ params }: Props) {
 
   if (result.docs.length === 0) return notFound()
 
-  const comercio = result.docs[0] as any
+  const comercio = result.docs[0]
 
-  const rubroNombre =
-    comercio.rubro && typeof comercio.rubro === 'object'
-      ? (comercio.rubro as { nombre: string }).nombre
-      : null
+  const rubroNombre = typeof comercio.rubro === 'object' ? comercio.rubro.nombre : null
 
   return (
     <main className="bg-base-200 min-h-screen px-4 py-8 md:py-12">

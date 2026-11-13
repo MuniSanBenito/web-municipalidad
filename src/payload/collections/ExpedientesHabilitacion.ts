@@ -1,5 +1,6 @@
 import { CreatedBy } from '@/payload/fields/created_by'
-import type { CollectionConfig } from 'payload'
+import type { ExpedientesHabilitacion as ExpedienteDoc } from '@/payload-types'
+import type { CollectionConfig, PayloadRequest } from 'payload'
 import {
   expedienteMunicipalFieldAccess,
   expedienteReadInternalFieldAccess,
@@ -29,7 +30,7 @@ const FASE_OPTIONS = ESTADOS_FASE_HABILITACION.map((e) => ({
   value: e,
 }))
 
-const readAccess = ({ req }: { req: any }) => {
+const readAccess = ({ req }: { req: PayloadRequest }) => {
   if (!req.user) return false
   if (req.user.collection === 'ciudadanos') {
     return { 'created_by.value': { equals: req.user.id } }
@@ -115,19 +116,21 @@ export const ExpedientesHabilitacion: CollectionConfig = {
       async ({ doc, previousDoc, req, operation }) => {
         if (operation !== 'update') return doc
 
-        const nuevoEstado = (doc as any).faseIIIEstado
-        const estadoAnterior = (previousDoc as any)?.faseIIIEstado
+        const expediente = doc as ExpedienteDoc
+        const anterior = previousDoc as ExpedienteDoc | undefined
+        const nuevoEstado = expediente.faseIIIEstado
+        const estadoAnterior = anterior?.faseIIIEstado
 
         // Solo disparar cuando cambia a APROBADO
         if (nuevoEstado !== 'APROBADO' || estadoAnterior === 'APROBADO') return doc
 
         // Si ya hay comercio vinculado, no duplicar
-        if ((doc as any).faseIIIComercioHabilitado) return doc
+        if (expediente.faseIIIComercioHabilitado) return doc
 
-        const nombre = (doc as any).faseIINombreFantasia
-        const razonSocial = (doc as any).faseIIRazonSocial
-        const cuit = (doc as any).faseIICuit
-        const direccion = (doc as any).faseIIDireccion
+        const nombre = expediente.faseIINombreFantasia
+        const razonSocial = expediente.faseIIRazonSocial
+        const cuit = expediente.faseIICuit
+        const direccion = expediente.faseIIDireccion
 
         // Validar campos required
         if (!nombre || !razonSocial || !cuit || !direccion) {
@@ -137,10 +140,17 @@ export const ExpedientesHabilitacion: CollectionConfig = {
           return doc
         }
 
-        const rubro = (doc as any).faseIIRubro
-        const actividades = (doc as any).faseIIActividades
+        const rubro = expediente.faseIIRubro
+        const rubroId = typeof rubro === 'object' && rubro !== null ? rubro.id : rubro
+        if (!rubroId) {
+          req.payload.logger.warn(
+            `[ExpedientesHabilitacion] No se pudo crear Comercio Habilitado para expediente ${doc.id}: falta el rubro de Fase II`,
+          )
+          return doc
+        }
 
-        const createdBy = (doc as any).created_by
+        const actividades = expediente.faseIIActividades
+        const createdBy = expediente.created_by
         const titularId =
           createdBy?.relationTo === 'ciudadanos'
             ? typeof createdBy.value === 'object' && createdBy.value !== null
@@ -157,11 +167,12 @@ export const ExpedientesHabilitacion: CollectionConfig = {
               razonSocial,
               cuit,
               direccion,
-              rubro: rubro ?? undefined,
-              actividades: actividades ?? undefined,
+              rubro: rubroId,
+              ...(actividades ? { actividades } : {}),
               fechaAlta: new Date().toISOString(),
               ...(titularId ? { titulares: [titularId] } : {}),
-            } as any,
+              created_by: createdBy,
+            },
           })
 
           await req.payload.update({

@@ -12,14 +12,22 @@ export interface EventoNotificacionHabilitacion {
   clave: string
 }
 
-type Expediente = Record<string, any> & { id?: string; updatedAt?: string }
+type Expediente = {
+  id?: string
+  updatedAt?: string
+  faseIEstado?: string | null
+  faseIIEstado?: string | null
+  faseIIIEstado?: string | null
+  faseIEmail?: string | null
+  faseIIEmail?: string | null
+}
 type Operacion = 'create' | 'update'
 
-const ESTADO_POR_FASE: Record<FaseHabilitacion, string> = {
+const ESTADO_POR_FASE = {
   1: 'faseIEstado',
   2: 'faseIIEstado',
   3: 'faseIIIEstado',
-}
+} as const
 
 export function areasParaEvento(fase: FaseHabilitacion, estadoNuevo?: string | null) {
   if (fase === 1) return ['OBRAS_PRIVADAS'] as AreaHabilitacion[]
@@ -43,8 +51,10 @@ function fieldPhase(field: string): FaseHabilitacion | null {
 }
 
 function phaseChanged(doc: Expediente, previousDoc: Expediente, fase: FaseHabilitacion) {
-  return Object.keys(doc).some(
-    (key) => fieldPhase(key) === fase && changed(doc[key], previousDoc?.[key]),
+  const actual = doc as Record<string, unknown>
+  const previo = previousDoc as Record<string, unknown>
+  return Object.keys(actual).some(
+    (key) => fieldPhase(key) === fase && changed(actual[key], previo[key]),
   )
 }
 
@@ -57,17 +67,18 @@ function eventKey(
   return [doc.id, fase, tipo, estadoNuevo ?? '-', doc.updatedAt ?? '-'].join(':')
 }
 
-export function detectarEventosNotificacion({
+export function detectarEventosNotificacion<T extends Expediente>({
   doc,
   previousDoc = {},
   operation,
   actorCollection,
 }: {
-  doc: Expediente
-  previousDoc?: Expediente
+  doc: T
+  previousDoc?: Partial<T>
   operation: Operacion
   actorCollection?: string
 }): EventoNotificacionHabilitacion[] {
+  const previo: Expediente = previousDoc ?? {}
   if (operation === 'create') {
     return [
       {
@@ -87,12 +98,12 @@ export function detectarEventosNotificacion({
 
   for (const fase of [1, 2, 3] as const) {
     const field = ESTADO_POR_FASE[fase]
-    if (!changed(doc[field], previousDoc?.[field])) continue
+    if (!changed(doc[field], previo[field])) continue
     phasesWithStateChange.add(fase)
     events.push({
       fase,
       tipo: 'CAMBIO_ESTADO',
-      estadoAnterior: previousDoc?.[field] ?? null,
+      estadoAnterior: previo[field] ?? null,
       estadoNuevo: doc[field] ?? null,
       areas: areasParaEvento(fase, doc[field]),
       notificarCiudadano: true,
@@ -102,7 +113,7 @@ export function detectarEventosNotificacion({
 
   if (actorCollection === 'ciudadanos') {
     for (const fase of [1, 2] as const) {
-      if (phasesWithStateChange.has(fase) || !phaseChanged(doc, previousDoc, fase)) continue
+      if (phasesWithStateChange.has(fase) || !phaseChanged(doc, previo, fase)) continue
       events.push({
         fase,
         tipo: 'ACTUALIZACION_CIUDADANA',
@@ -136,16 +147,23 @@ export function correosCiudadano({
   return normalizeEmails([loginEmail, declaredEmail])
 }
 
-export function correosAreas(config: Record<string, any>, areas: AreaHabilitacion[]) {
-  const fieldByArea: Record<AreaHabilitacion, string> = {
+type BuzonNotificacion = { email?: string | null }[] | null | undefined
+
+export function correosAreas(
+  config: {
+    emailsObrasPrivadas?: BuzonNotificacion
+    emailsHabilitaciones?: BuzonNotificacion
+    emailsHacienda?: BuzonNotificacion
+  },
+  areas: AreaHabilitacion[],
+) {
+  const fieldByArea = {
     OBRAS_PRIVADAS: 'emailsObrasPrivadas',
     HABILITACIONES: 'emailsHabilitaciones',
     HACIENDA: 'emailsHacienda',
-  }
+  } as const
   return normalizeEmails(
-    areas.flatMap((area) =>
-      (config[fieldByArea[area]] ?? []).map((item: { email?: string | null }) => item.email),
-    ),
+    areas.flatMap((area) => (config[fieldByArea[area]] ?? []).map((item) => item.email)),
   )
 }
 

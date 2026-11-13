@@ -1,7 +1,14 @@
 import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
 import { comercioEstaVigente } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
-import { IconBuildingStore, IconCalendar, IconCertificate, IconHash, IconMapPin, IconTag } from '@tabler/icons-react'
+import {
+  IconBuildingStore,
+  IconCalendar,
+  IconCertificate,
+  IconHash,
+  IconMapPin,
+  IconTag,
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -239,8 +246,8 @@ export default async function DetalleComercioPage({ params }: Props) {
           fechaAlta={comercio.fechaAlta ?? null}
           fechaVencimiento={comercio.fechaVencimiento ?? null}
           fechaBaja={comercio.fechaBaja ?? null}
-          urlValidacion={(comercio as any).urlValidacion ?? null}
-          numeroHabilitacion={(comercio as any).numeroHabilitacion ?? null}
+          urlValidacion={comercio.urlValidacion ?? null}
+          numeroHabilitacion={comercio.numeroHabilitacion ?? null}
           rubroNombre={rubroNombre}
           showActions
         />

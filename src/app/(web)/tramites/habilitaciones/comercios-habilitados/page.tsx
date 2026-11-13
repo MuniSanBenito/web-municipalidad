@@ -1,8 +1,12 @@
+import { MapaComerciosLoader } from '@/web/components/mapa-comercios-loader'
+import { coordenadasComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import { IconBuildingStore, IconMapPin, IconSearch } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { FiltroRubros } from './FiltroRubros'
+
+export const dynamic = 'force-dynamic'
 
 type Props = {
   searchParams: Promise<{ rubro?: string }>
@@ -44,7 +48,7 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
       where: whereConRubro,
       depth: 1,
       sort: 'nombre',
-      limit: 200,
+      limit: 500,
     }),
     basePayload.find({
       collection: 'rubros-comercios',
@@ -54,6 +58,34 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
   ])
 
   const rubrosParaFiltro = rubros.map((r) => ({ id: r.id, nombre: r.nombre }))
+
+  const comerciosEnMapa = comercios.flatMap((comercio) => {
+    const coords = coordenadasComercio(comercio.localizacion)
+    if (!coords) return []
+    const rubroNombre =
+      comercio.rubro && typeof comercio.rubro === 'object'
+        ? (comercio.rubro as { nombre: string }).nombre
+        : null
+    return [
+      {
+        id: String(comercio.id),
+        nombre: comercio.nombre,
+        direccion: comercio.direccion,
+        rubro: rubroNombre,
+        lat: coords.lat,
+        lng: coords.lng,
+      },
+    ]
+  })
+
+  const textoMapa =
+    comercios.length === 0
+      ? 'No hay comercios habilitados para mostrar en el mapa.'
+      : comerciosEnMapa.length === 0
+        ? 'Ningún comercio de este filtro tiene coordenadas. Cargá la localización en el admin para ver el pin.'
+        : comerciosEnMapa.length === comercios.length
+          ? 'El mapa muestra los comercios de este filtro.'
+          : `El mapa muestra ${comerciosEnMapa.length} de ${comercios.length} comercios. El resto no tiene coordenadas cargadas.`
 
   return (
     <main className="container mx-auto px-4 py-6">
@@ -81,6 +113,12 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
             </Suspense>
           </div>
 
+          <div className="mb-6 space-y-2">
+            <h3 className="text-lg font-semibold">Mapa</h3>
+            <MapaComerciosLoader key={rubro ?? 'todos'} comercios={comerciosEnMapa} />
+            <p className="text-base-content/60 text-sm">{textoMapa}</p>
+          </div>
+
           {comercios.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
               <IconSearch size={56} stroke={1.5} className="text-base-content/30" />
@@ -105,15 +143,10 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
                     ? (comercio.rubro as { nombre: string }).nombre
                     : null
 
-                // localizacion is [longitude, latitude] (GeoJSON order)
-                const [lng, lat] = Array.isArray(comercio.localizacion)
-                  ? comercio.localizacion
-                  : [null, null]
-
-                const mapsUrl =
-                  lat && lng
-                    ? `https://www.google.com/maps?q=${lat},${lng}`
-                    : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
+                const coords = coordenadasComercio(comercio.localizacion)
+                const mapsUrl = coords
+                  ? `https://www.google.com/maps?q=${coords.lat},${coords.lng}`
+                  : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
 
                 return (
                   <div
@@ -127,6 +160,11 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
                         </div>
                         <div className="min-w-0">
                           <h3 className="card-title text-base leading-tight">{comercio.nombre}</h3>
+                          {comercio.numeroHabilitacion && (
+                            <p className="text-base-content/50 mt-1 font-mono text-xs">
+                              {comercio.numeroHabilitacion}
+                            </p>
+                          )}
                           {rubroNombre && (
                             <span className="badge badge-ghost badge-sm mt-1">{rubroNombre}</span>
                           )}

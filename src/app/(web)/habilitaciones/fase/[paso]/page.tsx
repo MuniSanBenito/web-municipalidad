@@ -1,4 +1,4 @@
-import type { Ciudadano } from '@/payload-types'
+import type { Archivo, Ciudadano, ExpedientesHabilitacion, RubrosComercio } from '@/payload-types'
 import { ExpedienteFase1Form } from '@/web/components/expediente-fase1-form'
 import { ExpedienteFase2Form } from '@/web/components/expediente-fase2-form'
 import { ExpedienteFase3Form } from '@/web/components/expediente-fase3-form'
@@ -30,7 +30,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
 
   // Buscar el expediente activo del ciudadano
   const { docs } = await basePayload.find({
-    collection: 'expedientes-habilitacion' as any,
+    collection: 'expedientes-habilitacion',
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     sort: '-createdAt',
@@ -39,11 +39,11 @@ export default async function HabilitacionFasePage({ params }: Props) {
     user: ciudadano,
   })
 
-  const expediente = docs[0] as any | null
+  const expediente: ExpedientesHabilitacion | null = docs[0] ?? null
 
-  // Convierte una relación de archivo (resuelta con depth: 1) en metadata simple
-  // para mostrar el archivo ya cargado en el formulario al editar.
-  const fileMeta = (v: any): { url?: string | null; filename?: string | null } | null =>
+  const fileMeta = (
+    v: string | Archivo | null | undefined,
+  ): { url?: string | null; filename?: string | null } | null =>
     v && typeof v === 'object' ? { url: v.url ?? null, filename: v.filename ?? null } : null
 
   // Validaciones de acceso por paso
@@ -69,7 +69,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
     }
   }
 
-  const { docs: rubros } =
+  const { docs: rubros }: { docs: RubrosComercio[] } =
     pasoNum === 2
       ? await basePayload.find({ collection: 'rubros-comercios', limit: 0, sort: 'categoria' })
       : { docs: [] }
@@ -169,7 +169,7 @@ export default async function HabilitacionFasePage({ params }: Props) {
         {pasoNum === 2 && expediente && (
           <ExpedienteFase2Form
             expedienteId={expediente.id}
-            rubros={rubros as any}
+            rubros={rubros}
             isEdit={!!expediente.faseIIEstado}
             nroPermisoUso={expediente.faseINumeroPermisoUso ?? undefined}
             apellidoNombre={
@@ -195,8 +195,8 @@ export default async function HabilitacionFasePage({ params }: Props) {
             adjuntosExistentes={
               Array.isArray(expediente.faseIIAdjuntos)
                 ? expediente.faseIIAdjuntos
-                    .filter((a: any) => a && typeof a === 'object')
-                    .map((a: any) => ({ url: a.url ?? null, filename: a.filename ?? null }))
+                    .filter((a): a is Archivo => Boolean(a) && typeof a === 'object')
+                    .map((a) => ({ url: a.url ?? null, filename: a.filename ?? null }))
                 : []
             }
           />

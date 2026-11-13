@@ -1,3 +1,4 @@
+import type { ExpedientesRenovacion } from '@/payload-types'
 import type { Access, FieldAccess } from 'payload'
 
 const ADMIN = 'ADMIN'
@@ -31,14 +32,13 @@ export const renovacionUpdateAccess: Access = ({ req }) => {
   return hasRole(req, ADMIN, HABILITACIONES)
 }
 
-export const renovacionStaffFieldAccess: FieldAccess = ({ req }) => hasRole(req, ADMIN, HABILITACIONES)
+export const renovacionStaffFieldAccess: FieldAccess = ({ req }) =>
+  hasRole(req, ADMIN, HABILITACIONES)
 
-const ESTADOS_EDITABLES_CIUDADANO = ['INICIADO', 'OBSERVADO']
-
-export const renovacionCitizenFieldAccess: FieldAccess<any> = ({ req, doc }) => {
+export const renovacionCitizenFieldAccess: FieldAccess<ExpedientesRenovacion> = ({ req, doc }) => {
   if (isCiudadano(req)) {
-    const estado = doc?.estado as string | undefined
-    return !estado || ESTADOS_EDITABLES_CIUDADANO.includes(estado)
+    const estado = doc?.estado
+    return !estado || estado === 'INICIADO' || estado === 'OBSERVADO'
   }
   return hasRole(req, ADMIN, HABILITACIONES)
 }

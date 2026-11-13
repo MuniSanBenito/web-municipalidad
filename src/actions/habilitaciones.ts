@@ -1,8 +1,23 @@
 'use server'
 
+import type { Ciudadano, ExpedientesHabilitacion } from '@/payload-types'
 import { basePayload } from '@/web/lib/payload'
 import { ciudadanoTieneModuloHabilitaciones } from '@/web/lib/habilitaciones'
 import { headers as nextHeaders } from 'next/headers'
+
+type CiudadanoAuth = Ciudadano & { collection: 'ciudadanos' }
+
+function errorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback
+}
+
+function relationFileId(value: unknown): string | null {
+  if (typeof value === 'string') return value
+  if (value && typeof value === 'object' && 'id' in value && typeof value.id === 'string') {
+    return value.id
+  }
+  return null
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -16,10 +31,13 @@ async function getAuthenticatedCiudadano() {
   return user
 }
 
-async function getOwnedExpediente(expedienteId: string, ciudadano: any): Promise<any | null> {
+async function getOwnedExpediente(
+  expedienteId: string,
+  ciudadano: CiudadanoAuth,
+): Promise<ExpedientesHabilitacion | null> {
   try {
     return await basePayload.findByID({
-      collection: 'expedientes-habilitacion' as any,
+      collection: 'expedientes-habilitacion',
       id: expedienteId,
       depth: 0,
       overrideAccess: false,
@@ -30,7 +48,7 @@ async function getOwnedExpediente(expedienteId: string, ciudadano: any): Promise
   }
 }
 
-async function uploadArchivoLocal(file: File, user: any): Promise<string | null> {
+async function uploadArchivoLocal(file: File, user: CiudadanoAuth): Promise<string | null> {
   try {
     const buffer = Buffer.from(await file.arrayBuffer())
     const doc = await basePayload.create({
@@ -40,7 +58,8 @@ async function uploadArchivoLocal(file: File, user: any): Promise<string | null>
       data: {
         esPrivado: true,
         propietarioCiudadano: user.id,
-      } as any,
+        created_by: { relationTo: 'ciudadanos', value: user.id },
+      },
       file: {
         data: buffer,
         mimetype: file.type || 'application/octet-stream',
@@ -48,7 +67,7 @@ async function uploadArchivoLocal(file: File, user: any): Promise<string | null>
         size: file.size,
       },
     })
-    return (doc as any).id ?? null
+    return doc.id
   } catch (e) {
     console.error('[uploadArchivoLocal] Error al subir archivo:', e)
     return null
@@ -96,7 +115,7 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
 
   // Evitar expedientes duplicados: si ya existe uno del ciudadano, no crear otro.
   const { docs: existentes } = await basePayload.find({
-    collection: 'expedientes-habilitacion' as any,
+    collection: 'expedientes-habilitacion',
     where: { 'created_by.value': { equals: ciudadano.id } },
     limit: 1,
     depth: 0,
@@ -104,7 +123,7 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
   if (existentes.length > 0) {
     return {
       error: 'Ya tenés un trámite de habilitación en curso.',
-      id: existentes[0].id as string,
+      id: existentes[0].id,
     }
   }
 
@@ -127,7 +146,7 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
 
   try {
     const doc = await basePayload.create({
-      collection: 'expedientes-habilitacion' as any,
+      collection: 'expedientes-habilitacion',
       overrideAccess: false,
       user: ciudadano,
       data: {
@@ -145,11 +164,12 @@ export async function submitFaseI(formData: FormData): Promise<{ error?: string;
         ...(certElectricoId ? { faseICertElectrico: certElectricoId } : {}),
         ...(facturaEnergiaId ? { faseIFacturaEnergia: facturaEnergiaId } : {}),
         faseIPlancheta: planchetaId,
-      } as any,
+        created_by: { relationTo: 'ciudadanos', value: ciudadano.id },
+      },
     })
-    return { id: doc.id as string }
-  } catch (e: any) {
-    return { error: e?.message ?? 'Error al enviar la solicitud.' }
+    return { id: doc.id }
+  } catch (e) {
+    return { error: errorMessage(e, 'Error al enviar la solicitud.') }
   }
 }
 
@@ -166,7 +186,7 @@ export async function updateFaseI(
 
   const expediente = await getOwnedExpediente(expedienteId, ciudadano)
   if (!expediente) return { error: 'No se pudo acceder al expediente.' }
-  if (['VISITA_PROGRAMADA', 'APROBADO'].includes(expediente.faseIEstado)) {
+  if (expediente.faseIEstado === 'VISITA_PROGRAMADA' || expediente.faseIEstado === 'APROBADO') {
     return { error: 'La Fase I ya no admite modificaciones.' }
   }
 
@@ -200,33 +220,31 @@ export async function updateFaseI(
   const facturaEnergiaId = await uploadIfNew(facturaEnergiaFile)
   const planchetaId = await uploadIfNew(planchetaFile)
 
-  const data: Record<string, unknown> = {
-    faseIEmail: email,
-    faseIApellido: apellido,
-    faseINombre: nombre,
-    faseIDNI: dni,
-    faseITelefono: telefono,
-    faseIDireccionLocal: domicilio,
-    faseIBarrio: barrio,
-  }
-  if (formularioId) data.faseIFormularioAdjunto = formularioId
-  if (docInmuebleId) data.faseIDocInmueble = docInmuebleId
-  if (planoLocalId) data.faseIPlanoLocal = planoLocalId
-  if (certElectricoId) data.faseICertElectrico = certElectricoId
-  if (facturaEnergiaId) data.faseIFacturaEnergia = facturaEnergiaId
-  if (planchetaId) data.faseIPlancheta = planchetaId
-
   try {
     await basePayload.update({
-      collection: 'expedientes-habilitacion' as any,
+      collection: 'expedientes-habilitacion',
       id: expedienteId,
       overrideAccess: false,
       user: ciudadano,
-      data: data as any,
+      data: {
+        faseIEmail: email,
+        faseIApellido: apellido,
+        faseINombre: nombre,
+        faseIDNI: dni,
+        faseITelefono: telefono,
+        faseIDireccionLocal: domicilio,
+        faseIBarrio: barrio,
+        ...(formularioId ? { faseIFormularioAdjunto: formularioId } : {}),
+        ...(docInmuebleId ? { faseIDocInmueble: docInmuebleId } : {}),
+        ...(planoLocalId ? { faseIPlanoLocal: planoLocalId } : {}),
+        ...(certElectricoId ? { faseICertElectrico: certElectricoId } : {}),
+        ...(facturaEnergiaId ? { faseIFacturaEnergia: facturaEnergiaId } : {}),
+        ...(planchetaId ? { faseIPlancheta: planchetaId } : {}),
+      },
     })
     return {}
-  } catch (e: any) {
-    return { error: e?.message ?? 'Error al actualizar la solicitud.' }
+  } catch (e) {
+    return { error: errorMessage(e, 'Error al actualizar la solicitud.') }
   }
 }
 
@@ -272,7 +290,7 @@ export async function submitFaseII(
   if (actual.faseIEstado !== 'APROBADO') {
     return { error: 'La Fase II todavía no está habilitada.' }
   }
-  if (['VISITA_PROGRAMADA', 'APROBADO'].includes(actual.faseIIEstado)) {
+  if (actual.faseIIEstado === 'VISITA_PROGRAMADA' || actual.faseIIEstado === 'APROBADO') {
     return { error: 'La Fase II ya no admite modificaciones.' }
   }
 
@@ -309,7 +327,7 @@ export async function submitFaseII(
   if (adjuntosIds.length > 0) {
     const existentes = Array.isArray(actual?.faseIIAdjuntos)
       ? (actual.faseIIAdjuntos as unknown[])
-          .map((a) => (typeof a === 'string' ? a : (a as any)?.id))
+          .map(relationFileId)
           .filter((id): id is string => typeof id === 'string')
       : []
     adjuntosFinales = [...existentes, ...adjuntosIds]
@@ -317,7 +335,7 @@ export async function submitFaseII(
 
   try {
     await basePayload.update({
-      collection: 'expedientes-habilitacion' as any,
+      collection: 'expedientes-habilitacion',
       id: expedienteId,
       overrideAccess: false,
       user: ciudadano,
@@ -347,10 +365,10 @@ export async function submitFaseII(
             ? { faseIILibretaSanitaria: libretaSanitariaExistenteId }
             : {}),
         ...(adjuntosIds.length > 0 ? { faseIIAdjuntos: adjuntosFinales } : {}),
-      } as any,
+      },
     })
     return {}
-  } catch (e: any) {
-    return { error: e?.message ?? 'Error al enviar la solicitud.' }
+  } catch (e) {
+    return { error: errorMessage(e, 'Error al enviar la solicitud.') }
   }
 }

@@ -1,7 +1,25 @@
 import { CreatedBy } from '@/payload/fields/created_by'
-import type { CollectionConfig } from 'payload'
+import {
+  numeroIngresado,
+  siguienteNumeroHabilitacion,
+} from '@/payload/habilitaciones/numero-habilitacion'
+import type { CollectionConfig, PayloadRequest } from 'payload'
 import { isHabilitacionesOrAdminCollectionAccess, isPublicAccess } from '../access/collection'
 import { HIDE_API_URL } from '../config'
+
+async function generarNumeroHabilitacion(req: PayloadRequest): Promise<string> {
+  const year = new Date().getFullYear()
+  const { docs } = await req.payload.find({
+    collection: 'comercios-habilitados',
+    where: { numeroHabilitacion: { contains: `HB-${year}-` } },
+    limit: 1000,
+    depth: 0,
+  })
+  const existentes = docs.flatMap((doc) =>
+    typeof doc.numeroHabilitacion === 'string' ? [doc.numeroHabilitacion] : [],
+  )
+  return siguienteNumeroHabilitacion(existentes, year)
+}
 
 export const ComerciosHabilitados: CollectionConfig = {
   slug: 'comercios-habilitados',
@@ -18,11 +36,37 @@ export const ComerciosHabilitados: CollectionConfig = {
   admin: {
     useAsTitle: 'nombre',
     hideAPIURL: HIDE_API_URL,
-    defaultColumns: ['nombre', 'razonSocial', 'rubro', 'fechaAlta', 'fechaVencimiento', 'fechaBaja'],
+    defaultColumns: [
+      'nombre',
+      'numeroHabilitacion',
+      'razonSocial',
+      'rubro',
+      'fechaAlta',
+      'fechaVencimiento',
+      'fechaBaja',
+    ],
     description:
       'Para renovaciones históricas: crear o buscar el ciudadano, asignarle el módulo HABILITACIONES y vincularlo en Titulares.',
   },
   hooks: {
+    beforeValidate: [
+      ({ data, operation, originalDoc }) => {
+        if (!data) return data
+
+        const manual = numeroIngresado(data.numeroHabilitacion)
+        if (manual) {
+          data.numeroHabilitacion = manual
+          return data
+        }
+
+        if (operation === 'update') {
+          const previo = numeroIngresado(originalDoc?.numeroHabilitacion)
+          if (previo) data.numeroHabilitacion = previo
+        }
+
+        return data
+      },
+    ],
     beforeChange: [
       async ({ data, operation, req }) => {
         if (operation === 'create') {
@@ -30,23 +74,8 @@ export const ComerciosHabilitados: CollectionConfig = {
           data.tokenValidacion = token
           data.urlValidacion = `${process.env.NEXT_PUBLIC_SERVER_URL}/validar/${token}`
 
-          // Autogenerar solo si staff no cargó el nro. papel del expediente histórico.
-          if (!data.numeroHabilitacion) {
-            const year = new Date().getFullYear()
-            const { totalDocs } = await req.payload.find({
-              collection: 'comercios-habilitados',
-              where: {
-                and: [
-                  { numeroHabilitacion: { exists: true } },
-                  { numeroHabilitacion: { contains: `HB-${year}-` } },
-                ],
-              },
-              limit: 0,
-              depth: 0,
-            })
-            const correlativo = String((totalDocs ?? 0) + 1).padStart(4, '0')
-            data.numeroHabilitacion = `HB-${year}-${correlativo}`
-          }
+          const manual = numeroIngresado(data.numeroHabilitacion)
+          data.numeroHabilitacion = manual ?? (await generarNumeroHabilitacion(req))
         }
         return data
       },
@@ -74,11 +103,8 @@ export const ComerciosHabilitados: CollectionConfig = {
           return Response.json({ error: 'Habilitación no encontrada' }, { status: 404 })
         }
 
-        const comercio = result.docs[0] as any
-        const rubroNombre =
-          comercio.rubro && typeof comercio.rubro === 'object'
-            ? (comercio.rubro as { nombre: string }).nombre
-            : null
+        const comercio = result.docs[0]
+        const rubroNombre = typeof comercio.rubro === 'object' ? comercio.rubro.nombre : null
 
         return Response.json({
           nombre: comercio.nombre,
@@ -111,6 +137,18 @@ export const ComerciosHabilitados: CollectionConfig = {
       type: 'text',
       label: 'CUIT / CUIL',
       required: true,
+    },
+    {
+      name: 'numeroHabilitacion',
+      type: 'text',
+      label: 'Número de Habilitación',
+      unique: true,
+      index: true,
+      admin: {
+        placeholder: 'Ej: 1523/2019',
+        description:
+          'Escribí el número del expediente. Si lo dejás vacío al crear el comercio, al guardar se genera uno automático (HB-año-0001).',
+      },
     },
     {
       name: 'fechaAlta',
@@ -174,7 +212,7 @@ export const ComerciosHabilitados: CollectionConfig = {
       label: 'Localización (Mapa)',
       admin: {
         description:
-          'Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.',
+          'En Google Maps, clic derecho sobre el local. El primer número es la latitud (cerca de -31,78) y el segundo la longitud (cerca de -60,43). Cargá la longitud en el primer campo y la latitud en el segundo. Sin estas coordenadas el comercio no aparece en el mapa.',
       },
     },
     {
@@ -191,18 +229,6 @@ export const ComerciosHabilitados: CollectionConfig = {
       relationTo: 'actividades-comercios',
       label: 'Actividades',
       hasMany: true,
-    },
-    {
-      name: 'numeroHabilitacion',
-      type: 'text',
-      label: 'Número de Habilitación',
-      unique: true,
-      index: true,
-      admin: {
-        position: 'sidebar',
-        description:
-          'Si se deja vacío al crear, se genera HB-{año}-{correlativo}. En comercios históricos se puede cargar el nro. del expediente papel.',
-      },
     },
     {
       name: 'tokenValidacion',

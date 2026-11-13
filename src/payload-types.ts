@@ -441,6 +441,10 @@ export interface ComerciosHabilitado {
   nombre: string;
   razonSocial: string;
   cuit: string;
+  /**
+   * Escribí el número del expediente. Si lo dejás vacío al crear el comercio, al guardar se genera uno automático (HB-año-0001).
+   */
+  numeroHabilitacion?: string | null;
   fechaAlta: string;
   /**
    * Vigencia de la habilitación. Se actualiza al aprobar una renovación.
@@ -456,7 +460,7 @@ export interface ComerciosHabilitado {
   titulares?: (string | Ciudadano)[] | null;
   direccion: string;
   /**
-   * Coordenadas GPS del local. Se obtienen en Google Maps con clic derecho sobre el punto.
+   * En Google Maps, clic derecho sobre el local. El primer número es la latitud (cerca de -31,78) y el segundo la longitud (cerca de -60,43). Cargá la longitud en el primer campo y la latitud en el segundo. Sin estas coordenadas el comercio no aparece en el mapa.
    *
    * @minItems 2
    * @maxItems 2
@@ -464,10 +468,6 @@ export interface ComerciosHabilitado {
   localizacion?: [number, number] | null;
   rubro: string | RubrosComercio;
   actividades?: (string | ActividadesComercio)[] | null;
-  /**
-   * Si se deja vacío al crear, se genera HB-{año}-{correlativo}. En comercios históricos se puede cargar el nro. del expediente papel.
-   */
-  numeroHabilitacion?: string | null;
   tokenValidacion?: string | null;
   /**
    * URL única para verificar la habilitación. Se genera automáticamente al crear.
@@ -2527,6 +2527,7 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   nombre?: T;
   razonSocial?: T;
   cuit?: T;
+  numeroHabilitacion?: T;
   fechaAlta?: T;
   fechaVencimiento?: T;
   fechaBaja?: T;
@@ -2535,7 +2536,6 @@ export interface ComerciosHabilitadosSelect<T extends boolean = true> {
   localizacion?: T;
   rubro?: T;
   actividades?: T;
-  numeroHabilitacion?: T;
   tokenValidacion?: T;
   urlValidacion?: T;
   created_by?: T;

@@ -1,4 +1,4 @@
-import type { Ciudadano } from '@/payload-types'
+import type { Ciudadano, ExpedientesRenovacion } from '@/payload-types'
 import {
   ciudadanoTieneModuloHabilitaciones,
   comercioEstaVigente,
@@ -31,7 +31,7 @@ type EstadoFase =
   | null
   | undefined
 
-function EstadoBadge({ estado }: { estado: EstadoFase }) {
+function EstadoBadge({ estado }: { estado: EstadoFase | null | undefined }) {
   if (!estado) {
     return <span className="badge badge-ghost">Sin iniciar</span>
   }
@@ -78,7 +78,7 @@ function PasoCard({
   titulo: string
   descripcion: string
   area: string
-  estado: EstadoFase
+  estado: EstadoFase | null
   notaCiudadano?: string | null
   archivoFase?: { url?: string | null; filename?: string | null } | null
   ctaHref?: string
@@ -223,7 +223,7 @@ export default async function HabilitacionesPage() {
 
   const [{ docs }, { docs: comercios }, { docs: renovaciones }] = await Promise.all([
     basePayload.find({
-      collection: 'expedientes-habilitacion' as any,
+      collection: 'expedientes-habilitacion',
       where: { 'created_by.value': { equals: ciudadano.id } },
       limit: 1,
       sort: '-createdAt',
@@ -251,8 +251,8 @@ export default async function HabilitacionesPage() {
     }),
   ])
 
-  const renovacionPorComercio = new Map<string, any>()
-  for (const reno of renovaciones as any[]) {
+  const renovacionPorComercio = new Map<string, ExpedientesRenovacion>()
+  for (const reno of renovaciones) {
     const cid = relationId(reno.comercio)
     if (!cid) continue
     const actual = renovacionPorComercio.get(cid)
@@ -261,7 +261,7 @@ export default async function HabilitacionesPage() {
     }
   }
 
-  const exp = (docs[0] as any) ?? null
+  const exp = docs[0] ?? null
   const archivoFase1 =
     exp?.faseIInformeObras && typeof exp.faseIInformeObras === 'object'
       ? { url: exp.faseIInformeObras.url ?? null, filename: exp.faseIInformeObras.filename ?? null }
@@ -274,9 +274,9 @@ export default async function HabilitacionesPage() {
         }
       : null
 
-  const f1Estado: EstadoFase = exp?.faseIEstado ?? null
-  const f2Estado: EstadoFase = exp?.faseIIEstado ?? null
-  const f3Estado: EstadoFase = exp?.faseIIIEstado ?? null
+  const f1Estado = exp?.faseIEstado ?? null
+  const f2Estado = exp?.faseIIEstado ?? null
+  const f3Estado = exp?.faseIIIEstado ?? null
 
   const fase2Bloqueada = f1Estado !== 'APROBADO'
   const fase3Bloqueada = f1Estado !== 'APROBADO' || f2Estado !== 'APROBADO'
@@ -333,7 +333,7 @@ export default async function HabilitacionesPage() {
             <h2 className="text-base-content/80 text-sm font-semibold tracking-wider uppercase">
               Mis comercios
             </h2>
-            {comercios.map((comercio: any) => {
+            {comercios.map((comercio) => {
               const rubroNombre =
                 comercio.rubro && typeof comercio.rubro === 'object' ? comercio.rubro.nombre : null
               const cerrado = Boolean(
@@ -348,7 +348,10 @@ export default async function HabilitacionesPage() {
               const vencimientoLabel = formatFecha(comercio.fechaVencimiento)
 
               return (
-                <div key={comercio.id} className="card bg-base-100 border-base-300 border shadow-sm">
+                <div
+                  key={comercio.id}
+                  className="card bg-base-100 border-base-300 border shadow-sm"
+                >
                   <div className="card-body gap-3 p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
@@ -477,46 +480,46 @@ export default async function HabilitacionesPage() {
               Alta de comercio
             </h2>
 
-          <PasoCard
-            numero={1}
-            titulo="Permiso de Uso"
-            descripcion="Verificación de zonificación y aptitud edilicia del local."
-            area="Obras Privadas"
-            estado={f1Estado}
-            notaCiudadano={exp?.faseINotaCiudadano}
-            archivoFase={archivoFase1}
-            ctaHref={ctaFase1?.href}
-            ctaLabel={ctaFase1?.label}
-            bloqueado={false}
-            completado={f1Estado === 'APROBADO'}
-          />
+            <PasoCard
+              numero={1}
+              titulo="Permiso de Uso"
+              descripcion="Verificación de zonificación y aptitud edilicia del local."
+              area="Obras Privadas"
+              estado={f1Estado}
+              notaCiudadano={exp?.faseINotaCiudadano}
+              archivoFase={archivoFase1}
+              ctaHref={ctaFase1?.href}
+              ctaLabel={ctaFase1?.label}
+              bloqueado={false}
+              completado={f1Estado === 'APROBADO'}
+            />
 
-          <PasoCard
-            numero={2}
-            titulo="Habilitación Comercial"
-            descripcion="Presentación de requisitos de Habilitaciones y Bromatología."
-            area="Habilitaciones Comerciales"
-            estado={f2Estado}
-            notaCiudadano={exp?.faseIINotaCiudadano}
-            archivoFase={archivoFase2}
-            ctaHref={ctaFase2?.href}
-            ctaLabel={ctaFase2?.label}
-            bloqueado={fase2Bloqueada}
-            completado={f2Estado === 'APROBADO'}
-          />
+            <PasoCard
+              numero={2}
+              titulo="Habilitación Comercial"
+              descripcion="Presentación de requisitos de Habilitaciones y Bromatología."
+              area="Habilitaciones Comerciales"
+              estado={f2Estado}
+              notaCiudadano={exp?.faseIINotaCiudadano}
+              archivoFase={archivoFase2}
+              ctaHref={ctaFase2?.href}
+              ctaLabel={ctaFase2?.label}
+              bloqueado={fase2Bloqueada}
+              completado={f2Estado === 'APROBADO'}
+            />
 
-          <PasoCard
-            numero={3}
-            titulo="Alta Fiscal"
-            descripcion="Confección del Alta Comercial y emisión del Certificado de Habilitación."
-            area="Rentas"
-            estado={f3Estado}
-            notaCiudadano={exp?.faseIIINotaCiudadano}
-            ctaHref={ctaFase3?.href}
-            ctaLabel={ctaFase3?.label}
-            bloqueado={fase3Bloqueada}
-            completado={f3Estado === 'APROBADO'}
-          />
+            <PasoCard
+              numero={3}
+              titulo="Alta Fiscal"
+              descripcion="Confección del Alta Comercial y emisión del Certificado de Habilitación."
+              area="Rentas"
+              estado={f3Estado}
+              notaCiudadano={exp?.faseIIINotaCiudadano}
+              ctaHref={ctaFase3?.href}
+              ctaLabel={ctaFase3?.label}
+              bloqueado={fase3Bloqueada}
+              completado={f3Estado === 'APROBADO'}
+            />
           </div>
         )}
 

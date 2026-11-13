@@ -1,4 +1,4 @@
-import type { Ciudadano } from '@/payload-types'
+import type { Archivo, Ciudadano, ExpedientesRenovacion } from '@/payload-types'
 import { ExpedienteRenovacionForm } from '@/web/components/expediente-renovacion-form'
 import { ciudadanoTieneModuloHabilitaciones } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
@@ -11,9 +11,9 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
-const ESTADOS_EDITABLES = ['INICIADO', 'OBSERVADO']
-
-function fileMeta(v: any): { url?: string | null; filename?: string | null } | null {
+function fileMeta(
+  v: string | Archivo | null | undefined,
+): { url?: string | null; filename?: string | null } | null {
   return v && typeof v === 'object' ? { url: v.url ?? null, filename: v.filename ?? null } : null
 }
 
@@ -28,7 +28,7 @@ export default async function RenovacionDetallePage({ params }: Props) {
   const ciudadano = user as Ciudadano
   if (!ciudadanoTieneModuloHabilitaciones(ciudadano)) redirect('/habilitaciones')
 
-  let renovacion: any
+  let renovacion: ExpedientesRenovacion
   try {
     renovacion = await basePayload.findByID({
       collection: 'expedientes-renovacion',
@@ -48,7 +48,7 @@ export default async function RenovacionDetallePage({ params }: Props) {
   const rubroNombre =
     comercio.rubro && typeof comercio.rubro === 'object' ? comercio.rubro.nombre : null
 
-  const readOnly = !ESTADOS_EDITABLES.includes(renovacion.estado)
+  const readOnly = renovacion.estado !== 'INICIADO' && renovacion.estado !== 'OBSERVADO'
 
   return (
     <main className="bg-base-100 min-h-screen">
@@ -69,9 +69,7 @@ export default async function RenovacionDetallePage({ params }: Props) {
             <h1 className="text-primary text-2xl font-bold">
               {readOnly ? 'Estado de la renovación' : 'Completar renovación'}
             </h1>
-            <p className="text-base-content/70 text-sm">
-              {renovacion.titulo ?? comercio.nombre}
-            </p>
+            <p className="text-base-content/70 text-sm">{renovacion.titulo ?? comercio.nombre}</p>
           </div>
         </div>
         <ExpedienteRenovacionForm
@@ -99,8 +97,8 @@ export default async function RenovacionDetallePage({ params }: Props) {
           adjuntosOtros={
             Array.isArray(renovacion.adjuntosOtros)
               ? renovacion.adjuntosOtros
-                  .filter((a: any) => a && typeof a === 'object')
-                  .map((a: any) => ({ url: a.url ?? null, filename: a.filename ?? null }))
+                  .filter((a): a is Archivo => Boolean(a) && typeof a === 'object')
+                  .map((a) => ({ url: a.url ?? null, filename: a.filename ?? null }))
               : []
           }
           solicitanteDefaults={{

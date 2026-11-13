@@ -1,4 +1,5 @@
 import { CreatedBy } from '@/payload/fields/created_by'
+import type { ExpedientesRenovacion as ExpedienteRenovacionDoc } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 import {
   renovacionCitizenFieldAccess,
@@ -7,10 +8,7 @@ import {
   renovacionUpdateAccess,
 } from '../access/expedientes-renovacion'
 import { HIDE_API_URL } from '../config'
-import {
-  HIGIENE_SEGURIDAD_ITEMS,
-  LIBROS_TAPA_DURA_OPTIONS,
-} from '../constants/renovacion'
+import { HIGIENE_SEGURIDAD_ITEMS, LIBROS_TAPA_DURA_OPTIONS } from '../constants/renovacion'
 
 export const ESTADOS_RENOVACION = [
   'INICIADO',
@@ -104,9 +102,7 @@ export const ExpedientesRenovacion: CollectionConfig = {
           })
 
           if (req.user?.collection === 'ciudadanos') {
-            const titulares = Array.isArray((comercio as any).titulares)
-              ? ((comercio as any).titulares as unknown[]).map(relationId)
-              : []
+            const titulares = (comercio.titulares ?? []).map(relationId)
             if (!titulares.includes(req.user.id)) {
               throw new Error('No sos titular de este comercio.')
             }
@@ -130,7 +126,7 @@ export const ExpedientesRenovacion: CollectionConfig = {
           }
 
           if (!data.titulo) {
-            data.titulo = `Renovación — ${(comercio as any).nombre ?? 'comercio'}`
+            data.titulo = `Renovación — ${comercio.nombre}`
           }
         }
 
@@ -145,11 +141,13 @@ export const ExpedientesRenovacion: CollectionConfig = {
       async ({ doc, previousDoc, req, operation }) => {
         if (operation !== 'update') return doc
 
-        const nuevoEstado = (doc as any).estado
-        const estadoAnterior = (previousDoc as any)?.estado
+        const renovacion = doc as ExpedienteRenovacionDoc
+        const anterior = previousDoc as ExpedienteRenovacionDoc | undefined
+        const nuevoEstado = renovacion.estado
+        const estadoAnterior = anterior?.estado
         if (nuevoEstado !== 'APROBADO' || estadoAnterior === 'APROBADO') return doc
 
-        const comercioId = relationId((doc as any).comercio)
+        const comercioId = relationId(renovacion.comercio)
         if (!comercioId) {
           req.payload.logger.warn(
             `[ExpedientesRenovacion] Renovación ${doc.id} aprobada sin comercio vinculado.`,
@@ -157,8 +155,7 @@ export const ExpedientesRenovacion: CollectionConfig = {
           return doc
         }
 
-        const vencimiento =
-          (doc as any).fechaVencimientoNueva || addOneYear(new Date())
+        const vencimiento = renovacion.fechaVencimientoNueva || addOneYear(new Date())
 
         try {
           await req.payload.update({

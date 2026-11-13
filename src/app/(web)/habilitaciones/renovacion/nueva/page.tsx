@@ -1,9 +1,6 @@
-import type { Ciudadano } from '@/payload-types'
+import type { Ciudadano, ComerciosHabilitado } from '@/payload-types'
 import { ExpedienteRenovacionForm } from '@/web/components/expediente-renovacion-form'
-import {
-  ciudadanoTieneModuloHabilitaciones,
-  esTitularDelComercio,
-} from '@/web/lib/habilitaciones'
+import { ciudadanoTieneModuloHabilitaciones, esTitularDelComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import { IconArrowLeft, IconBuildingStore } from '@tabler/icons-react'
 import { headers as nextHeaders } from 'next/headers'
@@ -26,7 +23,7 @@ export default async function NuevaRenovacionPage({ searchParams }: Props) {
   const ciudadano = user as Ciudadano
   if (!ciudadanoTieneModuloHabilitaciones(ciudadano)) redirect('/habilitaciones')
 
-  let comercio: any
+  let comercio: ComerciosHabilitado
   try {
     comercio = await basePayload.findByID({
       collection: 'comercios-habilitados',

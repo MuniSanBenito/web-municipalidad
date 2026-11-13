@@ -1,4 +1,5 @@
-import type { CollectionAfterChangeHook } from 'payload'
+import type { ExpedientesHabilitacion } from '@/payload-types'
+import type { CollectionAfterChangeHook, PayloadRequest } from 'payload'
 import {
   construirCorreoNotificacion,
   correosAreas,
@@ -7,7 +8,7 @@ import {
   type EventoNotificacionHabilitacion,
 } from '../habilitaciones/notificaciones'
 
-async function getCitizenLoginEmail(doc: Record<string, any>, req: any) {
+async function getCitizenLoginEmail(doc: ExpedientesHabilitacion, req: PayloadRequest) {
   const createdBy = doc.created_by
   if (!createdBy || createdBy.relationTo !== 'ciudadanos') return null
   const value = createdBy.value
@@ -38,8 +39,8 @@ async function queueEmail({
   event: EventoNotificacionHabilitacion
   audience: 'AREA' | 'CIUDADANO'
   recipients: string[]
-  doc: Record<string, any>
-  req: any
+  doc: ExpedientesHabilitacion
+  req: PayloadRequest
   baseUrl: string
 }) {
   if (recipients.length === 0) return
@@ -68,12 +69,9 @@ async function queueEmail({
   })
 }
 
-export const notificarExpedienteHabilitacion: CollectionAfterChangeHook = async ({
-  doc,
-  previousDoc,
-  operation,
-  req,
-}) => {
+export const notificarExpedienteHabilitacion: CollectionAfterChangeHook<
+  ExpedientesHabilitacion
+> = async ({ doc, previousDoc, operation, req }) => {
   const events = detectarEventosNotificacion({
     doc,
     previousDoc: previousDoc ?? {},
@@ -83,7 +81,7 @@ export const notificarExpedienteHabilitacion: CollectionAfterChangeHook = async 
   if (events.length === 0) return doc
 
   try {
-    const config = await (req.payload.findGlobal as any)({
+    const config = await req.payload.findGlobal({
       slug: 'configuracion-notificaciones-habilitacion',
       depth: 0,
       overrideAccess: true,
