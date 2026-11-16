@@ -18,7 +18,9 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 # COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
-COPY package.json pnpm-lock.yaml .npmrc* ./
+# pnpm-workspace.yaml trae overrides y allowBuilds; sin él, --frozen-lockfile falla
+# con ERR_PNPM_LOCKFILE_CONFIG_MISMATCH.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 
 # RUN \
 #   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
