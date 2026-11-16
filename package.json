@@ -1,7 +1,7 @@
 {
   "name": "web-municipalidad",
   "version": "1.0.0",
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@12.14.0",
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
   "type": "module",
@@ -9,6 +9,7 @@
   "scripts": {
     "build": "pnpm run generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "predev": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -34,17 +35,20 @@
     "@payloadcms/ui": "3.68.5",
     "@tabler/icons-react": "3.36.0",
     "@tailwindcss/postcss": "4.1.18",
+    "@types/leaflet": "1.9.21",
     "canvas-confetti": "^1.9.4",
     "cross-env": "10.1.0",
     "framer-motion": "^12.42.2",
     "jspdf": "3.0.4",
+    "leaflet": "1.9.4",
     "next": "16.0.10",
     "next-themes": "0.4.6",
-    "payload": "3.68.3",
+    "payload": "3.68.5",
     "postcss": "8.5.6",
     "react": "19.2.3",
     "react-chatbot-kit": "2.2.2",
     "react-dom": "19.2.3",
+    "react-leaflet": "5.0.0",
     "sharp": "0.34.5",
     "sonner": "2.0.7",
     "tailwind-merge": "3.4.0",
@@ -67,15 +71,5 @@
     "prettier-plugin-tailwindcss": "0.7.2",
     "tsx": "4.20.3",
     "typescript": "5.9.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "esbuild",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@aws-sdk/client-s3": "3.1005.0"
-    }
   }
 }

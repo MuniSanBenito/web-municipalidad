@@ -13,7 +13,7 @@ import type { AIProvider, ConversationEntry } from './types'
 // CONFIGURACIÓN
 // ===============================================
 
-const API_ENDPOINT = '/api/chatbot-conversations'
+const API_ENDPOINT = '/api/chat/conversations'
 const SYNC_DEBOUNCE_MS = 5000 // Esperar 5 segundos después del último mensaje para sincronizar
 const MIN_MESSAGES_TO_SYNC = 2 // Mínimo de mensajes para iniciar sincronización
 
@@ -180,49 +180,20 @@ export function scheduleSyncConversation(): void {
 }
 
 /**
- * Envía feedback de un mensaje específico a la API
+ * Guarda el feedback dentro de la misma conversación.
+ * El historial y el feedback usan ids distintos, así que se reenvía la conversación completa.
  */
 export async function syncFeedback(
   messageId: string,
   rating: 'positive' | 'negative',
   comment?: string,
 ): Promise<boolean> {
-  if (typeof window === 'undefined') return false
-
-  const history = getConversationHistory()
-  if (!history) return false
-
-  try {
-    const response = await fetch(API_ENDPOINT, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sessionId: history.sessionId,
-        messageId,
-        rating,
-        comment,
-      }),
-    })
-
-    if (!response.ok) {
-      console.warn('Error sincronizando feedback:', response.status)
-      return false
-    }
-
-    const result = await response.json()
-
-    if (result.success) {
-      console.log(`📤 Feedback sincronizado: ${rating} para mensaje ${messageId}`)
-      return true
-    }
-
-    return false
-  } catch (error) {
-    console.warn('Error en sincronización de feedback:', error)
-    return false
+  const entry = getAllFeedback().find((item) => item.messageId === messageId)
+  if (entry) {
+    entry.rating = rating
+    if (comment) entry.comment = comment
   }
+  return syncConversation()
 }
 
 /**
@@ -251,7 +222,8 @@ export function syncConversationNow(): void {
       userAgent: getUserAgent(),
     }
 
-    navigator.sendBeacon(API_ENDPOINT, JSON.stringify(payload))
+    const body = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    navigator.sendBeacon(API_ENDPOINT, body)
     console.log('📤 Conversación enviada con sendBeacon')
   } else {
     // Fallback: sincronización normal

@@ -51,6 +51,7 @@ export {
   clearHistory,
   exportHistoryAsText,
   getContextForAI,
+  getHistoryForAI,
   getConversationHistory,
   getHistoryStats,
   getLastAssistantMessage,

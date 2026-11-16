@@ -1,5 +1,6 @@
 import { SYSTEM_PROMPT } from '@/components/chatbot/knowledgeBaseEnhanced'
 import { API_KEY, GROQ_API_URL, MODELS } from '../route'
+import { consumeChatRateLimit } from '../rateLimit'
 
 export const runtime = 'nodejs'
 
@@ -39,6 +40,23 @@ export async function POST(request: Request) {
     })
   }
 
+  const rateLimit = consumeChatRateLimit(request)
+  if (!rateLimit.allowed) {
+    return new Response(
+      JSON.stringify({
+        error:
+          'El sistema está procesando muchas consultas. Esperá unos segundos e intentá de nuevo.',
+      }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Retry-After': String(rateLimit.retryAfter),
+        },
+      },
+    )
+  }
+
   const messages: Array<{ role: string; content: string }> = [
     { role: 'system', content: SYSTEM_PROMPT },
   ]
@@ -47,7 +65,7 @@ export async function POST(request: Request) {
     if (!content) continue
     messages.push({
       role: msg.role === 'user' ? 'user' : 'assistant',
-      content,
+      content: String(content).slice(0, 2000),
     })
   }
   messages.push({ role: 'user', content: query })
@@ -61,6 +79,7 @@ export async function POST(request: Request) {
 
       try {
         let upstream: Response | null = null
+        let usedModel: string | null = null
         let lastStatus = 500
 
         for (const model of MODELS) {
@@ -92,6 +111,7 @@ export async function POST(request: Request) {
           }
 
           upstream = response
+          usedModel = model
           break
         }
 
@@ -133,7 +153,7 @@ export async function POST(request: Request) {
           }
         }
 
-        send({ done: true })
+        send({ done: true, model: usedModel })
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Error desconocido'
         send({ error: message })

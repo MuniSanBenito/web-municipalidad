@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     return webpack
   },
   output: 'standalone',
-  // reactCompiler: true,
+  devIndicators: false,
   experimental: {
     serverActions: {
       bodySizeLimit: '64mb',

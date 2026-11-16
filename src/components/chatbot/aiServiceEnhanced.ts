@@ -18,7 +18,7 @@ import {
   type StreamOptions,
 } from './chatService'
 import { getVerifiedInformation, sanitizeResponse, validateResponse } from './contentValidator'
-import { addAssistantMessage, addUserMessage, getContextForAI } from './conversationHistory'
+import { addAssistantMessage, addUserMessage, getHistoryForAI } from './conversationHistory'
 import {
   asegurarEnlaceDePagina,
   buscarServicioPorKeyword,
@@ -58,7 +58,7 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
 
   const normalizedQuery = query.toLowerCase().trim()
 
-  // Registrar mensaje del usuario en historial
+  const history = getHistoryForAI(6)
   addUserMessage(query)
 
   // 1. Verificar caché primero
@@ -101,15 +101,7 @@ export async function fetchEnhancedAIResponse(query: string): Promise<AIResponse
         console.log(`📊 Rate limit: ${rateLimitCheck.requestsRemaining} consultas restantes`)
       }
 
-      // Obtener contexto de conversación para mejor coherencia
-      const conversationContext = getContextForAI(4)
-
-      // Groq tiene toda la información en su system prompt, así que puede responder directamente
-      const groqResponse = await generateChatResponse(
-        conversationContext
-          ? `Contexto previo:\n${conversationContext}\n\nNueva consulta: ${query}`
-          : query,
-      )
+      const groqResponse = await generateChatResponse(query, history)
 
       // Registrar request exitosa
       recordRequest()
@@ -227,6 +219,7 @@ export async function fetchEnhancedAIResponseStreaming(
   }
 
   const normalizedQuery = query.toLowerCase().trim()
+  const history = getHistoryForAI(6)
   addUserMessage(query)
 
   // 1. Cache hit → respuesta instantánea, sin streaming
@@ -253,13 +246,8 @@ export async function fetchEnhancedAIResponseStreaming(
 
   if (groqAvailable && rateLimitCheck.allowed) {
     try {
-      const conversationContext = getContextForAI(4)
-      const enrichedQuery = conversationContext
-        ? `Contexto previo:\n${conversationContext}\n\nNueva consulta: ${query}`
-        : query
-
-      const opts: StreamOptions = { onChunk }
-      const fullText = await generateChatResponseStreaming(enrichedQuery, opts)
+      const opts: StreamOptions = { history, onChunk }
+      const fullText = await generateChatResponseStreaming(query, opts)
       recordRequest()
 
       const validation = validateResponse(fullText, query)

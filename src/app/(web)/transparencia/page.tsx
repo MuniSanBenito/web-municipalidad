@@ -56,7 +56,7 @@ export const metadata: Metadata = generateSEOMetadata({
 
 export default function PageTransparencia() {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto px-4">
       <PageTitle title="Portal de Transparencia" />
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
         {sections.map((section) => {

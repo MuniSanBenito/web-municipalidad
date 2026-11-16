@@ -1,98 +1,77 @@
 // src/components/chatbot/contentValidator.ts
 
 /**
- * Sistema de validación de contenido para evitar alucinaciones del chatbot
- * Asegura que solo se proporcione información verificada de la municipalidad
- * Última actualización: Febrero 2026
+ * Validación de respuestas del chatbot.
+ * Los datos salen de knowledgeBaseEnhanced: no hay una segunda lista de teléfonos,
+ * horarios ni población.
  */
 
-// Lista de información oficial verificada (actualizada Febrero 2026)
-const VERIFIED_INFORMATION = {
-  // Información de contacto oficial
-  contacto: {
-    telefono_principal: '343-4973454',
-    email: 'presidencia@munisanbenito.gov.ar',
-    direccion: 'Basavilbaso 1094, San Benito, Entre Ríos, Argentina',
-    horario: 'Lunes a Viernes de 7:00 a 13:00 hs',
-  },
+import {
+  buscarServicioPorKeyword,
+  CONTACTO_GENERAL,
+  EMERGENCIAS,
+  formatearContactoGeneral,
+  formatearHorariosGeneral,
+  formatearServicio,
+  SERVICIOS_COMPLETOS,
+  type ServiceInfo,
+} from './knowledgeBaseEnhanced'
 
-  // WhatsApp por área (actualizado Febrero 2026)
-  whatsapp: {
-    rentas: '3436127015',
-    licencias: '3436127014',
-    habilitaciones: '3434537319',
-    cav: '3436127013',
-    deportes: '5493434658210',
-    punto_digital: '3434503200',
-    obras_privadas: '3434681033',
-    area_mujer: '3435204239',
-    tercera_edad: '3433027297',
-    produccion_empleo: '3434657917',
-    concejo: '3434700140',
-  },
-
-  // Emails por área
-  emails: {
-    rentas: 'rentas@munisanbenito.gov.ar',
-    obras_privadas: 'opriv.sanbenito@gmail.com',
-    habilitaciones: 'habilitaciones@munisanbenito.gov.ar',
-    tercera_edad: 'adultosmayoresydiscapacidadsb@gmail.com',
-    asesoria_legal: 'asesorialegalytecnica@sanbenito.gob.ar',
-  },
-
-  // Trámites con requisitos exactos
-  tramites: {
-    licencia_conducir: {
-      nombre: 'Licencia de Conducir',
-      requisitos: [
-        'Constancia del grupo sanguíneo',
-        'DNI y fotocopia',
-        'Constancia de CUIL',
-        'CENAT (boletadepago.seguridadvial.gob.ar)',
-        'Examen psicofísico obligatorio',
-        'Curso de Educación Vial',
-      ],
-    },
-    obras_privadas: {
-      nombre: 'Obras Privadas',
-      requisitos: [
-        'Título de propiedad o boleto compra-venta certificado',
-        'Plano de mensura visado por Catastro',
-        'Libre deuda municipal',
-        'Certificado de factibilidad de servicios',
-        'Planos firmados por profesional habilitado',
-      ],
-    },
-    habilitacion_comercial: {
-      nombre: 'Habilitación Comercial',
-      requisitos: [
-        'DNI y CUIT/CUIL',
-        'Título de propiedad o contrato de alquiler',
-        'Planos del local',
-        'Habilitación Bomberos (si corresponde)',
-      ],
-    },
-  },
-
-  // Información general verificada
-  general: {
-    intendente: 'Ariel Voeffray',
-    poblacion: '17,000 habitantes aproximadamente',
-    provincia: 'Entre Ríos',
-    pais: 'Argentina',
-  },
-
-  // Enlaces oficiales
-  enlaces: {
-    rentas: 'http://sigem.sanbenito.gob.ar/ingresospublicos/ingresospublicos.aspx',
-    curso_vial: 'http://curso.seguridadvial.gob.ar/',
-    cenat: 'https://boletadepago.seguridadvial.gob.ar/',
-    deportes_inscripcion: 'https://forms.gle/6v12MovAy6AeCxTJ9',
-    emprendedores: 'https://forms.gle/2nQfHh6LixSHKrR5A',
-  },
+function fichasUnicas(): ServiceInfo[] {
+  return [...new Set(Object.values(SERVICIOS_COMPLETOS))]
 }
 
-// Palabras y frases que indican información no verificada
+function digitos(valor: string): string {
+  return valor.replace(/\D/g, '')
+}
+
+function normalizarHora(valor: string): string {
+  const [hora, minutos] = valor.split(':')
+  return `${Number(hora)}:${minutos}`
+}
+
+const FICHAS = fichasUnicas()
+
+const TEXTO_CONOCIDO = [
+  CONTACTO_GENERAL.direccion,
+  CONTACTO_GENERAL.horarioGeneral,
+  CONTACTO_GENERAL.telefonoPrincipal,
+  CONTACTO_GENERAL.emailPrincipal,
+  CONTACTO_GENERAL.intendente,
+  CONTACTO_GENERAL.poblacion,
+  ...EMERGENCIAS.flatMap((item) => [item.nombre, item.telefono, item.disponibilidad]),
+  ...FICHAS.flatMap((servicio) => [
+    servicio.horario,
+    servicio.telefono,
+    servicio.whatsapp,
+    servicio.email,
+    servicio.descripcion,
+    ...(servicio.informacionAdicional ?? []),
+    ...(servicio.requisitos ?? []),
+  ]),
+]
+  .filter((linea): linea is string => Boolean(linea))
+  .join('\n')
+
+const HORARIOS_CONOCIDOS = new Set(
+  [...TEXTO_CONOCIDO.matchAll(/\d{1,2}:\d{2}/g)].map((match) => normalizarHora(match[0])),
+)
+
+const TELEFONOS_CONOCIDOS = [
+  CONTACTO_GENERAL.telefonoPrincipal,
+  ...EMERGENCIAS.map((item) => item.telefono),
+  ...FICHAS.flatMap((servicio) => [servicio.telefono, servicio.whatsapp]),
+]
+  .filter((telefono): telefono is string => Boolean(telefono))
+  .map(digitos)
+  .filter((telefono) => telefono.length >= 3)
+
+function telefonoConocido(numero: string): boolean {
+  return TELEFONOS_CONOCIDOS.some(
+    (conocido) => conocido === numero || conocido.endsWith(numero) || numero.endsWith(conocido),
+  )
+}
+
 const UNCERTAINTY_INDICATORS = [
   'creo que',
   'posiblemente',
@@ -104,7 +83,6 @@ const UNCERTAINTY_INDICATORS = [
   'quizás',
   'quiz\u00e1s',
   'no estoy seguro',
-  'aproximadamente',
   'más o menos',
   'según tengo entendido',
   'si no me equivoco',
@@ -115,7 +93,6 @@ const UNCERTAINTY_INDICATORS = [
   'es posible que',
 ]
 
-// Frases que indican información inventada
 const HALLUCINATION_INDICATORS = [
   'he escuchado que',
   'según rumores',
@@ -151,7 +128,6 @@ export function validateResponse(
   const lowerResponse = response.toLowerCase()
   const lowerQuery = query.toLowerCase()
 
-  // 1. Verificar indicadores de incertidumbre
   const uncertaintyFound = UNCERTAINTY_INDICATORS.filter((indicator) =>
     lowerResponse.includes(indicator),
   )
@@ -161,7 +137,6 @@ export function validateResponse(
     confidence -= 30
   }
 
-  // 2. Verificar indicadores de alucinación
   const hallucinationFound = HALLUCINATION_INDICATORS.filter((indicator) =>
     lowerResponse.includes(indicator),
   )
@@ -173,43 +148,40 @@ export function validateResponse(
     confidence -= 50
   }
 
-  // 3. Verificar si contiene información específica que debe ser exacta
-  if (lowerResponse.includes('teléfono') || lowerResponse.includes('telefono')) {
-    const hasVerifiedPhone =
-      Object.values(VERIFIED_INFORMATION.whatsapp).some((phone) => response.includes(phone)) ||
-      response.includes(VERIFIED_INFORMATION.contacto.telefono_principal)
+  if (/tel[eé]fono|whatsapp|celular/i.test(lowerResponse)) {
+    const candidatos = response.match(/\d[\d\s().-]{6,}\d/g) ?? []
+    const noVerificado = candidatos.some((candidato) => {
+      const numero = digitos(candidato)
+      return numero.length >= 8 && !telefonoConocido(numero)
+    })
 
-    if (!hasVerifiedPhone && (lowerResponse.includes('(') || lowerResponse.includes('0343'))) {
+    if (noVerificado) {
       issues.push('Contiene números de teléfono no verificados')
       confidence -= 40
     }
   }
 
-  // 4. Verificar costos y precios específicos
-  if (
-    lowerResponse.includes('$') ||
-    lowerResponse.includes('peso') ||
-    lowerResponse.includes('costo')
-  ) {
-    // Solo permitir costos verificados
-    const verifiedCosts = ['$5,000', 'varía según', 'consultar']
-    const hasVerifiedCost = verifiedCosts.some((cost) => lowerResponse.includes(cost.toLowerCase()))
-
-    if (!hasVerifiedCost && /\$\d+/.test(response)) {
+  if (/\$\s?\d/.test(response)) {
+    const montos = response.match(/\$\s?[\d.]+/g) ?? []
+    const montoDesconocido = montos.some(
+      (monto) => !TEXTO_CONOCIDO.includes(monto.replace(/\s/g, '')),
+    )
+    if (montoDesconocido) {
       issues.push('Contiene precios no verificados')
       confidence -= 35
     }
   }
 
-  // 5. Verificar horarios específicos
-  if (lowerResponse.includes('horario') || lowerResponse.includes('hora')) {
-    if (!response.includes('7:00 a 13:00') && /\d{1,2}:\d{2}/.test(response)) {
+  // Un horario de área (7:30, 19:00, etc.) es válido si esa hora está en alguna ficha.
+  if (/\bhorarios?\b|\bhoras?\b/i.test(lowerResponse)) {
+    const horas = response.match(/\d{1,2}:\d{2}/g) ?? []
+    const horaDesconocida = horas.some((hora) => !HORARIOS_CONOCIDOS.has(normalizarHora(hora)))
+    if (horaDesconocida) {
       issues.push('Contiene horarios no verificados')
       confidence -= 30
     }
   }
 
-  // 6. Generar sugerencias basadas en la consulta
   if (
     lowerQuery.includes('teléfono') ||
     lowerQuery.includes('telefono') ||
@@ -219,14 +191,15 @@ export function validateResponse(
   }
 
   if (lowerQuery.includes('horario')) {
-    suggestions.push('Confirmar horario oficial: Lunes a Viernes de 7:00 a 13:00 hs')
+    suggestions.push(
+      `Horario general: ${CONTACTO_GENERAL.horarioGeneral}. Algunas áreas tienen otro horario.`,
+    )
   }
 
   if (lowerQuery.includes('costo') || lowerQuery.includes('precio')) {
     suggestions.push('Indicar que los costos pueden variar y recomendar consultar directamente')
   }
 
-  // Determinar si la respuesta es válida
   const isValid = confidence >= 70 && issues.length === 0
 
   return {
@@ -243,58 +216,27 @@ export function validateResponse(
  * @returns Información verificada relevante o null
  */
 export function getVerifiedInformation(query: string): string | null {
-  const lowerQuery = query.toLowerCase()
-
-  // Información de contacto
-  if (/tel[eé]fono|telefono|contacto|llamar|n[uú]mero/i.test(lowerQuery)) {
-    if (/rentas?/i.test(lowerQuery)) {
-      return `💰 **Contacto Rentas:**\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.rentas}\n📧 Email: ${VERIFIED_INFORMATION.emails.rentas}`
-    }
-    if (/licencia|conducir/i.test(lowerQuery)) {
-      return `🚗 **Contacto Licencias:**\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.licencias}`
-    }
-    if (/habilitaci[oó]n|comercio/i.test(lowerQuery)) {
-      return `🏪 **Contacto Habilitaciones:**\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.habilitaciones}\n📧 Email: ${VERIFIED_INFORMATION.emails.habilitaciones}`
-    }
-    if (/deporte/i.test(lowerQuery)) {
-      return `⚽ **Contacto Deportes:**\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.deportes}`
-    }
-    if (/cav|reclamo|vecino/i.test(lowerQuery)) {
-      return `📋 **Contacto CAV:**\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.cav}`
-    }
-    // Información general de contacto
-    return `📞 **Contactos oficiales:**\n• Principal: ${VERIFIED_INFORMATION.contacto.telefono_principal}\n• Email: ${VERIFIED_INFORMATION.contacto.email}\n\n📱 **WhatsApp por área:**\n• Rentas: ${VERIFIED_INFORMATION.whatsapp.rentas}\n• Licencias: ${VERIFIED_INFORMATION.whatsapp.licencias}\n• CAV: ${VERIFIED_INFORMATION.whatsapp.cav}`
+  if (/poblaci[oó]n|habitantes/i.test(query)) {
+    return `San Benito tiene ${CONTACTO_GENERAL.poblacion}.`
   }
 
-  // Horarios
-  if (/horario|atienden|abren?|abierto/i.test(lowerQuery)) {
-    return `🕒 **Horario de atención:** ${VERIFIED_INFORMATION.contacto.horario}`
+  if (/intendente|alcalde|quien\s+gobierna/i.test(query)) {
+    return `El intendente actual de San Benito es **${CONTACTO_GENERAL.intendente}** (período ${CONTACTO_GENERAL.periodoIntendencia}).`
   }
 
-  // Dirección
-  if (/direcci[oó]n|ubicaci[oó]n|donde\s+(est[aá]|queda)|como\s+llego/i.test(lowerQuery)) {
-    return `📍 **Dirección:** ${VERIFIED_INFORMATION.contacto.direccion}\n🕒 **Horario:** ${VERIFIED_INFORMATION.contacto.horario}`
+  const servicio = buscarServicioPorKeyword(query)
+  if (servicio) return formatearServicio(servicio)
+
+  if (/horario|atienden|abren?|abierto/i.test(query)) {
+    return formatearHorariosGeneral()
   }
 
-  // Información sobre trámites específicos
-  if (/licencia.*conducir|carnet/i.test(lowerQuery)) {
-    const tramite = VERIFIED_INFORMATION.tramites.licencia_conducir
-    return `🚗 **${tramite.nombre}:**\n\n**Requisitos:**\n${tramite.requisitos.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.licencias}`
-  }
-
-  if (/obra|construcci[oó]n|plano/i.test(lowerQuery)) {
-    const tramite = VERIFIED_INFORMATION.tramites.obras_privadas
-    return `🏗️ **${tramite.nombre}:**\n\n**Requisitos:**\n${tramite.requisitos.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\n📧 Email: ${VERIFIED_INFORMATION.emails.obras_privadas}`
-  }
-
-  if (/habilitaci[oó]n.*comercial|habilitar.*comercio/i.test(lowerQuery)) {
-    const tramite = VERIFIED_INFORMATION.tramites.habilitacion_comercial
-    return `🏪 **${tramite.nombre}:**\n\n**Requisitos:**\n${tramite.requisitos.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\n📱 WhatsApp: ${VERIFIED_INFORMATION.whatsapp.habilitaciones}`
-  }
-
-  // Intendente
-  if (/intendente|alcalde|quien\s+gobierna/i.test(lowerQuery)) {
-    return `👨‍💼 El intendente actual de San Benito es **${VERIFIED_INFORMATION.general.intendente}**.`
+  if (
+    /direcci[oó]n|ubicaci[oó]n|d[oó]nde\s+(est[aá]|queda)|c[oó]mo\s+llego|tel[eé]fono|contacto|whatsapp|llamar/i.test(
+      query,
+    )
+  ) {
+    return formatearContactoGeneral()
   }
 
   return null
@@ -309,31 +251,25 @@ export function getVerifiedInformation(query: string): string | null {
 export function sanitizeResponse(response: string, query: string): string {
   let sanitized = response
 
-  // Eliminar frases de incertidumbre
   UNCERTAINTY_INDICATORS.forEach((indicator) => {
     const regex = new RegExp(indicator, 'gi')
     sanitized = sanitized.replace(regex, '')
   })
 
-  // Eliminar frases de alucinación
   HALLUCINATION_INDICATORS.forEach((indicator) => {
     const regex = new RegExp(indicator, 'gi')
     sanitized = sanitized.replace(regex, '')
   })
 
-  // Limpiar espacios extra y puntuación duplicada
   sanitized = sanitized
     .replace(/\s+/g, ' ')
     .replace(/[,\s]+,/g, ',')
     .replace(/[.\s]+\./g, '.')
     .trim()
 
-  // Si la respuesta queda muy corta o vacía, usar información verificada
   if (sanitized.length < 20) {
     const verifiedInfo = getVerifiedInformation(query)
-    if (verifiedInfo) {
-      return verifiedInfo
-    }
+    if (verifiedInfo) return verifiedInfo
   }
 
   return sanitized
@@ -349,17 +285,13 @@ export function generateFallbackResponse(query: string): string {
 
   if (verifiedInfo) {
     return (
-      verifiedInfo +
-      `\n\n💡 Para más información, contactá al ${VERIFIED_INFORMATION.contacto.telefono_principal}.`
+      verifiedInfo + `\n\nPara más información, contactá al ${CONTACTO_GENERAL.telefonoPrincipal}.`
     )
   }
 
   return (
-    `🤔 No tengo información específica sobre tu consulta.\n\n` +
+    `No tengo información específica sobre tu consulta.\n\n` +
     `Te recomiendo contactar directamente a la municipalidad:\n\n` +
-    `📞 **Teléfono:** ${VERIFIED_INFORMATION.contacto.telefono_principal}\n` +
-    `📧 **Email:** ${VERIFIED_INFORMATION.contacto.email}\n` +
-    `🕒 **Horario:** ${VERIFIED_INFORMATION.contacto.horario}\n` +
-    `📍 **Dirección:** ${VERIFIED_INFORMATION.contacto.direccion}`
+    `${formatearContactoGeneral()}`
   )
 }

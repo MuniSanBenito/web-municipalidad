@@ -10,6 +10,7 @@ interface Suggestion {
 
 interface SmartSuggestionsProps {
   suggestions?: Suggestion[]
+  smartSuggestions?: Suggestion[]
   payload?: {
     suggestions?: Suggestion[]
   }
@@ -19,17 +20,21 @@ interface SmartSuggestionsProps {
 
 const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({
   suggestions: propSuggestions,
+  smartSuggestions,
   payload,
+  actionProvider,
+  setState,
 }) => {
-  const suggestions = payload?.suggestions || propSuggestions
+  const suggestions = payload?.suggestions || propSuggestions || smartSuggestions
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
-  const handleSuggestionClick = useCallback((index: number, handler: () => void) => {
-    // Marcar como seleccionado
-    setSelectedIndex(index)
-    // Ejecutar el handler
-    handler()
-  }, [])
+  const handleSuggestionClick = useCallback(
+    (index: number, handler: (props?: { actionProvider: unknown; setState: unknown }) => void) => {
+      setSelectedIndex(index)
+      handler({ actionProvider, setState })
+    },
+    [actionProvider, setState],
+  )
 
   if (!suggestions || !Array.isArray(suggestions) || suggestions.length === 0) {
     return null
