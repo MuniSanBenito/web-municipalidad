@@ -7,7 +7,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 # Node 25+ ya no trae Corepack en la imagen oficial, así que se instala pnpm directo.
 # La versión tiene que coincidir con "packageManager" en package.json.
-RUN npm install -g pnpm@9.15.4
+# pnpm 12 escribe el lockfile como dos documentos YAML; pnpm 9 lo rechaza con ERR_PNPM_BROKEN_LOCKFILE.
+RUN npm install -g pnpm@12.14.0
 
 # Install dependencies with bun
 FROM base AS deps
