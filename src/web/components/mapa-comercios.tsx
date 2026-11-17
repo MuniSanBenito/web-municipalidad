@@ -18,6 +18,7 @@ const CENTRO_SAN_BENITO: [number, number] = [-31.781, -60.431]
 
 type Props = {
   comercios: ComercioEnMapa[]
+  consulta?: string
 }
 
 function Encuadrar({ puntos }: { puntos: [number, number][] }) {
@@ -44,7 +45,7 @@ function Encuadrar({ puntos }: { puntos: [number, number][] }) {
   return null
 }
 
-export function MapaComercios({ comercios }: Props) {
+export function MapaComercios({ comercios, consulta = '' }: Props) {
   const icono = useMemo(
     () =>
       L.divIcon({
@@ -115,7 +116,7 @@ export function MapaComercios({ comercios }: Props) {
                 {comercio.rubro && <p className="text-xs">{comercio.rubro}</p>}
                 <p className="text-xs">{comercio.direccion}</p>
                 <a
-                  href={`/tramites/habilitaciones/comercios-habilitados/${comercio.id}`}
+                  href={`/tramites/habilitaciones/comercios-habilitados/${comercio.id}${consulta}`}
                   className="text-xs font-medium underline"
                 >
                   Ver ficha

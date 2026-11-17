@@ -66,6 +66,45 @@ export function nombresActividades(actividades: ComercioBusqueda['actividades'])
   )
 }
 
+export const COMERCIOS_POR_PAGINA = 10
+
+export function paginar<T>(items: T[], pagina: number, porPagina = COMERCIOS_POR_PAGINA) {
+  const total = items.length
+  const totalPages = Math.max(1, Math.ceil(total / porPagina))
+  const solicitada = Number.isInteger(pagina) && pagina > 0 ? pagina : 1
+  const page = Math.min(solicitada, totalPages)
+  const inicio = (page - 1) * porPagina
+
+  return {
+    items: items.slice(inicio, inicio + porPagina),
+    page,
+    total,
+    totalPages,
+    desde: total === 0 ? 0 : inicio + 1,
+    hasta: Math.min(inicio + porPagina, total),
+    hasPrevPage: page > 1,
+    hasNextPage: page < totalPages,
+  }
+}
+
+const RUTA_LISTADO = '/tramites/habilitaciones/comercios-habilitados'
+
+export function hrefListado(busqueda: string, actividadId: string, pagina = 1) {
+  const params = new URLSearchParams()
+  const texto = busqueda.trim()
+  if (texto) params.set('q', texto)
+  if (actividadId) params.set('actividad', actividadId)
+  if (pagina > 1) params.set('page', String(pagina))
+  const query = params.toString()
+  return query ? `${RUTA_LISTADO}?${query}` : RUTA_LISTADO
+}
+
+export function hrefFicha(id: string, busqueda: string, actividadId: string, pagina = 1) {
+  const listado = hrefListado(busqueda, actividadId, pagina)
+  const consulta = listado.includes('?') ? listado.slice(listado.indexOf('?')) : ''
+  return `${RUTA_LISTADO}/${id}${consulta}`
+}
+
 export function etiquetaTitulares(titulares: ComercioBusqueda['titulares']): string {
   if (!Array.isArray(titulares)) return ''
   const nombres = titulares.flatMap((titular) => {

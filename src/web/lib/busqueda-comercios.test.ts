@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { comercioCoincide, etiquetaTitulares } from './busqueda-comercios'
+import { comercioCoincide, etiquetaTitulares, hrefFicha, hrefListado, paginar } from './busqueda-comercios'
 
 const comercio = {
   nombre: 'Fantasía',
@@ -26,4 +26,42 @@ test('combina la búsqueda con la actividad', () => {
 
 test('arma la etiqueta del titular', () => {
   assert.equal(etiquetaTitulares(comercio.titulares), 'García, Juan')
+})
+
+test('pagina el listado y deja el resto fuera de la página', () => {
+  const items = ['a', 'b', 'c', 'd', 'e']
+  const primera = paginar(items, 1, 2)
+  const segunda = paginar(items, 2, 2)
+  const ultima = paginar(items, 99, 2)
+
+  assert.deepEqual(primera.items, ['a', 'b'])
+  assert.equal(primera.total, 5)
+  assert.equal(primera.desde, 1)
+  assert.equal(primera.hasta, 2)
+  assert.equal(primera.hasNextPage, true)
+  assert.deepEqual(segunda.items, ['c', 'd'])
+  assert.deepEqual(ultima.items, ['e'])
+  assert.equal(ultima.page, 3)
+  assert.equal(ultima.hasNextPage, false)
+})
+
+test('la ficha vuelve al listado con la misma búsqueda', () => {
+  assert.equal(hrefListado('  ', '', 1), '/tramites/habilitaciones/comercios-habilitados')
+  const listado = hrefListado('fantasía', 'act-1', 2)
+  assert.equal(
+    listado,
+    '/tramites/habilitaciones/comercios-habilitados?q=fantas%C3%ADa&actividad=act-1&page=2',
+  )
+  assert.equal(
+    hrefFicha('abc', 'fantasía', 'act-1', 2),
+    '/tramites/habilitaciones/comercios-habilitados/abc?q=fantas%C3%ADa&actividad=act-1&page=2',
+  )
+})
+
+test('una búsqueda vacía queda en una sola página', () => {
+  const vacia = paginar([], 4, 10)
+  assert.deepEqual(vacia.items, [])
+  assert.equal(vacia.page, 1)
+  assert.equal(vacia.totalPages, 1)
+  assert.equal(vacia.desde, 0)
 })

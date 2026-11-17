@@ -8,6 +8,12 @@ const Mapa = dynamic(() => import('./mapa-comercios').then((modulo) => modulo.Ma
   loading: () => <div className="bg-base-200 h-72 w-full animate-pulse rounded-xl md:h-96" />,
 })
 
-export function MapaComerciosLoader({ comercios }: { comercios: ComercioEnMapa[] }) {
-  return <Mapa comercios={comercios} />
+export function MapaComerciosLoader({
+  comercios,
+  consulta = '',
+}: {
+  comercios: ComercioEnMapa[]
+  consulta?: string
+}) {
+  return <Mapa comercios={comercios} consulta={consulta} />
 }

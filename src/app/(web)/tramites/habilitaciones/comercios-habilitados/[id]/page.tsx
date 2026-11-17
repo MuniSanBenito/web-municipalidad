@@ -1,4 +1,5 @@
 import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
+import { hrefListado } from '@/web/lib/busqueda-comercios'
 import { comercioEstaVigente, coordenadasComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import {
@@ -14,10 +15,18 @@ import { notFound } from 'next/navigation'
 
 type Props = {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ q?: string; actividad?: string; page?: string }>
 }
 
-export default async function DetalleComercioPage({ params }: Props) {
+function numeroPagina(valor: string | undefined) {
+  const numero = Number(valor)
+  return Number.isInteger(numero) && numero > 0 ? numero : 1
+}
+
+export default async function DetalleComercioPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { q = '', actividad = '', page } = await searchParams
+  const volver = hrefListado(q, actividad, numeroPagina(page))
 
   const comercio = await basePayload.findByID({
     collection: 'comercios-habilitados',
@@ -74,12 +83,9 @@ export default async function DetalleComercioPage({ params }: Props) {
   const estaCerrado = Boolean(comercio.fechaBaja && new Date(comercio.fechaBaja) <= new Date())
 
   return (
-    <main className="container mx-auto px-4 py-6">
+    <main className="container mx-auto px-4 py-6 md:pr-24">
       <div className="mb-4">
-        <Link
-          href="/tramites/habilitaciones/comercios-habilitados"
-          className="btn btn-ghost btn-sm gap-1"
-        >
+        <Link href={volver} className="btn btn-ghost btn-sm gap-1">
           ← Volver al listado
         </Link>
       </div>
@@ -94,6 +100,15 @@ export default async function DetalleComercioPage({ params }: Props) {
               <div>
                 <h1 className="text-2xl font-bold md:text-4xl">{comercio.nombre}</h1>
                 <p className="text-base-content/60 mt-1 text-sm">{comercio.razonSocial}</p>
+                {actividades.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {actividades.map((nombre) => (
+                      <span key={nombre} className="badge badge-ghost">
+                        {nombre}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="shrink-0">
@@ -135,32 +150,12 @@ export default async function DetalleComercioPage({ params }: Props) {
 
             {rubroNombre && (
               <div className="flex items-start gap-3">
-                <IconTag size={18} className="text-primary mt-0.5 shrink-0" stroke={1.5} />
+                <IconTag size={18} className="text-base-content/50 mt-0.5 shrink-0" stroke={1.5} />
                 <div>
                   <dt className="text-base-content/60 text-xs font-medium tracking-wide uppercase">
                     Rubro
                   </dt>
-                  <dd className="mt-0.5">
-                    <span className="badge badge-outline">{rubroNombre}</span>
-                  </dd>
-                </div>
-              </div>
-            )}
-
-            {actividades.length > 0 && (
-              <div className="flex items-start gap-3">
-                <IconTag size={18} className="text-primary mt-0.5 shrink-0" stroke={1.5} />
-                <div>
-                  <dt className="text-base-content/60 text-xs font-medium tracking-wide uppercase">
-                    Actividades
-                  </dt>
-                  <dd className="mt-1 flex flex-wrap gap-1">
-                    {actividades.map((act) => (
-                      <span key={act} className="badge badge-ghost badge-sm">
-                        {act}
-                      </span>
-                    ))}
-                  </dd>
+                  <dd className="text-base-content/70 mt-0.5">{rubroNombre}</dd>
                 </div>
               </div>
             )}

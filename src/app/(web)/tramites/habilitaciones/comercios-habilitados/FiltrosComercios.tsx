@@ -28,6 +28,7 @@ export function FiltrosComercios({ actividades }: Props) {
   function navegar(siguienteQ: string, actividad: string) {
     const params = new URLSearchParams(searchParams?.toString() ?? '')
     params.delete('rubro')
+    params.delete('page')
     const texto = siguienteQ.trim()
     if (texto) params.set('q', texto)
     else params.delete('q')
