@@ -32,15 +32,31 @@ export function comercioEstaVencido(fechaVencimiento?: string | null): boolean {
   return new Date(fechaVencimiento) < new Date()
 }
 
-/** localizacion de Payload es [longitud, latitud]. */
+function esLatitudDeLaZona(valor: number) {
+  return valor <= -22 && valor >= -40
+}
+
+function esLongitudDeLaZona(valor: number) {
+  return valor <= -53 && valor >= -66
+}
+
+/** El campo guarda [longitud, latitud]. Algunos registros viejos quedaron al revés. */
 export function coordenadasComercio(localizacion: unknown): { lat: number; lng: number } | null {
   if (!Array.isArray(localizacion) || localizacion.length < 2) return null
-  const lng = localizacion[0]
-  const lat = localizacion[1]
-  if (typeof lat !== 'number' || typeof lng !== 'number') return null
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+  const primero = localizacion[0]
+  const segundo = localizacion[1]
+  if (typeof primero !== 'number' || typeof segundo !== 'number') return null
+  if (!Number.isFinite(primero) || !Number.isFinite(segundo)) return null
+
+  const invertido = esLatitudDeLaZona(primero) && esLongitudDeLaZona(segundo)
+  const lng = invertido ? segundo : primero
+  const lat = invertido ? primero : segundo
   if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null
   return { lat, lng }
+}
+
+export function comercioEstaEnSanBenito(coords: { lat: number; lng: number }) {
+  return coords.lat <= -31.65 && coords.lat >= -31.95 && coords.lng <= -60.25 && coords.lng >= -60.7
 }
 
 export function comercioEstaVigente(opts: {

@@ -1,19 +1,32 @@
 import { MapaComerciosLoader } from '@/web/components/mapa-comercios-loader'
-import { coordenadasComercio } from '@/web/lib/habilitaciones'
+import {
+  comercioCoincide,
+  etiquetaTitulares,
+  idsDeTitulares,
+  nombresActividades,
+} from '@/web/lib/busqueda-comercios'
+import { comercioEstaEnSanBenito, coordenadasComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
-import { IconBuildingStore, IconMapPin, IconSearch } from '@tabler/icons-react'
+import { IconMapPin, IconSearch } from '@tabler/icons-react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { FiltroRubros } from './FiltroRubros'
+import { FiltrosComercios } from './FiltrosComercios'
+
+export const metadata: Metadata = {
+  title: 'Comercios habilitados',
+  description:
+    'Registro de establecimientos comerciales con habilitación vigente en San Benito.',
+}
 
 export const dynamic = 'force-dynamic'
 
 type Props = {
-  searchParams: Promise<{ rubro?: string }>
+  searchParams: Promise<{ q?: string; actividad?: string }>
 }
 
 export default async function ComerciosHabilitadosPage({ searchParams }: Props) {
-  const { rubro } = await searchParams
+  const { q = '', actividad = '' } = await searchParams
 
   const hoy = new Date().toISOString()
 
@@ -36,42 +49,60 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
     ],
   }
 
-  const whereConRubro = rubro
-    ? {
-        and: [whereBase, { rubro: { equals: rubro } }],
-      }
-    : whereBase
-
-  const [{ docs: comercios }, { docs: rubros }] = await Promise.all([
+  const [{ docs: vigentes }, { docs: actividades }] = await Promise.all([
     basePayload.find({
       collection: 'comercios-habilitados',
-      where: whereConRubro,
+      where: whereBase,
       depth: 1,
       sort: 'nombre',
       limit: 500,
     }),
     basePayload.find({
-      collection: 'rubros-comercios',
+      collection: 'actividades-comercios',
       sort: 'nombre',
-      limit: 100,
+      limit: 200,
     }),
   ])
 
-  const rubrosParaFiltro = rubros.map((r) => ({ id: r.id, nombre: r.nombre }))
+  const actividadesParaFiltro = actividades.map((item) => ({ id: item.id, nombre: item.nombre }))
+  const idsTitulares = [
+    ...new Set(vigentes.flatMap((comercio) => idsDeTitulares(comercio.titulares))),
+  ]
+  const { docs: personas } = idsTitulares.length
+    ? await basePayload.find({
+        collection: 'ciudadanos',
+        where: { id: { in: idsTitulares } },
+        depth: 0,
+        limit: idsTitulares.length,
+        pagination: false,
+        overrideAccess: true,
+        select: { nombre: true, apellido: true },
+      })
+    : { docs: [] }
+  const titularPorId = new Map(
+    personas.map((persona) => [
+      persona.id,
+      { nombre: persona.nombre, apellido: persona.apellido },
+    ]),
+  )
+  const listado = vigentes.map((comercio) => ({
+    ...comercio,
+    titulares: idsDeTitulares(comercio.titulares).map(
+      (id) => titularPorId.get(id) ?? { nombre: null, apellido: null },
+    ),
+  }))
+  const comercios = listado.filter((comercio) => comercioCoincide(comercio, q, actividad))
 
   const comerciosEnMapa = comercios.flatMap((comercio) => {
     const coords = coordenadasComercio(comercio.localizacion)
-    if (!coords) return []
-    const rubroNombre =
-      comercio.rubro && typeof comercio.rubro === 'object'
-        ? (comercio.rubro as { nombre: string }).nombre
-        : null
+    if (!coords || !comercioEstaEnSanBenito(coords)) return []
+    const actividadesNombre = nombresActividades(comercio.actividades)
     return [
       {
         id: String(comercio.id),
         nombre: comercio.nombre,
         direccion: comercio.direccion,
-        rubro: rubroNombre,
+        rubro: actividadesNombre.join(' · ') || null,
         lat: coords.lat,
         lng: coords.lng,
       },
@@ -80,145 +111,133 @@ export default async function ComerciosHabilitadosPage({ searchParams }: Props) 
 
   const textoMapa =
     comercios.length === 0
-      ? 'No hay comercios habilitados para mostrar en el mapa.'
+      ? 'No hay comercios para ubicar.'
       : comerciosEnMapa.length === 0
-        ? 'Ningún comercio de este filtro tiene coordenadas. Cargá la localización en el admin para ver el pin.'
+        ? 'Estos comercios todavía no tienen ubicación en el mapa.'
         : comerciosEnMapa.length === comercios.length
-          ? 'El mapa muestra los comercios de este filtro.'
-          : `El mapa muestra ${comerciosEnMapa.length} de ${comercios.length} comercios. El resto no tiene coordenadas cargadas.`
+          ? 'Todos los comercios de este listado.'
+          : `${comerciosEnMapa.length} de ${comercios.length} comercios tienen ubicación.`
+
+  const cantidad = `${comercios.length} ${comercios.length === 1 ? 'comercio' : 'comercios'}`
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <section className="hero bg-base-200 rounded-lg p-4 text-center shadow-lg md:p-10">
-        <div className="hero-content">
-          <div className="mx-auto max-w-3xl">
-            <h1 className="text-3xl font-bold md:text-5xl">Comercios Habilitados</h1>
-            <p className="mt-4 text-base leading-relaxed md:text-lg">
-              Consulta el registro de establecimientos comerciales con habilitación vigente en la
-              Municipalidad de San Benito.
-            </p>
-          </div>
+    <main className="container mx-auto px-4 py-8 md:py-10">
+      <header>
+        <div className="max-w-2xl">
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Comercios habilitados</h1>
+          <p className="text-base-content/70 mt-2 text-base">
+            Establecimientos con habilitación vigente en San Benito.
+          </p>
         </div>
-      </section>
+        <div className="mt-6">
+          <Suspense fallback={<div className="skeleton h-16 w-full" />}>
+            <FiltrosComercios actividades={actividadesParaFiltro} />
+          </Suspense>
+        </div>
+      </header>
 
-      <section className="mt-8 space-y-6">
-        <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-semibold">
-              Establecimientos{' '}
-              <span className="badge badge-primary badge-lg ml-2">{comercios.length}</span>
-            </h2>
-            <Suspense fallback={<div className="skeleton h-10 w-48" />}>
-              <FiltroRubros rubros={rubrosParaFiltro} />
-            </Suspense>
-          </div>
+      <p className="text-base-content/60 mt-8 text-sm font-medium">{cantidad}</p>
 
-          <div className="mb-6 space-y-2">
-            <h3 className="text-lg font-semibold">Mapa</h3>
-            <MapaComerciosLoader key={rubro ?? 'todos'} comercios={comerciosEnMapa} />
-            <p className="text-base-content/60 text-sm">{textoMapa}</p>
-          </div>
-
-          {comercios.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-              <IconSearch size={56} stroke={1.5} className="text-base-content/30" />
-              <p className="text-base-content/60 text-lg">
-                No se encontraron comercios habilitados
-                {rubro ? ' para el rubro seleccionado' : ''}.
-              </p>
-              {rubro && (
-                <Link
-                  href="/tramites/habilitaciones/comercios-habilitados"
-                  className="btn btn-outline btn-sm"
-                >
-                  Ver todos los comercios
-                </Link>
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {comercios.map((comercio) => {
-                const rubroNombre =
-                  comercio.rubro && typeof comercio.rubro === 'object'
-                    ? (comercio.rubro as { nombre: string }).nombre
-                    : null
-
-                const coords = coordenadasComercio(comercio.localizacion)
-                const mapsUrl = coords
-                  ? `https://www.google.com/maps?q=${coords.lat},${coords.lng}`
-                  : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
-
-                return (
-                  <div
-                    key={comercio.id}
-                    className="card bg-base-200 shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <div className="card-body gap-3 p-5">
-                      <div className="flex items-start gap-3">
-                        <div className="bg-primary/10 shrink-0 rounded-lg p-2">
-                          <IconBuildingStore size={24} className="text-primary" stroke={1.5} />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="card-title text-base leading-tight">{comercio.nombre}</h3>
-                          {comercio.numeroHabilitacion && (
-                            <p className="text-base-content/50 mt-1 font-mono text-xs">
-                              {comercio.numeroHabilitacion}
-                            </p>
-                          )}
-                          {rubroNombre && (
-                            <span className="badge badge-ghost badge-sm mt-1">{rubroNombre}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-sm">
-                        <IconMapPin
-                          size={16}
-                          className="text-base-content/50 shrink-0"
-                          stroke={1.5}
-                        />
-                        <span className="text-base-content/70 truncate">{comercio.direccion}</span>
-                      </div>
-
-                      <div className="card-actions mt-1 justify-end gap-2">
-                        <a
-                          href={mapsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-ghost btn-xs gap-1"
-                        >
-                          <IconMapPin size={14} stroke={1.5} />
-                          Ver en mapa
-                        </a>
-                        <Link
-                          href={`/tramites/habilitaciones/comercios-habilitados/${comercio.id}`}
-                          className="btn btn-primary btn-xs"
-                        >
-                          Ver detalle
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+      {comercios.length === 0 ? (
+        <div className="border-base-300 mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed px-6 py-16 text-center">
+          <IconSearch size={40} stroke={1.5} className="text-base-content/30" />
+          <p className="text-base-content/70">
+            {`No hay comercios habilitados${q ? ` para “${q.trim()}”` : ''}${actividad ? ' en esa actividad' : ''}.`}
+          </p>
+          {(q || actividad) && (
+            <Link
+              href="/tramites/habilitaciones/comercios-habilitados"
+              className="btn btn-outline btn-sm"
+            >
+              Ver todos los comercios
+            </Link>
           )}
         </div>
+      ) : (
+        <ul className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {comercios.map((comercio) => {
+            const actividadesNombre = nombresActividades(comercio.actividades)
+            const titulares = etiquetaTitulares(comercio.titulares)
 
-        <div className="bg-base-100 rounded-lg p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold">¿No encontrás tu comercio?</h2>
-          <p className="text-base-content/70">
-            Si tu local tiene habilitación vigente y no aparece en este listado, por favor
-            comunicate con el área de Habilitaciones Comerciales.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <a href="https://wa.me/3434537319" target="_blank" className="btn btn-outline btn-sm">
-              WhatsApp: 3434537319
-            </a>
-            <a href="mailto:habilitaciones@munisanbenito.gov.ar" className="btn btn-outline btn-sm">
-              habilitaciones@munisanbenito.gov.ar
-            </a>
-          </div>
+            const coords = coordenadasComercio(comercio.localizacion)
+            const mapsUrl = coords
+              ? `https://www.google.com/maps?q=${coords.lat},${coords.lng}`
+              : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
+
+            return (
+              <li key={comercio.id}>
+                <article className="border-base-300 bg-base-100 flex h-full flex-col rounded-xl border p-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {actividadesNombre.slice(0, 2).map((nombre) => (
+                      <span key={nombre} className="badge badge-ghost">
+                        {nombre}
+                      </span>
+                    ))}
+                    {comercio.numeroHabilitacion && (
+                      <span className="text-base-content/50 font-mono text-xs">
+                        {comercio.numeroHabilitacion}
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="mt-3 text-xl font-semibold leading-tight">
+                    <Link
+                      href={`/tramites/habilitaciones/comercios-habilitados/${comercio.id}`}
+                      className="hover:text-primary"
+                    >
+                      {comercio.nombre}
+                    </Link>
+                  </h2>
+                  {titulares && (
+                    <p className="text-base-content/60 mt-1 text-sm">Titular: {titulares}</p>
+                  )}
+                  <p className="text-base-content/70 mt-2 flex items-start gap-2 text-sm leading-snug">
+                    <IconMapPin size={16} className="mt-0.5 shrink-0" stroke={1.5} />
+                    <span>{comercio.direccion}</span>
+                  </p>
+                  <div className="mt-auto flex items-center gap-3 pt-5">
+                    <Link
+                      href={`/tramites/habilitaciones/comercios-habilitados/${comercio.id}`}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Ver ficha
+                    </Link>
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link link-hover text-sm"
+                    >
+                      Cómo llegar
+                    </a>
+                  </div>
+                </article>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+
+      <section className="mt-14">
+        <h2 className="text-xl font-semibold">Dónde están</h2>
+        <p className="text-base-content/60 mt-1 mb-4 text-sm">{textoMapa}</p>
+        {comerciosEnMapa.length > 0 && (
+          <MapaComerciosLoader key={`${q}-${actividad}`} comercios={comerciosEnMapa} />
+        )}
+      </section>
+
+      <section className="border-base-300 mt-14 rounded-xl border p-5 md:p-6">
+        <h2 className="text-lg font-semibold">¿No encontrás tu comercio?</h2>
+        <p className="text-base-content/70 mt-2 max-w-2xl text-sm leading-relaxed">
+          Si tu local tiene habilitación vigente y no aparece en este listado, comunicate con el
+          área de Habilitaciones Comerciales.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <a href="https://wa.me/3434537319" target="_blank" className="btn btn-outline btn-sm">
+            WhatsApp 3434537319
+          </a>
+          <a href="mailto:habilitaciones@munisanbenito.gov.ar" className="btn btn-outline btn-sm">
+            habilitaciones@munisanbenito.gov.ar
+          </a>
         </div>
       </section>
     </main>

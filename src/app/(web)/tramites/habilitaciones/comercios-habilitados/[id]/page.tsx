@@ -1,5 +1,5 @@
 import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
-import { comercioEstaVigente } from '@/web/lib/habilitaciones'
+import { comercioEstaVigente, coordenadasComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
 import {
   IconBuildingStore,
@@ -38,12 +38,10 @@ export default async function DetalleComercioPage({ params }: Props) {
         .map((a) => (a as { nombre: string }).nombre)
     : []
 
-  const [lng, lat] = Array.isArray(comercio.localizacion) ? comercio.localizacion : [null, null]
-
-  const mapsUrl =
-    lat && lng
-      ? `https://www.google.com/maps?q=${lat},${lng}`
-      : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
+  const coords = coordenadasComercio(comercio.localizacion)
+  const mapsUrl = coords
+    ? `https://www.google.com/maps?q=${coords.lat},${coords.lng}`
+    : `https://www.google.com/maps/search/${encodeURIComponent(comercio.direccion + ', San Benito, Entre Ríos')}`
 
   const fechaAlta = comercio.fechaAlta
     ? new Date(comercio.fechaAlta).toLocaleDateString('es-AR', {

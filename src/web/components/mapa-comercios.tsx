@@ -64,7 +64,7 @@ export function MapaComercios({ comercios }: Props) {
 
   return (
     <div
-      className="mapa-comercios relative z-0 h-80 overflow-hidden rounded-lg md:h-[28rem]"
+      className="mapa-comercios relative z-0 h-72 overflow-hidden rounded-xl md:h-96"
       role="region"
       aria-label="Mapa de comercios habilitados"
     >
