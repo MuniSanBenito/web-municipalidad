@@ -211,10 +211,13 @@ export const ComerciosHabilitados: CollectionConfig = {
     {
       name: 'localizacion',
       type: 'point',
-      label: 'Localización (Mapa)',
+      label: 'Ubicación en el mapa',
       admin: {
         description:
-          'En Google Maps, clic derecho sobre el local. El primer número es la latitud (cerca de -31,78) y el segundo la longitud (cerca de -60,43). Cargá la longitud en el primer campo y la latitud en el segundo. Sin estas coordenadas el comercio no aparece en el mapa.',
+          'Acercá con la rueda del mouse o con + y −. Después hacé clic sobre el local; podés arrastrar el punto para ajustarlo. Sin este punto el comercio no aparece en el mapa público.',
+        components: {
+          Field: '/payload/components/mapa-localizacion-field#MapaLocalizacionField',
+        },
       },
     },
     {
