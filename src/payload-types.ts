@@ -345,6 +345,10 @@ export interface Ciudadano {
   nombre?: string | null;
   apellido?: string | null;
   dni: string;
+  /**
+   * Se arma solo con apellido, nombre y DNI. Es el texto del selector de titulares y el que se usa para buscar.
+   */
+  nombreCompleto?: string | null;
   domicilio?: string | null;
   fecha_nacimiento?: string | null;
   ciudad?: string | null;
@@ -455,7 +459,7 @@ export interface ComerciosHabilitado {
    */
   fechaBaja?: string | null;
   /**
-   * Ciudadanos que pueden ver este comercio en el portal y iniciar su renovación. Crear el ciudadano antes si no existe y asignarle el módulo HABILITACIONES.
+   * Buscá por apellido, nombre o DNI. Estos ciudadanos ven el comercio en el portal y pueden iniciar la renovación. Si no existe, crealo y asignale el módulo HABILITACIONES.
    */
   titulares?: (string | Ciudadano)[] | null;
   direccion: string;
@@ -2458,6 +2462,7 @@ export interface CiudadanosSelect<T extends boolean = true> {
   nombre?: T;
   apellido?: T;
   dni?: T;
+  nombreCompleto?: T;
   domicilio?: T;
   fecha_nacimiento?: T;
   ciudad?: T;

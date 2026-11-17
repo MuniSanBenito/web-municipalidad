@@ -196,8 +196,10 @@ export const ComerciosHabilitados: CollectionConfig = {
       label: 'Titulares',
       hasMany: true,
       admin: {
+        sortOptions: 'nombreCompleto',
+        placeholder: 'Apellido, nombre o DNI',
         description:
-          'Ciudadanos que pueden ver este comercio en el portal y iniciar su renovación. Crear el ciudadano antes si no existe y asignarle el módulo HABILITACIONES.',
+          'Buscá por apellido, nombre o DNI. Estos ciudadanos ven el comercio en el portal y pueden iniciar la renovación. Si no existe, crealo y asignale el módulo HABILITACIONES.',
       },
     },
     {

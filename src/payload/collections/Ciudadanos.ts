@@ -6,6 +6,7 @@ import {
   ciudadanoStaffFieldAccess,
   ciudadanoUpdateAccess,
 } from '../access/ciudadanos'
+import { completarNombreCiudadano } from '../ciudadanos/etiqueta'
 import { HIDE_API_URL } from '../config'
 
 export const PERMISOS_CIUDADANO = ['HABILITACIONES'] as const
@@ -19,8 +20,13 @@ export const Ciudadanos: CollectionConfig = {
   },
   auth: true,
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'nombreCompleto',
+    defaultColumns: ['nombreCompleto', 'email', 'activo'],
+    listSearchableFields: ['nombre', 'apellido', 'dni', 'email', 'nombreCompleto'],
     hideAPIURL: HIDE_API_URL,
+  },
+  hooks: {
+    beforeChange: [completarNombreCiudadano],
   },
   access: {
     create: ciudadanoCreateAccess,
@@ -66,6 +72,17 @@ export const Ciudadanos: CollectionConfig = {
       name: 'dni',
       label: 'DNI',
       required: true,
+    },
+    {
+      type: 'text',
+      name: 'nombreCompleto',
+      label: 'Apellido, nombre y DNI',
+      index: true,
+      admin: {
+        readOnly: true,
+        description:
+          'Se arma solo con apellido, nombre y DNI. Es el texto del selector de titulares y el que se usa para buscar.',
+      },
     },
     {
       type: 'text',
