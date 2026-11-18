@@ -1,4 +1,3 @@
-import { CertificadoHabilitacion } from '@/web/components/certificado-habilitacion'
 import { hrefListado } from '@/web/lib/busqueda-comercios'
 import { comercioEstaVigente, coordenadasComercio } from '@/web/lib/habilitaciones'
 import { basePayload } from '@/web/lib/payload'
@@ -226,24 +225,6 @@ export default async function DetalleComercioPage({ params, searchParams }: Prop
             )}
           </dl>
         </div>
-      </section>
-
-      {/* Certificado de Habilitación embebido */}
-      <section className="mt-6">
-        <h2 className="mb-4 text-xl font-semibold">Certificado de Habilitación</h2>
-        <CertificadoHabilitacion
-          nombre={comercio.nombre}
-          razonSocial={comercio.razonSocial}
-          cuit={comercio.cuit}
-          direccion={comercio.direccion}
-          fechaAlta={comercio.fechaAlta ?? null}
-          fechaVencimiento={comercio.fechaVencimiento ?? null}
-          fechaBaja={comercio.fechaBaja ?? null}
-          urlValidacion={comercio.urlValidacion ?? null}
-          numeroHabilitacion={comercio.numeroHabilitacion ?? null}
-          rubroNombre={rubroNombre}
-          showActions
-        />
       </section>
 
       <div className="no-print mt-6 text-center">
